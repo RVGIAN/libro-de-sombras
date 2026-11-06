@@ -2140,8 +2140,10 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
         </div>
       </div>
       <div id="admin-panel" class="hidden">
-        <div class="adiv-modo-selector" style="margin-bottom:1.5rem">
-          <button class="adiv-modo-btn" onclick="AdminModule.setTab('cocina')">🌿 Cocina</button>
+        <div class="adiv-modo-selector" style="margin-bottom:1.5rem;flex-wrap:wrap">
+          <button class="adiv-modo-btn" onclick="AdminModule.setTab('cocina')">🌿 Recetas</button>
+          <button class="adiv-modo-btn" onclick="AdminModule.setTab('banos')">🛁 Baños</button>
+          <button class="adiv-modo-btn" onclick="AdminModule.setTab('brebajes')">🧪 Brebajes</button>
           <button class="adiv-modo-btn" onclick="AdminModule.setTab('hechizos')">✨ Hechizos</button>
           <button class="adiv-modo-btn" onclick="AdminModule.setTab('plantas')">🌱 Plantas</button>
           <button class="adiv-modo-btn" onclick="AdminModule.setTab('config')">⚙️ Config</button>
@@ -6322,28 +6324,44 @@ const CocinaModule = (() => {
         </div>`).join('');
     } else if (tab === 'banos') {
       if (filtrosEl) filtrosEl.innerHTML = '';
-      let data = BANOS;
+      // Merge built-in + admin custom
+      let adminBanos = [];
+      try { adminBanos = JSON.parse(localStorage.getItem('bruja_admin_banos')||'[]'); } catch(e){}
+      const adminBanosNorm = adminBanos.map(b => ({
+        nombre: b.nombre, emoji: b.emoji||'🛁', intencion: b.intencion||'',
+        luna: b.nota||'', planeta: 'Personalizado', ingredientes: b.ingredientes||'',
+        preparacion: b.modo||'', _custom: true
+      }));
+      let data = [...BANOS, ...adminBanosNorm];
       if (busqueda) data = data.filter(b => b.nombre.toLowerCase().includes(busqueda) || b.intencion.toLowerCase().includes(busqueda));
       grid.innerHTML = data.map(b => `
         <div class="cocina-card" onclick="CocinaModule.openItem('bano','${b.nombre.replace(/'/g,"\\'")}')">
           <div class="cocina-emoji">${b.emoji}</div>
-          <div class="cocina-nombre">${b.nombre}</div>
+          <div class="cocina-nombre">${b.nombre}${b._custom?' <span class="tag" style="font-size:.65rem">mío</span>':''}</div>
           <div class="cocina-intencion">${b.intencion}</div>
           <div style="display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap">
-            <span class="tag">${b.luna}</span><span class="tag">${b.planeta}</span>
+            <span class="tag">${b.luna||''}</span><span class="tag">${b.planeta||''}</span>
           </div>
         </div>`).join('');
     } else if (tab === 'brebajes') {
       if (filtrosEl) filtrosEl.innerHTML = '';
-      let data = BREBAJES;
+      // Merge built-in + admin custom
+      let adminBrebajes = [];
+      try { adminBrebajes = JSON.parse(localStorage.getItem('bruja_admin_brebajes')||'[]'); } catch(e){}
+      const adminBrebajesNorm = adminBrebajes.map(b => ({
+        nombre: b.nombre, emoji: b.emoji||'🧪', intencion: b.intencion||'',
+        uso: b.nota||'Personalizado', planeta: 'Personalizado', ingredientes: b.ingredientes||'',
+        preparacion: b.modo||'', _custom: true
+      }));
+      let data = [...BREBAJES, ...adminBrebajesNorm];
       if (busqueda) data = data.filter(b => b.nombre.toLowerCase().includes(busqueda) || b.intencion.toLowerCase().includes(busqueda));
       grid.innerHTML = data.map(b => `
         <div class="cocina-card" onclick="CocinaModule.openItem('brebaje','${b.nombre.replace(/'/g,"\\'")}')">
           <div class="cocina-emoji">${b.emoji}</div>
-          <div class="cocina-nombre">${b.nombre}</div>
+          <div class="cocina-nombre">${b.nombre}${b._custom?' <span class="tag" style="font-size:.65rem">mío</span>':''}</div>
           <div class="cocina-intencion">${b.intencion}</div>
           <div style="display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap">
-            <span class="tag">${b.uso}</span><span class="tag">${b.planeta}</span>
+            <span class="tag">${b.uso||''}</span><span class="tag">${b.planeta||''}</span>
           </div>
         </div>`).join('');
     } else if (tab === 'mis-recetas') {
@@ -6379,9 +6397,34 @@ const CocinaModule = (() => {
   // ── Abrir modal ────────────────────────────────────────────
   function openItem(tipo, nombre) {
     let item;
-    if (tipo === 'receta') item = RECETAS.find(r => r.nombre === nombre);
-    else if (tipo === 'bano') item = BANOS.find(b => b.nombre === nombre);
-    else if (tipo === 'brebaje') item = BREBAJES.find(b => b.nombre === nombre);
+    if (tipo === 'receta') {
+      item = RECETAS.find(r => r.nombre === nombre);
+    } else if (tipo === 'bano') {
+      item = BANOS.find(b => b.nombre === nombre);
+      if (!item) {
+        // buscar en custom admin
+        try {
+          const custom = JSON.parse(localStorage.getItem('bruja_admin_banos')||'[]');
+          const c = custom.find(b => b.nombre === nombre);
+          if (c) item = { nombre:c.nombre, emoji:c.emoji||'🛁', intencion:c.intencion||'',
+            luna:'', planeta:'Personalizado', elemento:'', color:'#4a4a6a',
+            ingredientes: (c.ingredientes||'').split('\n').filter(Boolean),
+            proceso: (c.modo||'').split('\n').filter(Boolean) };
+        } catch(e){}
+      }
+    } else if (tipo === 'brebaje') {
+      item = BREBAJES.find(b => b.nombre === nombre);
+      if (!item) {
+        try {
+          const custom = JSON.parse(localStorage.getItem('bruja_admin_brebajes')||'[]');
+          const c = custom.find(b => b.nombre === nombre);
+          if (c) item = { nombre:c.nombre, emoji:c.emoji||'🧪', intencion:c.intencion||'',
+            uso:'Personalizado', planeta:'', color:'#2a4a3a',
+            ingredientes: (c.ingredientes||'').split('\n').filter(Boolean),
+            proceso: (c.modo||'').split('\n').filter(Boolean) };
+        } catch(e){}
+      }
+    }
     if (!item) return;
 
     const overlay = document.getElementById('cocina-modal');
@@ -6389,13 +6432,20 @@ const CocinaModule = (() => {
     if (!overlay || !content) return;
 
     const tags = tipo === 'receta'
-      ? `<span class="tag">${item.planeta}</span><span class="tag">${item.elemento}</span><span class="tag">🌙 ${item.mejor_momento}</span>`
+      ? `<span class="tag">${item.planeta||''}</span><span class="tag">${item.elemento||''}</span><span class="tag">🌙 ${item.mejor_momento||''}</span>`
       : tipo === 'bano'
-      ? `<span class="tag">${item.luna}</span><span class="tag">${item.planeta}</span><span class="tag">${item.elemento}</span>`
-      : `<span class="tag">${item.uso}</span><span class="tag">${item.planeta}</span>`;
+      ? `<span class="tag">${item.luna||''}</span><span class="tag">${item.planeta||''}</span><span class="tag">${item.elemento||''}</span>`
+      : `<span class="tag">${item.uso||''}</span><span class="tag">${item.planeta||''}</span>`;
+
+    const ingList = Array.isArray(item.ingredientes)
+      ? item.ingredientes.map(i=>`<li style="padding:.2rem 0;border-bottom:1px solid rgba(255,255,255,.05)">· ${i}</li>`).join('')
+      : `<li>${item.ingredientes||''}</li>`;
+    const pasosList = Array.isArray(item.proceso)
+      ? item.proceso.map(p=>`<li style="margin-bottom:.5rem;line-height:1.6">${p}</li>`).join('')
+      : `<li>${item.proceso||''}</li>`;
 
     content.innerHTML = `
-      <div class="modal-header" style="background:linear-gradient(135deg,${item.color}22,transparent)">
+      <div class="modal-header" style="background:linear-gradient(135deg,${item.color||'#4a3f6b'}22,transparent)">
         <div style="font-size:2.5rem">${item.emoji}</div>
         <div>
           <div class="modal-title">${item.nombre}</div>
@@ -6405,14 +6455,14 @@ const CocinaModule = (() => {
       </div>
       <div class="modal-body">
         <div class="modal-row"><strong>Intención Mágica</strong>✨ ${item.intencion}</div>
-        <div class="modal-row">
+        ${ingList ? `<div class="modal-row">
           <strong>Ingredientes</strong>
-          <ul style="list-style:none;padding:0;margin-top:.4rem">${item.ingredientes.map(i=>`<li style="padding:.2rem 0;border-bottom:1px solid rgba(255,255,255,.05)">· ${i}</li>`).join('')}</ul>
-        </div>
-        <div class="modal-row">
-          <strong>${tipo === 'receta' ? 'Proceso Ritual' : tipo === 'bano' ? 'Ritual del Baño' : 'Preparación'}</strong>
-          <ol style="padding-left:1.2rem;margin-top:.4rem">${item.proceso.map(p=>`<li style="margin-bottom:.5rem;line-height:1.6">${p}</li>`).join('')}</ol>
-        </div>
+          <ul style="list-style:none;padding:0;margin-top:.4rem">${ingList}</ul>
+        </div>` : ''}
+        ${pasosList ? `<div class="modal-row">
+          <strong>${tipo==='receta'?'Proceso Ritual':tipo==='bano'?'Ritual del Baño':'Preparación'}</strong>
+          <ol style="padding-left:1.2rem;margin-top:.4rem">${pasosList}</ol>
+        </div>` : ''}
       </div>`;
     overlay.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
@@ -6766,8 +6816,8 @@ const AdivinacionModule = (() => {
 'use strict';
 // ============================================================
 // ADMIN.JS — Panel de Administrador
-// Permite gestionar contenido del grimorio:
-// recetas, hechizos, plantas, configuración
+// Gestiona TODO el contenido del grimorio:
+// recetas, baños, brebajes, hechizos, plantas, config
 // ============================================================
 const AdminModule = (() => {
 
@@ -6775,15 +6825,28 @@ const AdminModule = (() => {
   const DEFAULT_PIN   = 'bruja2024';
   const UNLOCKED_KEY  = 'bruja_admin_unlocked';
 
+  // localStorage keys
+  const SK_RECETAS   = 'bruja_cocina_recetas';
+  const SK_BANOS     = 'bruja_admin_banos';
+  const SK_BREBAJES  = 'bruja_admin_brebajes';
+  const SK_PLANTAS   = 'bruja_admin_plantas';
+  const SK_HECHIZOS  = 'bruja_admin_hechizos_custom';
+
   let currentTab = 'cocina';
   let isUnlocked = false;
 
+  // ── Helpers ──────────────────────────────────────────────
+  function getArr(key) {
+    try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch(e){ return []; }
+  }
+  function saveArr(key, arr) {
+    try { localStorage.setItem(key, JSON.stringify(arr)); } catch(e){}
+  }
+
   // ── Acceso ───────────────────────────────────────────────
   function init() {
-    // Mostrar enlace de admin en sidebar
     const navAdmin = document.getElementById('nav-admin');
     if (navAdmin) navAdmin.style.display = '';
-    // Comprobar si ya está desbloqueado en esta sesión
     if (sessionStorage.getItem(UNLOCKED_KEY) === '1') {
       showPanel();
     }
@@ -6813,7 +6876,7 @@ const AdminModule = (() => {
     isUnlocked = true;
     document.getElementById('admin-lock')?.classList.add('hidden');
     document.getElementById('admin-panel')?.classList.remove('hidden');
-    setTab('cocina');
+    setTab(currentTab);
   }
 
   function lockPanel() {
@@ -6827,7 +6890,19 @@ const AdminModule = (() => {
   function setTab(tab) {
     currentTab = tab;
     document.querySelectorAll('.adiv-modo-btn').forEach(b => {
-      b.classList.toggle('active', b.textContent.toLowerCase().includes(tab.slice(0,4)));
+      b.classList.remove('active');
+    });
+    // Find matching button by text content
+    document.querySelectorAll('#admin-panel .adiv-modo-btn').forEach(b => {
+      const txt = b.textContent.toLowerCase();
+      if ((tab === 'cocina'   && txt.includes('receta')) ||
+          (tab === 'banos'    && txt.includes('baño'))   ||
+          (tab === 'brebajes' && txt.includes('brebaj')) ||
+          (tab === 'hechizos' && txt.includes('hechizo'))||
+          (tab === 'plantas'  && txt.includes('planta')) ||
+          (tab === 'config'   && txt.includes('config'))) {
+        b.classList.add('active');
+      }
     });
     renderTab();
   }
@@ -6836,32 +6911,85 @@ const AdminModule = (() => {
     const el = document.getElementById('admin-content');
     if (!el) return;
     if (currentTab === 'cocina')   el.innerHTML = renderCocina();
+    if (currentTab === 'banos')    el.innerHTML = renderBanos();
+    if (currentTab === 'brebajes') el.innerHTML = renderBrebajes();
     if (currentTab === 'hechizos') el.innerHTML = renderHechizos();
     if (currentTab === 'plantas')  el.innerHTML = renderPlantas();
     if (currentTab === 'config')   el.innerHTML = renderConfig();
   }
 
-  // ── Tab: Cocina ───────────────────────────────────────────
+  // ── Shared: formulario genérico de item de cocina ────────
+  function formItemCocina(tipo, campos, guardarFn, item) {
+    const v = item || {};
+    return `
+      <div class="card" style="margin-bottom:1.5rem">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">
+          ${item ? '✏️ Editar' : '+ Crear'} ${tipo}
+        </h3>
+        <div style="display:grid;grid-template-columns:1fr 72px;gap:.5rem;margin-bottom:.5rem">
+          <input id="adm-nombre" class="form-input" placeholder="Nombre" value="${v.nombre||''}">
+          <input id="adm-emoji" class="form-input" placeholder="🌿" style="text-align:center" value="${v.emoji||''}">
+        </div>
+        <input id="adm-intencion" class="form-input" placeholder="Intención / propósito" value="${v.intencion||''}" style="margin-bottom:.5rem">
+        <textarea id="adm-ingredientes" class="form-input" rows="3" placeholder="Ingredientes (uno por línea)">${v.ingredientes||''}</textarea>
+        <textarea id="adm-modo" class="form-input" rows="3" placeholder="Modo de preparación" style="margin-top:.5rem">${v.modo||''}</textarea>
+        <textarea id="adm-nota" class="form-input" rows="2" placeholder="Nota / advertencia" style="margin-top:.5rem">${v.nota||''}</textarea>
+        <div style="margin-top:.75rem;display:flex;gap:.75rem">
+          <button class="btn-gold" onclick="AdminModule.${guardarFn}()">✦ Guardar</button>
+          <button class="btn-outline-sm" onclick="AdminModule.renderTab()">✕ Cancelar</button>
+        </div>
+      </div>`;
+  }
+
+  function leerFormItem() {
+    return {
+      nombre:      document.getElementById('adm-nombre')?.value?.trim() || '',
+      emoji:       document.getElementById('adm-emoji')?.value?.trim()  || '🌿',
+      intencion:   document.getElementById('adm-intencion')?.value?.trim() || '',
+      ingredientes:document.getElementById('adm-ingredientes')?.value?.trim() || '',
+      modo:        document.getElementById('adm-modo')?.value?.trim() || '',
+      nota:        document.getElementById('adm-nota')?.value?.trim() || '',
+      creado:      new Date().toLocaleDateString('es'),
+    };
+  }
+
+  function tablaAdmin(items, campos, editFn, borrarFn) {
+    if (items.length === 0) return '<p class="text-muted" style="text-align:center;padding:1rem">Vacío — crea el primero arriba.</p>';
+    return `<div class="admin-table-wrap"><table class="admin-table">
+      <thead><tr>${campos.map(c=>`<th>${c}</th>`).join('')}<th>Acciones</th></tr></thead>
+      <tbody>${items.map((it, i) => `<tr>
+        <td>${it.emoji||'📖'} <strong>${it.nombre||'-'}</strong></td>
+        <td>${it.intencion?.slice(0,45)||'-'}</td>
+        <td style="white-space:nowrap">
+          <button class="tag" style="cursor:pointer" onclick="AdminModule.${editFn}(${i})">✏️</button>
+          <button class="tag" style="background:rgba(255,0,0,.12);cursor:pointer" onclick="AdminModule.${borrarFn}(${i})">🗑</button>
+        </td>
+      </tr>`).join('')}
+      </tbody></table></div>`;
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // TAB: RECETAS (Mis Recetas de Usuario)
+  // ══════════════════════════════════════════════════════════
   function renderCocina() {
-    let recetas = [];
-    try { recetas = JSON.parse(localStorage.getItem('bruja_cocina_recetas') || '[]'); } catch(e){}
+    const recetas = getArr(SK_RECETAS);
     const rows = recetas.length === 0
       ? `<tr><td colspan="4" style="text-align:center;padding:1.5rem;opacity:.6">No hay recetas guardadas aún</td></tr>`
       : recetas.map((r, i) => `
         <tr>
-          <td>${r.emoji || '📖'} <strong>${r.nombre}</strong></td>
-          <td>${r.tipo || '-'}</td>
-          <td>${r.cualidades?.slice(0,40) || '-'}</td>
+          <td>${r.emoji||'📖'} <strong>${r.nombre}</strong></td>
+          <td>${r.tipo||'-'}</td>
+          <td>${r.cualidades?.slice(0,40)||r.intencion?.slice(0,40)||'-'}</td>
           <td style="white-space:nowrap">
             <button class="tag" style="cursor:pointer" onclick="AdminModule.editarReceta(${i})">✏️ Editar</button>
-            <button class="tag" style="background:rgba(255,0,0,.12);cursor:pointer" onclick="AdminModule.borrarReceta(${i})">🗑 Borrar</button>
+            <button class="tag" style="background:rgba(255,0,0,.12);cursor:pointer" onclick="AdminModule.borrarReceta(${i})">🗑</button>
           </td>
         </tr>`).join('');
     return `
       <div class="card" style="margin-bottom:1.5rem">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
           <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0">Mis Recetas (${recetas.length})</h3>
-          <button class="btn-gold" onclick="CocinaModule.abrirCrearReceta();AppModule.goTo('cocina')">+ Crear nueva</button>
+          <button class="btn-gold" onclick="CocinaModule.abrirCrearReceta();AppModule.goTo('cocina')">+ Nueva Receta</button>
         </div>
         <div class="admin-table-wrap">
           <table class="admin-table">
@@ -6871,11 +6999,10 @@ const AdminModule = (() => {
         </div>
       </div>
       <div class="card">
-        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 .75rem">Exportar / Importar Recetas</h3>
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 .75rem">Importar / Exportar</h3>
         <div style="display:flex;gap:.75rem;flex-wrap:wrap">
           <button class="btn-outline-sm" onclick="AdminModule.exportarRecetas()">📤 Exportar JSON</button>
-          <label class="btn-outline-sm" style="cursor:pointer">
-            📥 Importar JSON
+          <label class="btn-outline-sm" style="cursor:pointer">📥 Importar JSON
             <input type="file" accept=".json" style="display:none" onchange="AdminModule.importarRecetas(event)">
           </label>
         </div>
@@ -6883,38 +7010,32 @@ const AdminModule = (() => {
   }
 
   function editarReceta(idx) {
-    let recetas = [];
-    try { recetas = JSON.parse(localStorage.getItem('bruja_cocina_recetas') || '[]'); } catch(e){}
+    const recetas = getArr(SK_RECETAS);
     const r = recetas[idx];
     if (!r) return;
-    // Open edit modal via cocina module
     if (window.CocinaModule) {
       CocinaModule.abrirCrearReceta();
       setTimeout(() => {
-        const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v||''; };
-        setVal('cr-nombre', r.nombre);
-        setVal('cr-emoji', r.emoji);
-        setVal('cr-cualidades', r.cualidades);
-        setVal('cr-ingredientes', r.ingredientes);
-        setVal('cr-proceso', r.proceso);
-        setVal('cr-nota', r.nota);
+        const sv = (id, v) => { const el=document.getElementById(id); if(el) el.value=v||''; };
+        sv('cr-nombre', r.nombre); sv('cr-emoji', r.emoji);
+        sv('cr-cualidades', r.cualidades); sv('cr-ingredientes', r.ingredientes);
+        sv('cr-proceso', r.proceso); sv('cr-nota', r.nota);
         const sel = document.getElementById('cr-tipo');
         if (sel) sel.value = r.tipo || 'Receta';
-        // Override save to update instead of push
         const saveBtn = document.querySelector('#cocina-crear-modal .btn-gold');
         if (saveBtn) {
           saveBtn.onclick = () => {
             recetas[idx] = {
-              nombre: document.getElementById('cr-nombre')?.value?.trim() || r.nombre,
-              emoji: document.getElementById('cr-emoji')?.value?.trim() || r.emoji,
-              tipo: document.getElementById('cr-tipo')?.value || r.tipo,
-              cualidades: document.getElementById('cr-cualidades')?.value?.trim() || '',
-              ingredientes: document.getElementById('cr-ingredientes')?.value?.trim() || '',
-              proceso: document.getElementById('cr-proceso')?.value?.trim() || '',
-              nota: document.getElementById('cr-nota')?.value?.trim() || '',
-              creada: r.creada || new Date().toLocaleDateString('es'),
+              nombre:      document.getElementById('cr-nombre')?.value?.trim() || r.nombre,
+              emoji:       document.getElementById('cr-emoji')?.value?.trim()  || r.emoji,
+              tipo:        document.getElementById('cr-tipo')?.value || r.tipo,
+              cualidades:  document.getElementById('cr-cualidades')?.value?.trim() || '',
+              ingredientes:document.getElementById('cr-ingredientes')?.value?.trim() || '',
+              proceso:     document.getElementById('cr-proceso')?.value?.trim() || '',
+              nota:        document.getElementById('cr-nota')?.value?.trim() || '',
+              creada:      r.creada || new Date().toLocaleDateString('es'),
             };
-            localStorage.setItem('bruja_cocina_recetas', JSON.stringify(recetas));
+            saveArr(SK_RECETAS, recetas);
             CocinaModule.cerrarCrearReceta();
             renderTab();
           };
@@ -6924,99 +7045,244 @@ const AdminModule = (() => {
   }
 
   function borrarReceta(idx) {
-    let recetas = [];
-    try { recetas = JSON.parse(localStorage.getItem('bruja_cocina_recetas') || '[]'); } catch(e){}
-    const nombre = recetas[idx]?.nombre || 'esta receta';
-    if (!confirm(`¿Borrar "${nombre}"?`)) return;
+    const recetas = getArr(SK_RECETAS);
+    if (!confirm(`¿Borrar "${recetas[idx]?.nombre}"?`)) return;
     recetas.splice(idx, 1);
-    localStorage.setItem('bruja_cocina_recetas', JSON.stringify(recetas));
+    saveArr(SK_RECETAS, recetas);
     renderTab();
   }
 
   function exportarRecetas() {
-    const data = localStorage.getItem('bruja_cocina_recetas') || '[]';
-    const blob = new Blob([data], { type:'application/json' });
-    const url = URL.createObjectURL(blob);
+    const blob = new Blob([localStorage.getItem(SK_RECETAS)||'[]'], {type:'application/json'});
     const a = document.createElement('a');
-    a.href = url; a.download = 'mis-recetas-magicas.json';
-    a.click(); URL.revokeObjectURL(url);
+    a.href = URL.createObjectURL(blob); a.download = 'mis-recetas.json'; a.click();
   }
 
   function importarRecetas(evt) {
-    const file = evt.target.files[0];
-    if (!file) return;
+    const file = evt.target.files[0]; if (!file) return;
     const reader = new FileReader();
     reader.onload = e => {
       try {
         const arr = JSON.parse(e.target.result);
-        if (!Array.isArray(arr)) throw new Error();
-        const existing = JSON.parse(localStorage.getItem('bruja_cocina_recetas') || '[]');
-        const merged = [...existing, ...arr];
-        localStorage.setItem('bruja_cocina_recetas', JSON.stringify(merged));
+        if (!Array.isArray(arr)) throw 0;
+        saveArr(SK_RECETAS, [...getArr(SK_RECETAS), ...arr]);
         alert(`✅ ${arr.length} receta(s) importada(s).`);
         renderTab();
-      } catch { alert('❌ Archivo JSON inválido.'); }
+      } catch { alert('❌ JSON inválido.'); }
     };
     reader.readAsText(file);
   }
 
-  // ── Tab: Hechizos ─────────────────────────────────────────
-  function renderHechizos() {
-    // Mostrar info sobre los datos existentes y un editor visual de propósitos personalizados
-    const SK = 'bruja_admin_propositos';
-    let custom = [];
-    try { custom = JSON.parse(localStorage.getItem(SK) || '[]'); } catch(e){}
+  // ══════════════════════════════════════════════════════════
+  // TAB: BAÑOS RITUALES
+  // ══════════════════════════════════════════════════════════
+  let _editBanoIdx = null;
 
+  function renderBanos() {
+    const banos = getArr(SK_BANOS);
+    const form = _editBanoIdx !== null
+      ? formItemCocina('Baño Ritual', [], 'guardarBano', banos[_editBanoIdx])
+      : formItemCocina('Baño Ritual', [], 'guardarBano', null);
+    return `
+      ${form}
+      <div class="card">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Mis Baños Rituales (${banos.length})</h3>
+        ${tablaAdmin(banos, ['Nombre','Intención'], 'editarBano', 'borrarBano')}
+      </div>`;
+  }
+
+  function guardarBano() {
+    const item = leerFormItem();
+    if (!item.nombre) { alert('Escribe el nombre'); return; }
+    const banos = getArr(SK_BANOS);
+    if (_editBanoIdx !== null && banos[_editBanoIdx]) {
+      banos[_editBanoIdx] = { ...banos[_editBanoIdx], ...item };
+    } else {
+      banos.push(item);
+    }
+    saveArr(SK_BANOS, banos);
+    _editBanoIdx = null;
+    renderTab();
+  }
+
+  function editarBano(idx) {
+    _editBanoIdx = idx;
+    renderTab();
+    document.getElementById('admin-content')?.scrollIntoView({behavior:'smooth'});
+  }
+
+  function borrarBano(idx) {
+    const banos = getArr(SK_BANOS);
+    if (!confirm(`¿Borrar "${banos[idx]?.nombre}"?`)) return;
+    banos.splice(idx, 1);
+    saveArr(SK_BANOS, banos);
+    if (_editBanoIdx === idx) _editBanoIdx = null;
+    renderTab();
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // TAB: BREBAJES / POCIONES
+  // ══════════════════════════════════════════════════════════
+  let _editBrebajeIdx = null;
+
+  function renderBrebajes() {
+    const brebajes = getArr(SK_BREBAJES);
+    const form = _editBrebajeIdx !== null
+      ? formItemCocina('Brebaje', [], 'guardarBrebaje', brebajes[_editBrebajeIdx])
+      : formItemCocina('Brebaje', [], 'guardarBrebaje', null);
+    return `
+      ${form}
+      <div class="card">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Mis Brebajes & Pociones (${brebajes.length})</h3>
+        ${tablaAdmin(brebajes, ['Nombre','Intención'], 'editarBrebaje', 'borrarBrebaje')}
+      </div>`;
+  }
+
+  function guardarBrebaje() {
+    const item = leerFormItem();
+    if (!item.nombre) { alert('Escribe el nombre'); return; }
+    const brebajes = getArr(SK_BREBAJES);
+    if (_editBrebajeIdx !== null && brebajes[_editBrebajeIdx]) {
+      brebajes[_editBrebajeIdx] = { ...brebajes[_editBrebajeIdx], ...item };
+    } else {
+      brebajes.push(item);
+    }
+    saveArr(SK_BREBAJES, brebajes);
+    _editBrebajeIdx = null;
+    renderTab();
+  }
+
+  function editarBrebaje(idx) {
+    _editBrebajeIdx = idx;
+    renderTab();
+    document.getElementById('admin-content')?.scrollIntoView({behavior:'smooth'});
+  }
+
+  function borrarBrebaje(idx) {
+    const brebajes = getArr(SK_BREBAJES);
+    if (!confirm(`¿Borrar "${brebajes[idx]?.nombre}"?`)) return;
+    brebajes.splice(idx, 1);
+    saveArr(SK_BREBAJES, brebajes);
+    if (_editBrebajeIdx === idx) _editBrebajeIdx = null;
+    renderTab();
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // TAB: HECHIZOS (propósitos personalizados)
+  // ══════════════════════════════════════════════════════════
+  let _editHechizosIdx = null;
+
+  function renderHechizos() {
+    const custom = getArr(SK_HECHIZOS);
     const panteones = Object.values(HechizosData?.PANTEONES || {}).map(p =>
-      `<div class="card" style="margin-bottom:.5rem;padding:.75rem 1rem">
-        <span style="font-size:1.3rem">${p.emoji}</span>
-        <strong style="margin-left:.4rem">${p.name}</strong>
-        <span class="text-muted" style="margin-left:.5rem;font-size:.82rem">${p.deidades.length} deidades</span>
+      `<div style="display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.06)">
+        <span style="font-size:1.2rem">${p.emoji}</span>
+        <strong>${p.name}</strong>
+        <span class="text-muted" style="font-size:.82rem;margin-left:.25rem">${p.deidades.length} deidades</span>
        </div>`).join('');
 
     const propositos = (HechizosData?.PROPOSITOS || []).map(p =>
       `<div style="display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.06)">
-        <span>${p.emoji}</span>
-        <strong>${p.name}</strong>
+        <span>${p.emoji}</span><strong>${p.name}</strong>
         <span class="text-muted" style="font-size:.82rem">${p.descripcion}</span>
        </div>`).join('');
 
-    return `
+    // Form for custom propósito
+    const editItem = _editHechizosIdx !== null ? custom[_editHechizosIdx] : null;
+    const fv = editItem || {};
+    const form = `
       <div class="card" style="margin-bottom:1rem">
-        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Panteones disponibles</h3>
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">
+          ${editItem ? '✏️ Editar' : '+ Agregar'} Propósito Personalizado
+        </h3>
+        <div style="display:grid;grid-template-columns:1fr 60px;gap:.5rem;margin-bottom:.5rem">
+          <input id="hch-nombre" class="form-input" placeholder="Nombre del propósito (ej: Claridad mental)" value="${fv.name||''}">
+          <input id="hch-emoji" class="form-input" placeholder="🌟" style="text-align:center" value="${fv.emoji||''}">
+        </div>
+        <input id="hch-desc" class="form-input" placeholder="Descripción breve" value="${fv.descripcion||''}" style="margin-bottom:.5rem">
+        <div style="display:flex;gap:.75rem;margin-top:.5rem">
+          <button class="btn-gold" onclick="AdminModule.guardarHechizoProp()">✦ Guardar</button>
+          ${editItem ? `<button class="btn-outline-sm" onclick="AdminModule.cancelarEditHechizo()">Cancelar</button>` : ''}
+        </div>
+      </div>`;
+
+    const filas = custom.length === 0
+      ? '<p class="text-muted" style="text-align:center;padding:1rem">No hay propósitos personalizados aún.</p>'
+      : `<div class="admin-table-wrap"><table class="admin-table">
+          <thead><tr><th>Propósito</th><th>Descripción</th><th>Acciones</th></tr></thead>
+          <tbody>${custom.map((p,i)=>`<tr>
+            <td>${p.emoji||'✨'} <strong>${p.name}</strong></td>
+            <td>${p.descripcion?.slice(0,50)||'-'}</td>
+            <td><button class="tag" style="cursor:pointer" onclick="AdminModule.editarHechizoProp(${i})">✏️</button>
+                <button class="tag" style="background:rgba(255,0,0,.12);cursor:pointer" onclick="AdminModule.borrarHechizoProp(${i})">🗑</button></td>
+          </tr>`).join('')}
+          </tbody></table></div>`;
+
+    return `
+      ${form}
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Mis Propósitos (${custom.length})</h3>
+        ${filas}
+      </div>
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 .75rem">Panteones del Sistema</h3>
         ${panteones}
       </div>
-      <div class="card" style="margin-bottom:1rem">
-        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Propósitos de hechizos</h3>
-        ${propositos}
-      </div>
       <div class="card">
-        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 .5rem">Exportar datos de hechizos</h3>
-        <p class="text-muted" style="font-size:.85rem;margin-bottom:.75rem">Descarga una copia de los datos de panteones y propósitos para editarlos.</p>
-        <button class="btn-outline-sm" onclick="AdminModule.exportarHechizos()">📤 Exportar hechizos-data.js</button>
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 .75rem">Propósitos del Sistema</h3>
+        ${propositos}
       </div>`;
   }
 
-  function exportarHechizos() {
-    const data = JSON.stringify({
-      panteones: HechizosData?.PANTEONES || {},
-      propositos: HechizosData?.PROPOSITOS || [],
-    }, null, 2);
-    const blob = new Blob([data], { type:'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'hechizos-data.json';
-    a.click();
+  function guardarHechizoProp() {
+    const name = document.getElementById('hch-nombre')?.value?.trim();
+    if (!name) { alert('Escribe el nombre'); return; }
+    const item = {
+      name,
+      emoji: document.getElementById('hch-emoji')?.value?.trim() || '✨',
+      descripcion: document.getElementById('hch-desc')?.value?.trim() || '',
+      id: 'custom_' + Date.now(),
+    };
+    const arr = getArr(SK_HECHIZOS);
+    if (_editHechizosIdx !== null && arr[_editHechizosIdx]) {
+      item.id = arr[_editHechizosIdx].id;
+      arr[_editHechizosIdx] = item;
+    } else {
+      arr.push(item);
+    }
+    saveArr(SK_HECHIZOS, arr);
+    _editHechizosIdx = null;
+    renderTab();
   }
 
-  // ── Tab: Plantas & Esencias ───────────────────────────────
+  function editarHechizoProp(idx) {
+    _editHechizosIdx = idx;
+    renderTab();
+    document.getElementById('admin-content')?.scrollIntoView({behavior:'smooth'});
+  }
+
+  function cancelarEditHechizo() {
+    _editHechizosIdx = null;
+    renderTab();
+  }
+
+  function borrarHechizoProp(idx) {
+    const arr = getArr(SK_HECHIZOS);
+    if (!confirm(`¿Borrar "${arr[idx]?.name}"?`)) return;
+    arr.splice(idx, 1);
+    saveArr(SK_HECHIZOS, arr);
+    if (_editHechizosIdx === idx) _editHechizosIdx = null;
+    renderTab();
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // TAB: PLANTAS & ESENCIAS
+  // ══════════════════════════════════════════════════════════
   function renderPlantas() {
-    const SK = 'bruja_admin_plantas';
-    let plantas = [];
-    try { plantas = JSON.parse(localStorage.getItem(SK) || '[]'); } catch(e){}
+    const plantas = getArr(SK_PLANTAS);
 
     const rows = plantas.length === 0
-      ? '<p class="text-muted" style="text-align:center;padding:1rem">No hay plantas personalizadas aún.</p>'
+      ? '<p class="text-muted" style="text-align:center;padding:1rem">No hay entradas aún.</p>'
       : `<div class="admin-table-wrap"><table class="admin-table">
           <thead><tr><th>Nombre</th><th>Tipo</th><th>Propiedades</th><th>Acciones</th></tr></thead>
           <tbody>${plantas.map((p, i) => `<tr>
@@ -7029,9 +7295,9 @@ const AdminModule = (() => {
 
     return `
       <div class="card" style="margin-bottom:1rem">
-        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Agregar Planta / Esencia / Masaje</h3>
-        <div style="display:grid;grid-template-columns:1fr 70px;gap:.5rem;margin-bottom:.5rem">
-          <input id="pl-nombre" class="form-input" placeholder="Nombre (ej: Lavanda, Aceite de argán, Masaje lunar)">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Agregar Planta / Esencia / Masaje / Cristal</h3>
+        <div style="display:grid;grid-template-columns:1fr 72px;gap:.5rem;margin-bottom:.5rem">
+          <input id="pl-nombre" class="form-input" placeholder="Nombre">
           <input id="pl-emoji" class="form-input" placeholder="🌿" style="text-align:center">
         </div>
         <select id="pl-tipo" class="form-input" style="margin-bottom:.5rem">
@@ -7049,42 +7315,60 @@ const AdminModule = (() => {
         </div>
       </div>
       <div class="card">
-        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Mis Plantas & Esencias (${plantas.length})</h3>
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Mis Ingredientes (${plantas.length})</h3>
         ${rows}
       </div>`;
   }
 
   function guardarPlanta() {
     const nombre = document.getElementById('pl-nombre')?.value?.trim();
-    if (!nombre) { alert('Ponle nombre'); return; }
-    const SK = 'bruja_admin_plantas';
-    let plantas = [];
-    try { plantas = JSON.parse(localStorage.getItem(SK) || '[]'); } catch(e){}
+    if (!nombre) { alert('Escribe el nombre'); return; }
+    const plantas = getArr(SK_PLANTAS);
     plantas.push({
       nombre,
-      emoji: document.getElementById('pl-emoji')?.value?.trim() || '🌿',
-      tipo: document.getElementById('pl-tipo')?.value || 'Planta',
-      propiedades: document.getElementById('pl-propiedades')?.value?.trim() || '',
-      correspondencias: document.getElementById('pl-correspondencias')?.value?.trim() || '',
+      emoji:          document.getElementById('pl-emoji')?.value?.trim()          || '🌿',
+      tipo:           document.getElementById('pl-tipo')?.value                   || 'Planta',
+      propiedades:    document.getElementById('pl-propiedades')?.value?.trim()    || '',
+      correspondencias:document.getElementById('pl-correspondencias')?.value?.trim()||'',
     });
-    localStorage.setItem(SK, JSON.stringify(plantas));
-    alert(`✅ "${nombre}" guardada.`);
+    saveArr(SK_PLANTAS, plantas);
     renderTab();
   }
 
   function borrarPlanta(idx) {
-    const SK = 'bruja_admin_plantas';
-    let plantas = [];
-    try { plantas = JSON.parse(localStorage.getItem(SK) || '[]'); } catch(e){}
+    const plantas = getArr(SK_PLANTAS);
     if (!confirm(`¿Borrar "${plantas[idx]?.nombre}"?`)) return;
     plantas.splice(idx, 1);
-    localStorage.setItem(SK, JSON.stringify(plantas));
+    saveArr(SK_PLANTAS, plantas);
     renderTab();
   }
 
-  // ── Tab: Configuración ────────────────────────────────────
+  // ══════════════════════════════════════════════════════════
+  // TAB: CONFIGURACIÓN
+  // ══════════════════════════════════════════════════════════
   function renderConfig() {
+    const nRecetas  = getArr(SK_RECETAS).length;
+    const nBanos    = getArr(SK_BANOS).length;
+    const nBrebajes = getArr(SK_BREBAJES).length;
+    const nPlantas  = getArr(SK_PLANTAS).length;
+    const nHechizos = getArr(SK_HECHIZOS).length;
     return `
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Resumen del Grimorio</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.75rem">
+          ${[
+            ['🌿','Recetas',nRecetas],
+            ['🛁','Baños',nBanos],
+            ['🧪','Brebajes',nBrebajes],
+            ['🌱','Plantas',nPlantas],
+            ['✨','Propósitos',nHechizos],
+          ].map(([e,l,n])=>`<div style="text-align:center;padding:.75rem;background:rgba(255,255,255,.04);border-radius:.6rem">
+              <div style="font-size:1.6rem">${e}</div>
+              <div style="font-size:1.4rem;color:var(--gold);font-weight:700">${n}</div>
+              <div class="text-muted" style="font-size:.78rem">${l}</div>
+            </div>`).join('')}
+        </div>
+      </div>
       <div class="card" style="margin-bottom:1rem">
         <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Cambiar PIN de Administrador</h3>
         <input id="cfg-pin-actual" class="form-input" type="password" placeholder="PIN actual" style="margin-bottom:.5rem">
@@ -7095,15 +7379,25 @@ const AdminModule = (() => {
       </div>
       <div class="card" style="margin-bottom:1rem">
         <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 .75rem">Exportar TODO el Grimorio</h3>
-        <p class="text-muted" style="font-size:.85rem;margin-bottom:.75rem">Descarga una copia de seguridad de todos tus datos.</p>
+        <p class="text-muted" style="font-size:.85rem;margin-bottom:.75rem">Copia de seguridad completa en JSON.</p>
         <button class="btn-gold" onclick="AdminModule.exportarTodo()">📤 Exportar copia completa</button>
       </div>
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 .75rem">Importar Grimorio</h3>
+        <p class="text-muted" style="font-size:.85rem;margin-bottom:.75rem">Restaura una copia exportada (se fusiona con los datos actuales).</p>
+        <label class="btn-outline-sm" style="cursor:pointer">📥 Importar backup
+          <input type="file" accept=".json" style="display:none" onchange="AdminModule.importarTodo(event)">
+        </label>
+      </div>
       <div class="card" style="border:1px solid rgba(255,80,80,.25)">
-        <h3 style="font-family:var(--font-heading);color:#ff6b6b;margin:0 0 .75rem">Zona de peligro</h3>
+        <h3 style="font-family:var(--font-heading);color:#ff6b6b;margin:0 0 .75rem">⚠️ Zona de peligro</h3>
         <p class="text-muted" style="font-size:.85rem;margin-bottom:.75rem">Estas acciones no se pueden deshacer.</p>
         <div style="display:flex;gap:.75rem;flex-wrap:wrap">
-          <button class="tag" style="background:rgba(255,0,0,.12);border-color:rgba(255,0,0,.3);cursor:pointer" onclick="AdminModule.borrarRecetasUsuario()">🗑 Borrar mis recetas</button>
+          <button class="tag" style="background:rgba(255,0,0,.12);border-color:rgba(255,0,0,.3);cursor:pointer" onclick="AdminModule.borrarRecetasUsuario()">🗑 Borrar recetas</button>
+          <button class="tag" style="background:rgba(255,0,0,.12);border-color:rgba(255,0,0,.3);cursor:pointer" onclick="AdminModule.borrarBanosAll()">🗑 Borrar baños</button>
+          <button class="tag" style="background:rgba(255,0,0,.12);border-color:rgba(255,0,0,.3);cursor:pointer" onclick="AdminModule.borrarBrebajesAll()">🗑 Borrar brebajes</button>
           <button class="tag" style="background:rgba(255,0,0,.12);border-color:rgba(255,0,0,.3);cursor:pointer" onclick="AdminModule.borrarPlantas()">🗑 Borrar plantas</button>
+          <button class="tag" style="background:rgba(255,0,0,.12);border-color:rgba(255,0,0,.3);cursor:pointer" onclick="AdminModule.cerrarSesion()">🔒 Cerrar sesión admin</button>
         </div>
       </div>`;
   }
@@ -7115,47 +7409,103 @@ const AdminModule = (() => {
     const err    = document.getElementById('cfg-pin-err');
     if (!err) return;
     if (actual !== getPin()) { err.textContent = '❌ PIN actual incorrecto'; return; }
-    if (!nuevo || nuevo.length < 4) { err.textContent = '❌ El nuevo PIN debe tener al menos 4 caracteres'; return; }
+    if (!nuevo || nuevo.length < 4) { err.textContent = '❌ Mín. 4 caracteres'; return; }
     if (nuevo !== nuevo2) { err.textContent = '❌ Los PINs no coinciden'; return; }
     localStorage.setItem(ADMIN_PIN_KEY, nuevo);
     err.style.color = '#4caf50';
-    err.textContent = '✅ PIN actualizado correctamente';
-    document.getElementById('cfg-pin-actual').value = '';
-    document.getElementById('cfg-pin-nuevo').value = '';
-    document.getElementById('cfg-pin-nuevo2').value = '';
+    err.textContent = '✅ PIN actualizado';
+    ['cfg-pin-actual','cfg-pin-nuevo','cfg-pin-nuevo2'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
   }
 
   function exportarTodo() {
-    const keys = ['bruja_cocina_recetas','bruja_admin_plantas','bruja_bib_custom'];
-    const data = {};
-    keys.forEach(k => { const v = localStorage.getItem(k); if (v) data[k] = JSON.parse(v); });
-    // Also export user entries count
-    data._exportado = new Date().toISOString();
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+    const keys = [SK_RECETAS, SK_BANOS, SK_BREBAJES, SK_PLANTAS, SK_HECHIZOS, 'bruja_bib_custom'];
+    const data = { _exportado: new Date().toISOString() };
+    keys.forEach(k => { const v = localStorage.getItem(k); if (v) { try { data[k] = JSON.parse(v); } catch(e){} } });
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = `grimorio-backup-${new Date().toLocaleDateString('es').replace(/\//g,'-')}.json`;
     a.click();
   }
 
+  function importarTodo(evt) {
+    const file = evt.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        const keyMap = {
+          [SK_RECETAS]:'recetas', [SK_BANOS]:'baños', [SK_BREBAJES]:'brebajes',
+          [SK_PLANTAS]:'plantas', [SK_HECHIZOS]:'propósitos'
+        };
+        let total = 0;
+        Object.entries(keyMap).forEach(([k]) => {
+          if (Array.isArray(data[k])) {
+            const existing = getArr(k);
+            const merged = [...existing, ...data[k]];
+            saveArr(k, merged);
+            total += data[k].length;
+          }
+        });
+        alert(`✅ Backup importado: ${total} elemento(s) restaurado(s).`);
+        renderTab();
+      } catch { alert('❌ Archivo inválido.'); }
+    };
+    reader.readAsText(file);
+  }
+
   function borrarRecetasUsuario() {
-    if (!confirm('¿Borrar TODAS tus recetas propias? Esta acción no se puede deshacer.')) return;
-    localStorage.removeItem('bruja_cocina_recetas');
-    alert('✅ Recetas borradas.');
-    renderTab();
+    if (!confirm('¿Borrar TODAS las recetas?')) return;
+    localStorage.removeItem(SK_RECETAS); renderTab();
   }
-
+  function borrarBanosAll() {
+    if (!confirm('¿Borrar TODOS los baños rituales?')) return;
+    localStorage.removeItem(SK_BANOS); renderTab();
+  }
+  function borrarBrebajesAll() {
+    if (!confirm('¿Borrar TODOS los brebajes?')) return;
+    localStorage.removeItem(SK_BREBAJES); renderTab();
+  }
   function borrarPlantas() {
-    if (!confirm('¿Borrar TODAS las plantas y esencias guardadas?')) return;
-    localStorage.removeItem('bruja_admin_plantas');
-    alert('✅ Plantas borradas.');
-    renderTab();
+    if (!confirm('¿Borrar TODAS las plantas y esencias?')) return;
+    localStorage.removeItem(SK_PLANTAS); renderTab();
   }
 
-  return { init, unlock, lockPanel, setTab, editarReceta, borrarReceta,
-           exportarRecetas, importarRecetas, exportarHechizos,
-           guardarPlanta, borrarPlanta, cambiarPin, exportarTodo,
-           borrarRecetasUsuario, borrarPlantas };
+  function cerrarSesion() {
+    lockPanel();
+  }
+
+  // ── Exportar hechizos ─────────────────────────────────────
+  function exportarHechizos() {
+    const data = JSON.stringify({
+      panteones: HechizosData?.PANTEONES || {},
+      propositos: HechizosData?.PROPOSITOS || [],
+    }, null, 2);
+    const blob = new Blob([data], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'hechizos-data.json';
+    a.click();
+  }
+
+  return {
+    init, unlock, lockPanel, setTab, renderTab,
+    // Recetas
+    editarReceta, borrarReceta, exportarRecetas, importarRecetas,
+    // Baños
+    guardarBano, editarBano, borrarBano,
+    // Brebajes
+    guardarBrebaje, editarBrebaje, borrarBrebaje,
+    // Hechizos
+    guardarHechizoProp, editarHechizoProp, cancelarEditHechizo, borrarHechizoProp, exportarHechizos,
+    // Plantas
+    guardarPlanta, borrarPlanta,
+    // Config
+    cambiarPin, exportarTodo, importarTodo,
+    borrarRecetasUsuario, borrarBanosAll, borrarBrebajesAll, borrarPlantas, cerrarSesion,
+  };
 })();
 
 </script>
