@@ -8,7 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>/* ============================================================
+  <style>
+/* ============================================================
    EL AÑO DE LA BRUJA — LIBRO DE SOMBRAS DIGITAL
    Paleta: oscuro/violeta + dorado
    ============================================================ */
@@ -1035,6 +1036,7 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
   .panteon-emoji, .prop-emoji { font-size: 1.5rem; }
   .hechizo-materiales { grid-template-columns: 1fr 1fr; }
 }
+
 </style>
 </head>
 <body>
@@ -1093,6 +1095,12 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
       <a class="nav-link" data-section="diario" href="#">
         <span class="nav-icon">📝</span> Diario
       </a>
+      <a class="nav-link" data-section="libro" href="#">
+        <span class="nav-icon">📖</span> El Libro
+      </a>
+      <a class="nav-link" data-section="calendario" href="#">
+        <span class="nav-icon">📅</span> Calendario
+      </a>
     </nav>
 
     <div class="sidebar-bottom">
@@ -1135,6 +1143,7 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
           <hr class="card-sep">
           <div id="sun-sign" class="text-muted" style="font-size:.85rem"></div>
           <div id="moon-sign" class="text-muted" style="font-size:.85rem;margin-top:.25rem"></div>
+          <div id="lilith-sign" class="text-muted" style="font-size:.85rem;margin-top:.25rem;color:#800020"></div>
         </div>
 
         <!-- Próximo sabbat -->
@@ -1235,6 +1244,8 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
     <section id="sec-rueda" class="section">
       <h1 class="section-title">☀️ Rueda del Año</h1>
       <p class="section-sub">Los 8 sabbats del año. Haz clic en cada sector para ver detalles y sugerencias de ritual.</p>
+
+      <div id="hemisferio-toggle" style="margin-bottom:1rem"></div>
 
       <div class="rueda-layout">
         <!-- SVG Rueda -->
@@ -1393,6 +1404,63 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
       </div>
     </section>
 
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: EL LIBRO
+    ════════════════════════════════════════════ -->
+    <section id="sec-libro" class="section">
+      <h1 class="section-title">📖 El Año de la Bruja</h1>
+      <p class="section-sub">Los 12 ciclos del libro — una guía completa de práctica vivencial.</p>
+
+      <div class="card" style="margin-bottom:1.5rem">
+        <input id="libro-search" class="form-input" placeholder="🔍 Buscar en el libro…" style="max-width:420px">
+      </div>
+
+      <div id="libro-ciclos"></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: CALENDARIO MÁGICO
+    ════════════════════════════════════════════ -->
+    <section id="sec-calendario" class="section">
+      <h1 class="section-title">📅 Calendario Mágico</h1>
+      <p class="section-sub">Registra tus rituales, lunas y eventos. Las fases lunares y sabbats aparecen automáticamente.</p>
+
+      <div class="cal-nav">
+        <button id="cal-prev" class="btn-outline-sm">← Anterior</button>
+        <span id="cal-mes-label" class="cal-mes-label"></span>
+        <button id="cal-next" class="btn-outline-sm">Siguiente →</button>
+        <button id="cal-notif-btn" class="btn-outline-sm" style="margin-left:auto">🔔 Activar notificaciones</button>
+      </div>
+
+      <div class="cal-grid-wrap">
+        <div id="cal-grid" class="cal-grid"></div>
+      </div>
+
+      <!-- Panel de día -->
+      <div id="cal-dia-panel" class="card hidden" style="margin-top:1.5rem">
+        <h3 id="cal-dia-label" class="card-title" style="text-transform:capitalize"></h3>
+        <div id="cal-luna-info" class="text-muted" style="margin-bottom:1rem;font-size:.9rem"></div>
+        <div id="cal-dia-eventos" class="cal-dia-eventos"></div>
+
+        <hr class="card-sep">
+        <h4 class="card-title" style="font-size:.95rem">➕ Nuevo evento</h4>
+        <div class="form-row" style="flex-wrap:wrap;gap:.75rem">
+          <input id="nuevo-ev-titulo" class="form-input" placeholder="Título del evento" style="flex:1;min-width:200px">
+          <input id="nuevo-ev-fecha" type="date" class="form-input" style="width:150px">
+          <input id="nuevo-ev-hora" type="time" class="form-input" style="width:120px">
+        </div>
+        <div class="form-row" style="flex-wrap:wrap;gap:.75rem;margin-top:.5rem">
+          <input id="nuevo-ev-desc" class="form-input" placeholder="Descripción (opcional)" style="flex:1">
+          <input id="nuevo-ev-emoji" class="form-input" placeholder="🌙" style="width:60px">
+          <input id="nuevo-ev-color" type="color" value="#7B4FBF" class="form-input" style="width:50px;padding:2px">
+          <label style="display:flex;align-items:center;gap:.4rem;font-size:.85rem;color:var(--text-muted)">
+            <input id="nuevo-ev-recordar" type="checkbox"> Recordatorio
+          </label>
+          <button id="cal-guardar-ev" class="btn-gold">Guardar</button>
+        </div>
+      </div>
+    </section>
+
   </main><!-- /.main -->
 </div><!-- /#app -->
 
@@ -1425,20 +1493,7 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
 <!-- ══════════════════════════════════════════════════════════
      SCRIPTS
 ══════════════════════════════════════════════════════════ -->
-
-
-
-
-
-
-
-
-
-
-
-
 <script>
-// === js/astro.js ===
 'use strict';
 // ============================================================
 // ASTRO.JS — Cálculos astronómicos precisos
@@ -1587,17 +1642,21 @@ const Astro = (() => {
   function moonPhase(jday){
     const t0=T(jday);
     const angle=norm(moonLon(t0)-sunLon(t0));
-    const pct=angle/360;
-    if(angle<22.5)  return {name:'Luna Nueva',       emoji:'🌑',pct:0,angle};
-    if(angle<67.5)  return {name:'Luna Creciente',   emoji:'🌒',pct:pct,angle};
-    if(angle<112.5) return {name:'Cuarto Creciente', emoji:'🌓',pct:pct,angle};
-    if(angle<157.5) return {name:'Gibosa Creciente', emoji:'🌔',pct:pct,angle};
-    if(angle<202.5) return {name:'Luna Llena',       emoji:'🌕',pct:1,angle};
-    if(angle<247.5) return {name:'Gibosa Menguante', emoji:'🌖',pct:pct,angle};
-    if(angle<292.5) return {name:'Cuarto Menguante', emoji:'🌗',pct:pct,angle};
-    if(angle<337.5) return {name:'Luna Balsámica',   emoji:'🌘',pct:pct,angle};
+    // Iluminación real: (1 - cos(ángulo)) / 2
+    const illum = Math.round((1 - Math.cos(angle * DEG)) / 2 * 100);
+    if(angle<22.5)  return {name:'Luna Nueva',       emoji:'🌑',pct:illum,angle};
+    if(angle<67.5)  return {name:'Luna Creciente',   emoji:'🌒',pct:illum,angle};
+    if(angle<112.5) return {name:'Cuarto Creciente', emoji:'🌓',pct:illum,angle};
+    if(angle<157.5) return {name:'Gibosa Creciente', emoji:'🌔',pct:illum,angle};
+    if(angle<202.5) return {name:'Luna Llena',       emoji:'🌕',pct:100,angle};
+    if(angle<247.5) return {name:'Gibosa Menguante', emoji:'🌖',pct:illum,angle};
+    if(angle<292.5) return {name:'Cuarto Menguante', emoji:'🌗',pct:illum,angle};
+    if(angle<337.5) return {name:'Luna Balsámica',   emoji:'🌘',pct:illum,angle};
     return {name:'Luna Nueva',emoji:'🌑',pct:0,angle};
   }
+
+  // Lilith pública para dashboard
+  function lilithLon(t0){ return norm(83.3532+40690.1360*t0); }
 
   function chartData(yr,mo,dy,hr,mn,lat,lon){
     const jday=jd(yr,mo,dy,hr,mn);
@@ -1723,261 +1782,15 @@ const Astro = (() => {
 
   return {
     ZODIAC,EL_COLORS,EL_EMOJI,PLANETS,ASPECTS,SABBATS,HP_MAGIC,
-    jd,T,norm,sunLon,moonLon,planetLon,moonPhase,
+    jd,T,norm,sunLon,moonLon,planetLon,moonPhase,lilithLon,
     chartData,calcAspects,nextSabbat,daysUntil,
     planetaryHours,currentHP,
     sign:(lon)=>ZODIAC[Math.floor(norm(lon)/30)%12],
   };
 })();
 
-// === js/rueda.js ===
-'use strict';
-// ============================================================
-// RUEDA.JS — Rueda del Año: SVG interactivo
-// ============================================================
-const RuedaModule = (() => {
-
-  const SABBAT_INFO = {
-    'Samhain':    { desc:'El velo entre mundos es el más delgado. Noche de honrar a los ancestros y lo que termina.', ritual:'Altar de ancestros, velas negras y naranjas, ofrendas de marigold y manzanas.', color:'#8B0000', emoji:'🎃' },
-    'Yule':       { desc:'El solsticio de invierno: la noche más larga. El sol renace; la esperanza vuelve.', ritual:'Velas en rueda, Yule log, decoraciones de hiedra y muérdago, canto al sol.', color:'#1a4d1a', emoji:'🌲' },
-    'Imbolc':     { desc:'El primer aliento de primavera. El fuego de Brigid purifica y prepara lo nuevo.', ritual:'Cruz de Brigid, velas blancas, semillas a bendecir, baño de leche.', color:'#F0E68C', emoji:'🌱' },
-    'Ostara':     { desc:'Equinoccio de primavera: equilibrio de luz y oscuridad. Renacimiento y fertilidad.', ritual:'Huevos decorados, semillas plantadas, ritual de amanecer al este.', color:'#90EE90', emoji:'🌸' },
-    'Beltane':    { desc:'El fuego de mayo. Celebración del pico de vida, fertilidad y la magia del amor.', ritual:'Danza del palo de mayo, fuego de Beltane, flores en la cabeza y el altar.', color:'#FF4500', emoji:'🔥' },
-    'Litha':      { desc:'Solsticio de verano: el sol en su máximo poder. Punto de plenitud antes del retorno.', ritual:'Fogata al amanecer, hierbas de midsummer, agua de sol, meditación a mediodía.', color:'#FFD700', emoji:'☀️' },
-    'Lughnasadh': { desc:'Primera cosecha del año. Se celebra lo que ya maduró; gratitud y abundancia.', ritual:'Pan horneado con intención, ritual de acción de gracias, altar de granos.', color:'#DAA520', emoji:'🌾' },
-    'Mabon':      { desc:'Equinoccio de otoño: segunda cosecha. Equilibrio y preparación para lo que vendrá.', ritual:'Vino o jugo de manzana, altar de frutos del otoño, meditación de gratitud.', color:'#B8860B', emoji:'🍂' },
-  };
-
-  let selectedSabbat = null;
-
-  function renderRueda(containerId, sabbats, now) {
-    const wrap = document.getElementById(containerId);
-    if (!wrap) return;
-
-    const size = 460;
-    const cx = size / 2, cy = size / 2;
-    const R = { outer: 215, mid: 155, inner: 95, center: 40 };
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-    svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
-    svg.setAttribute('width', '100%');
-    svg.setAttribute('height', '100%');
-    svg.style.cursor = 'pointer';
-
-    // Fondo
-    const bg = circle(cx, cy, R.outer + 5, '#080616', 'none');
-    svg.appendChild(bg);
-
-    // Días del año para posición actual
-    const dayOfYear = getDayOfYear(now);
-    const totalDays = isLeapYear(now.getFullYear()) ? 366 : 365;
-    const currentAngle = (dayOfYear / totalDays) * 360 - 90; // Inicio arriba
-
-    // Ocho sectores del año
-    sabbats.forEach((sab, i) => {
-      const startAngle = (i * 45 - 90 - 22.5) * Math.PI / 180;
-      const endAngle   = ((i + 1) * 45 - 90 - 22.5) * Math.PI / 180;
-      const info = SABBAT_INFO[sab.name] || {};
-
-      // Sector
-      const path = sectorPath(cx, cy, R.inner, R.mid, startAngle, endAngle);
-      const sector = document.createElementNS('http://www.w3.org/2000/svg','path');
-      sector.setAttribute('d', path);
-      sector.setAttribute('fill', hexToRgba(info.color || '#3A3060', 0.25));
-      sector.setAttribute('stroke', info.color || '#3A3060');
-      sector.setAttribute('stroke-width', '1');
-      sector.style.cursor = 'pointer';
-      sector.style.transition = 'fill .2s';
-
-      sector.addEventListener('click', () => onSabbatClick(sab, info));
-      sector.addEventListener('mouseenter', () => {
-        sector.setAttribute('fill', hexToRgba(info.color || '#3A3060', 0.5));
-      });
-      sector.addEventListener('mouseleave', () => {
-        sector.setAttribute('fill', hexToRgba(info.color || '#3A3060', 0.25));
-      });
-      svg.appendChild(sector);
-
-      // Anillo exterior (estaciones)
-      const outerPath = sectorPath(cx, cy, R.mid, R.outer, startAngle, endAngle);
-      const outer = document.createElementNS('http://www.w3.org/2000/svg','path');
-      outer.setAttribute('d', outerPath);
-      outer.setAttribute('fill', hexToRgba(info.color || '#3A3060', 0.1));
-      outer.setAttribute('stroke', '#2A2048');
-      outer.setAttribute('stroke-width', '.5');
-      svg.appendChild(outer);
-
-      // Emoji del sabbat
-      const midAngle = ((i * 45 - 90) * Math.PI / 180);
-      const er = (R.inner + R.mid) / 2;
-      const ex = cx + er * Math.cos(midAngle);
-      const ey = cy + er * Math.sin(midAngle);
-      const emj = text(ex, ey, info.emoji || '☽', '18', '#fff');
-      emj.style.pointerEvents = 'none';
-      svg.appendChild(emj);
-
-      // Nombre del sabbat (anillo exterior)
-      const nr = (R.mid + R.outer) / 2;
-      const nx = cx + nr * Math.cos(midAngle);
-      const ny = cy + nr * Math.sin(midAngle);
-      const lbl = text(nx, ny, sab.name, '8.5', info.color || '#D8C8F0');
-      lbl.setAttribute('font-weight','bold');
-      lbl.style.pointerEvents = 'none';
-      svg.appendChild(lbl);
-
-      // Fecha
-      const fdate = formatSabbatDate(sab.date);
-      const fd = text(nx, ny + 10, fdate, '7', 'rgba(216,200,240,.6)');
-      fd.style.pointerEvents = 'none';
-      svg.appendChild(fd);
-    });
-
-    // Círculos estructurales
-    [R.outer, R.mid, R.inner].forEach(r => {
-      const c = circle(cx, cy, r, 'none', '#2A2048');
-      c.setAttribute('stroke-width', '.8');
-      svg.appendChild(c);
-    });
-
-    // Indicador del día actual
-    const curA = currentAngle * Math.PI / 180;
-    const ix1 = cx + R.inner * Math.cos(curA);
-    const iy1 = cy + R.inner * Math.sin(curA);
-    const ix2 = cx + R.outer * Math.cos(curA);
-    const iy2 = cy + R.outer * Math.sin(curA);
-    const nowLine = document.createElementNS('http://www.w3.org/2000/svg','line');
-    nowLine.setAttribute('x1', ix1); nowLine.setAttribute('y1', iy1);
-    nowLine.setAttribute('x2', ix2); nowLine.setAttribute('y2', iy2);
-    nowLine.setAttribute('stroke', '#FFD700');
-    nowLine.setAttribute('stroke-width', '2');
-    nowLine.setAttribute('stroke-dasharray', '4,3');
-    svg.appendChild(nowLine);
-
-    // Punto en el centro del indicador
-    const nowDot = circle(cx + (R.inner + R.outer)/2 * Math.cos(curA),
-                          cy + (R.inner + R.outer)/2 * Math.sin(curA),
-                          4, '#FFD700', 'none');
-    svg.appendChild(nowDot);
-
-    // Sol en el centro
-    const centerCircle = circle(cx, cy, R.center, '#1a1030', '#B8860B');
-    centerCircle.setAttribute('stroke-width','1.5');
-    svg.appendChild(centerCircle);
-
-    const sunText = text(cx, cy, '☀', '28', 'rgba(218,165,32,.7)');
-    svg.appendChild(sunText);
-
-    wrap.innerHTML = '';
-    wrap.appendChild(svg);
-  }
-
-  function onSabbatClick(sab, info) {
-    selectedSabbat = sab;
-    const detWrap = document.getElementById('sabbat-detail-wrap');
-    if (!detWrap) return;
-
-    const daysLeft = Math.ceil((new Date(sab.date) - new Date()) / 86400000);
-    const dStr = daysLeft > 0 ? `en ${daysLeft} días` : (daysLeft === 0 ? 'HOY' : `hace ${-daysLeft} días`);
-
-    detWrap.innerHTML = `
-      <div class="sabbat-detail-card">
-        <div class="sabbat-detail-header" style="border-color:${info.color}">
-          <span class="sabbat-detail-emoji">${info.emoji}</span>
-          <div>
-            <h2 class="sabbat-detail-name" style="color:${info.color}">${sab.name}</h2>
-            <p class="sabbat-detail-fecha">${formatFechaLarga(sab.date)} · <span class="text-gold">${dStr}</span></p>
-          </div>
-        </div>
-        <p class="sabbat-detail-desc">${info.desc}</p>
-        <div class="sabbat-ritual-box">
-          <h4>🕯️ Ritual sugerido</h4>
-          <p>${info.ritual}</p>
-        </div>
-        <button class="btn-gold sabbat-add-btn" onclick="DiarioModule && DiarioModule.addSabbatEntry('${sab.name}')">
-          📝 Agregar al Diario
-        </button>
-      </div>
-    `;
-  }
-
-  function sectorPath(cx, cy, r1, r2, a1, a2) {
-    const x1 = cx + r2 * Math.cos(a1), y1 = cy + r2 * Math.sin(a1);
-    const x2 = cx + r2 * Math.cos(a2), y2 = cy + r2 * Math.sin(a2);
-    const x3 = cx + r1 * Math.cos(a2), y3 = cy + r1 * Math.sin(a2);
-    const x4 = cx + r1 * Math.cos(a1), y4 = cy + r1 * Math.sin(a1);
-    return `M${x1},${y1} A${r2},${r2} 0 0,1 ${x2},${y2} L${x3},${y3} A${r1},${r1} 0 0,0 ${x4},${y4} Z`;
-  }
-
-  function circle(cx, cy, r, fill, stroke) {
-    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    c.setAttribute('cx',cx); c.setAttribute('cy',cy); c.setAttribute('r',r);
-    c.setAttribute('fill',fill); c.setAttribute('stroke',stroke);
-    return c;
-  }
-
-  function text(x, y, content, size, fill) {
-    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x',x); t.setAttribute('y',y);
-    t.setAttribute('font-size',size);
-    t.setAttribute('fill',fill);
-    t.setAttribute('text-anchor','middle');
-    t.setAttribute('dominant-baseline','middle');
-    t.setAttribute('font-family','Cinzel, serif');
-    t.textContent = content;
-    return t;
-  }
-
-  function getDayOfYear(d) {
-    const start = new Date(d.getFullYear(), 0, 0);
-    return Math.floor((d - start) / 86400000);
-  }
-
-  function isLeapYear(y) { return (y%4===0 && y%100!==0) || y%400===0; }
-
-  function formatSabbatDate(ds) {
-    const d = new Date(ds + 'T12:00:00');
-    return d.toLocaleDateString('es', { day:'numeric', month:'short' });
-  }
-
-  function formatFechaLarga(ds) {
-    const d = new Date(ds + 'T12:00:00');
-    return d.toLocaleDateString('es', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-  }
-
-  function hexToRgba(hex, alpha) {
-    const r = parseInt(hex.slice(1,3),16);
-    const g = parseInt(hex.slice(3,5),16);
-    const b = parseInt(hex.slice(5,7),16);
-    return `rgba(${r},${g},${b},${alpha})`;
-  }
-
-  function init() {
-    const now = new Date();
-    const sabbats = Astro.SABBATS;
-    renderRueda('rueda-svg-wrap', sabbats, now);
-
-    // Próximo sabbat info
-    const next = Astro.nextSabbat(now);
-    const nextInfo = document.getElementById('next-sabbat-info');
-    if (nextInfo && next) {
-      const info = SABBAT_INFO[next.name] || {};
-      const days = Astro.daysUntil(next.date, now);
-      nextInfo.innerHTML = `
-        <span class="text-gold">${info.emoji} ${next.name}</span>
-        <span class="text-muted"> — ${formatSabbatDate(next.date)} · faltan <strong style="color:var(--gold)">${days} días</strong></span>
-      `;
-    }
-
-    // Click en el primer sabbat por defecto
-    if (sabbats.length > 0) {
-      onSabbatClick(sabbats[0], SABBAT_INFO[sabbats[0].name] || {});
-    }
-  }
-
-  return { init, SABBAT_INFO };
-})();
-
-// === js/biblioteca-data.js ===
+</script>
+<script>
 'use strict';
 // ============================================================
 // BIBLIOTECA-DATA.JS — Hierbas, cristales, runas
@@ -2214,270 +2027,8 @@ const BibData = {
   ],
 };
 
-// === js/biblioteca.js ===
-'use strict';
-// ============================================================
-// BIBLIOTECA.JS — Hierbas, Cristales, Runas, Aceites
-// ============================================================
-const BibliotecaModule = (() => {
-
-  let activeTab = 'hierbas';
-  let searchQuery = '';
-  let modalOpen = false;
-
-  const TABS = [
-    { id:'hierbas',   label:'🌿 Hierbas',   data:()=>BibData.hierbas },
-    { id:'cristales', label:'💎 Cristales',  data:()=>BibData.cristales },
-    { id:'runas',     label:'ᚠ Runas',      data:()=>BibData.runas, special:true },
-    { id:'aceites',   label:'🫙 Aceites',   data:()=>BibData.aceites },
-  ];
-
-  function renderHierba(item) {
-    return `
-      <div class="bib-card" data-name="${item.name}" onclick="BibliotecaModule.openModal('hierbas','${item.name}')">
-        <div class="bib-emoji">${item.emoji}</div>
-        <div class="bib-name">${item.name}</div>
-        <div class="bib-tags">
-          <span class="tag">${item.element}</span>
-          <span class="tag">${item.planeta}</span>
-          <span class="tag">${item.signo}</span>
-        </div>
-        <div class="bib-magic">${item.magic.slice(0,3).join(' · ')}</div>
-      </div>`;
-  }
-
-  function renderCristal(item) {
-    return `
-      <div class="bib-card" data-name="${item.name}" onclick="BibliotecaModule.openModal('cristales','${item.name}')">
-        <div class="bib-emoji">${item.emoji}</div>
-        <div class="bib-name">${item.name}</div>
-        <div class="bib-tags">
-          <span class="tag">${item.chakra}</span>
-          <span class="tag">${item.element}</span>
-        </div>
-        <div class="bib-magic">${item.magic.slice(0,3).join(' · ')}</div>
-      </div>`;
-  }
-
-  function renderRuna(item) {
-    return `
-      <div class="runa-card" data-name="${item.name}" onclick="BibliotecaModule.openModal('runas','${item.name}')">
-        <div class="runa-symbol">${item.symbol}</div>
-        <div class="runa-name">${item.name}</div>
-        <div class="runa-meaning">${item.meaning}</div>
-      </div>`;
-  }
-
-  function renderAceite(item) {
-    return `
-      <div class="bib-card" data-name="${item.name}" onclick="BibliotecaModule.openModal('aceites','${item.name}')">
-        <div class="bib-emoji">🫙</div>
-        <div class="bib-name">${item.name}</div>
-        <div class="bib-tags">
-          <span class="tag">${item.base ? 'Base' : 'Esencial'}</span>
-          <span class="tag">${item.arom}</span>
-        </div>
-        <div class="bib-magic">${item.magic.slice(0,3).join(' · ')}</div>
-      </div>`;
-  }
-
-  function getFilteredData() {
-    const tab = TABS.find(t=>t.id===activeTab);
-    if (!tab) return [];
-    const data = tab.data();
-    if (!searchQuery) return data;
-    const q = searchQuery.toLowerCase();
-    return data.filter(item => {
-      const name = (item.name||'').toLowerCase();
-      const magic = (item.magic||[]).join(' ').toLowerCase();
-      const uses  = (item.uses||'').toLowerCase();
-      const chakra = (item.chakra||'').toLowerCase();
-      const element = (item.element||'').toLowerCase();
-      const meaning = (item.meaning||'').toLowerCase();
-      return name.includes(q)||magic.includes(q)||uses.includes(q)||
-             chakra.includes(q)||element.includes(q)||meaning.includes(q);
-    });
-  }
-
-  function renderGrid() {
-    const grid = document.getElementById('bib-grid');
-    if (!grid) return;
-    const data = getFilteredData();
-
-    if (data.length === 0) {
-      grid.innerHTML = `<div class="bib-empty">🔍 No se encontraron resultados para "<em>${searchQuery}</em>"</div>`;
-      return;
-    }
-
-    if (activeTab === 'runas') {
-      grid.className = 'runa-grid';
-      grid.innerHTML = data.map(renderRuna).join('');
-    } else if (activeTab === 'hierbas') {
-      grid.className = 'bib-grid';
-      grid.innerHTML = data.map(renderHierba).join('');
-    } else if (activeTab === 'cristales') {
-      grid.className = 'bib-grid';
-      grid.innerHTML = data.map(renderCristal).join('');
-    } else if (activeTab === 'aceites') {
-      grid.className = 'bib-grid';
-      grid.innerHTML = data.map(renderAceite).join('');
-    }
-
-    // Actualizar contador
-    const count = document.getElementById('bib-count');
-    if (count) count.textContent = `${data.length} resultado${data.length!==1?'s':''}`;
-  }
-
-  function openModal(type, name) {
-    const tab = TABS.find(t=>t.id===type);
-    if (!tab) return;
-    const item = tab.data().find(d=>d.name===name);
-    if (!item) return;
-
-    const overlay = document.getElementById('bib-modal');
-    const content = document.getElementById('bib-modal-content');
-    if (!overlay || !content) return;
-
-    content.innerHTML = buildModalContent(type, item);
-    overlay.classList.remove('hidden');
-    modalOpen = true;
-    document.body.style.overflow = 'hidden';
-  }
-
-  function buildModalContent(type, item) {
-    if (type === 'runas') {
-      return `
-        <div class="modal-header">
-          <div class="modal-runa-sym">${item.symbol}</div>
-          <div>
-            <h2 class="modal-title">${item.name}</h2>
-            <p class="text-muted">Runa ${item.num} del Elder Futhark</p>
-          </div>
-          <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
-        </div>
-        <div class="modal-body">
-          <div class="modal-row"><strong>Significado:</strong> ${item.meaning}</div>
-          <div class="modal-row"><strong>Energía:</strong> ${item.energy}</div>
-          <div class="modal-row"><strong>Magia:</strong> ${item.magic}</div>
-          <div class="modal-row"><strong>Invertida:</strong> ${item.reverse}</div>
-        </div>`;
-    }
-    if (type === 'hierbas') {
-      return `
-        <div class="modal-header">
-          <div style="font-size:2.5rem">${item.emoji}</div>
-          <div>
-            <h2 class="modal-title">${item.name}</h2>
-            <div class="bib-tags modal-tags">
-              <span class="tag">${item.element}</span>
-              <span class="tag">${item.planeta}</span>
-              <span class="tag">${item.signo}</span>
-            </div>
-          </div>
-          <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
-        </div>
-        <div class="modal-body">
-          <div class="modal-row"><strong>✨ Usos mágicos:</strong> ${item.magic.join(', ')}</div>
-          <div class="modal-row"><strong>🌿 Usos herbales:</strong> ${item.uses}</div>
-          ${item.notes ? `<div class="modal-row"><strong>📝 Notas:</strong> ${item.notes}</div>` : ''}
-          ${item.caution ? `<div class="modal-row modal-caution"><strong>⚠️ Precaución:</strong> ${item.caution}</div>` : ''}
-        </div>`;
-    }
-    if (type === 'cristales') {
-      return `
-        <div class="modal-header">
-          <div style="font-size:2.5rem">${item.emoji}</div>
-          <div>
-            <h2 class="modal-title">${item.name}</h2>
-            <div class="bib-tags modal-tags">
-              <span class="tag">${item.chakra}</span>
-              <span class="tag">${item.element}</span>
-              <span class="tag" style="background:${item.color};color:#fff">${item.color}</span>
-            </div>
-          </div>
-          <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
-        </div>
-        <div class="modal-body">
-          <div class="modal-row"><strong>✨ Usos mágicos:</strong> ${item.magic.join(', ')}</div>
-          <div class="modal-row"><strong>💎 Usos:</strong> ${item.uses}</div>
-          ${item.notes ? `<div class="modal-row"><strong>📝 Notas:</strong> ${item.notes}</div>` : ''}
-        </div>`;
-    }
-    if (type === 'aceites') {
-      return `
-        <div class="modal-header">
-          <div style="font-size:2.5rem">🫙</div>
-          <div>
-            <h2 class="modal-title">${item.name}</h2>
-            <div class="bib-tags modal-tags">
-              <span class="tag">${item.base ? 'Aceite base' : 'Aceite esencial'}</span>
-              <span class="tag">${item.arom}</span>
-            </div>
-          </div>
-          <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
-        </div>
-        <div class="modal-body">
-          <div class="modal-row"><strong>✨ Usos mágicos:</strong> ${item.magic.join(', ')}</div>
-          <div class="modal-row"><strong>🌿 Usos:</strong> ${item.uses}</div>
-        </div>`;
-    }
-    return '';
-  }
-
-  function closeModal() {
-    const overlay = document.getElementById('bib-modal');
-    if (overlay) overlay.classList.add('hidden');
-    modalOpen = false;
-    document.body.style.overflow = '';
-  }
-
-  function init() {
-    // Tabs
-    const tabsWrap = document.getElementById('bib-tabs');
-    if (tabsWrap) {
-      tabsWrap.innerHTML = TABS.map(t=>`
-        <button class="bib-tab${t.id===activeTab?' active':''}" data-tab="${t.id}">
-          ${t.label}
-        </button>`).join('');
-      tabsWrap.addEventListener('click', e=>{
-        const btn = e.target.closest('[data-tab]');
-        if (!btn) return;
-        activeTab = btn.dataset.tab;
-        tabsWrap.querySelectorAll('.bib-tab').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        renderGrid();
-      });
-    }
-
-    // Búsqueda
-    const searchInput = document.getElementById('bib-search');
-    if (searchInput) {
-      searchInput.addEventListener('input', e=>{
-        searchQuery = e.target.value.trim();
-        renderGrid();
-      });
-    }
-
-    // Modal close
-    const overlay = document.getElementById('bib-modal');
-    if (overlay) {
-      overlay.addEventListener('click', e=>{
-        if (e.target === overlay) closeModal();
-      });
-    }
-
-    // ESC
-    document.addEventListener('keydown', e=>{
-      if (e.key==='Escape' && modalOpen) closeModal();
-    });
-
-    renderGrid();
-  }
-
-  return { init, openModal, closeModal };
-})();
-
-// === js/hechizos-data.js ===
+</script>
+<script>
 'use strict';
 // ============================================================
 // HECHIZOS-DATA.JS — Panteones y componentes de hechizos
@@ -2742,244 +2293,311 @@ const HechizosData = (() => {
   return { PANTEONES, PROPOSITOS, FASES_LUNA, HERRAMIENTAS, RECETAS };
 })();
 
-// === js/hechizos.js ===
+</script>
+<script>
 'use strict';
 // ============================================================
-// HECHIZOS.JS — Constructor de hechizos por panteón
+// RUEDA.JS — Rueda del Año: SVG interactivo
 // ============================================================
-const HechizosModule = (() => {
+const RuedaModule = (() => {
 
-  let selectedPanteon = 'universal';
-  let selectedProposito = '';
-  let selectedDeidad = null;
-  let generatedHechizo = null;
+  const SABBAT_INFO = {
+    // ── Hemisferio Norte ─────────────────────────────────────
+    norte: {
+      'Samhain':    { desc:'El velo entre mundos es el más delgado. Noche de honrar a los ancestros y lo que termina.', ritual:'Altar de ancestros, velas negras y naranjas, ofrendas de marigold y manzanas.', color:'#8B0000', emoji:'🎃' },
+      'Yule':       { desc:'Solsticio de invierno: la noche más larga. El sol renace; la esperanza vuelve.', ritual:'Velas en rueda, Yule log, decoraciones de hiedra y muérdago, canto al sol.', color:'#1a4d1a', emoji:'🌲' },
+      'Imbolc':     { desc:'El primer aliento de primavera. El fuego de Brigid purifica y prepara lo nuevo.', ritual:'Cruz de Brigid, velas blancas, semillas a bendecir, baño de leche.', color:'#F0E68C', emoji:'🌱' },
+      'Ostara':     { desc:'Equinoccio de primavera: equilibrio de luz y oscuridad. Renacimiento y fertilidad.', ritual:'Huevos decorados, semillas plantadas, ritual de amanecer al este.', color:'#90EE90', emoji:'🌸' },
+      'Beltane':    { desc:'El fuego de mayo. Celebración del pico de vida, fertilidad y la magia del amor.', ritual:'Danza del palo de mayo, fuego de Beltane, flores en la cabeza y el altar.', color:'#FF4500', emoji:'🔥' },
+      'Litha':      { desc:'Solsticio de verano: el sol en su máximo poder. Punto de plenitud antes del retorno.', ritual:'Fogata al amanecer, hierbas de midsummer, agua de sol, meditación a mediodía.', color:'#FFD700', emoji:'☀️' },
+      'Lughnasadh': { desc:'Primera cosecha del año. Se celebra lo que ya maduró; gratitud y abundancia.', ritual:'Pan horneado con intención, ritual de acción de gracias, altar de granos.', color:'#DAA520', emoji:'🌾' },
+      'Mabon':      { desc:'Equinoccio de otoño: segunda cosecha. Equilibrio y preparación para lo que vendrá.', ritual:'Vino o jugo de manzana, altar de frutos del otoño, meditación de gratitud.', color:'#B8860B', emoji:'🍂' },
+    },
+    // ── Hemisferio Sur (Ecuador, Perú, Brasil, Chile…) ───────
+    // Las estaciones son opuestas: Yule (dic) = verano en Ecuador
+    sur: {
+      'Samhain':    { desc:'En el sur: corresponde a Beltane del Norte. Es el inicio del verano, el pico de vida y fertilidad. Los ancestros también se honran hoy — muerte y vida coexisten.', ritual:'Flores, fuego, magia de amor y fertilidad mezclada con altar de ancestros.', color:'#FF4500', emoji:'🌸' },
+      'Yule':       { desc:'En el Hemisferio Sur, el 21 de diciembre es el SOLSTICIO DE VERANO. El día más largo: el sol en plena plenitud. Es la contraparte de Litha del norte.', ritual:'Meditación a pleno sol, agua solar, hierbas de verano (jazmín, girasol, albahaca).', color:'#FFD700', emoji:'☀️' },
+      'Imbolc':     { desc:'En el sur: corresponde a Lughnasadh del Norte. Primera cosecha del verano ecuatorial. Gratitud por lo que ya dio frutos.', ritual:'Ofrendas de frutas tropicales, pan de maíz, altar de cosecha.', color:'#DAA520', emoji:'🌾' },
+      'Ostara':     { desc:'En el Hemisferio Sur, el 20 de marzo es el EQUINOCCIO DE OTOÑO. Equilibrio de luz y oscuridad antes de que la oscuridad aumente. Es Mabon del norte.', ritual:'Altar de frutas de otoño tropical, meditación de cierre y balance.', color:'#B8860B', emoji:'🍂' },
+      'Beltane':    { desc:'En el sur: corresponde a Samhain del Norte. El velo es delgado; es temporada de lluvias y de honrar a los ancestros en muchas tradiciones latinoamericanas.', ritual:'Altar de ancestros, flores tropicales, fuego de protección.', color:'#8B0000', emoji:'🎃' },
+      'Litha':      { desc:'En el Hemisferio Sur, el 21 de junio es el SOLSTICIO DE INVIERNO. La noche más larga. Yule austral: el sol renace desde las profundidades del invierno tropical.', ritual:'Velas encendidas contra la oscuridad, cacao caliente, rituales de luz interior.', color:'#1a4d1a', emoji:'🌲' },
+      'Lughnasadh': { desc:'En el sur: corresponde a Imbolc del Norte. Primeras lluvias, primeros brotes. El despertar de la primavera austral.', ritual:'Semillas a bendecir, baño de agua de lluvia, ritual de nuevos inicios.', color:'#F0E68C', emoji:'🌱' },
+      'Mabon':      { desc:'En el Hemisferio Sur, el 22 de septiembre es el EQUINOCCIO DE PRIMAVERA. Balance y renacimiento. Corresponde a Ostara del Norte.', ritual:'Flores de primavera, huevos decorados, ritual de amanecer al este.', color:'#90EE90', emoji:'🌸' },
+    },
+  };
 
-  function renderPanteones() {
-    const wrap = document.getElementById('panteon-grid');
+  let selectedSabbat = null;
+  let hemisferio = localStorage.getItem('bruja_hemisferio') || 'sur'; // Ecuador = Sur por defecto
+
+  function getSabbatInfo(name) {
+    return SABBAT_INFO[hemisferio]?.[name] || SABBAT_INFO.norte[name] || {};
+  }
+
+  function renderRueda(containerId, sabbats, now) {
+    const wrap = document.getElementById(containerId);
     if (!wrap) return;
-    wrap.innerHTML = Object.values(HechizosData.PANTEONES).map(p => `
-      <div class="panteon-card${p.id===selectedPanteon?' active':''}"
-           data-panteon="${p.id}" onclick="HechizosModule.selectPanteon('${p.id}')">
-        <div class="panteon-emoji">${p.emoji}</div>
-        <div class="panteon-name">${p.name}</div>
-        <div class="panteon-desc">${p.desc.slice(0,60)}…</div>
-      </div>`).join('');
-  }
 
-  function renderPropositos() {
-    const wrap = document.getElementById('proposito-grid');
-    if (!wrap) return;
-    wrap.innerHTML = HechizosData.PROPOSITOS.map(p => `
-      <div class="prop-card${p.id===selectedProposito?' active':''}"
-           data-prop="${p.id}" onclick="HechizosModule.selectProposito('${p.id}')">
-        <div class="prop-emoji">${p.emoji}</div>
-        <div class="prop-name">${p.name}</div>
-        <div class="prop-desc">${p.descripcion}</div>
-      </div>`).join('');
-  }
+    const size = 460;
+    const cx = size / 2, cy = size / 2;
+    const R = { outer: 215, mid: 155, inner: 95, center: 40 };
 
-  function renderDeidades() {
-    const wrap = document.getElementById('deidad-grid');
-    if (!wrap) return;
-    const panteon = HechizosData.PANTEONES[selectedPanteon];
-    if (!panteon || panteon.deidades.length === 0) {
-      wrap.innerHTML = `<p class="text-muted">Este panteón trabaja con la energía universal sin deidades específicas.</p>`;
-      selectedDeidad = null;
-      return;
-    }
-    wrap.innerHTML = panteon.deidades.map(d => `
-      <div class="deidad-card${selectedDeidad?.name===d.name?' active':''}"
-           onclick="HechizosModule.selectDeidad(${JSON.stringify(d).replace(/"/g,"'")})">
-        <div class="deidad-name">${d.name}</div>
-        <div class="deidad-dominio">${d.dominio}</div>
-        <div class="deidad-num">Número sagrado: ${d.num}</div>
-        <div class="deidad-ofrenda">🌸 ${d.ofrendas}</div>
-      </div>`).join('');
-  }
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('height', '100%');
+    svg.style.cursor = 'pointer';
 
-  function selectPanteon(id) {
-    selectedPanteon = id;
-    selectedDeidad = null;
-    document.querySelectorAll('.panteon-card').forEach(c=>c.classList.toggle('active',c.dataset.panteon===id));
-    renderDeidades();
-    clearResult();
-  }
+    // Fondo
+    const bg = circle(cx, cy, R.outer + 5, '#080616', 'none');
+    svg.appendChild(bg);
 
-  function selectProposito(id) {
-    selectedProposito = id;
-    document.querySelectorAll('.prop-card').forEach(c=>c.classList.toggle('active',c.dataset.prop===id));
-    clearResult();
-  }
+    // Días del año para posición actual
+    const dayOfYear = getDayOfYear(now);
+    const totalDays = isLeapYear(now.getFullYear()) ? 366 : 365;
+    const currentAngle = (dayOfYear / totalDays) * 360 - 90; // Inicio arriba
 
-  function selectDeidad(d) {
-    selectedDeidad = d;
-    document.querySelectorAll('.deidad-card').forEach(c=>{
-      c.classList.toggle('active', c.querySelector('.deidad-name')?.textContent===d.name);
+    // Ocho sectores del año
+    sabbats.forEach((sab, i) => {
+      const startAngle = (i * 45 - 90 - 22.5) * Math.PI / 180;
+      const endAngle   = ((i + 1) * 45 - 90 - 22.5) * Math.PI / 180;
+      const info = getSabbatInfo(sab.name);
+
+      // Sector
+      const path = sectorPath(cx, cy, R.inner, R.mid, startAngle, endAngle);
+      const sector = document.createElementNS('http://www.w3.org/2000/svg','path');
+      sector.setAttribute('d', path);
+      sector.setAttribute('fill', hexToRgba(info.color || '#3A3060', 0.25));
+      sector.setAttribute('stroke', info.color || '#3A3060');
+      sector.setAttribute('stroke-width', '1');
+      sector.style.cursor = 'pointer';
+      sector.style.transition = 'fill .2s';
+
+      sector.addEventListener('click', () => onSabbatClick(sab, info));
+      sector.addEventListener('mouseenter', () => {
+        sector.setAttribute('fill', hexToRgba(info.color || '#3A3060', 0.5));
+      });
+      sector.addEventListener('mouseleave', () => {
+        sector.setAttribute('fill', hexToRgba(info.color || '#3A3060', 0.25));
+      });
+      svg.appendChild(sector);
+
+      // Anillo exterior (estaciones)
+      const outerPath = sectorPath(cx, cy, R.mid, R.outer, startAngle, endAngle);
+      const outer = document.createElementNS('http://www.w3.org/2000/svg','path');
+      outer.setAttribute('d', outerPath);
+      outer.setAttribute('fill', hexToRgba(info.color || '#3A3060', 0.1));
+      outer.setAttribute('stroke', '#2A2048');
+      outer.setAttribute('stroke-width', '.5');
+      svg.appendChild(outer);
+
+      // Emoji del sabbat
+      const midAngle = ((i * 45 - 90) * Math.PI / 180);
+      const er = (R.inner + R.mid) / 2;
+      const ex = cx + er * Math.cos(midAngle);
+      const ey = cy + er * Math.sin(midAngle);
+      const emj = text(ex, ey, info.emoji || '☽', '18', '#fff');
+      emj.style.pointerEvents = 'none';
+      svg.appendChild(emj);
+
+      // Nombre del sabbat (anillo exterior)
+      const nr = (R.mid + R.outer) / 2;
+      const nx = cx + nr * Math.cos(midAngle);
+      const ny = cy + nr * Math.sin(midAngle);
+      const lbl = text(nx, ny, sab.name, '8.5', info.color || '#D8C8F0');
+      lbl.setAttribute('font-weight','bold');
+      lbl.style.pointerEvents = 'none';
+      svg.appendChild(lbl);
+
+      // Fecha
+      const fdate = formatSabbatDate(sab.date);
+      const fd = text(nx, ny + 10, fdate, '7', 'rgba(216,200,240,.6)');
+      fd.style.pointerEvents = 'none';
+      svg.appendChild(fd);
     });
+
+    // Círculos estructurales
+    [R.outer, R.mid, R.inner].forEach(r => {
+      const c = circle(cx, cy, r, 'none', '#2A2048');
+      c.setAttribute('stroke-width', '.8');
+      svg.appendChild(c);
+    });
+
+    // Indicador del día actual
+    const curA = currentAngle * Math.PI / 180;
+    const ix1 = cx + R.inner * Math.cos(curA);
+    const iy1 = cy + R.inner * Math.sin(curA);
+    const ix2 = cx + R.outer * Math.cos(curA);
+    const iy2 = cy + R.outer * Math.sin(curA);
+    const nowLine = document.createElementNS('http://www.w3.org/2000/svg','line');
+    nowLine.setAttribute('x1', ix1); nowLine.setAttribute('y1', iy1);
+    nowLine.setAttribute('x2', ix2); nowLine.setAttribute('y2', iy2);
+    nowLine.setAttribute('stroke', '#FFD700');
+    nowLine.setAttribute('stroke-width', '2');
+    nowLine.setAttribute('stroke-dasharray', '4,3');
+    svg.appendChild(nowLine);
+
+    // Punto en el centro del indicador
+    const nowDot = circle(cx + (R.inner + R.outer)/2 * Math.cos(curA),
+                          cy + (R.inner + R.outer)/2 * Math.sin(curA),
+                          4, '#FFD700', 'none');
+    svg.appendChild(nowDot);
+
+    // Sol en el centro
+    const centerCircle = circle(cx, cy, R.center, '#1a1030', '#B8860B');
+    centerCircle.setAttribute('stroke-width','1.5');
+    svg.appendChild(centerCircle);
+
+    const sunText = text(cx, cy, '☀', '28', 'rgba(218,165,32,.7)');
+    svg.appendChild(sunText);
+
+    wrap.innerHTML = '';
+    wrap.appendChild(svg);
   }
 
-  function clearResult() {
-    const result = document.getElementById('hechizo-result');
-    if (result) result.classList.add('hidden');
-  }
+  function onSabbatClick(sab, info_unused) {
+    const info = getSabbatInfo(sab.name);
+    selectedSabbat = sab;
+    const detWrap = document.getElementById('sabbat-detail-wrap');
+    if (!detWrap) return;
 
-  function generarHechizo() {
-    if (!selectedProposito) {
-      alert('Elige un propósito para tu hechizo.');
-      return;
-    }
+    const daysLeft = Math.ceil((new Date(sab.date) - new Date()) / 86400000);
+    const dStr = daysLeft > 0 ? `en ${daysLeft} días` : (daysLeft === 0 ? 'HOY' : `hace ${-daysLeft} días`);
 
-    const panteon  = HechizosData.PANTEONES[selectedPanteon];
-    const receta   = HechizosData.RECETAS[selectedProposito];
-    const prop     = HechizosData.PROPOSITOS.find(p=>p.id===selectedProposito);
-    const now      = new Date();
-    const jd       = Astro.jd(now.getFullYear(), now.getMonth()+1, now.getDate(), now.getHours(), now.getMinutes());
-    const moon     = Astro.moonPhase(jd);
-    const lunaRec  = HechizosData.FASES_LUNA[moon.name.toLowerCase().replace(/ /g,'_')] || HechizosData.FASES_LUNA['llena'];
-
-    const deidad = selectedDeidad || (panteon.deidades.length > 0 ? panteon.deidades[0] : null);
-
-    generatedHechizo = {
-      panteon, prop, receta, deidad, moon, panteonId: selectedPanteon,
-    };
-
-    renderHechizo(generatedHechizo);
-
-    const result = document.getElementById('hechizo-result');
-    if (result) {
-      result.classList.remove('hidden');
-      result.scrollIntoView({ behavior:'smooth' });
-    }
-  }
-
-  function renderHechizo({ panteon, prop, receta, deidad, moon, panteonId }) {
-    const wrap = document.getElementById('hechizo-output');
-    if (!wrap) return;
-
-    const invocacion = deidad && panteon.invocacion
-      ? panteon.invocacion.replace('[Orisha]', deidad.name)
-                          .replace('[Deidad]', deidad.name)
-                          .replace('[dominio]', deidad.dominio.split(',')[0])
-      : '';
-
-    const pasos = receta.pasos.map((p,i) => `
-      <div class="hechizo-paso">
-        <span class="paso-num">${i+1}</span>
-        <span class="paso-text">${p}</span>
-      </div>`).join('');
-
-    const deitySec = deidad ? `
-      <div class="hechizo-sec">
-        <h4 class="hechizo-sec-title">🌟 Deidad Invocada — ${deidad.name}</h4>
-        <p><strong>Dominio:</strong> ${deidad.dominio}</p>
-        <p><strong>Ofrenda:</strong> ${deidad.ofrendas}</p>
-        <p><strong>Número sagrado:</strong> ${deidad.num}</p>
-        ${invocacion ? `<div class="hechizo-invocacion">"${invocacion}"</div>` : ''}
-      </div>` : '';
-
-    const notaSec = panteon.nota ? `
-      <div class="hechizo-nota">
-        <strong>📜 Nota del panteón ${panteon.name}:</strong> ${panteon.nota}
-      </div>` : '';
-
-    wrap.innerHTML = `
-      <div class="hechizo-header">
-        <div class="hechizo-title-row">
-          <span class="hechizo-panteon">${panteon.emoji} ${panteon.name}</span>
-          <span class="hechizo-prop">${prop.emoji} ${prop.name}</span>
-        </div>
-        <div class="hechizo-luna">
-          ${moon.emoji} ${moon.name} · ${moon.pct}% iluminada
-        </div>
-      </div>
-
-      ${deitySec}
-
-      <div class="hechizo-sec">
-        <h4 class="hechizo-sec-title">🕯️ Materiales</h4>
-        <div class="hechizo-materiales">
-          <div class="mat-col">
-            <strong>Colores de velas</strong>
-            <ul>${receta.colores.map(c=>`<li>${c}</li>`).join('')}</ul>
-          </div>
-          <div class="mat-col">
-            <strong>Hierbas sagradas</strong>
-            <ul>${receta.hierbas.map(h=>`<li>${h}</li>`).join('')}</ul>
-          </div>
-          <div class="mat-col">
-            <strong>Cristales</strong>
-            <ul>${receta.cristales.map(c=>`<li>${c}</li>`).join('')}</ul>
-          </div>
-          <div class="mat-col">
-            <strong>Aceites</strong>
-            <ul>${receta.aceites.map(a=>`<li>${a}</li>`).join('')}</ul>
+    detWrap.innerHTML = `
+      <div class="sabbat-detail-card">
+        <div class="sabbat-detail-header" style="border-color:${info.color}">
+          <span class="sabbat-detail-emoji">${info.emoji}</span>
+          <div>
+            <h2 class="sabbat-detail-name" style="color:${info.color}">${sab.name}</h2>
+            <p class="sabbat-detail-fecha">${formatFechaLarga(sab.date)} · <span class="text-gold">${dStr}</span></p>
           </div>
         </div>
-      </div>
-
-      <div class="hechizo-sec">
-        <h4 class="hechizo-sec-title">⏰ Mejor momento</h4>
-        <div class="hechizo-tags">
-          ${receta.momento.map(m=>`<span class="tag tag-momento">${m}</span>`).join('')}
+        <p class="sabbat-detail-desc">${info.desc}</p>
+        <div class="sabbat-ritual-box">
+          <h4>🕯️ Ritual sugerido</h4>
+          <p>${info.ritual}</p>
         </div>
-      </div>
-
-      <div class="hechizo-sec">
-        <h4 class="hechizo-sec-title">📋 Pasos del Ritual</h4>
-        ${pasos}
-      </div>
-
-      ${notaSec}
-
-      <div class="hechizo-actions">
-        <button class="btn-gold" onclick="HechizosModule.guardarComoRitual()">
-          📝 Guardar en mi Diario
+        <button class="btn-gold sabbat-add-btn" onclick="DiarioModule && DiarioModule.addSabbatEntry('${sab.name}')">
+          📝 Agregar al Diario
         </button>
-        <button class="btn-outline" onclick="HechizosModule.copiarHechizo()">
-          📋 Copiar Hechizo
-        </button>
-      </div>`;
+      </div>
+    `;
   }
 
-  function guardarComoRitual() {
-    if (!generatedHechizo) return;
-    const { panteon, prop, receta, deidad } = generatedHechizo;
-    const title = `${prop.emoji} Hechizo de ${prop.name} — ${panteon.name}`;
-    const body = `Panteón: ${panteon.name}\nDeidad: ${deidad?.name || 'Sin deidad específica'}\n\nMateriales:\n- Velas: ${receta.colores.join(', ')}\n- Hierbas: ${receta.hierbas.join(', ')}\n- Cristales: ${receta.cristales.join(', ')}\n\nPasos:\n${receta.pasos.map((p,i)=>`${i+1}. ${p}`).join('\n')}`;
+  function sectorPath(cx, cy, r1, r2, a1, a2) {
+    const x1 = cx + r2 * Math.cos(a1), y1 = cy + r2 * Math.sin(a1);
+    const x2 = cx + r2 * Math.cos(a2), y2 = cy + r2 * Math.sin(a2);
+    const x3 = cx + r1 * Math.cos(a2), y3 = cy + r1 * Math.sin(a2);
+    const x4 = cx + r1 * Math.cos(a1), y4 = cy + r1 * Math.sin(a1);
+    return `M${x1},${y1} A${r2},${r2} 0 0,1 ${x2},${y2} L${x3},${y3} A${r1},${r1} 0 0,0 ${x4},${y4} Z`;
+  }
 
-    if (window.DiarioModule) {
-      DiarioModule.addNew('ritual');
-      setTimeout(() => {
-        const titleEl = document.getElementById('entry-title');
-        const bodyEl  = document.getElementById('entry-body');
-        if (titleEl) titleEl.value = title;
-        if (bodyEl)  bodyEl.value  = body;
-        DiarioModule.autoSave();
-        if (window.AppModule) AppModule.goTo('diario');
-      }, 150);
+  function circle(cx, cy, r, fill, stroke) {
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',cx); c.setAttribute('cy',cy); c.setAttribute('r',r);
+    c.setAttribute('fill',fill); c.setAttribute('stroke',stroke);
+    return c;
+  }
+
+  function text(x, y, content, size, fill) {
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',x); t.setAttribute('y',y);
+    t.setAttribute('font-size',size);
+    t.setAttribute('fill',fill);
+    t.setAttribute('text-anchor','middle');
+    t.setAttribute('dominant-baseline','middle');
+    t.setAttribute('font-family','Cinzel, serif');
+    t.textContent = content;
+    return t;
+  }
+
+  function getDayOfYear(d) {
+    const start = new Date(d.getFullYear(), 0, 0);
+    return Math.floor((d - start) / 86400000);
+  }
+
+  function isLeapYear(y) { return (y%4===0 && y%100!==0) || y%400===0; }
+
+  function formatSabbatDate(ds) {
+    const d = new Date(ds + 'T12:00:00');
+    return d.toLocaleDateString('es', { day:'numeric', month:'short' });
+  }
+
+  function formatFechaLarga(ds) {
+    const d = new Date(ds + 'T12:00:00');
+    return d.toLocaleDateString('es', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  }
+
+  function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  function setHemisferio(h) {
+    hemisferio = h;
+    localStorage.setItem('bruja_hemisferio', h);
+    const now = new Date();
+    renderRueda('rueda-svg-wrap', Astro.SABBATS, now);
+    // Actualizar botones
+    document.querySelectorAll('.hem-btn').forEach(b=>{
+      b.classList.toggle('active', b.dataset.hem === h);
+    });
+    // Actualizar el próximo sabbat
+    const next = Astro.nextSabbat(now);
+    if (next) {
+      const info = getSabbatInfo(next.name);
+      const days = Astro.daysUntil(next.date, now);
+      const nextInfo = document.getElementById('next-sabbat-info');
+      if (nextInfo) nextInfo.innerHTML = `
+        <span class="text-gold">${info.emoji} ${next.name}</span>
+        <span class="text-muted"> — ${formatSabbatDate(next.date)} · faltan <strong style="color:var(--gold)">${days} días</strong></span>
+      `;
     }
-  }
-
-  function copiarHechizo() {
-    if (!generatedHechizo) return;
-    const { panteon, prop, receta, deidad } = generatedHechizo;
-    const text = `✨ HECHIZO DE ${prop.name.toUpperCase()} — ${panteon.name}\n${'─'.repeat(40)}\n${deidad ? `Deidad: ${deidad.name}\nOfrenda: ${deidad.ofrendas}\n\n` : ''}Materiales:\n• Velas: ${receta.colores.join(', ')}\n• Hierbas: ${receta.hierbas.join(', ')}\n• Cristales: ${receta.cristales.join(', ')}\n• Aceites: ${receta.aceites.join(', ')}\n\nPasos:\n${receta.pasos.map((p,i)=>`${i+1}. ${p}`).join('\n')}\n${panteon.nota ? `\nNota: ${panteon.nota}` : ''}`;
-    navigator.clipboard.writeText(text).then(() => alert('✅ Hechizo copiado al portapapeles'));
   }
 
   function init() {
-    renderPanteones();
-    renderPropositos();
-    renderDeidades();
+    const now = new Date();
+    const sabbats = Astro.SABBATS;
 
-    const btn = document.getElementById('btn-generar-hechizo');
-    if (btn) btn.addEventListener('click', generarHechizo);
+    // Toggle hemisferio
+    const hemWrap = document.getElementById('hemisferio-toggle');
+    if (hemWrap) {
+      hemWrap.innerHTML = `
+        <div class="hem-toggle-wrap">
+          <span class="text-muted" style="font-size:.85rem">Hemisferio:</span>
+          <button class="hem-btn${hemisferio==='norte'?' active':''}" data-hem="norte" onclick="RuedaModule.setHemisferio('norte')">🌍 Norte</button>
+          <button class="hem-btn${hemisferio==='sur'?' active':''}" data-hem="sur" onclick="RuedaModule.setHemisferio('sur')">🌎 Sur (Ecuador)</button>
+        </div>`;
+    }
+
+    renderRueda('rueda-svg-wrap', sabbats, now);
+
+    // Próximo sabbat info
+    const next = Astro.nextSabbat(now);
+    const nextInfo = document.getElementById('next-sabbat-info');
+    if (nextInfo && next) {
+      const info = getSabbatInfo(next.name);
+      const days = Astro.daysUntil(next.date, now);
+      nextInfo.innerHTML = `
+        <span class="text-gold">${info.emoji} ${next.name}</span>
+        <span class="text-muted"> — ${formatSabbatDate(next.date)} · faltan <strong style="color:var(--gold)">${days} días</strong></span>
+      `;
+    }
+
+    // Click en el primer sabbat por defecto
+    if (sabbats.length > 0) {
+      onSabbatClick(sabbats[0]);
+    }
   }
 
-  return { init, selectPanteon, selectProposito, selectDeidad, generarHechizo, guardarComoRitual, copiarHechizo };
+  return { init, SABBAT_INFO, setHemisferio };
 })();
 
-// === js/carta.js ===
+</script>
+<script>
 'use strict';
 // ============================================================
 // CARTA.JS — Carta natal: formulario + render SVG
@@ -3004,6 +2622,32 @@ const CartaModule = (() => {
     'Madrid, España':          [ 40.42,  -3.70],
     'Nueva York, USA':         [ 40.71, -74.01],
     'Miami, USA':              [ 25.77, -80.19],
+    'São Paulo, Brasil':       [-23.55, -46.63],
+    'Río de Janeiro, Brasil':  [-22.91, -43.17],
+    'Ciudad de Panamá':        [  8.99, -79.52],
+    'San José, Costa Rica':    [  9.93, -84.08],
+    'La Paz, Bolivia':         [-16.50, -68.15],
+    'Montevideo, Uruguay':     [-34.90, -56.19],
+    'Asunción, Paraguay':      [-25.29, -57.65],
+    'Tokio, Japón':            [ 35.68, 139.69],
+    'Pekín, China':            [ 39.91, 116.39],
+    'Mumbai, India':           [ 19.07,  72.88],
+    'Cairo, Egipto':           [ 30.05,  31.23],
+    'Lagos, Nigeria':          [  6.46,   3.38],
+  };
+
+  // ── UTC offsets por ciudad (horas, negativo = oeste de UTC) ─
+  const UTC_OFFSETS = {
+    'Quito, Ecuador': -5, 'Guayaquil, Ecuador': -5, 'Cuenca, Ecuador': -5,
+    'Bogotá, Colombia': -5, 'Lima, Perú': -5, 'Medellín, Colombia': -5,
+    'Ciudad de Panamá': -5, 'San José, Costa Rica': -6,
+    'Buenos Aires, Argentina': -3, 'Montevideo, Uruguay': -3,
+    'Santiago, Chile': -4, 'La Paz, Bolivia': -4, 'Asunción, Paraguay': -4,
+    'Ciudad de México': -6, 'Caracas, Venezuela': -4,
+    'São Paulo, Brasil': -3, 'Río de Janeiro, Brasil': -3,
+    'Madrid, España': 1, 'Nueva York, USA': -5, 'Miami, USA': -5,
+    'Tokio, Japón': 9, 'Pekín, China': 8, 'Mumbai, India': 5.5,
+    'Cairo, Egipto': 2, 'Lagos, Nigeria': 1,
   };
 
   // ── Render SVG de la carta ────────────────────────────────
@@ -3311,8 +2955,29 @@ const CartaModule = (() => {
     if (!dateVal) return;
 
     const [yr,mo,dy] = dateVal.split('-').map(Number);
-    const [hr,mn]    = timeVal.split(':').map(Number);
+    const [hrLocal,mn] = timeVal.split(':').map(Number);
     const [lat,lon]  = CITIES[city] || [-0.23,-78.52];
+
+    // ── Convertir hora local → UTC ────────────────────────────
+    // offset = horas de diferencia vs UTC (ej. Quito = -5)
+    // UTC = hora_local - offset  (si offset=-5: UTC = local+5)
+    const offset = UTC_OFFSETS[city] ?? -5;
+    let utcHr = hrLocal - offset;
+    let utcDy = dy, utcMo = mo, utcYr = yr;
+
+    // Manejar desbordamiento de horas
+    const DAYS_IN_MONTH = [0,31,28,31,30,31,30,31,31,30,31,30,31];
+    const isLeap = (utcYr%4===0 && utcYr%100!==0) || utcYr%400===0;
+    if (isLeap) DAYS_IN_MONTH[2] = 29;
+
+    if (utcHr >= 24) {
+      utcHr -= 24; utcDy++;
+      if (utcDy > DAYS_IN_MONTH[utcMo]) { utcDy = 1; utcMo++; }
+      if (utcMo > 12) { utcMo = 1; utcYr++; }
+    } else if (utcHr < 0) {
+      utcHr += 24; utcDy--;
+      if (utcDy < 1) { utcMo--; if (utcMo < 1) { utcMo=12; utcYr--; } utcDy=DAYS_IN_MONTH[utcMo]; }
+    }
 
     // Guardar
     try{
@@ -3321,7 +2986,7 @@ const CartaModule = (() => {
       }));
     }catch(e){}
 
-    currentChart = Astro.chartData(yr,mo,dy,hr,mn,lat,lon);
+    currentChart = Astro.chartData(utcYr, utcMo, utcDy, utcHr, mn, lat, lon);
 
     // Mostrar resultado
     const result = document.getElementById('carta-result');
@@ -3352,7 +3017,678 @@ const CartaModule = (() => {
   return { init };
 })();
 
-// === js/diario.js ===
+</script>
+<script>
+'use strict';
+// ============================================================
+// BIBLIOTECA.JS — Hierbas, Cristales, Runas, Aceites
+// ============================================================
+const BibliotecaModule = (() => {
+
+  let activeTab = 'hierbas';
+  let searchQuery = '';
+  let modalOpen = false;
+
+  const TABS = [
+    { id:'hierbas',   label:'🌿 Hierbas',   data:()=>BibData.hierbas },
+    { id:'cristales', label:'💎 Cristales',  data:()=>BibData.cristales },
+    { id:'runas',     label:'ᚠ Runas',      data:()=>BibData.runas, special:true },
+    { id:'aceites',   label:'🫙 Aceites',   data:()=>BibData.aceites },
+  ];
+
+  function renderHierba(item) {
+    return `
+      <div class="bib-card" data-name="${item.name}" onclick="BibliotecaModule.openModal('hierbas','${item.name}')">
+        <div class="bib-emoji">${item.emoji}</div>
+        <div class="bib-name">${item.name}</div>
+        <div class="bib-tags">
+          <span class="tag">${item.element}</span>
+          <span class="tag">${item.planeta}</span>
+          <span class="tag">${item.signo}</span>
+        </div>
+        <div class="bib-magic">${item.magic.slice(0,3).join(' · ')}</div>
+      </div>`;
+  }
+
+  function renderCristal(item) {
+    return `
+      <div class="bib-card" data-name="${item.name}" onclick="BibliotecaModule.openModal('cristales','${item.name}')">
+        <div class="bib-emoji">${item.emoji}</div>
+        <div class="bib-name">${item.name}</div>
+        <div class="bib-tags">
+          <span class="tag">${item.chakra}</span>
+          <span class="tag">${item.element}</span>
+        </div>
+        <div class="bib-magic">${item.magic.slice(0,3).join(' · ')}</div>
+      </div>`;
+  }
+
+  function renderRuna(item) {
+    return `
+      <div class="runa-card" data-name="${item.name}" onclick="BibliotecaModule.openModal('runas','${item.name}')">
+        <div class="runa-symbol">${item.symbol}</div>
+        <div class="runa-name">${item.name}</div>
+        <div class="runa-meaning">${item.meaning}</div>
+      </div>`;
+  }
+
+  function renderAceite(item) {
+    return `
+      <div class="bib-card" data-name="${item.name}" onclick="BibliotecaModule.openModal('aceites','${item.name}')">
+        <div class="bib-emoji">🫙</div>
+        <div class="bib-name">${item.name}</div>
+        <div class="bib-tags">
+          <span class="tag">${item.base ? 'Base' : 'Esencial'}</span>
+          <span class="tag">${item.arom}</span>
+        </div>
+        <div class="bib-magic">${item.magic.slice(0,3).join(' · ')}</div>
+      </div>`;
+  }
+
+  function getFilteredData() {
+    const tab = TABS.find(t=>t.id===activeTab);
+    if (!tab) return [];
+    const data = tab.data();
+    if (!searchQuery) return data;
+    const q = searchQuery.toLowerCase();
+    return data.filter(item => {
+      const name = (item.name||'').toLowerCase();
+      const magic = (item.magic||[]).join(' ').toLowerCase();
+      const uses  = (item.uses||'').toLowerCase();
+      const chakra = (item.chakra||'').toLowerCase();
+      const element = (item.element||'').toLowerCase();
+      const meaning = (item.meaning||'').toLowerCase();
+      return name.includes(q)||magic.includes(q)||uses.includes(q)||
+             chakra.includes(q)||element.includes(q)||meaning.includes(q);
+    });
+  }
+
+  function renderGrid() {
+    const grid = document.getElementById('bib-grid');
+    if (!grid) return;
+    const data = getFilteredData();
+
+    if (data.length === 0) {
+      grid.innerHTML = `<div class="bib-empty">🔍 No se encontraron resultados para "<em>${searchQuery}</em>"</div>`;
+      return;
+    }
+
+    if (activeTab === 'runas') {
+      grid.className = 'runa-grid';
+      grid.innerHTML = data.map(renderRuna).join('');
+    } else if (activeTab === 'hierbas') {
+      grid.className = 'bib-grid';
+      grid.innerHTML = data.map(renderHierba).join('');
+    } else if (activeTab === 'cristales') {
+      grid.className = 'bib-grid';
+      grid.innerHTML = data.map(renderCristal).join('');
+    } else if (activeTab === 'aceites') {
+      grid.className = 'bib-grid';
+      grid.innerHTML = data.map(renderAceite).join('');
+    }
+
+    // Actualizar contador
+    const count = document.getElementById('bib-count');
+    if (count) count.textContent = `${data.length} resultado${data.length!==1?'s':''}`;
+  }
+
+  function openModal(type, name) {
+    const tab = TABS.find(t=>t.id===type);
+    if (!tab) return;
+    const item = tab.data().find(d=>d.name===name);
+    if (!item) return;
+
+    const overlay = document.getElementById('bib-modal');
+    const content = document.getElementById('bib-modal-content');
+    if (!overlay || !content) return;
+
+    content.innerHTML = buildModalContent(type, item);
+    overlay.classList.remove('hidden');
+    modalOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function buildModalContent(type, item) {
+    if (type === 'runas') {
+      return `
+        <div class="modal-header">
+          <div class="modal-runa-sym">${item.symbol}</div>
+          <div>
+            <h2 class="modal-title">${item.name}</h2>
+            <p class="text-muted">Runa ${item.num} del Elder Futhark</p>
+          </div>
+          <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-row"><strong>Significado:</strong> ${item.meaning}</div>
+          <div class="modal-row"><strong>Energía:</strong> ${item.energy}</div>
+          <div class="modal-row"><strong>Magia:</strong> ${item.magic}</div>
+          <div class="modal-row"><strong>Invertida:</strong> ${item.reverse}</div>
+        </div>`;
+    }
+    if (type === 'hierbas') {
+      return `
+        <div class="modal-header">
+          <div style="font-size:2.5rem">${item.emoji}</div>
+          <div>
+            <h2 class="modal-title">${item.name}</h2>
+            <div class="bib-tags modal-tags">
+              <span class="tag">${item.element}</span>
+              <span class="tag">${item.planeta}</span>
+              <span class="tag">${item.signo}</span>
+            </div>
+          </div>
+          <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-row"><strong>✨ Usos mágicos:</strong> ${item.magic.join(', ')}</div>
+          <div class="modal-row"><strong>🌿 Usos herbales:</strong> ${item.uses}</div>
+          ${item.notes ? `<div class="modal-row"><strong>📝 Notas:</strong> ${item.notes}</div>` : ''}
+          ${item.caution ? `<div class="modal-row modal-caution"><strong>⚠️ Precaución:</strong> ${item.caution}</div>` : ''}
+        </div>`;
+    }
+    if (type === 'cristales') {
+      return `
+        <div class="modal-header">
+          <div style="font-size:2.5rem">${item.emoji}</div>
+          <div>
+            <h2 class="modal-title">${item.name}</h2>
+            <div class="bib-tags modal-tags">
+              <span class="tag">${item.chakra}</span>
+              <span class="tag">${item.element}</span>
+              <span class="tag" style="background:${item.color};color:#fff">${item.color}</span>
+            </div>
+          </div>
+          <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-row"><strong>✨ Usos mágicos:</strong> ${item.magic.join(', ')}</div>
+          <div class="modal-row"><strong>💎 Usos:</strong> ${item.uses}</div>
+          ${item.notes ? `<div class="modal-row"><strong>📝 Notas:</strong> ${item.notes}</div>` : ''}
+        </div>`;
+    }
+    if (type === 'aceites') {
+      return `
+        <div class="modal-header">
+          <div style="font-size:2.5rem">🫙</div>
+          <div>
+            <h2 class="modal-title">${item.name}</h2>
+            <div class="bib-tags modal-tags">
+              <span class="tag">${item.base ? 'Aceite base' : 'Aceite esencial'}</span>
+              <span class="tag">${item.arom}</span>
+            </div>
+          </div>
+          <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-row"><strong>✨ Usos mágicos:</strong> ${item.magic.join(', ')}</div>
+          <div class="modal-row"><strong>🌿 Usos:</strong> ${item.uses}</div>
+        </div>`;
+    }
+    return '';
+  }
+
+  function closeModal() {
+    const overlay = document.getElementById('bib-modal');
+    if (overlay) overlay.classList.add('hidden');
+    modalOpen = false;
+    document.body.style.overflow = '';
+  }
+
+  function init() {
+    // Tabs
+    const tabsWrap = document.getElementById('bib-tabs');
+    if (tabsWrap) {
+      tabsWrap.innerHTML = TABS.map(t=>`
+        <button class="bib-tab${t.id===activeTab?' active':''}" data-tab="${t.id}">
+          ${t.label}
+        </button>`).join('');
+      tabsWrap.addEventListener('click', e=>{
+        const btn = e.target.closest('[data-tab]');
+        if (!btn) return;
+        activeTab = btn.dataset.tab;
+        tabsWrap.querySelectorAll('.bib-tab').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        renderGrid();
+      });
+    }
+
+    // Búsqueda
+    const searchInput = document.getElementById('bib-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', e=>{
+        searchQuery = e.target.value.trim();
+        renderGrid();
+      });
+    }
+
+    // Modal close
+    const overlay = document.getElementById('bib-modal');
+    if (overlay) {
+      overlay.addEventListener('click', e=>{
+        if (e.target === overlay) closeModal();
+      });
+    }
+
+    // ESC
+    document.addEventListener('keydown', e=>{
+      if (e.key==='Escape' && modalOpen) closeModal();
+    });
+
+    renderGrid();
+  }
+
+  return { init, openModal, closeModal };
+})();
+
+</script>
+<script>
+'use strict';
+// ============================================================
+// HECHIZOS.JS — Constructor de hechizos por panteón
+// ============================================================
+const HechizosModule = (() => {
+
+  let selectedPanteon = 'universal';
+  let selectedProposito = '';
+  let selectedDeidad = null;
+  let generatedHechizo = null;
+
+  function renderPanteones() {
+    const wrap = document.getElementById('panteon-grid');
+    if (!wrap) return;
+    wrap.innerHTML = Object.values(HechizosData.PANTEONES).map(p => `
+      <div class="panteon-card${p.id===selectedPanteon?' active':''}"
+           data-panteon="${p.id}" onclick="HechizosModule.selectPanteon('${p.id}')">
+        <div class="panteon-emoji">${p.emoji}</div>
+        <div class="panteon-name">${p.name}</div>
+        <div class="panteon-desc">${p.desc.slice(0,60)}…</div>
+      </div>`).join('');
+  }
+
+  function renderPropositos() {
+    const wrap = document.getElementById('proposito-grid');
+    if (!wrap) return;
+    wrap.innerHTML = HechizosData.PROPOSITOS.map(p => `
+      <div class="prop-card${p.id===selectedProposito?' active':''}"
+           data-prop="${p.id}" onclick="HechizosModule.selectProposito('${p.id}')">
+        <div class="prop-emoji">${p.emoji}</div>
+        <div class="prop-name">${p.name}</div>
+        <div class="prop-desc">${p.descripcion}</div>
+      </div>`).join('');
+  }
+
+  function renderDeidades() {
+    const wrap = document.getElementById('deidad-grid');
+    if (!wrap) return;
+    const panteon = HechizosData.PANTEONES[selectedPanteon];
+    if (!panteon || panteon.deidades.length === 0) {
+      wrap.innerHTML = `<p class="text-muted">Este panteón trabaja con la energía universal sin deidades específicas.</p>`;
+      selectedDeidad = null;
+      return;
+    }
+    wrap.innerHTML = panteon.deidades.map(d => `
+      <div class="deidad-card${selectedDeidad?.name===d.name?' active':''}"
+           onclick="HechizosModule.selectDeidad(${JSON.stringify(d).replace(/"/g,"'")})">
+        <div class="deidad-name">${d.name}</div>
+        <div class="deidad-dominio">${d.dominio}</div>
+        <div class="deidad-num">Número sagrado: ${d.num}</div>
+        <div class="deidad-ofrenda">🌸 ${d.ofrendas}</div>
+      </div>`).join('');
+  }
+
+  function selectPanteon(id) {
+    selectedPanteon = id;
+    selectedDeidad = null;
+    document.querySelectorAll('.panteon-card').forEach(c=>c.classList.toggle('active',c.dataset.panteon===id));
+    renderDeidades();
+    clearResult();
+  }
+
+  function selectProposito(id) {
+    selectedProposito = id;
+    document.querySelectorAll('.prop-card').forEach(c=>c.classList.toggle('active',c.dataset.prop===id));
+    clearResult();
+  }
+
+  function selectDeidad(d) {
+    selectedDeidad = d;
+    document.querySelectorAll('.deidad-card').forEach(c=>{
+      c.classList.toggle('active', c.querySelector('.deidad-name')?.textContent===d.name);
+    });
+  }
+
+  function clearResult() {
+    const result = document.getElementById('hechizo-result');
+    if (result) result.classList.add('hidden');
+  }
+
+  function generarHechizo() {
+    if (!selectedProposito) {
+      alert('Elige un propósito para tu hechizo.');
+      return;
+    }
+
+    const panteon  = HechizosData.PANTEONES[selectedPanteon];
+    const receta   = HechizosData.RECETAS[selectedProposito];
+    const prop     = HechizosData.PROPOSITOS.find(p=>p.id===selectedProposito);
+    const now      = new Date();
+    const jd       = Astro.jd(now.getFullYear(), now.getMonth()+1, now.getDate(), now.getHours(), now.getMinutes());
+    const moon     = Astro.moonPhase(jd);
+    const lunaRec  = HechizosData.FASES_LUNA[moon.name.toLowerCase().replace(/ /g,'_')] || HechizosData.FASES_LUNA['llena'];
+
+    const deidad = selectedDeidad || (panteon.deidades.length > 0 ? panteon.deidades[0] : null);
+
+    generatedHechizo = {
+      panteon, prop, receta, deidad, moon, panteonId: selectedPanteon,
+    };
+
+    renderHechizo(generatedHechizo);
+
+    const result = document.getElementById('hechizo-result');
+    if (result) {
+      result.classList.remove('hidden');
+      result.scrollIntoView({ behavior:'smooth' });
+    }
+  }
+
+  function renderHechizo({ panteon, prop, receta, deidad, moon, panteonId }) {
+    const wrap = document.getElementById('hechizo-output');
+    if (!wrap) return;
+
+    const invocacion = deidad && panteon.invocacion
+      ? panteon.invocacion.replace('[Orisha]', deidad.name)
+                          .replace('[Deidad]', deidad.name)
+                          .replace('[dominio]', deidad.dominio.split(',')[0])
+      : '';
+
+    const pasos = receta.pasos.map((p,i) => `
+      <div class="hechizo-paso">
+        <span class="paso-num">${i+1}</span>
+        <span class="paso-text">${p}</span>
+      </div>`).join('');
+
+    const deitySec = deidad ? `
+      <div class="hechizo-sec">
+        <h4 class="hechizo-sec-title">🌟 Deidad Invocada — ${deidad.name}</h4>
+        <p><strong>Dominio:</strong> ${deidad.dominio}</p>
+        <p><strong>Ofrenda:</strong> ${deidad.ofrendas}</p>
+        <p><strong>Número sagrado:</strong> ${deidad.num}</p>
+        ${invocacion ? `<div class="hechizo-invocacion">"${invocacion}"</div>` : ''}
+      </div>` : '';
+
+    const notaSec = panteon.nota ? `
+      <div class="hechizo-nota">
+        <strong>📜 Nota del panteón ${panteon.name}:</strong> ${panteon.nota}
+      </div>` : '';
+
+    wrap.innerHTML = `
+      <div class="hechizo-header">
+        <div class="hechizo-title-row">
+          <span class="hechizo-panteon">${panteon.emoji} ${panteon.name}</span>
+          <span class="hechizo-prop">${prop.emoji} ${prop.name}</span>
+        </div>
+        <div class="hechizo-luna">
+          ${moon.emoji} ${moon.name} · ${moon.pct}% iluminada
+        </div>
+      </div>
+
+      ${deitySec}
+
+      <div class="hechizo-sec">
+        <h4 class="hechizo-sec-title">🕯️ Materiales</h4>
+        <div class="hechizo-materiales">
+          <div class="mat-col">
+            <strong>Colores de velas</strong>
+            <ul>${receta.colores.map(c=>`<li>${c}</li>`).join('')}</ul>
+          </div>
+          <div class="mat-col">
+            <strong>Hierbas sagradas</strong>
+            <ul>${receta.hierbas.map(h=>`<li>${h}</li>`).join('')}</ul>
+          </div>
+          <div class="mat-col">
+            <strong>Cristales</strong>
+            <ul>${receta.cristales.map(c=>`<li>${c}</li>`).join('')}</ul>
+          </div>
+          <div class="mat-col">
+            <strong>Aceites</strong>
+            <ul>${receta.aceites.map(a=>`<li>${a}</li>`).join('')}</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="hechizo-sec">
+        <h4 class="hechizo-sec-title">⏰ Mejor momento</h4>
+        <div class="hechizo-tags">
+          ${receta.momento.map(m=>`<span class="tag tag-momento">${m}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="hechizo-sec">
+        <h4 class="hechizo-sec-title">📋 Pasos del Ritual</h4>
+        ${pasos}
+      </div>
+
+      ${notaSec}
+
+      <div class="hechizo-actions">
+        <button class="btn-gold" onclick="HechizosModule.guardarComoRitual()">
+          📝 Guardar en mi Diario
+        </button>
+        <button class="btn-outline" onclick="HechizosModule.copiarHechizo()">
+          📋 Copiar Hechizo
+        </button>
+      </div>`;
+  }
+
+  function guardarComoRitual() {
+    if (!generatedHechizo) return;
+    const { panteon, prop, receta, deidad } = generatedHechizo;
+    const title = `${prop.emoji} Hechizo de ${prop.name} — ${panteon.name}`;
+    const body = `Panteón: ${panteon.name}\nDeidad: ${deidad?.name || 'Sin deidad específica'}\n\nMateriales:\n- Velas: ${receta.colores.join(', ')}\n- Hierbas: ${receta.hierbas.join(', ')}\n- Cristales: ${receta.cristales.join(', ')}\n\nPasos:\n${receta.pasos.map((p,i)=>`${i+1}. ${p}`).join('\n')}`;
+
+    if (window.DiarioModule) {
+      DiarioModule.addNew('ritual');
+      setTimeout(() => {
+        const titleEl = document.getElementById('entry-title');
+        const bodyEl  = document.getElementById('entry-body');
+        if (titleEl) titleEl.value = title;
+        if (bodyEl)  bodyEl.value  = body;
+        DiarioModule.autoSave();
+        if (window.AppModule) AppModule.goTo('diario');
+      }, 150);
+    }
+  }
+
+  function copiarHechizo() {
+    if (!generatedHechizo) return;
+    const { panteon, prop, receta, deidad } = generatedHechizo;
+    const text = `✨ HECHIZO DE ${prop.name.toUpperCase()} — ${panteon.name}\n${'─'.repeat(40)}\n${deidad ? `Deidad: ${deidad.name}\nOfrenda: ${deidad.ofrendas}\n\n` : ''}Materiales:\n• Velas: ${receta.colores.join(', ')}\n• Hierbas: ${receta.hierbas.join(', ')}\n• Cristales: ${receta.cristales.join(', ')}\n• Aceites: ${receta.aceites.join(', ')}\n\nPasos:\n${receta.pasos.map((p,i)=>`${i+1}. ${p}`).join('\n')}\n${panteon.nota ? `\nNota: ${panteon.nota}` : ''}`;
+    navigator.clipboard.writeText(text).then(() => alert('✅ Hechizo copiado al portapapeles'));
+  }
+
+  function init() {
+    renderPanteones();
+    renderPropositos();
+    renderDeidades();
+
+    const btn = document.getElementById('btn-generar-hechizo');
+    if (btn) btn.addEventListener('click', generarHechizo);
+  }
+
+  return { init, selectPanteon, selectProposito, selectDeidad, generarHechizo, guardarComoRitual, copiarHechizo };
+})();
+
+</script>
+<script>
+'use strict';
+// ============================================================
+// TAREAS.JS — Prácticas y Tareas mágicas
+// ============================================================
+const TareasModule = (() => {
+
+  const STORAGE_KEY = 'bruja_tareas';
+  let tareas = [];
+
+  const CATEGORIAS = [
+    { id:'practica', name:'✨ Práctica', color:'#5B2D8E' },
+    { id:'ritual',   name:'🕯️ Ritual',   color:'#8B0000' },
+    { id:'estudio',  name:'📚 Estudio',  color:'#1a4d6e' },
+    { id:'lunar',    name:'🌙 Lunar',    color:'#2A6090' },
+    { id:'personal', name:'🌱 Personal', color:'#1a4d1a' },
+  ];
+
+  const PLANTILLAS = [
+    { title:'Meditación diaria', desc:'10-20 min de meditación antes de dormir o al despertar', categoria:'practica', recurrente:'diario' },
+    { title:'Ritual de Luna Nueva', desc:'Poner intenciones, escribir deseos y encender vela blanca', categoria:'ritual', recurrente:'mensual' },
+    { title:'Ritual de Luna Llena', desc:'Liberar lo que ya no sirve, dar gracias, ritual de agua', categoria:'ritual', recurrente:'mensual' },
+    { title:'Limpiar cristales', desc:'Sahumerio, agua de luna o sonido sagrado para recargar cristales', categoria:'practica', recurrente:'mensual' },
+    { title:'Estudio: una runa', desc:'Elegir una runa y estudiarla durante una semana', categoria:'estudio', recurrente:'semanal' },
+    { title:'Baño ritual', desc:'Sal, hierbas y intención para el baño de purificación semanal', categoria:'ritual', recurrente:'semanal' },
+    { title:'Journaling mágico', desc:'Escribir tres cosas mágicas que noté hoy', categoria:'practica', recurrente:'diario' },
+    { title:'Carta astral: leer una casa', desc:'Estudiar una casa de tu carta natal cada semana', categoria:'estudio', recurrente:'semanal' },
+  ];
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      tareas = raw ? JSON.parse(raw) : [];
+    } catch(e) { tareas = []; }
+  }
+
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tareas)); }
+    catch(e) {}
+  }
+
+  function addTarea(fields) {
+    const t = {
+      id: Date.now(),
+      title: fields.title || '',
+      desc:  fields.desc || '',
+      categoria: fields.categoria || 'practica',
+      recurrente: fields.recurrente || 'unica',
+      fecha: fields.fecha || '',
+      done: false,
+      created: new Date().toISOString(),
+    };
+    tareas.unshift(t);
+    save();
+    return t;
+  }
+
+  function toggleDone(id) {
+    const t = tareas.find(t=>t.id===id);
+    if (t) { t.done = !t.done; save(); render(); }
+  }
+
+  function deleteTarea(id) {
+    tareas = tareas.filter(t=>t.id!==id);
+    save();
+    render();
+  }
+
+  function render() {
+    const wrap = document.getElementById('tareas-lista');
+    if (!wrap) return;
+
+    const pending = tareas.filter(t=>!t.done);
+    const done    = tareas.filter(t=>t.done);
+
+    if (tareas.length === 0) {
+      wrap.innerHTML = `<div class="tareas-empty">
+        <p>✨ No hay tareas aún. Agrega tus prácticas mágicas o usa una plantilla.</p>
+      </div>`;
+      return;
+    }
+
+    const renderGroup = (arr, title, collapsed) => {
+      if (!arr.length) return '';
+      return `
+        <div class="tareas-group">
+          <h4 class="tareas-group-title">${title} (${arr.length})</h4>
+          ${arr.map(t => {
+            const cat = CATEGORIAS.find(c=>c.id===t.categoria)||CATEGORIAS[0];
+            return `
+              <div class="tarea-item${t.done?' done':''}">
+                <div class="tarea-check${t.done?' checked':''}" onclick="TareasModule.toggleDone(${t.id})">
+                  ${t.done ? '✓' : ''}
+                </div>
+                <div class="tarea-body">
+                  <div class="tarea-title">${t.title}</div>
+                  ${t.desc ? `<div class="tarea-desc">${t.desc}</div>` : ''}
+                  <div class="tarea-meta">
+                    <span class="tag" style="background:${cat.color}20;border-color:${cat.color}40;color:${cat.color}">${cat.name}</span>
+                    ${t.recurrente !== 'unica' ? `<span class="tag">🔄 ${t.recurrente}</span>` : ''}
+                    ${t.fecha ? `<span class="tag">📅 ${t.fecha}</span>` : ''}
+                  </div>
+                </div>
+                <button class="tarea-del" onclick="TareasModule.deleteTarea(${t.id})">🗑️</button>
+              </div>`;
+          }).join('')}
+        </div>`;
+    };
+
+    wrap.innerHTML = renderGroup(pending, '⏳ Pendientes') + renderGroup(done, '✅ Completadas');
+  }
+
+  function renderPlantillas() {
+    const wrap = document.getElementById('plantillas-grid');
+    if (!wrap) return;
+    wrap.innerHTML = PLANTILLAS.map(p => `
+      <div class="plantilla-card" onclick="TareasModule.addFromPlantilla(${JSON.stringify(p).replace(/"/g,"'")})">
+        <div class="plantilla-title">${p.title}</div>
+        <div class="plantilla-desc">${p.desc}</div>
+        <div class="plantilla-tags">
+          <span class="tag">${CATEGORIAS.find(c=>c.id===p.categoria)?.name||p.categoria}</span>
+          <span class="tag">🔄 ${p.recurrente}</span>
+        </div>
+      </div>`).join('');
+  }
+
+  function addFromPlantilla(p) {
+    addTarea(p);
+    render();
+  }
+
+  function initForm() {
+    const form = document.getElementById('tarea-form');
+    if (!form) return;
+
+    // Categorías en el select
+    const catSel = document.getElementById('tarea-categoria');
+    if (catSel) {
+      catSel.innerHTML = CATEGORIAS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const title = document.getElementById('tarea-title')?.value?.trim();
+      if (!title) return;
+      addTarea({
+        title,
+        desc:       document.getElementById('tarea-desc')?.value || '',
+        categoria:  catSel?.value || 'practica',
+        recurrente: document.getElementById('tarea-rec')?.value || 'unica',
+        fecha:      document.getElementById('tarea-fecha')?.value || '',
+      });
+      form.reset();
+      render();
+    });
+  }
+
+  function init() {
+    load();
+    render();
+    renderPlantillas();
+    initForm();
+  }
+
+  return { init, toggleDone, deleteTarea, addFromPlantilla };
+})();
+
+</script>
+<script>
 'use strict';
 // ============================================================
 // DIARIO.JS — Diario privado con localStorage
@@ -3634,174 +3970,8 @@ const DiarioModule = (() => {
   return { init, addNew, selectEntry, autoSave, changeType, addTag, removeTag, confirmDelete, downloadEntry, addSabbatEntry };
 })();
 
-// === js/tareas.js ===
-'use strict';
-// ============================================================
-// TAREAS.JS — Prácticas y Tareas mágicas
-// ============================================================
-const TareasModule = (() => {
-
-  const STORAGE_KEY = 'bruja_tareas';
-  let tareas = [];
-
-  const CATEGORIAS = [
-    { id:'practica', name:'✨ Práctica', color:'#5B2D8E' },
-    { id:'ritual',   name:'🕯️ Ritual',   color:'#8B0000' },
-    { id:'estudio',  name:'📚 Estudio',  color:'#1a4d6e' },
-    { id:'lunar',    name:'🌙 Lunar',    color:'#2A6090' },
-    { id:'personal', name:'🌱 Personal', color:'#1a4d1a' },
-  ];
-
-  const PLANTILLAS = [
-    { title:'Meditación diaria', desc:'10-20 min de meditación antes de dormir o al despertar', categoria:'practica', recurrente:'diario' },
-    { title:'Ritual de Luna Nueva', desc:'Poner intenciones, escribir deseos y encender vela blanca', categoria:'ritual', recurrente:'mensual' },
-    { title:'Ritual de Luna Llena', desc:'Liberar lo que ya no sirve, dar gracias, ritual de agua', categoria:'ritual', recurrente:'mensual' },
-    { title:'Limpiar cristales', desc:'Sahumerio, agua de luna o sonido sagrado para recargar cristales', categoria:'practica', recurrente:'mensual' },
-    { title:'Estudio: una runa', desc:'Elegir una runa y estudiarla durante una semana', categoria:'estudio', recurrente:'semanal' },
-    { title:'Baño ritual', desc:'Sal, hierbas y intención para el baño de purificación semanal', categoria:'ritual', recurrente:'semanal' },
-    { title:'Journaling mágico', desc:'Escribir tres cosas mágicas que noté hoy', categoria:'practica', recurrente:'diario' },
-    { title:'Carta astral: leer una casa', desc:'Estudiar una casa de tu carta natal cada semana', categoria:'estudio', recurrente:'semanal' },
-  ];
-
-  function load() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      tareas = raw ? JSON.parse(raw) : [];
-    } catch(e) { tareas = []; }
-  }
-
-  function save() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tareas)); }
-    catch(e) {}
-  }
-
-  function addTarea(fields) {
-    const t = {
-      id: Date.now(),
-      title: fields.title || '',
-      desc:  fields.desc || '',
-      categoria: fields.categoria || 'practica',
-      recurrente: fields.recurrente || 'unica',
-      fecha: fields.fecha || '',
-      done: false,
-      created: new Date().toISOString(),
-    };
-    tareas.unshift(t);
-    save();
-    return t;
-  }
-
-  function toggleDone(id) {
-    const t = tareas.find(t=>t.id===id);
-    if (t) { t.done = !t.done; save(); render(); }
-  }
-
-  function deleteTarea(id) {
-    tareas = tareas.filter(t=>t.id!==id);
-    save();
-    render();
-  }
-
-  function render() {
-    const wrap = document.getElementById('tareas-lista');
-    if (!wrap) return;
-
-    const pending = tareas.filter(t=>!t.done);
-    const done    = tareas.filter(t=>t.done);
-
-    if (tareas.length === 0) {
-      wrap.innerHTML = `<div class="tareas-empty">
-        <p>✨ No hay tareas aún. Agrega tus prácticas mágicas o usa una plantilla.</p>
-      </div>`;
-      return;
-    }
-
-    const renderGroup = (arr, title, collapsed) => {
-      if (!arr.length) return '';
-      return `
-        <div class="tareas-group">
-          <h4 class="tareas-group-title">${title} (${arr.length})</h4>
-          ${arr.map(t => {
-            const cat = CATEGORIAS.find(c=>c.id===t.categoria)||CATEGORIAS[0];
-            return `
-              <div class="tarea-item${t.done?' done':''}">
-                <div class="tarea-check${t.done?' checked':''}" onclick="TareasModule.toggleDone(${t.id})">
-                  ${t.done ? '✓' : ''}
-                </div>
-                <div class="tarea-body">
-                  <div class="tarea-title">${t.title}</div>
-                  ${t.desc ? `<div class="tarea-desc">${t.desc}</div>` : ''}
-                  <div class="tarea-meta">
-                    <span class="tag" style="background:${cat.color}20;border-color:${cat.color}40;color:${cat.color}">${cat.name}</span>
-                    ${t.recurrente !== 'unica' ? `<span class="tag">🔄 ${t.recurrente}</span>` : ''}
-                    ${t.fecha ? `<span class="tag">📅 ${t.fecha}</span>` : ''}
-                  </div>
-                </div>
-                <button class="tarea-del" onclick="TareasModule.deleteTarea(${t.id})">🗑️</button>
-              </div>`;
-          }).join('')}
-        </div>`;
-    };
-
-    wrap.innerHTML = renderGroup(pending, '⏳ Pendientes') + renderGroup(done, '✅ Completadas');
-  }
-
-  function renderPlantillas() {
-    const wrap = document.getElementById('plantillas-grid');
-    if (!wrap) return;
-    wrap.innerHTML = PLANTILLAS.map(p => `
-      <div class="plantilla-card" onclick="TareasModule.addFromPlantilla(${JSON.stringify(p).replace(/"/g,"'")})">
-        <div class="plantilla-title">${p.title}</div>
-        <div class="plantilla-desc">${p.desc}</div>
-        <div class="plantilla-tags">
-          <span class="tag">${CATEGORIAS.find(c=>c.id===p.categoria)?.name||p.categoria}</span>
-          <span class="tag">🔄 ${p.recurrente}</span>
-        </div>
-      </div>`).join('');
-  }
-
-  function addFromPlantilla(p) {
-    addTarea(p);
-    render();
-  }
-
-  function initForm() {
-    const form = document.getElementById('tarea-form');
-    if (!form) return;
-
-    // Categorías en el select
-    const catSel = document.getElementById('tarea-categoria');
-    if (catSel) {
-      catSel.innerHTML = CATEGORIAS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-    }
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const title = document.getElementById('tarea-title')?.value?.trim();
-      if (!title) return;
-      addTarea({
-        title,
-        desc:       document.getElementById('tarea-desc')?.value || '',
-        categoria:  catSel?.value || 'practica',
-        recurrente: document.getElementById('tarea-rec')?.value || 'unica',
-        fecha:      document.getElementById('tarea-fecha')?.value || '',
-      });
-      form.reset();
-      render();
-    });
-  }
-
-  function init() {
-    load();
-    render();
-    renderPlantillas();
-    initForm();
-  }
-
-  return { init, toggleDone, deleteTarea, addFromPlantilla };
-})();
-
-// === js/busqueda.js ===
+</script>
+<script>
 'use strict';
 // ============================================================
 // BUSQUEDA.JS — Motor de búsqueda global
@@ -4015,14 +4185,448 @@ const BusquedaModule = (() => {
   return { init, open, close, search };
 })();
 
-// === js/app.js ===
+</script>
+<script>
+'use strict';
+// ============================================================
+// LIBRO.JS — El Año de la Bruja: 12 Ciclos
+// ============================================================
+const LibroModule = (() => {
+
+  const CICLOS = [
+    {
+      num:1, nombre:'Fundamentos', dias:'1–28', emoji:'🌑', color:'#4A0E8F',
+      desc:'El primer paso. Qué es la brujería, cómo construir tu altar y activar tu práctica desde cero. Aprenderás que no necesitas dinero, solo intención.',
+      semanas:[
+        {num:1, titulo:'Qué es esto que haces', desc:'Desmontamos el miedo y los mitos. La brujería como tecnología espiritual, no como religión única. Tu historia con lo espiritual es el punto de partida.'},
+        {num:2, titulo:'El espacio sagrado y el altar', desc:'Cómo construir un altar con lo que tienes. El espacio sagrado no es un lugar, es una actitud. Los primeros objetos que necesitas (y los que no).'},
+        {num:3, titulo:'Los cuatro elementos y las herramientas', desc:'Fuego, agua, tierra y aire como lenguaje simbólico. Las herramientas del brujo: athame, copa, varita, pentáculo. Cómo improvisar con lo que tienes.'},
+        {num:4, titulo:'Tu primera práctica formal', desc:'La meditación como base. Cómo silenciar la mente de brujo caótico. Técnicas de enraizamiento y apertura. Primer ejercicio de energía.'},
+      ],
+      cierre:'Ritual de Apertura del Grimorio: inaugura tu práctica con un acto concreto.'
+    },
+    {
+      num:2, nombre:'Las Fuerzas', dias:'29–57', emoji:'⚡', color:'#1a1a6e',
+      desc:'Energía, protección y los mundos invisibles. Aprenderás a leer la energía de los espacios y a protegerte antes de profundizar.',
+      semanas:[
+        {num:1, titulo:'Qué es la energía mágica', desc:'La energía como algo perceptible y trabajable. Cómo sentirla en las manos, en los objetos, en las personas. Los primeros ejercicios de proyección.'},
+        {num:2, titulo:'Protección y limpieza', desc:'Por qué proteger tu espacio antes de trabajar. Técnicas de limpieza: sal, incienso, sonido, intención. Cómo blindar tu casa y tu cuerpo energético.'},
+        {num:3, titulo:'El círculo mágico', desc:'Crear un círculo de trabajo: propósito, apertura, cierre. Los cuatro puntos cardinales y sus guardianes. Tu primer círculo formal.'},
+        {num:4, titulo:'La sombra y el trabajo interior', desc:'Jung aplicado a la brujería. Qué es la sombra, por qué importa, cómo empezar a integrarla. La magia desde la herida y la magia desde la plenitud.'},
+      ],
+      cierre:'Ritual de Protección y sellado de tu espacio de trabajo.'
+    },
+    {
+      num:3, nombre:'La Rueda del Año y la Luna', dias:'58–86', emoji:'☽', color:'#1a3a5e',
+      desc:'El calendario mágico: los 8 sabbats y las 4 fases lunares como motor de tu práctica. Aprenderás a alinearte con los ciclos naturales.',
+      semanas:[
+        {num:1, titulo:'La Rueda del Año', desc:'Los 8 sabbats: Samhain, Yule, Imbolc, Ostara, Beltane, Litha, Lughnasadh, Mabon. Cómo adaptarlos al hemisferio sur y a la vida contemporánea latinoamericana.'},
+        {num:2, titulo:'Los sabbats en profundidad (I)', desc:'Samhain, Yule, Imbolc, Ostara: su energía, sus rituales simples, sus correspondencias. Cómo celebrar sin un coven, solo o con quien quieras.'},
+        {num:3, titulo:'Los sabbats en profundidad (II)', desc:'Beltane, Litha, Lughnasadh, Mabon: la mitad luminosa del año. Rituales de abundancia, plenitud y cosecha.'},
+        {num:4, titulo:'La magia lunar', desc:'Luna nueva: siembra. Cuarto creciente: acción. Luna llena: plenitud. Cuarto menguante: soltar. Cómo usar cada fase para un tipo diferente de magia.'},
+      ],
+      cierre:'Ritual de Luna Llena: tu primer ritual lunar completo con la rueda como guía.'
+    },
+    {
+      num:4, nombre:'Las Plantas, las Velas y el Fuego', dias:'87–115', emoji:'🌿', color:'#1a4a1a',
+      desc:'La farmacia y la botica de la bruja. Herbolaria latinoamericana y mundial, magia de velas, incienso, resinas y aceites esenciales.',
+      semanas:[
+        {num:1, titulo:'Herbolaria mágica: lo que ya tienes', desc:'Las hierbas de tu cocina son tu primer laboratorio mágico. Romero, laurel, ruda, albahaca, canela: propiedades mágicas y medicinales. Cómo secarlas, guardarlas y usarlas.'},
+        {num:2, titulo:'Magia de velas', desc:'Los colores y sus correspondencias. Cómo labrar una vela: grabar intenciones, aceites, hierbas. Lectura de la llama: piromancia básica. Velas de emergencia del supermercado.'},
+        {num:3, titulo:'Incienso, resinas y sahumerio', desc:'Copal, mirra, olíbano, palo santo, ruda. Cómo hacer tus propias mezclas de incienso. El sahumerio como ritual de limpieza. Diferencias entre sahumar y solo quemar.'},
+        {num:4, titulo:'Aceites mágicos y la botica de la bruja', desc:'Aceites esenciales como concentradores de intención. Mezclas básicas para amor, protección, abundancia, claridad. La bolsa de poder (mojo bag) y cómo hacerla.'},
+      ],
+      cierre:'Tu primera producción completa: una vela labrada, una mezcla de incienso, una bolsa de poder.'
+    },
+    {
+      num:5, nombre:'El Taller de la Bruja', dias:'116–143', emoji:'🕯️', color:'#4a2000',
+      desc:'De consumidor a productor. Aprenderás a hacer tus herramientas desde cero: velas artesanales, pociones, tinturas y cocina mágica.',
+      semanas:[
+        {num:1, titulo:'Velas artesanales', desc:'Tipos de cera: parafina, soja, abejas. Mechas, moldes, colorantes naturales. Cómo verter, enfriar y acabar una vela. Tu primera colección.'},
+        {num:2, titulo:'Pociones, tinturas y elixires', desc:'La diferencia entre una poción mágica y un preparado medicinal. Bases: alcohol, vinagre, glicerina, agua lunar. Tinturas de hierbas para uso externo e interno (con precaución).'},
+        {num:3, titulo:'Aceites avanzados e incienso propio', desc:'Maceración en frío y en caliente. Aceites de masaje con intención mágica. Incienso de combustión directa e indirecta. Tu firma olfativa mágica.'},
+        {num:4, titulo:'Cocina mágica', desc:'Cocinar con intención es magia medicinal. Recetas con propósito: sopa de protección, pan de abundancia, dulce de amor. El festín ritual. La comida como ofrenda.'},
+      ],
+      cierre:'Inauguración de tu botica personal: todo lo que creaste en el ciclo, consagrado y en uso.'
+    },
+    {
+      num:6, nombre:'El Cosmos y la Adivinación', dias:'144–173', emoji:'⭐', color:'#1a1a4a',
+      desc:'Astrología práctica para brujos, Tarot completo y Runas. Aprenderás a leer el cielo y las cartas como herramientas de autoconocimiento, no de predicción.',
+      semanas:[
+        {num:1, titulo:'Astrología para brujos', desc:'Tu carta natal como mapa. Los 4 puntos fundamentales: Sol (identidad), Luna (emociones), Ascendente (cómo te muestras), Lilith (tu sombra salvaje). Cómo usar la astrología en tus rituales.'},
+        {num:2, titulo:'Tarot (I): las bases y los Arcanos Mayores', desc:'Por qué el tarot no es brujería peligrosa. Cómo elegir tu mazo. Los 22 Arcanos Mayores uno a uno. La lanzada de 1 carta y la de 3 cartas.'},
+        {num:3, titulo:'Tarot (II): Arcanos Menores y ética', desc:'Los 4 palos: Bastos, Copas, Espadas, Oros. Cómo leer combinaciones. La Cruz Celta. Ética de la lectura: qué decir, qué callar, a quién no leer, cómo no crear dependencia.'},
+        {num:4, titulo:'Runas y tu propio oráculo', desc:'Los 24 futhark: significados, cómo tirarlos, cómo fabricarlos. Otros sistemas: péndulo, oráculo personal. Cómo crear tu propio sistema de adivinación con objetos cotidianos.'},
+      ],
+      cierre:'Lectura integrada: carta natal + tarot + runas para leer un mismo momento desde tres ángulos.'
+    },
+    {
+      num:7, nombre:'El Arte de Conjurar', dias:'174–202', emoji:'🔮', color:'#4a0a0a',
+      desc:'Los rituales avanzados: cómo construir un ritual con estructura, intención y poder real. Las 4 fases lunares como motor, los planetas como aliados, tu carta natal como mapa.',
+      semanas:[
+        {num:1, titulo:'Las 4 fases lunares como motor del ritual', desc:'Cada fase lunar tiene un tipo de ritual que le pertenece. Cómo planificar un ritual mensual siguiendo el ciclo. El error de hacer magia solo en luna llena.'},
+        {num:2, titulo:'Los planetas y sus intenciones', desc:'Los 7 planetas clásicos + Urano, Neptuno, Plutón. Sus horas mágicas, sus colores, sus correspondencias. El peligro de los rituales planetarios mal hechos. El Sol como luminar, no como planeta.'},
+        {num:3, titulo:'Tu carta natal en el ritual', desc:'Cómo usar tus propios signos para personalizar un ritual. Las casas como mapa de hacia dónde dirigir la intención. Tus planetas natales como aliados o como zonas de trabajo.'},
+        {num:4, titulo:'Lilith, la sombra y el corte de lazos', desc:'Lilith como combustible ritual: reclamar lo que fue reprimido. Rituales de corte de lazos: cómo hacerlos bien (y el error que casi todos cometen). La síntesis: ritual completo con todos los elementos.'},
+      ],
+      cierre:'Ritual completo con lectura de vela: todo lo aprendido en un acto unificado.'
+    },
+    {
+      num:8, nombre:'Amor y Relaciones', dias:'203–231', emoji:'💜', color:'#4a0040',
+      desc:'El amor como práctica mágica. Desde el amor propio como base hasta la magia de atracción, la magia sexual y las relaciones que duelen.',
+      semanas:[
+        {num:1, titulo:'Amor propio como base de toda magia', desc:'No puedes atraer lo que no sientes que mereces. Rituales de amor propio: baños, afirmaciones, espejos. La diferencia entre amor propio mágico y autoindulgencia.'},
+        {num:2, titulo:'Magia de atracción y ética del amor mágico', desc:'Tipos de magia de amor: atracción general, apertura, reconciliación, unión. Qué se puede hacer y qué viola el libre albedrío. Cómo hacer magia de amor sin manipular.'},
+        {num:3, titulo:'Energía sexual como combustible ritual', desc:'La transmutación de la energía sexual en poder mágico. Rituales solos y en pareja. La sexualidad como sacramento, no como tabú. Cómo usar el orgasmo como punto de lanzamiento.'},
+        {num:4, titulo:'Relaciones que duelen: sombra y corte de lazos', desc:'La sombra en las relaciones: qué proyectamos en los demás. Corte de lazos emocionales: el ritual que casi todos hacen mal. Sanar sin magia destructiva.'},
+      ],
+      cierre:'Ritual del corazón: un ritual completo para lo que necesites sanar o cultivar en el amor.'
+    },
+    {
+      num:9, nombre:'Prosperidad y Manifestación', dias:'232–260', emoji:'💛', color:'#4a3a00',
+      desc:'La magia de la abundancia: diferencia entre manifestar y desear. Aprenderás a alinear tu energía con la prosperidad sin contradecir tu propio sistema de creencias.',
+      semanas:[
+        {num:1, titulo:'Qué es la abundancia (y qué no es)', desc:'Desmontando la magia del dinero rápido. La prosperidad como estado energético. Por qué la magia de abundancia sin trabajo interior no funciona.'},
+        {num:2, titulo:'Rituales de prosperidad', desc:'Velas verdes y doradas, canela, albahaca, laurel. Sigilos de abundancia. La carta de manifestación. Cómo hacer una billetera mágica.'},
+        {num:3, titulo:'Manifestación consciente', desc:'La ley de vibración más allá del "pensamiento positivo". Cómo anclar una intención en el plano físico. El vision board mágico: más que imágenes bonitas.'},
+        {num:4, titulo:'La relación con el dinero y la sombra', desc:'Tu historia personal con el dinero. Los bloqueos heredados y cómo romperlos. Rituales de desbloqueo financiero. Gratitud como frecuencia, no como performance.'},
+      ],
+      cierre:'Ritual de prosperidad completo: siembra de intención con seguimiento a 28 días.'
+    },
+    {
+      num:10, nombre:'Sanación, Cuerpo y Energía', dias:'261–289', emoji:'💚', color:'#004a1a',
+      desc:'El cuerpo como templo y como barômetro. Aprenderás a trabajar con tu energía corporal, los chakras, las plantas medicinales y la conexión entre magia y salud.',
+      semanas:[
+        {num:1, titulo:'El cuerpo en la brujería', desc:'Por qué ignorar el cuerpo es ignorar la mitad de tu poder. Tierra y enraizamiento como práctica física. El cuerpo como sensor de energía.'},
+        {num:2, titulo:'Los centros energéticos', desc:'Los chakras como mapa funcional, no dogma hindú. Cómo detectar bloqueos en tu propio cuerpo. Técnicas de limpieza y activación energética.'},
+        {num:3, titulo:'Plantas medicinales y sanación mágica', desc:'La conexión entre herbolaria mágica y medicinal. Preparados para sanar el cuerpo físico con intención mágica. Los límites entre medicina y magia.'},
+        {num:4, titulo:'Sanación a distancia y cuidado del brujo', desc:'Enviar sanación a otros: cómo y cuándo. El peligro del brujo que sana todo lo ajeno y descuida lo propio. Autocuidado como práctica espiritual.'},
+      ],
+      cierre:'Ritual de autosanación: un trabajo profundo contigo mismo.'
+    },
+    {
+      num:11, nombre:'Entidades y Espíritus', dias:'290–318', emoji:'👁️', color:'#1a0a3a',
+      desc:'Cartografía del mundo espiritual sin invocación precipitada. Aprenderás qué existe, cómo funciona y cuándo (y cuándo no) relacionarte con ello.',
+      semanas:[
+        {num:1, titulo:'Espíritus de lugar y elementales', desc:'Los espíritus que ya conviven contigo. Cómo percibirlos, cómo relacionarte con ellos, cómo no molestarlos. Los elementales del hogar y el jardín.'},
+        {num:2, titulo:'Ancestros y guías', desc:'El trabajo con ancestros como la raíz de toda práctica. Cómo comunicarte con quienes ya no están. Los guías espirituales: qué son y cómo diferenciarlos de la imaginación.'},
+        {num:3, titulo:'Lo que existe más allá', desc:'Demonología histórica: la Goecia como documento histórico, no como manual de invocación. Las entidades que no conviene convocar. Protocolos básicos de seguridad espiritual.'},
+        {num:4, titulo:'Tu guardiana y tus aliados espirituales', desc:'Cómo identificar a tus aliados espirituales personales. La diferencia entre una entidad que te elige y una que convocas. Relación sostenida con tus apoyos espirituales.'},
+      ],
+      cierre:'Ritual de contacto con tus ancestros y reconocimiento de tu guardiana o guía principal.'
+    },
+    {
+      num:12, nombre:'La Magia Oscura, la Sombra y el Grimorio Final', dias:'319–365', emoji:'🌑', color:'#0a0a1a',
+      desc:'El cierre del año y la integración total. Trabajo de sombra profundo, magia de protección avanzada, destierro y banishing, y la creación de tu grimorio personal definitivo.',
+      semanas:[
+        {num:1, titulo:'Magia oscura: aclaración necesaria', desc:'Qué es y qué no es la magia oscura. Destierro, banishing, protección fuerte: cuándo y cómo. La ética de hacerle daño a alguien versus protegerse de quien te daña.'},
+        {num:2, titulo:'Trabajo de sombra avanzado', desc:'Jung y la brujería: integrar lo que rechazamos. Las partes de ti que has demonizado. Rituales de integración de sombra para el brujo que ya tiene bases.'},
+        {num:3, titulo:'Protección profunda y magia de defensa', desc:'Los escudos energéticos sostenidos. Magia defensiva sin atacar. Cómo proteger a otros. El círculo de protección permanente para tu hogar.'},
+        {num:4, titulo:'Tu grimorio personal y el ritual de graduación', desc:'Qué debe tener tu grimorio: tu voz, tus experiencias, tus descubrimientos. Cómo organizarlo. No es un libro copiado: es el mapa de tu propio camino.'},
+      ],
+      cierre:'Ritual de Graduación: un año de práctica. Celebra lo que eres ahora.'
+    },
+  ];
+
+  let currentCiclo = null;
+  let searchQuery = '';
+
+  function renderCicloCard(c, expanded) {
+    const weeks = c.semanas.map((s,i) => `
+      <div class="libro-semana">
+        <div class="libro-semana-title">Semana ${s.num}: ${s.titulo} <span class="text-muted" style="font-size:.8rem">(días ${c.dias.split('–')[0]*1 + i*7}–${Math.min(c.dias.split('–')[0]*1 + i*7+6, +c.dias.split('–')[1])})</span></div>
+        <p class="libro-semana-desc">${s.desc}</p>
+      </div>
+    `).join('');
+
+    return `
+      <div class="libro-ciclo-card ${expanded?'expanded':''}" data-ciclo="${c.num}">
+        <div class="libro-ciclo-header" onclick="LibroModule.toggle(${c.num})">
+          <div class="libro-ciclo-num" style="background:${c.color}">${c.emoji} Ciclo ${c.num}</div>
+          <div class="libro-ciclo-info">
+            <strong>${c.nombre}</strong>
+            <span class="text-muted" style="font-size:.8rem"> · Días ${c.dias}</span>
+          </div>
+          <span class="libro-ciclo-arrow">${expanded?'▲':'▼'}</span>
+        </div>
+        <div class="libro-ciclo-body ${expanded?'':'hidden'}">
+          <p class="libro-ciclo-desc">${c.desc}</p>
+          <div class="libro-semanas-list">${weeks}</div>
+          <div class="libro-cierre">
+            <span class="text-gold">✦ Cierre:</span> ${c.cierre}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function render() {
+    const wrap = document.getElementById('libro-ciclos');
+    if (!wrap) return;
+    const q = searchQuery.toLowerCase();
+    const filtered = q ? CICLOS.filter(c =>
+      c.nombre.toLowerCase().includes(q) ||
+      c.desc.toLowerCase().includes(q) ||
+      c.semanas.some(s => s.titulo.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q))
+    ) : CICLOS;
+
+    wrap.innerHTML = filtered.map(c => renderCicloCard(c, currentCiclo===c.num)).join('');
+  }
+
+  function toggle(num) {
+    currentCiclo = (currentCiclo === num) ? null : num;
+    render();
+    if (currentCiclo) {
+      setTimeout(() => {
+        document.querySelector(`[data-ciclo="${num}"]`)?.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 50);
+    }
+  }
+
+  function init() {
+    render();
+    const searchEl = document.getElementById('libro-search');
+    if (searchEl) {
+      searchEl.addEventListener('input', e => {
+        searchQuery = e.target.value;
+        render();
+      });
+    }
+  }
+
+  return { init, toggle };
+})();
+
+</script>
+<script>
+'use strict';
+// ============================================================
+// CALENDARIO.JS — Calendario mágico con eventos y recordatorios
+// ============================================================
+const CalendarioModule = (() => {
+  const SK = 'bruja_eventos';
+  let hoy = new Date();
+  let viewYear = hoy.getFullYear();
+  let viewMonth = hoy.getMonth();
+
+  const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                 'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const DIAS  = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+  function loadEventos() {
+    try { return JSON.parse(localStorage.getItem(SK) || '[]'); } catch(e){ return []; }
+  }
+  function saveEventos(evs) {
+    try { localStorage.setItem(SK, JSON.stringify(evs)); } catch(e){}
+  }
+
+  function getEventosDelDia(year, month, day) {
+    return loadEventos().filter(e => {
+      const d = new Date(e.fecha + 'T12:00:00');
+      return d.getFullYear()===year && d.getMonth()===month && d.getDate()===day;
+    });
+  }
+
+  function formatDateKey(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+
+  function renderCalendar() {
+    const wrap = document.getElementById('cal-grid');
+    if (!wrap) return;
+
+    document.getElementById('cal-mes-label').textContent = `${MESES[viewMonth]} ${viewYear}`;
+
+    const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+    const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+    const eventos = loadEventos();
+
+    // Obtener sabbats y lunas del mes
+    const lunasMes = getLunasMes(viewYear, viewMonth);
+    const sabbatsMes = getSabbatsMes(viewYear, viewMonth);
+
+    let html = DIAS.map(d => `<div class="cal-dow">${d}</div>`).join('');
+
+    // Días vacíos al inicio
+    for (let i=0; i<firstDay; i++) html += `<div class="cal-cell cal-empty"></div>`;
+
+    for (let d=1; d<=daysInMonth; d++) {
+      const dateKey = formatDateKey(viewYear, viewMonth, d);
+      const isHoy   = hoy.getFullYear()===viewYear && hoy.getMonth()===viewMonth && hoy.getDate()===d;
+      const diaEvs  = eventos.filter(e=>e.fecha===dateKey);
+      const luna    = lunasMes[d];
+      const sabbat  = sabbatsMes[d];
+
+      const badges = [];
+      if (luna)   badges.push(`<span class="cal-badge cal-badge-luna" title="${luna.name}">${luna.emoji}</span>`);
+      if (sabbat) badges.push(`<span class="cal-badge cal-badge-sabbat" title="${sabbat.name}">${sabbat.emoji||'✦'}</span>`);
+      diaEvs.slice(0,2).forEach(ev => {
+        badges.push(`<span class="cal-badge cal-badge-ev" style="background:${ev.color||'#7B4FBF'}" title="${ev.titulo}">●</span>`);
+      });
+
+      html += `
+        <div class="cal-cell${isHoy?' cal-hoy':''}" onclick="CalendarioModule.abrirDia('${dateKey}')">
+          <span class="cal-num">${d}</span>
+          <div class="cal-badges">${badges.join('')}</div>
+        </div>`;
+    }
+    wrap.innerHTML = html;
+  }
+
+  function getLunasMes(year, month) {
+    const result = {};
+    for (let d=1; d<=31; d++) {
+      if (d > new Date(year, month+1, 0).getDate()) break;
+      const jday = Astro.jd(year, month+1, d, 12, 0);
+      const phase = Astro.moonPhase(jday);
+      // Solo mostrar en fases exactas (nuevas, llenas, cuartos)
+      if (phase.angle < 5 || (phase.angle > 175 && phase.angle < 185) ||
+          (phase.angle > 85 && phase.angle < 95) || (phase.angle > 265 && phase.angle < 275)) {
+        result[d] = phase;
+      }
+    }
+    return result;
+  }
+
+  function getSabbatsMes(year, month) {
+    const result = {};
+    if (!Astro.SABBATS) return result;
+    Astro.SABBATS.forEach(sab => {
+      const d = new Date(sab.date + 'T12:00:00');
+      if (d.getFullYear()===year && d.getMonth()===month) {
+        result[d.getDate()] = sab;
+      }
+    });
+    return result;
+  }
+
+  function abrirDia(dateKey) {
+    const eventos = loadEventos();
+    const diaEvs  = eventos.filter(e=>e.fecha===dateKey);
+    const d       = new Date(dateKey + 'T12:00:00');
+    const jday    = Astro.jd(d.getFullYear(), d.getMonth()+1, d.getDate(), 12, 0);
+    const luna    = Astro.moonPhase(jday);
+
+    document.getElementById('cal-dia-label').textContent =
+      d.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+    document.getElementById('cal-luna-info').innerHTML =
+      `${luna.emoji} <strong>${luna.name}</strong> · ${luna.pct}% iluminada`;
+
+    const lista = document.getElementById('cal-dia-eventos');
+    lista.innerHTML = diaEvs.length
+      ? diaEvs.map(ev=>`
+          <div class="cal-ev-item" style="border-left:3px solid ${ev.color||'#7B4FBF'}">
+            <div class="cal-ev-titulo">${ev.emoji||'📅'} ${ev.titulo}</div>
+            ${ev.hora?`<div class="cal-ev-hora text-muted">🕐 ${ev.hora}</div>`:''}
+            ${ev.desc?`<div class="cal-ev-desc text-muted">${ev.desc}</div>`:''}
+            <button class="btn-xs btn-danger-xs" onclick="CalendarioModule.eliminarEvento('${ev.id}')">🗑</button>
+          </div>`).join('')
+      : `<p class="text-muted">Sin eventos este día.</p>`;
+
+    // Setear fecha en el form de nuevo evento
+    const inp = document.getElementById('nuevo-ev-fecha');
+    if (inp) inp.value = dateKey;
+
+    document.getElementById('cal-dia-panel').classList.remove('hidden');
+  }
+
+  function guardarEvento() {
+    const titulo = document.getElementById('nuevo-ev-titulo')?.value?.trim();
+    const fecha  = document.getElementById('nuevo-ev-fecha')?.value;
+    const hora   = document.getElementById('nuevo-ev-hora')?.value;
+    const desc   = document.getElementById('nuevo-ev-desc')?.value?.trim();
+    const color  = document.getElementById('nuevo-ev-color')?.value || '#7B4FBF';
+    const emoji  = document.getElementById('nuevo-ev-emoji')?.value?.trim() || '📅';
+    const recordar = document.getElementById('nuevo-ev-recordar')?.checked;
+
+    if (!titulo || !fecha) return;
+
+    const ev = { id: Date.now().toString(), titulo, fecha, hora, desc, color, emoji, recordar };
+    const evs = loadEventos();
+    evs.push(ev);
+    saveEventos(evs);
+
+    // Programar notificación
+    if (recordar) programarNotificacion(ev);
+
+    // Limpiar form
+    document.getElementById('nuevo-ev-titulo').value = '';
+    document.getElementById('nuevo-ev-desc').value   = '';
+
+    renderCalendar();
+    abrirDia(fecha);
+  }
+
+  function eliminarEvento(id) {
+    const evs = loadEventos().filter(e=>e.id!==id);
+    saveEventos(evs);
+    renderCalendar();
+    document.getElementById('cal-dia-panel').classList.add('hidden');
+  }
+
+  function programarNotificacion(ev) {
+    if (!('Notification' in window)) return;
+    Notification.requestPermission().then(perm => {
+      if (perm !== 'granted') return;
+      const evDate = new Date(ev.fecha + 'T' + (ev.hora||'09:00') + ':00');
+      const msLeft = evDate - new Date();
+      if (msLeft > 0 && msLeft < 7*24*3600*1000) { // Solo si es en los próximos 7 días
+        setTimeout(() => {
+          new Notification(`${ev.emoji||'📅'} ${ev.titulo}`, {
+            body: ev.desc || 'Recordatorio de tu grimorio',
+            icon: '/libro-de-sombras/favicon.ico'
+          });
+        }, msLeft);
+      }
+    });
+  }
+
+  function pedirPermiso() {
+    if ('Notification' in window) {
+      Notification.requestPermission().then(p => {
+        const btn = document.getElementById('cal-notif-btn');
+        if (btn) btn.textContent = p==='granted' ? '🔔 Notificaciones activas' : '🔕 Sin permiso';
+      });
+    }
+  }
+
+  function navMes(dir) {
+    viewMonth += dir;
+    if (viewMonth > 11) { viewMonth=0; viewYear++; }
+    if (viewMonth < 0)  { viewMonth=11; viewYear--; }
+    renderCalendar();
+    document.getElementById('cal-dia-panel')?.classList.add('hidden');
+  }
+
+  function init() {
+    hoy = new Date();
+    viewYear  = hoy.getFullYear();
+    viewMonth = hoy.getMonth();
+
+    const prevBtn = document.getElementById('cal-prev');
+    const nextBtn = document.getElementById('cal-next');
+    prevBtn?.removeEventListener('click', prevBtn._h);
+    nextBtn?.removeEventListener('click', nextBtn._h);
+    prevBtn && (prevBtn._h = ()=>navMes(-1), prevBtn.addEventListener('click',prevBtn._h));
+    nextBtn && (nextBtn._h = ()=>navMes(+1), nextBtn.addEventListener('click',nextBtn._h));
+
+    document.getElementById('cal-guardar-ev')?.addEventListener('click', guardarEvento);
+    document.getElementById('cal-notif-btn')?.addEventListener('click', pedirPermiso);
+
+    renderCalendar();
+  }
+
+  return { init, abrirDia, eliminarEvento, guardarEvento, navMes };
+})();
+
+</script>
+<script>
 'use strict';
 // ============================================================
 // APP.JS — Controlador principal
 // ============================================================
 const AppModule = (() => {
 
-  const SECTIONS = ['hoy','carta','rueda','biblioteca','hechizos','tareas','diario'];
+  const SECTIONS = ['hoy','carta','rueda','biblioteca','hechizos','tareas','diario','libro','calendario'];
   let currentSection = 'hoy';
   let initialized = {};
 
@@ -4056,6 +4660,8 @@ const AppModule = (() => {
         case 'hechizos':  HechizosModule.init(); break;
         case 'tareas':    TareasModule.init(); break;
         case 'diario':    DiarioModule.init(); break;
+        case 'libro':     LibroModule.init(); break;
+        case 'calendario':CalendarioModule.init(); break;
       }
     }
 
@@ -4083,13 +4689,19 @@ const AppModule = (() => {
     const el = document.getElementById('today-date');
     if (el) el.textContent = dateStr;
 
-    // Sol y luna del día
-    const sunLon = Astro.sunLon(Astro.T(jd));
-    const sunSign = Astro.ZODIAC.find(z => Math.floor(Astro.norm(sunLon)/30) === Astro.ZODIAC.indexOf(z));
-    const moonLon = Astro.moonLon(Astro.T(jd));
-    const moonSign = Astro.ZODIAC.find((_,i) => i === Math.floor(Astro.norm(moonLon)/30));
+    // Sol, luna y Lilith del día
+    const t0 = Astro.T(jd);
+    const sunLon  = Astro.sunLon(t0);
+    const sunSign = Astro.sign(sunLon);
+    const mLon    = Astro.moonLon(t0);
+    const moonSign= Astro.sign(mLon);
+    const lLon    = Astro.lilithLon(t0);
+    const lilSign = Astro.sign(lLon);
+
     if (sunSign)  { document.getElementById('sun-sign').textContent  = `☉ Sol en ${sunSign.sym} ${sunSign.name}`; }
     if (moonSign) { document.getElementById('moon-sign').textContent = `☽ Luna en ${moonSign.sym} ${moonSign.name}`; }
+    const lilEl = document.getElementById('lilith-sign');
+    if (lilEl && lilSign) { lilEl.textContent = `⚸ Lilith en ${lilSign.sym} ${lilSign.name}`; }
 
     // Próximo sabbat
     const next = Astro.nextSabbat(now);
@@ -4245,6 +4857,8 @@ const AppModule = (() => {
 document.addEventListener('DOMContentLoaded', () => {
   AppModule.init();
 });
+
 </script>
+
 </body>
 </html>
