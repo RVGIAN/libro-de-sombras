@@ -1037,6 +1037,189 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
   .hechizo-materiales { grid-template-columns: 1fr 1fr; }
 }
 
+/* ════════════════════════════════════════════════════════════
+   CALENDARIO MÁGICO
+════════════════════════════════════════════════════════════ */
+.cal-nav {
+  display: flex; align-items: center; gap: .75rem;
+  margin-bottom: 1.25rem; flex-wrap: wrap;
+}
+.cal-mes-label {
+  font-size: 1.15rem; font-weight: 700;
+  color: var(--gold); letter-spacing: .03em;
+}
+.cal-grid-wrap { overflow-x: auto; border-radius: 12px; }
+.cal-grid {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  gap: 3px;
+  min-width: 480px;
+  background: rgba(255,255,255,.04);
+  border-radius: 12px;
+  padding: 8px;
+}
+.cal-dow {
+  text-align: center; padding: .5rem .2rem;
+  font-size: .7rem; font-weight: 700;
+  color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.cal-cell {
+  min-height: 72px; padding: .35rem .4rem;
+  border-radius: 8px;
+  background: rgba(255,255,255,.03);
+  cursor: pointer; position: relative;
+  transition: background .15s, transform .1s;
+  border: 1px solid transparent;
+}
+.cal-cell:hover { background: rgba(123,79,191,.22); border-color: rgba(123,79,191,.4); }
+.cal-cell.cal-hoy {
+  background: rgba(123,79,191,.28);
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 10px rgba(184,134,11,.2);
+}
+.cal-cell.cal-empty { cursor: default; background: transparent; border-color: transparent; }
+.cal-num {
+  font-size: .78rem; font-weight: 600;
+  color: var(--text-muted); display: block;
+}
+.cal-cell.cal-hoy .cal-num { color: var(--gold); }
+.cal-badges { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 3px; }
+.cal-badge { font-size: .82rem; line-height: 1; }
+.cal-badge-ev {
+  display: inline-block; width: 7px; height: 7px;
+  border-radius: 50%; vertical-align: middle;
+}
+/* Panel del día */
+.cal-dia-eventos { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1rem; }
+.cal-ev-item {
+  padding: .6rem .9rem; border-radius: 8px;
+  background: rgba(255,255,255,.04);
+  display: flex; flex-direction: column; gap: .2rem;
+  position: relative;
+}
+.cal-ev-titulo { font-weight: 600; font-size: .95rem; }
+.cal-ev-hora, .cal-ev-desc { font-size: .8rem; color: var(--text-muted); }
+.card-sep { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+/* Botones pequeños */
+.btn-xs {
+  padding: .2rem .5rem; font-size: .72rem;
+  border-radius: 4px; cursor: pointer; border: none;
+  position: absolute; top: .5rem; right: .5rem;
+}
+.btn-danger-xs { background: rgba(220,53,69,.18); color: #ff7070; }
+.btn-danger-xs:hover { background: rgba(220,53,69,.35); }
+.btn-outline-sm {
+  padding: .35rem .8rem; font-size: .8rem;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: 7px; cursor: pointer; color: var(--text);
+  transition: border-color .15s, color .15s;
+}
+.btn-outline-sm:hover { border-color: var(--gold); color: var(--gold); }
+.btn-gold {
+  padding: .45rem 1.1rem; background: var(--gold);
+  color: #000; border: none; border-radius: 7px;
+  font-weight: 700; cursor: pointer; font-size: .9rem;
+  transition: opacity .15s;
+}
+.btn-gold:hover { opacity: .85; }
+.form-row { display: flex; align-items: center; gap: .75rem; }
+
+/* ════════════════════════════════════════════════════════════
+   LIBRO DE SOMBRAS — ciclos mejorados
+════════════════════════════════════════════════════════════ */
+.libro-ciclo {
+  margin-bottom: .6rem; border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,.2);
+}
+.ciclo-header {
+  display: flex; align-items: center; gap: .9rem;
+  padding: .9rem 1.1rem; cursor: pointer;
+  transition: filter .15s;
+  user-select: none;
+}
+.ciclo-header:hover { filter: brightness(1.1); }
+.ciclo-num {
+  font-size: .7rem; font-weight: 800; letter-spacing: .08em;
+  opacity: .8; text-transform: uppercase;
+  background: rgba(0,0,0,.2); padding: .2rem .5rem;
+  border-radius: 20px;
+}
+.ciclo-emoji { font-size: 1.4rem; }
+.ciclo-titulo { font-weight: 700; font-size: 1rem; flex: 1; }
+.ciclo-dias { font-size: .78rem; opacity: .7; }
+.ciclo-chevron { font-size: .8rem; transition: transform .2s; }
+.ciclo-header.open .ciclo-chevron { transform: rotate(180deg); }
+.ciclo-body {
+  background: rgba(0,0,0,.2);
+  padding: 0 1.1rem; max-height: 0;
+  overflow: hidden; transition: max-height .35s ease, padding .2s;
+}
+.ciclo-body.open { max-height: 2000px; padding: 1rem 1.1rem 1.1rem; }
+.ciclo-desc { font-size: .88rem; color: var(--text-muted); margin-bottom: .9rem; line-height: 1.6; }
+.ciclo-semana {
+  margin-bottom: .6rem; padding: .5rem .8rem;
+  background: rgba(255,255,255,.04); border-radius: 8px;
+  border-left: 3px solid rgba(255,255,255,.2);
+}
+.ciclo-semana-titulo { font-weight: 600; font-size: .88rem; }
+.ciclo-semana-dias { font-size: .72rem; color: var(--text-muted); }
+.ciclo-semana-desc { font-size: .82rem; color: var(--text-muted); margin-top: .3rem; line-height: 1.5; }
+.ciclo-cierre {
+  margin-top: .8rem; padding: .6rem .9rem;
+  border-radius: 8px; background: rgba(184,134,11,.1);
+  border-left: 3px solid var(--gold);
+  font-size: .85rem; color: var(--gold);
+}
+
+/* ════════════════════════════════════════════════════════════
+   LOGIN / PASSWORD SCREEN
+════════════════════════════════════════════════════════════ */
+#login-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: radial-gradient(ellipse at center, #1a0a2e 0%, #0d0618 100%);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 1.5rem;
+}
+#login-screen.hidden { display: none !important; }
+.login-logo { font-size: 3.5rem; animation: pulse-glow 3s ease-in-out infinite; }
+.login-title {
+  font-family: var(--font-display); font-size: 2rem;
+  color: var(--gold); text-shadow: 0 0 20px rgba(184,134,11,.5);
+  text-align: center; margin: 0;
+}
+.login-sub { color: var(--text-muted); font-size: .9rem; text-align: center; }
+.login-form {
+  display: flex; flex-direction: column; gap: .8rem;
+  width: 100%; max-width: 320px;
+}
+.login-input {
+  padding: .8rem 1.1rem;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px; color: var(--text); font-size: 1rem;
+  width: 100%; box-sizing: border-box;
+  transition: border-color .2s;
+}
+.login-input:focus { outline: none; border-color: var(--gold); }
+.login-btn {
+  padding: .85rem; background: linear-gradient(135deg, #7B4FBF, #9C6FDF);
+  border: none; border-radius: 10px; color: #fff;
+  font-size: 1rem; font-weight: 700; cursor: pointer;
+  transition: transform .1s, box-shadow .2s;
+  box-shadow: 0 4px 15px rgba(123,79,191,.4);
+}
+.login-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(123,79,191,.5); }
+.login-err { color: #ff7070; font-size: .82rem; text-align: center; min-height: 1rem; }
+.login-change-user { color: var(--text-muted); font-size: .78rem; text-align: center; cursor: pointer; text-decoration: underline; }
+/* Stars background for login */
+#login-screen::before {
+  content: '✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧';
+  position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,.08); font-size: 1.5rem; letter-spacing: 1.5rem;
+  pointer-events: none; white-space: nowrap;
+}
+
 </style>
 </head>
 <body>
@@ -1044,6 +1227,20 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
 <!-- ══════════════════════════════════════════════════════════
      LANDING / PORTADA
 ══════════════════════════════════════════════════════════ -->
+<!-- ════ PANTALLA DE LOGIN ════ -->
+<div id="login-screen">
+  <div class="login-logo">🔮</div>
+  <h1 class="login-title">Libro de Sombras</h1>
+  <p class="login-sub">Ingresa tu nombre y contraseña mágica</p>
+  <div class="login-form">
+    <input id="login-user" class="login-input" type="text" placeholder="✨ Tu nombre mágico" autocomplete="username">
+    <input id="login-pass" class="login-input" type="password" placeholder="🗝 Contraseña" autocomplete="current-password">
+    <div id="login-err" class="login-err"></div>
+    <button id="login-btn" class="login-btn">Entrar al Grimorio</button>
+    <div id="login-new" class="login-change-user">¿Primera vez? Se creará tu cuenta automáticamente</div>
+  </div>
+</div>
+
 <div id="landing">
   <div id="landing-bg"></div>
   <div class="landing-content">
@@ -1072,6 +1269,7 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
       <span class="sidebar-moon">☽</span>
       <span class="sidebar-title">Libro de<br>Sombras</span>
     </div>
+    <div id="sidebar-user" style="text-align:center;font-size:.8rem;color:var(--gold);padding:.3rem 1rem .1rem;opacity:.85"></div>
 
     <nav class="sidebar-nav">
       <a class="nav-link active" data-section="hoy" href="#">
@@ -1144,6 +1342,7 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
           <div id="sun-sign" class="text-muted" style="font-size:.85rem"></div>
           <div id="moon-sign" class="text-muted" style="font-size:.85rem;margin-top:.25rem"></div>
           <div id="lilith-sign" class="text-muted" style="font-size:.85rem;margin-top:.25rem;color:#800020"></div>
+          <div id="hoy-ciclo" style="margin-top:.6rem;font-size:.85rem;color:var(--gold)"></div>
         </div>
 
         <!-- Próximo sabbat -->
@@ -1621,9 +1820,8 @@ const Astro = (() => {
     const latR=lat*DEG;
     const y=-Math.cos(RAMC);
     const x=Math.sin(RAMC)*Math.cos(eps)+Math.tan(latR)*Math.sin(eps);
-    let asc=Math.atan2(y,x)*RAD;
-    if(x<0) asc+=180;
-    return norm(asc);
+    // atan2 ya maneja todos los cuadrantes; norm convierte a 0-360
+    return norm(Math.atan2(y,x)*RAD);
   }
 
   function mc(jday, lon){
@@ -2135,6 +2333,103 @@ const HechizosData = (() => {
       ],
       invocacion: 'Que las tres vertientes de la tierra te convoquen, [Deidad]. Que el velo sea delgado aquí.',
       nota: 'Los cruces de camino, el roble y el agua corriente son portales al mundo céltico. Respetar los ciclos lunares.',
+    },
+
+    // ── PANTEONES ASIÁTICOS Y LATINOAMERICANOS ─────────────────
+    shinto: {
+      id: 'shinto',
+      name: 'Shinto / Japonés',
+      emoji: '⛩️',
+      desc: 'Los kami (divinidades) japoneses — fuerzas de la naturaleza y espíritus ancestrales venerados en santuarios.',
+      deidades: [
+        { name:'Amaterasu', dominio:'sol, vida, abundancia, liderazgo, luz interior', color:'#FFD700,#FF8C00', num:1, ofrendas:'arroz, sake, espejos, flores de cerezo' },
+        { name:'Tsukuyomi', dominio:'luna, noche, ciclos, mareas, sueños', color:'#C0C0C0,#4B0082', num:9, ofrendas:'agua de luna, arroz blanco, perlas' },
+        { name:'Inari', dominio:'fertilidad, zorro, prosperidad, arroz, éxito', color:'#FF4500,#FFFFFF', num:3, ofrendas:'tofu frito, sake, zorro de arcilla, aceite' },
+        { name:'Izanami', dominio:'creación, muerte, oscuridad, transformación', color:'#000000,#4B0082', num:8, ofrendas:'obsidiana, flores negras, agua oscura' },
+        { name:'Raijin', dominio:'tormenta, trueno, cambio, purificación', color:'#4B0082,#FFD700', num:5, ofrendas:'tambores, monedas, agua de lluvia' },
+      ],
+      invocacion: 'Kashikomi kashikomi mōsu! [Kami], kami que resides en este lugar sagrado, desciende y guía este rito.',
+      nota: 'El harae (purificación) es esencial: limpiar el espacio con sal y agua. El misogi (ablución) purifica al practicante. Los ofrendas se llaman tamagushi.',
+    },
+
+    chino: {
+      id: 'chino',
+      name: 'Chino / Taoísta',
+      emoji: '☯️',
+      desc: 'El panteón chino: inmortales taoístas, dioses del hogar y espíritus celestiales del calendario lunar.',
+      deidades: [
+        { name:'Guan Yin', dominio:'compasión, misericordia, sanación, maternidad, perdón', color:'#FFFFFF,#FFD700', num:7, ofrendas:'lotos blancos, agua bendita, incienso blanco' },
+        { name:'Guan Yu', dominio:'protección, justicia, lealtad, guerra, negocios', color:'#008000,#FF0000', num:1, ofrendas:'vela roja, peach (melocotón), incienso rojo' },
+        { name:'Caishen', dominio:'riqueza, prosperidad, suerte, éxito comercial', color:'#FFD700,#FF0000', num:8, ofrendas:'monedas doradas, naranjas, incienso dorado' },
+        { name:'Tu Di Gong', dominio:'tierra, hogar, barrio, protección local', color:'#8B4513,#FFD700', num:6, ofrendas:'comida cocinada, incienso, papel de oro quemado' },
+        { name:'Luna (Chang'e)', dominio:'luna, inmortalidad, femenino, sueños, refugio', color:'#C0C0C0,#FFFFFF', num:9, ofrendas:'mooncakes, pomelo, conejos, jade blanco' },
+      ],
+      invocacion: 'Jing! [Deidad], ser de luz infinita, escucha la intención de mi corazón y guía este trabajo.',
+      nota: 'El feng shui orienta el altar hacia el sur o el este. Incienso de sándalo o jazmín. Las ofrendas se queman para transmitir al plano espiritual.',
+    },
+
+    maria_lionza: {
+      id: 'maria_lionza',
+      name: 'María Lionza / Venezuela',
+      emoji: '🌊',
+      desc: 'El culto venezolano de María Lionza: espíritus de cortes (médicas, africana, india, vikinga) que trabajan junto a la Reina de las Aguas.',
+      deidades: [
+        { name:'María Lionza', dominio:'naturaleza, agua, amor, fertilidad, Venezuela', color:'#228B22,#4169E1', num:7, ofrendas:'flores blancas, agua de río, tabaco, aguardiente' },
+        { name:'Negro Felipe', dominio:'protección, trabajo, justicia, guerrero', color:'#000000,#8B0000', num:1, ofrendas:'tabaco, ron, vela negra, cacao' },
+        { name:'El Indio Guaicaipuro', dominio:'protección, tierra, liderazgo, guerrero indigena', color:'#8B4513,#FF8C00', num:3, ofrendas:'maíz, flecha, tabaco, guarapo' },
+        { name:'Dr. José Gregorio Hernández', dominio:'salud, medicina, curación espiritual, milagros', color:'#FFFFFF,#4169E1', num:1, ofrendas:'vela blanca, flores blancas, agua, oración' },
+        { name:'La Corte Africana', dominio:'protección fuerte, destierro, magia de raíz', color:'#000000,#8B0000', num:9, ofrendas:'ron, tabaco, frijoles negros, hierro' },
+      ],
+      invocacion: 'Reina María Lionza, madre de las aguas y la montaña, abre el camino. Que las cortes espirituales acudan a esta llamada.',
+      nota: 'El culto se practica en Sorte, Yaracuy. Se trabaja con espíritu de servicio. Las sesiones incluyen canto (cantos de entrada), tabaco, y trabajos por cortes.',
+    },
+
+    azteca: {
+      id: 'azteca',
+      name: 'Azteca / Mexica',
+      emoji: '🌞',
+      desc: 'El panteón mexica: dioses del sol, la luna, el viento y la vida — una cosmovisión de ciclos cósmicos y dualidad sagrada.',
+      deidades: [
+        { name:'Tonatiuh', dominio:'sol, energía vital, fuerza, guerreros, verano', color:'#FFD700,#FF4500', num:4, ofrendas:'cempasúchil, copal, sangre (simbólica), obsidiana' },
+        { name:'Quetzalcóatl', dominio:'viento, sabiduría, conocimiento, Venus, creación', color:'#00CED1,#FFD700', num:5, ofrendas:'copal, jade, turquesa, mariposas' },
+        { name:'Tlaloc', dominio:'lluvia, fertilidad, agua, sustento, siembra', color:'#4169E1,#228B22', num:3, ofrendas:'agua, copal azul, chalchíhuitl (jade), maíz' },
+        { name:'Coatlicue', dominio:'tierra, vida, muerte, dualidad, maternidad cósmica', color:'#000000,#228B22', num:9, ofrendas:'tierra, obsidiana, serpiente (representación), flores' },
+        { name:'Xipe Tótec', dominio:'renovación, primavera, siembra, transformación, dualidad', color:'#FF8C00,#228B22', num:7, ofrendas:'semillas, copal, cempasúchil, tierra nueva' },
+      ],
+      invocacion: 'Ometéotl! [Deidad], señor/a del dualismo sagrado, que tu energía descienda sobre este altar tonalpohualli.',
+      nota: 'El copal es el incienso sagrado mexica. Los colores y direcciones del universo (rojo=Este, blanco=Norte, negro=Oeste, azul=Sur) orientan el trabajo. El calendario Tonalpohualli guía los rituales.',
+    },
+
+    kichwa: {
+      id: 'kichwa',
+      name: 'Kichwa / Ecuador',
+      emoji: '🏔️',
+      desc: 'Las fuerzas sagradas de los pueblos indígenas del Ecuador: Pacha Mama, los Apus (montañas) y la cosmovisión andina del Sumak Kawsay.',
+      deidades: [
+        { name:'Pacha Mama', dominio:'tierra, fertilidad, sustento, vida, ciclos naturales', color:'#228B22,#8B4513', num:7, ofrendas:'chicha, maíz, tierra, flores silvestres, cacao' },
+        { name:'Inti', dominio:'sol, vida, energía, abundancia, visión', color:'#FFD700,#FF8C00', num:1, ofrendas:'maíz amarillo, girasol, miel, oro simbólico' },
+        { name:'Quilla (Luna)', dominio:'luna, ciclos femeninos, siembra, agua', color:'#C0C0C0,#FFFFFF', num:9, ofrendas:'agua de río, papa blanca, luz de luna, plata' },
+        { name:'Los Apus (Volcanes)', dominio:'protección, fuerza, ancesros, tierra sagrada', color:'#4169E1,#808080', num:5, ofrendas:'chicha vertida al viento, coca (sagrada), maíz' },
+        { name:'Yaku Warmi', dominio:'espíritu del agua, ríos, fuentes, purificación', color:'#4169E1,#00CED1', num:9, ofrendas:'flores al río, agua, plegaria al amanecer' },
+      ],
+      invocacion: 'Pacha Mama, madre tierra que nos sostiene. Inti tayta, padre sol que nos da vida. Acudan a este momento sagrado. Allpa mama, yaku, wayra, nina — tierra, agua, viento, fuego.',
+      nota: 'La ofrenda principal es la chicha vertida sobre la tierra. Las ceremonias se realizan en los equinoccios (Inti Raymi, Kulla Raymi) y solsticios. El Sumak Kawsay (Buen Vivir) es la filosofía central.',
+    },
+
+    candomble: {
+      id: 'candomble',
+      name: 'Candomblé / Brasil',
+      emoji: '🌺',
+      desc: 'Los Orixás del Candomblé brasileño: divinidades africanas (nagô/yoruba) sincretizadas con la cultura brasileña y el catolicismo.',
+      deidades: [
+        { name:'Oxalá', dominio:'creación, paz, caminos celestiales, pureza, sabiduría', color:'#FFFFFF,#C0C0C0', num:8, ofrendas:'agua, vela blanca, harina blanca, coco' },
+        { name:'Iemanjá', dominio:'mar, maternidad, fertilidad, protección, sueños', color:'#4169E1,#FFFFFF', num:7, ofrendas:'flores blancas al mar, espejo, peine, perfume' },
+        { name:'Oxum', dominio:'ríos, amor, fertilidad, belleza, riqueza, dulzura', color:'#FFD700,#FF8C00', num:5, ofrendas:'miel, espejo dorado, flores amarillas, perfume dulce' },
+        { name:'Ogum', dominio:'hierro, trabajo, apertura de caminos, guerra, protección', color:'#228B22,#000000', num:7, ofrendas:'azeite de dendê (palma), frijoles, hierro' },
+        { name:'Exu', dominio:'caminos, comunicación, mensajero, apertura y cierre', color:'#000000,#FF0000', num:7, ofrendas:'cachaça, cigarro, maíz tostado, en encrucijada' },
+      ],
+      invocacion: 'Laroyê! Salve os Orixás! [Orixá], força da natureza, abre o caminho e abençoa este trabalho.',
+      nota: 'Cada Orixá tiene su día, color, número y ofrenda específica. Las ofrendas se preparan según la tradición de la casa (axé). El dendê (aceite de palma) es sagrado en muchos rituales.',
     },
   };
 
@@ -4331,33 +4626,62 @@ const LibroModule = (() => {
   let currentCiclo = null;
   let searchQuery = '';
 
+  // Calcula día de inicio de cada ciclo (1-indexed)
+  function getDiaInicio(cicloNum) {
+    let d = 1;
+    for (let i = 0; i < cicloNum - 1; i++) d += CICLOS[i].semanas.length * 7;
+    return d;
+  }
+
+  // Devuelve el ciclo + día relativo para HOY (desde la fecha de inicio guardada)
+  function getCicloDelDia(now) {
+    const startStr = localStorage.getItem('bruja_inicio_libro');
+    if (!startStr) return null;
+    const start = new Date(startStr);
+    const diff = Math.floor((now - start) / 86400000) + 1; // día 1-indexed
+    for (let i = 0; i < CICLOS.length; i++) {
+      const c = CICLOS[i];
+      const inicio = getDiaInicio(c.num);
+      const fin = inicio + c.semanas.length * 7 - 1;
+      if (diff >= inicio && diff <= fin) {
+        return { ...c, diaRelativo: diff - inicio + 1, dias: c.semanas.length * 7 };
+      }
+    }
+    return null;
+  }
+
   function renderCicloCard(c, expanded) {
-    const weeks = c.semanas.map((s,i) => `
-      <div class="libro-semana">
-        <div class="libro-semana-title">Semana ${s.num}: ${s.titulo} <span class="text-muted" style="font-size:.8rem">(días ${c.dias.split('–')[0]*1 + i*7}–${Math.min(c.dias.split('–')[0]*1 + i*7+6, +c.dias.split('–')[1])})</span></div>
-        <p class="libro-semana-desc">${s.desc}</p>
-      </div>
-    `).join('');
+    const inicioNum = getDiaInicio(c.num);
+    const weeks = c.semanas.map((s, i) => {
+      const dIni = inicioNum + i * 7;
+      const dFin = dIni + 6;
+      return `
+        <div class="ciclo-semana">
+          <div class="ciclo-semana-titulo">Semana ${s.num || i+1}: ${s.titulo}</div>
+          <div class="ciclo-semana-dias">días ${dIni}–${dFin}</div>
+          <div class="ciclo-semana-desc">${s.desc}</div>
+        </div>`;
+    }).join('');
 
     return `
-      <div class="libro-ciclo-card ${expanded?'expanded':''}" data-ciclo="${c.num}">
-        <div class="libro-ciclo-header" onclick="LibroModule.toggle(${c.num})">
-          <div class="libro-ciclo-num" style="background:${c.color}">${c.emoji} Ciclo ${c.num}</div>
-          <div class="libro-ciclo-info">
-            <strong>${c.nombre}</strong>
-            <span class="text-muted" style="font-size:.8rem"> · Días ${c.dias}</span>
+      <div class="libro-ciclo" data-ciclo="${c.num}">
+        <div class="ciclo-header${expanded?' open':''}"
+             style="background:linear-gradient(135deg,${c.color}cc,${c.color}66)"
+             onclick="LibroModule.toggle(${c.num})">
+          <span class="ciclo-emoji">${c.emoji}</span>
+          <div style="flex:1">
+            <span class="ciclo-num">Ciclo ${c.num}</span>
+            <div class="ciclo-titulo">${c.nombre}</div>
           </div>
-          <span class="libro-ciclo-arrow">${expanded?'▲':'▼'}</span>
+          <span class="ciclo-dias">${c.semanas.length * 7} días</span>
+          <span class="ciclo-chevron">▼</span>
         </div>
-        <div class="libro-ciclo-body ${expanded?'':'hidden'}">
-          <p class="libro-ciclo-desc">${c.desc}</p>
-          <div class="libro-semanas-list">${weeks}</div>
-          <div class="libro-cierre">
-            <span class="text-gold">✦ Cierre:</span> ${c.cierre}
-          </div>
+        <div class="ciclo-body${expanded?' open':''}">
+          <p class="ciclo-desc">${c.desc}</p>
+          ${weeks}
+          <div class="ciclo-cierre">✦ Cierre: ${c.cierre}</div>
         </div>
-      </div>
-    `;
+      </div>`;
   }
 
   function render() {
@@ -4394,7 +4718,7 @@ const LibroModule = (() => {
     }
   }
 
-  return { init, toggle };
+  return { init, toggle, getCicloDelDia };
 })();
 
 </script>
@@ -4703,6 +5027,15 @@ const AppModule = (() => {
     const lilEl = document.getElementById('lilith-sign');
     if (lilEl && lilSign) { lilEl.textContent = `⚸ Lilith en ${lilSign.sym} ${lilSign.name}`; }
 
+    // Ciclo del libro de sombras (si LibroModule existe)
+    if (typeof LibroModule !== 'undefined') {
+      const cicloEl = document.getElementById('hoy-ciclo');
+      if (cicloEl) {
+        const info = LibroModule.getCicloDelDia(now);
+        if (info) cicloEl.innerHTML = `${info.emoji} <strong>Ciclo ${info.num}:</strong> ${info.nombre} <span class="text-muted">· Día ${info.diaRelativo} de ${info.dias} días</span>`;
+      }
+    }
+
     // Próximo sabbat
     const next = Astro.nextSabbat(now);
     if (next) {
@@ -4784,6 +5117,74 @@ const AppModule = (() => {
     return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
   }
 
+  // ── LOGIN / USUARIOS ──────────────────────────────────────
+  const LOGIN_SK = 'bruja_users_v2';
+  let currentUser = null;
+
+  function hashSimple(str) {
+    let h = 5381;
+    for (let i = 0; i < str.length; i++) h = ((h << 5) + h) ^ str.charCodeAt(i);
+    return (h >>> 0).toString(36);
+  }
+
+  function loadUsers() {
+    try { return JSON.parse(localStorage.getItem(LOGIN_SK) || '{}'); } catch(e){ return {}; }
+  }
+  function saveUsers(u) {
+    try { localStorage.setItem(LOGIN_SK, JSON.stringify(u)); } catch(e){}
+  }
+
+  function initLogin() {
+    // ¿Hay sesión activa?
+    const saved = localStorage.getItem('bruja_session');
+    if (saved) {
+      const users = loadUsers();
+      if (users[saved]) { currentUser = saved; hideLogin(); return; }
+    }
+    const screen = document.getElementById('login-screen');
+    if (!screen) { hideLogin(); return; }
+
+    document.getElementById('login-btn')?.addEventListener('click', doLogin);
+    document.getElementById('login-pass')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+  }
+
+  function doLogin() {
+    const user = document.getElementById('login-user')?.value?.trim();
+    const pass = document.getElementById('login-pass')?.value;
+    const err  = document.getElementById('login-err');
+    if (!user || !pass) { if(err) err.textContent = 'Escribe tu nombre y contraseña'; return; }
+
+    const users = loadUsers();
+    const hash  = hashSimple(pass);
+
+    if (!users[user]) {
+      // Crear cuenta nueva
+      users[user] = { hash, created: Date.now() };
+      saveUsers(users);
+    } else if (users[user].hash !== hash) {
+      if(err) err.textContent = '🗝 Contraseña incorrecta';
+      return;
+    }
+    currentUser = user;
+    localStorage.setItem('bruja_session', user);
+    if(err) err.textContent = '';
+    hideLogin();
+  }
+
+  function hideLogin() {
+    const screen = document.getElementById('login-screen');
+    if (screen) {
+      screen.style.opacity = '0';
+      screen.style.transition = 'opacity .5s';
+      setTimeout(() => screen.classList.add('hidden'), 500);
+    }
+    // Mostrar username en sidebar
+    const userEl = document.getElementById('sidebar-user');
+    if (userEl && currentUser) userEl.textContent = `✨ ${currentUser}`;
+  }
+
   // ── Landing ────────────────────────────────────────────────
   function initLanding() {
     const btn = document.getElementById('btn-enter');
@@ -4835,6 +5236,7 @@ const AppModule = (() => {
 
   // ── Inicializar ───────────────────────────────────────────
   function init() {
+    initLogin();
     initLanding();
     initMobileMenu();
     initNav();
