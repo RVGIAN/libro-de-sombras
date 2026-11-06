@@ -1369,6 +1369,266 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
 /* Modal tags */
 .modal-tags { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: .3rem; }
 
+/* ════════════════════════════════════════════
+   LANDING — PORTADA
+════════════════════════════════════════════ */
+.landing-portada-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.landing-portada-img {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.7), 0 0 80px rgba(180,120,255,.2);
+}
+.landing-portada-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0; right: 0;
+  padding: 2rem 1.5rem 1.5rem;
+  background: linear-gradient(to top, rgba(10,5,20,.92) 60%, transparent);
+  border-radius: 0 0 12px 12px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ════════════════════════════════════════════
+   ADIVINACIÓN — nueva UI
+════════════════════════════════════════════ */
+.adiv-modo-selector {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+.adiv-modo-btn {
+  flex: 1;
+  min-width: 100px;
+  padding: .6rem .8rem;
+  border: 1px solid rgba(180,120,255,.3);
+  border-radius: 8px;
+  background: rgba(255,255,255,.04);
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+  font-size: .88rem;
+  cursor: pointer;
+  transition: all .2s;
+}
+.adiv-modo-btn.active,
+.adiv-modo-btn:hover {
+  background: rgba(180,120,255,.18);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Oráculo */
+.adiv-oraculo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .6rem;
+  padding: 1.5rem;
+  background: rgba(255,255,255,.04);
+  border-radius: 12px;
+  border: 1px solid rgba(180,120,255,.2);
+}
+.adiv-oraculo-sym {
+  font-size: 3.5rem;
+  line-height: 1;
+  transition: transform .4s;
+}
+.adiv-oraculo-sym.invertida {
+  transform: rotate(180deg);
+  opacity: .75;
+}
+.adiv-oraculo-nombre {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  color: var(--gold);
+}
+.adiv-oraculo-kw {
+  font-size: .85rem;
+  color: var(--text-secondary);
+  text-align: center;
+  font-style: italic;
+}
+.adiv-oraculo-desc {
+  font-size: .95rem;
+  line-height: 1.65;
+  text-align: center;
+  max-width: 36ch;
+  color: var(--text-primary);
+}
+.adiv-tirar-btn {
+  background: linear-gradient(135deg, var(--gold), #b8860b);
+  color: #0a0510;
+  border: none;
+  border-radius: 8px;
+  padding: .7rem 1.6rem;
+  font-family: var(--font-heading);
+  font-size: .95rem;
+  cursor: pointer;
+  transition: opacity .2s, transform .15s;
+}
+.adiv-tirar-btn:hover { opacity: .88; transform: translateY(-1px); }
+
+/* Grids de referencia */
+.adiv-ref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: .6rem;
+}
+.adiv-ref-card {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(180,120,255,.18);
+  border-radius: 10px;
+  padding: .8rem .5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+}
+.adiv-ref-card:hover {
+  background: rgba(180,120,255,.14);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+.adiv-ref-sym {
+  font-size: 1.8rem;
+  margin-bottom: .2rem;
+}
+.adiv-ref-num {
+  font-size: .68rem;
+  color: var(--gold);
+  font-family: var(--font-heading);
+  opacity: .8;
+}
+.adiv-ref-nombre {
+  font-size: .78rem;
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  margin: .15rem 0;
+  line-height: 1.2;
+}
+.adiv-ref-kw {
+  font-size: .68rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ══════════════════════════════════════════════════════════
+   COCINA MÁGICA — Tabs y nuevas secciones
+══════════════════════════════════════════════════════════ */
+.cocina-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(180,120,255,.15);
+  border-radius: 14px;
+  padding: 1.2rem;
+  cursor: pointer;
+  transition: all .2s;
+}
+.cocina-card:hover {
+  background: rgba(180,120,255,.1);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+.cocina-emoji { font-size: 2rem; margin-bottom: .4rem; }
+.cocina-nombre {
+  font-family: var(--font-heading);
+  color: var(--gold);
+  font-size: .95rem;
+  margin-bottom: .3rem;
+}
+.cocina-intencion {
+  font-size: .82rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Libro prácticas semanales */
+.ciclo-practicas { margin-top: .75rem; }
+.ciclo-practicas-titulo {
+  font-family: var(--font-heading);
+  color: var(--gold);
+  font-size: .78rem;
+  letter-spacing: .06em;
+  margin-bottom: .4rem;
+  opacity: .9;
+}
+.ciclo-practicas-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ciclo-practicas-list li {
+  padding: .25rem 0 .25rem .9rem;
+  font-size: .84rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  position: relative;
+}
+.ciclo-practicas-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-size: .6rem;
+  top: .4rem;
+  opacity: .7;
+}
+
+/* Altar tabs */
+.altar-tabs-row {
+  display: flex;
+  gap: .4rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.altar-tab {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(180,120,255,.2);
+  border-radius: 8px;
+  padding: .4rem .9rem;
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+  font-size: .78rem;
+  cursor: pointer;
+  transition: all .2s;
+}
+.altar-tab:hover { border-color: var(--gold); color: var(--gold); }
+.altar-tab.active {
+  background: rgba(180,120,80,.18);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Admin panel */
+.admin-table-wrap { overflow-x: auto; }
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .88rem;
+}
+.admin-table th {
+  font-family: var(--font-heading);
+  color: var(--gold);
+  font-size: .75rem;
+  letter-spacing: .06em;
+  padding: .5rem .75rem;
+  border-bottom: 1px solid rgba(180,120,255,.2);
+  text-align: left;
+}
+.admin-table td {
+  padding: .55rem .75rem;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+.admin-table tr:hover td { background: rgba(255,255,255,.03); }
+
 </style>
 </head>
 <body>
@@ -1393,13 +1653,13 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
 <div id="landing">
   <div id="landing-bg"></div>
   <div class="landing-content">
-    <div class="landing-text">
-      <p class="landing-sub">Libro de Sombras Digital</p>
-      <h1 class="landing-title">El Año<br><span class="landing-de">de la</span><br>Bruja</h1>
-      <p class="landing-author">Gianfranco Rincón</p>
-      <button class="btn-enter" id="btn-enter">
-        <span>✦ Entrar al Grimorio ✦</span>
-      </button>
+    <div class="landing-portada-wrap">
+      <img src="assets/portada.png" alt="El Año de la Bruja" class="landing-portada-img">
+      <div class="landing-portada-overlay">
+        <button class="btn-enter" id="btn-enter">
+          <span>✦ Entrar al Grimorio ✦</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -1457,6 +1717,10 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
       </a>
       <a class="nav-link" data-section="adivinacion" href="#">
         <span class="nav-icon">🃏</span> Adivinación
+      </a>
+      <div class="nav-sep"></div>
+      <a class="nav-link" data-section="admin" href="#" id="nav-admin" style="display:none">
+        <span class="nav-icon">⚙️</span> Administrador
       </a>
     </nav>
 
@@ -1843,40 +2107,86 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
     ════════════════════════════════════════════ -->
     <section id="sec-cocina" class="section">
       <h1 class="section-title">🌿 Cocina Mágica</h1>
-      <p class="section-sub">Recetas con intención — alquimia en tu cocina</p>
-      <div class="card" style="margin-bottom:1rem">
+      <p class="section-sub">Recetas · Baños rituales · Brebajes y pociones</p>
+      <div id="cocina-tabs" class="bib-tabs" style="margin-bottom:1rem"></div>
+      <div id="cocina-filtros-wrap" class="card" style="margin-bottom:1rem">
         <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
           <div id="cocina-filtros" style="display:flex;gap:.4rem;flex-wrap:wrap;flex:1"></div>
-          <input id="cocina-search" class="form-input" placeholder="🔍 Buscar receta…" style="max-width:220px">
+          <input id="cocina-search" class="form-input" placeholder="🔍 Buscar…" style="max-width:220px">
         </div>
       </div>
       <div id="cocina-grid" class="cocina-grid"></div>
+      <div style="text-align:center;margin-top:2rem">
+        <button class="btn-gold" onclick="CocinaModule.abrirCrearReceta()" style="font-size:1rem;padding:.85rem 2rem">
+          ✦ Crear mi Receta Mágica ✦
+        </button>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: ADMINISTRADOR
+    ════════════════════════════════════════════ -->
+    <section id="sec-admin" class="section">
+      <h1 class="section-title">⚙️ Administrador</h1>
+      <p class="section-sub">Gestiona el contenido del grimorio</p>
+      <div id="admin-lock">
+        <div class="card" style="max-width:420px;margin:0 auto;text-align:center;padding:2.5rem 2rem">
+          <div style="font-size:3rem;margin-bottom:1rem">🔐</div>
+          <h3 style="font-family:var(--font-heading);color:var(--gold);margin-bottom:1rem">Acceso Administrador</h3>
+          <input id="admin-pin" type="password" class="login-input" placeholder="PIN de administrador" style="text-align:center;margin-bottom:1rem">
+          <div id="admin-pin-err" style="color:#ff6b6b;font-size:.82rem;margin-bottom:.75rem"></div>
+          <button class="btn-gold" onclick="AdminModule.unlock()">Acceder →</button>
+          <p class="text-muted" style="margin-top:1rem;font-size:.78rem">PIN por defecto: <code>bruja2024</code></p>
+        </div>
+      </div>
+      <div id="admin-panel" class="hidden">
+        <div class="adiv-modo-selector" style="margin-bottom:1.5rem">
+          <button class="adiv-modo-btn" onclick="AdminModule.setTab('cocina')">🌿 Cocina</button>
+          <button class="adiv-modo-btn" onclick="AdminModule.setTab('hechizos')">✨ Hechizos</button>
+          <button class="adiv-modo-btn" onclick="AdminModule.setTab('plantas')">🌱 Plantas</button>
+          <button class="adiv-modo-btn" onclick="AdminModule.setTab('config')">⚙️ Config</button>
+        </div>
+        <div id="admin-content"></div>
+      </div>
     </section>
 
     <!-- ════════════════════════════════════════════
          SECCIÓN: ADIVINACIÓN
     ════════════════════════════════════════════ -->
     <section id="sec-adivinacion" class="section">
-      <h1 class="section-title">🃏 Adivinación</h1>
-      <p class="section-sub">Tarot de los Arcanos Mayores · Oráculo de Runas Elder Futhark</p>
-      <div class="card" style="margin-bottom:1.5rem">
-        <div style="display:flex;gap:.6rem;margin-bottom:1rem">
-          <button id="adiv-btn-tarot" class="bib-tab active">🃏 Tarot</button>
-          <button id="adiv-btn-runas" class="bib-tab">ᚠ Runas</button>
-        </div>
-        <div id="adiv-spreads" style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem">
-          <button id="adiv-btn-spread-una" class="bib-tab active">Una carta</button>
-          <button id="adiv-btn-spread-tres" class="bib-tab">Pasado · Presente · Futuro</button>
-          <button id="adiv-btn-spread-cruz" class="bib-tab">Cruz Celta (5)</button>
-        </div>
-        <div id="adiv-info" class="text-muted" style="font-size:.88rem;margin-bottom:1rem"></div>
-        <button id="adiv-btn-tirar" class="btn-gold" style="width:100%;font-size:1rem;padding:.85rem">
-          ✦ Consultar el Oráculo ✦
-        </button>
+      <h1 class="section-title">ᚠ Adivinación</h1>
+      <p class="section-sub">Oráculo de Runas · Referencia Tarot y Runas Elder Futhark</p>
+
+      <!-- Selector de panel -->
+      <div class="adiv-modo-selector">
+        <button class="adiv-modo-btn" data-modo="oraculo" onclick="AdivinacionModule.setModo('oraculo')">ᚠ Oráculo</button>
+        <button class="adiv-modo-btn" data-modo="runas" onclick="AdivinacionModule.setModo('runas')">📖 Runas</button>
+        <button class="adiv-modo-btn" data-modo="tarot" onclick="AdivinacionModule.setModo('tarot')">🃏 Tarot</button>
       </div>
-      <div id="adiv-resultado" class="hidden">
-        <div id="adiv-cartas" class="card" style="padding:1.5rem"></div>
-        <div id="adiv-interpretacion" class="card hidden" style="margin-top:1rem;padding:1.5rem"></div>
+
+      <!-- Panel Oráculo de Runas -->
+      <div id="adiv-panel-oraculo" class="hidden">
+        <div class="card" style="text-align:center;padding:2rem 1.5rem">
+          <div style="font-size:2rem;margin-bottom:.5rem">ᚠ</div>
+          <h3 style="font-family:var(--font-heading);color:var(--gold);margin-bottom:.5rem">Oráculo de Runas</h3>
+          <p class="text-muted" style="margin-bottom:1.5rem;font-size:.9rem">Haz una pregunta en silencio y tira la runa que te responda.</p>
+          <button class="btn-gold adiv-tirar-btn" onclick="AdivinacionModule.tirar()" style="font-size:1rem;padding:.85rem 2rem">
+            ✦ Tirar una Runa ✦
+          </button>
+          <div id="oraculo-resultado" style="margin-top:1.5rem"></div>
+        </div>
+      </div>
+
+      <!-- Panel Referencia Runas -->
+      <div id="adiv-panel-runas" class="hidden">
+        <p class="text-muted" style="margin:.5rem 0 1rem;font-size:.88rem">Toca cualquier runa para ver su significado completo.</p>
+        <div id="adiv-runas-grid" class="adiv-ref-grid"></div>
+      </div>
+
+      <!-- Panel Referencia Tarot -->
+      <div id="adiv-panel-tarot" class="hidden">
+        <p class="text-muted" style="margin:.5rem 0 1rem;font-size:.88rem">Los 22 Arcanos Mayores como herramienta de autoconocimiento.</p>
+        <div id="adiv-tarot-grid" class="adiv-ref-grid"></div>
       </div>
     </section>
 
@@ -1890,6 +2200,44 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
 <div id="cocina-modal" class="modal-overlay hidden" role="dialog">
   <div class="modal-box">
     <div id="cocina-modal-content"></div>
+  </div>
+</div>
+
+<!-- MODAL CREAR RECETA -->
+<div id="cocina-crear-modal" class="modal-overlay hidden" role="dialog">
+  <div class="modal-box" style="max-width:560px">
+    <div class="modal-header">
+      <span style="font-size:1.5rem">📖</span>
+      <div><div class="modal-title">Nueva Receta Mágica</div></div>
+      <button class="modal-close" onclick="CocinaModule.cerrarCrearReceta()">✕</button>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:.85rem">
+      <div style="display:grid;grid-template-columns:1fr 80px;gap:.5rem">
+        <input id="cr-nombre" class="form-input" placeholder="✨ Nombre de la receta">
+        <input id="cr-emoji" class="form-input" placeholder="🌿" style="text-align:center">
+      </div>
+      <select id="cr-tipo" class="form-input">
+        <option>Receta</option>
+        <option>Baño</option>
+        <option>Brebaje</option>
+        <option>Aceite</option>
+        <option>Tintura</option>
+        <option>Incienso</option>
+        <option>Otro</option>
+      </select>
+      <textarea id="cr-cualidades" class="form-input" rows="2"
+        placeholder="Cualidades / Intención mágica (ej: amor propio, atracción, limpieza...)"></textarea>
+      <textarea id="cr-ingredientes" class="form-input" rows="4"
+        placeholder="Ingredientes (uno por línea)&#10;- Sal marina&#10;- Pétalos de rosa"></textarea>
+      <textarea id="cr-proceso" class="form-input" rows="5"
+        placeholder="Proceso paso a paso&#10;1. Comienza con...&#10;2. Mientras..."></textarea>
+      <textarea id="cr-nota" class="form-input" rows="2"
+        placeholder="Notas personales (opcional)"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-gold" onclick="CocinaModule.guardarMiReceta()">✦ Guardar en mi Grimorio</button>
+      <button class="btn-outline-sm" onclick="CocinaModule.cerrarCrearReceta()">Cancelar</button>
+    </div>
   </div>
 </div>
 
@@ -3938,9 +4286,9 @@ const HechizosModule = (() => {
       selectedDeidad = null;
       return;
     }
-    wrap.innerHTML = panteon.deidades.map(d => `
+    wrap.innerHTML = panteon.deidades.map((d, idx) => `
       <div class="deidad-card${selectedDeidad?.name===d.name?' active':''}"
-           onclick="HechizosModule.selectDeidad(${JSON.stringify(d).replace(/"/g,"'")})">
+           onclick="HechizosModule.selectDeidad(${idx})">
         <div class="deidad-name">${d.name}</div>
         <div class="deidad-dominio">${d.dominio}</div>
         <div class="deidad-num">Número sagrado: ${d.num}</div>
@@ -3962,10 +4310,12 @@ const HechizosModule = (() => {
     clearResult();
   }
 
-  function selectDeidad(d) {
-    selectedDeidad = d;
-    document.querySelectorAll('.deidad-card').forEach(c=>{
-      c.classList.toggle('active', c.querySelector('.deidad-name')?.textContent===d.name);
+  function selectDeidad(idx) {
+    const panteon = HechizosData.PANTEONES[selectedPanteon];
+    if (!panteon || !panteon.deidades[idx]) return;
+    selectedDeidad = panteon.deidades[idx];
+    document.querySelectorAll('.deidad-card').forEach((c, i)=>{
+      c.classList.toggle('active', i === idx);
     });
   }
 
@@ -4809,10 +5159,14 @@ const LibroModule = (() => {
       num:1, nombre:'Fundamentos', dias:'1–28', emoji:'🌑', color:'#4A0E8F',
       desc:'El primer paso. Qué es la brujería, cómo construir tu altar y activar tu práctica desde cero. Aprenderás que no necesitas dinero, solo intención.',
       semanas:[
-        {num:1, titulo:'Qué es esto que haces', desc:'Desmontamos el miedo y los mitos. La brujería como tecnología espiritual, no como religión única. Tu historia con lo espiritual es el punto de partida.'},
-        {num:2, titulo:'El espacio sagrado y el altar', desc:'Cómo construir un altar con lo que tienes. El espacio sagrado no es un lugar, es una actitud. Los primeros objetos que necesitas (y los que no).'},
-        {num:3, titulo:'Los cuatro elementos y las herramientas', desc:'Fuego, agua, tierra y aire como lenguaje simbólico. Las herramientas del brujo: athame, copa, varita, pentáculo. Cómo improvisar con lo que tienes.'},
-        {num:4, titulo:'Tu primera práctica formal', desc:'La meditación como base. Cómo silenciar la mente de brujo caótico. Técnicas de enraizamiento y apertura. Primer ejercicio de energía.'},
+        {num:1, titulo:'Qué es esto que haces', desc:'Desmontamos el miedo y los mitos. La brujería como tecnología espiritual, no como religión única. Tu historia con lo espiritual es el punto de partida.',
+          practicas:['Escribe en tu diario: ¿cuándo sentiste por primera vez que había algo más?','Elimina 3 creencias heredadas sobre la brujería que no te pertenecen','Siéntate 10 minutos en silencio. Observa. ¿Qué percibes?','Busca en tu casa un objeto que ya tenga significado espiritual para ti']},
+        {num:2, titulo:'El espacio sagrado y el altar', desc:'Cómo construir un altar con lo que tienes. El espacio sagrado no es un lugar, es una actitud. Los primeros objetos que necesitas (y los que no).',
+          practicas:['Limpia un rincón de tu hogar con la intención de hacerlo sagrado','Reúne 4 objetos que representen los elementos: algo de tierra, agua, fuego y aire','Coloca tu primer altar, aunque sea una pequeña bandeja con dos cosas','Enciende una vela en ese espacio y siéntate con ella 5 minutos']},
+        {num:3, titulo:'Los cuatro elementos y las herramientas', desc:'Fuego, agua, tierra y aire como lenguaje simbólico. Las herramientas del brujo: athame, copa, varita, pentáculo. Cómo improvisar con lo que tienes.',
+          practicas:['Pasa un día entero observando los 4 elementos en tu entorno cotidiano','Usa un cuchillo de cocina como athame improvisado en un ejercicio simbólico','Consagra tu copa (cualquier taza que uses solo para rituales)','Dibuja en papel los 4 símbolos elementales y colócalos en tu altar']},
+        {num:4, titulo:'Tu primera práctica formal', desc:'La meditación como base. Cómo silenciar la mente de brujo caótico. Técnicas de enraizamiento y apertura. Primer ejercicio de energía.',
+          practicas:['Medita 7 minutos diarios esta semana — sin música, sin guía, solo tú','Practica enraizamiento: visualiza raíces saliendo de tus pies hacia la tierra','Mueve energía entre tus manos hasta sentir calor o hormigueo','Termina la semana con tu primer ritual formal: enciende una vela, haz una intención, ciérrala']},
       ],
       cierre:'Ritual de Apertura del Grimorio: inaugura tu práctica con un acto concreto.'
     },
@@ -4820,10 +5174,14 @@ const LibroModule = (() => {
       num:2, nombre:'Las Fuerzas', dias:'29–57', emoji:'⚡', color:'#1a1a6e',
       desc:'Energía, protección y los mundos invisibles. Aprenderás a leer la energía de los espacios y a protegerte antes de profundizar.',
       semanas:[
-        {num:1, titulo:'Qué es la energía mágica', desc:'La energía como algo perceptible y trabajable. Cómo sentirla en las manos, en los objetos, en las personas. Los primeros ejercicios de proyección.'},
-        {num:2, titulo:'Protección y limpieza', desc:'Por qué proteger tu espacio antes de trabajar. Técnicas de limpieza: sal, incienso, sonido, intención. Cómo blindar tu casa y tu cuerpo energético.'},
-        {num:3, titulo:'El círculo mágico', desc:'Crear un círculo de trabajo: propósito, apertura, cierre. Los cuatro puntos cardinales y sus guardianes. Tu primer círculo formal.'},
-        {num:4, titulo:'La sombra y el trabajo interior', desc:'Jung aplicado a la brujería. Qué es la sombra, por qué importa, cómo empezar a integrarla. La magia desde la herida y la magia desde la plenitud.'},
+        {num:1, titulo:'Qué es la energía mágica', desc:'La energía como algo perceptible y trabajable. Cómo sentirla en las manos, en los objetos, en las personas. Los primeros ejercicios de proyección.',
+          practicas:['Frota tus manos 30 segundos y sepáralas lentamente: ¿sientes resistencia?','Sostén objetos distintos y anota las sensaciones de cada uno','Visita un lugar en la naturaleza y percibe su energía','Proyecta energía hacia una planta o mascota: ¿cómo reacciona?']},
+        {num:2, titulo:'Protección y limpieza', desc:'Por qué proteger tu espacio antes de trabajar. Técnicas de limpieza: sal, incienso, sonido, intención. Cómo blindar tu casa y tu cuerpo energético.',
+          practicas:['Sahúma tu hogar con romero o palo santo, comenzando desde las esquinas','Coloca sal gruesa en los umbrales de las puertas de entrada','Visualiza un escudo de luz dorada alrededor de tu cuerpo cada mañana','Limpia tu altar con agua de rosas y la intención de purificación']},
+        {num:3, titulo:'El círculo mágico', desc:'Crear un círculo de trabajo: propósito, apertura, cierre. Los cuatro puntos cardinales y sus guardianes. Tu primer círculo formal.',
+          practicas:['Aprende los 4 guardianes cardinales: Norte/Tierra, Este/Aire, Sur/Fuego, Oeste/Agua','Traza un círculo en el suelo con sal o cuerda y quédate dentro 10 minutos','Abre y cierra el círculo con una frase propia que sientas verdadera','Haz tu primer trabajo mágico dentro del círculo: una intención simple']},
+        {num:4, titulo:'La sombra y el trabajo interior', desc:'Jung aplicado a la brujería. Qué es la sombra, por qué importa, cómo empezar a integrarla. La magia desde la herida y la magia desde la plenitud.',
+          practicas:['Lista 5 rasgos que rechazas en otras personas (son tuyos también)','Escribe una carta a tu sombra: ¿qué le negarías? ¿qué le agradecerías?','Medita 15 minutos en oscuridad con la pregunta: ¿qué no quiero ver?','Haz una ofrenda a tu sombra: una vela negra encendida con aceptación']},
       ],
       cierre:'Ritual de Protección y sellado de tu espacio de trabajo.'
     },
@@ -4831,10 +5189,14 @@ const LibroModule = (() => {
       num:3, nombre:'La Rueda del Año y la Luna', dias:'58–86', emoji:'☽', color:'#1a3a5e',
       desc:'El calendario mágico: los 8 sabbats y las 4 fases lunares como motor de tu práctica. Aprenderás a alinearte con los ciclos naturales.',
       semanas:[
-        {num:1, titulo:'La Rueda del Año', desc:'Los 8 sabbats: Samhain, Yule, Imbolc, Ostara, Beltane, Litha, Lughnasadh, Mabon. Cómo adaptarlos al hemisferio sur y a la vida contemporánea latinoamericana.'},
-        {num:2, titulo:'Los sabbats en profundidad (I)', desc:'Samhain, Yule, Imbolc, Ostara: su energía, sus rituales simples, sus correspondencias. Cómo celebrar sin un coven, solo o con quien quieras.'},
-        {num:3, titulo:'Los sabbats en profundidad (II)', desc:'Beltane, Litha, Lughnasadh, Mabon: la mitad luminosa del año. Rituales de abundancia, plenitud y cosecha.'},
-        {num:4, titulo:'La magia lunar', desc:'Luna nueva: siembra. Cuarto creciente: acción. Luna llena: plenitud. Cuarto menguante: soltar. Cómo usar cada fase para un tipo diferente de magia.'},
+        {num:1, titulo:'La Rueda del Año', desc:'Los 8 sabbats: Samhain, Yule, Imbolc, Ostara, Beltane, Litha, Lughnasadh, Mabon. Cómo adaptarlos al hemisferio sur y a la vida contemporánea latinoamericana.',
+          practicas:['Revisa la Rueda del Año en la app y ubica en qué punto del ciclo estás','Escribe qué energía del sabbat más cercano ya sientes en tu vida','Crea tu propio nombre latinoamericano para cada sabbat si lo sientes necesario','Dibuja la rueda del año en tu grimorio con las fechas de tu hemisferio']},
+        {num:2, titulo:'Los sabbats en profundidad (I)', desc:'Samhain, Yule, Imbolc, Ostara: su energía, sus rituales simples, sus correspondencias. Cómo celebrar sin un coven, solo o con quien quieras.',
+          practicas:['Crea un pequeño altar para el sabbat que viene (aunque sea días después)','Cocina o prepara algo vinculado a la energía de esa estación','Escribe en tu diario cómo cada uno de estos cuatro sabbats se siente en tu cuerpo','Haz un ritual simple para honrar a tus ancestros (aunque no sea Samhain)']},
+        {num:3, titulo:'Los sabbats en profundidad (II)', desc:'Beltane, Litha, Lughnasadh, Mabon: la mitad luminosa del año. Rituales de abundancia, plenitud y cosecha.',
+          practicas:['Haz una ofrenda al sol aunque sea breve: agradecimiento al amanecer','Escribe una lista de lo que está en su punto de plenitud en tu vida','Hornea o cocina algo como acto de cosecha ritual','Planta algo, aunque sea una hierba aromática en un vaso con tierra']},
+        {num:4, titulo:'La magia lunar', desc:'Luna nueva: siembra. Cuarto creciente: acción. Luna llena: plenitud. Cuarto menguante: soltar. Cómo usar cada fase para un tipo diferente de magia.',
+          practicas:['Revisa la fase lunar de hoy en la app y haz algo que corresponda con ella','En luna nueva: escribe 3 intenciones. En llena: léelas en voz alta bajo la luna','Lleva un diario de cómo cambia tu energía con la luna durante 28 días','Haz agua lunar: deja un vaso de agua bajo la luna llena toda la noche']},
       ],
       cierre:'Ritual de Luna Llena: tu primer ritual lunar completo con la rueda como guía.'
     },
@@ -4842,10 +5204,14 @@ const LibroModule = (() => {
       num:4, nombre:'Las Plantas, las Velas y el Fuego', dias:'87–115', emoji:'🌿', color:'#1a4a1a',
       desc:'La farmacia y la botica de la bruja. Herbolaria latinoamericana y mundial, magia de velas, incienso, resinas y aceites esenciales.',
       semanas:[
-        {num:1, titulo:'Herbolaria mágica: lo que ya tienes', desc:'Las hierbas de tu cocina son tu primer laboratorio mágico. Romero, laurel, ruda, albahaca, canela: propiedades mágicas y medicinales. Cómo secarlas, guardarlas y usarlas.'},
-        {num:2, titulo:'Magia de velas', desc:'Los colores y sus correspondencias. Cómo labrar una vela: grabar intenciones, aceites, hierbas. Lectura de la llama: piromancia básica. Velas de emergencia del supermercado.'},
-        {num:3, titulo:'Incienso, resinas y sahumerio', desc:'Copal, mirra, olíbano, palo santo, ruda. Cómo hacer tus propias mezclas de incienso. El sahumerio como ritual de limpieza. Diferencias entre sahumar y solo quemar.'},
-        {num:4, titulo:'Aceites mágicos y la botica de la bruja', desc:'Aceites esenciales como concentradores de intención. Mezclas básicas para amor, protección, abundancia, claridad. La bolsa de poder (mojo bag) y cómo hacerla.'},
+        {num:1, titulo:'Herbolaria mágica: lo que ya tienes', desc:'Las hierbas de tu cocina son tu primer laboratorio mágico. Romero, laurel, ruda, albahaca, canela: propiedades mágicas y medicinales. Cómo secarlas, guardarlas y usarlas.',
+          practicas:['Revisa tu cocina: identifica 5 hierbas y busca sus propiedades mágicas','Crea un pequeño jardín de hierbas: romero, albahaca, ruda (en macetas sirve)','Seca un ramo de romero colgándolo boca abajo en un lugar oscuro','Haz una infusión de laurel y bébela mientras visualizas tu intención']},
+        {num:2, titulo:'Magia de velas', desc:'Los colores y sus correspondencias. Cómo labrar una vela: grabar intenciones, aceites, hierbas. Lectura de la llama: piromancia básica. Velas de emergencia del supermercado.',
+          practicas:['Labra tu primera vela: graba una palabra, úngela con aceite de oliva','Enciende la vela y observa su llama durante 5 minutos: ¿qué ves?','Usa una vela blanca del supermercado como práctica: la intención es lo que importa','Registra en tu diario tus observaciones de piromancia (movimiento, color, cera)']},
+        {num:3, titulo:'Incienso, resinas y sahumerio', desc:'Copal, mirra, olíbano, palo santo, ruda. Cómo hacer tus propias mezclas de incienso. El sahumerio como ritual de limpieza. Diferencias entre sahumar y solo quemar.',
+          practicas:['Sahúma cada habitación de tu hogar con intención de limpieza','Mezcla romero seco, lavanda y sal: tu primer incienso casero','Aprende la diferencia: sahumar es dirigir el humo con intención, no solo quemar','Haz una mezcla de incienso para tu propósito actual (protección, amor, claridad)']},
+        {num:4, titulo:'Aceites mágicos y la botica de la bruja', desc:'Aceites esenciales como concentradores de intención. Mezclas básicas para amor, protección, abundancia, claridad. La bolsa de poder (mojo bag) y cómo hacerla.',
+          practicas:['Mezcla aceite de oliva con canela y clavo: tu primer aceite de prosperidad','Haz tu primera bolsa de poder: una tela pequeña con 3 ingredientes','Unge tu puerta principal con aceite de protección cada lunes','Crea un espacio dedicado en tu casa a guardar tus mezclas y preparados']},
       ],
       cierre:'Tu primera producción completa: una vela labrada, una mezcla de incienso, una bolsa de poder.'
     },
@@ -4853,10 +5219,14 @@ const LibroModule = (() => {
       num:5, nombre:'El Taller de la Bruja', dias:'116–143', emoji:'🕯️', color:'#4a2000',
       desc:'De consumidor a productor. Aprenderás a hacer tus herramientas desde cero: velas artesanales, pociones, tinturas y cocina mágica.',
       semanas:[
-        {num:1, titulo:'Velas artesanales', desc:'Tipos de cera: parafina, soja, abejas. Mechas, moldes, colorantes naturales. Cómo verter, enfriar y acabar una vela. Tu primera colección.'},
-        {num:2, titulo:'Pociones, tinturas y elixires', desc:'La diferencia entre una poción mágica y un preparado medicinal. Bases: alcohol, vinagre, glicerina, agua lunar. Tinturas de hierbas para uso externo e interno (con precaución).'},
-        {num:3, titulo:'Aceites avanzados e incienso propio', desc:'Maceración en frío y en caliente. Aceites de masaje con intención mágica. Incienso de combustión directa e indirecta. Tu firma olfativa mágica.'},
-        {num:4, titulo:'Cocina mágica', desc:'Cocinar con intención es magia medicinal. Recetas con propósito: sopa de protección, pan de abundancia, dulce de amor. El festín ritual. La comida como ofrenda.'},
+        {num:1, titulo:'Velas artesanales', desc:'Tipos de cera: parafina, soja, abejas. Mechas, moldes, colorantes naturales. Cómo verter, enfriar y acabar una vela. Tu primera colección.',
+          practicas:['Visita una tienda de manualidades y consigue cera de soja y mechas','Haz tu primera vela en un vaso de vidrio reciclado','Agrega colorante y una hierba seca antes de que enfríe la cera','Bautiza tu vela con una intención mientras la haces']},
+        {num:2, titulo:'Pociones, tinturas y elixires', desc:'La diferencia entre una poción mágica y un preparado medicinal. Bases: alcohol, vinagre, glicerina, agua lunar. Tinturas de hierbas para uso externo e interno (con precaución).',
+          practicas:['Haz agua de rosas: pétalos frescos en agua caliente + reposo 24h','Crea una tintura de romero: hierbas en alcohol 40° por 2 semanas','Prepara agua lunar con la próxima luna llena (agua en frasco, afuera toda la noche)','Haz tu primer elixir: agua de luna + intención + un cuarzo limpio']},
+        {num:3, titulo:'Aceites avanzados e incienso propio', desc:'Maceración en frío y en caliente. Aceites de masaje con intención mágica. Incienso de combustión directa e indirecta. Tu firma olfativa mágica.',
+          practicas:['Macera lavanda en aceite de almendras durante 2 semanas (maceración en frío)','Crea tu firma olfativa: 3 ingredientes que siempre usarás juntos en rituales','Haz conos de incienso con carbón molido + hierbas + resina de copal','Prueba quemar el incienso en combustión indirecta sobre carbón']},
+        {num:4, titulo:'Cocina mágica', desc:'Cocinar con intención es magia medicinal. Recetas con propósito: sopa de protección, pan de abundancia, dulce de amor. El festín ritual. La comida como ofrenda.',
+          practicas:['Cocina una receta de la sección Cocina Mágica de la app con plena intención','Mientras cocinas, visualiza el propósito del plato llenando cada ingrediente','Ofrece una porción pequeña a tus ancestros o guías antes de comer','Haz un festín ritual con al menos una persona: comparte la magia de la mesa']},
       ],
       cierre:'Inauguración de tu botica personal: todo lo que creaste en el ciclo, consagrado y en uso.'
     },
@@ -4864,10 +5234,14 @@ const LibroModule = (() => {
       num:6, nombre:'El Cosmos y la Adivinación', dias:'144–173', emoji:'⭐', color:'#1a1a4a',
       desc:'Astrología práctica para brujos, Tarot completo y Runas. Aprenderás a leer el cielo y las cartas como herramientas de autoconocimiento, no de predicción.',
       semanas:[
-        {num:1, titulo:'Astrología para brujos', desc:'Tu carta natal como mapa. Los 4 puntos fundamentales: Sol (identidad), Luna (emociones), Ascendente (cómo te muestras), Lilith (tu sombra salvaje). Cómo usar la astrología en tus rituales.'},
-        {num:2, titulo:'Tarot (I): las bases y los Arcanos Mayores', desc:'Por qué el tarot no es brujería peligrosa. Cómo elegir tu mazo. Los 22 Arcanos Mayores uno a uno. La lanzada de 1 carta y la de 3 cartas.'},
-        {num:3, titulo:'Tarot (II): Arcanos Menores y ética', desc:'Los 4 palos: Bastos, Copas, Espadas, Oros. Cómo leer combinaciones. La Cruz Celta. Ética de la lectura: qué decir, qué callar, a quién no leer, cómo no crear dependencia.'},
-        {num:4, titulo:'Runas y tu propio oráculo', desc:'Los 24 futhark: significados, cómo tirarlos, cómo fabricarlos. Otros sistemas: péndulo, oráculo personal. Cómo crear tu propio sistema de adivinación con objetos cotidianos.'},
+        {num:1, titulo:'Astrología para brujos', desc:'Tu carta natal como mapa. Los 4 puntos fundamentales: Sol (identidad), Luna (emociones), Ascendente (cómo te muestras), Lilith (tu sombra salvaje). Cómo usar la astrología en tus rituales.',
+          practicas:['Genera tu carta natal gratuita en astro.com (necesitas hora y lugar de nacimiento)','Anota tu Sol, Luna, Ascendente y Lilith: ¿qué te dicen?','Mira la sección Carta Astral de la app y personalízala con tus datos','Haz un ritual en el día que tu luna natal coincide con la luna del cielo']},
+        {num:2, titulo:'Tarot (I): las bases y los Arcanos Mayores', desc:'Por qué el tarot no es brujería peligrosa. Cómo elegir tu mazo. Los 22 Arcanos Mayores uno a uno. La lanzada de 1 carta y la de 3 cartas.',
+          practicas:['Revisa la guía de Arcanos Mayores en Adivinación de la app','Escoge una carta al azar y escribe durante 5 minutos sin parar sobre lo que te dice','Haz una tirada de 1 carta cada mañana durante 7 días consecutivos','Registra tus tiradas en el Diario de la app']},
+        {num:3, titulo:'Tarot (II): Arcanos Menores y ética', desc:'Los 4 palos: Bastos, Copas, Espadas, Oros. Cómo leer combinaciones. La Cruz Celta. Ética de la lectura: qué decir, qué callar, a quién no leer, cómo no crear dependencia.',
+          practicas:['Aprende los 4 palos asociándolos a los 4 elementos que ya conoces','Haz tu primera lectura para alguien más con el permiso explícito de esa persona','Escribe 3 reglas éticas propias para tu práctica de lectura','Aprende la Cruz Celta y practícala sobre una situación actual tuya']},
+        {num:4, titulo:'Runas y tu propio oráculo', desc:'Los 24 futhark: significados, cómo tirarlos, cómo fabricarlos. Otros sistemas: péndulo, oráculo personal. Cómo crear tu propio sistema de adivinación con objetos cotidianos.',
+          practicas:['Revisa la guía completa de Runas en la app: lee 3 runas en profundidad hoy','Fabrica un set de runas: piedras del río o trozos de madera pintados a mano','Usa el Oráculo de Runas de la app durante una semana como práctica diaria','Crea tu propio mini-oráculo con 10 objetos cotidianos + tus propios significados']},
       ],
       cierre:'Lectura integrada: carta natal + tarot + runas para leer un mismo momento desde tres ángulos.'
     },
@@ -4875,10 +5249,14 @@ const LibroModule = (() => {
       num:7, nombre:'El Arte de Conjurar', dias:'174–202', emoji:'🔮', color:'#4a0a0a',
       desc:'Los rituales avanzados: cómo construir un ritual con estructura, intención y poder real. Las 4 fases lunares como motor, los planetas como aliados, tu carta natal como mapa.',
       semanas:[
-        {num:1, titulo:'Las 4 fases lunares como motor del ritual', desc:'Cada fase lunar tiene un tipo de ritual que le pertenece. Cómo planificar un ritual mensual siguiendo el ciclo. El error de hacer magia solo en luna llena.'},
-        {num:2, titulo:'Los planetas y sus intenciones', desc:'Los 7 planetas clásicos + Urano, Neptuno, Plutón. Sus horas mágicas, sus colores, sus correspondencias. El peligro de los rituales planetarios mal hechos. El Sol como luminar, no como planeta.'},
-        {num:3, titulo:'Tu carta natal en el ritual', desc:'Cómo usar tus propios signos para personalizar un ritual. Las casas como mapa de hacia dónde dirigir la intención. Tus planetas natales como aliados o como zonas de trabajo.'},
-        {num:4, titulo:'Lilith, la sombra y el corte de lazos', desc:'Lilith como combustible ritual: reclamar lo que fue reprimido. Rituales de corte de lazos: cómo hacerlos bien (y el error que casi todos cometen). La síntesis: ritual completo con todos los elementos.'},
+        {num:1, titulo:'Las 4 fases lunares como motor del ritual', desc:'Cada fase lunar tiene un tipo de ritual que le pertenece. Cómo planificar un ritual mensual siguiendo el ciclo. El error de hacer magia solo en luna llena.',
+          practicas:['Planifica este mes: anota qué harás en cada fase lunar','En luna nueva: escribe 3 intenciones y entiérralas o quémalas','En luna llena: saca tus cristales y agua a cargarse bajo la luz','En luna menguante: lista lo que quieres soltar y quema el papel']},
+        {num:2, titulo:'Los planetas y sus intenciones', desc:'Los 7 planetas clásicos + Urano, Neptuno, Plutón. Sus horas mágicas, sus colores, sus correspondencias. El peligro de los rituales planetarios mal hechos. El Sol como luminar, no como planeta.',
+          practicas:['Revisa las horas planetarias de hoy en la app y trabaja en la hora correcta','Haz magia de dinero un jueves (Júpiter) en hora de Júpiter','Escribe un ritual de amor para el viernes siguiente usando correspondencias de Venus','Aprende de memoria los 7 días y sus planetas: Lun/Luna, Mar/Marte, etc.']},
+        {num:3, titulo:'Tu carta natal en el ritual', desc:'Cómo usar tus propios signos para personalizar un ritual. Las casas como mapa de hacia dónde dirigir la intención. Tus planetas natales como aliados o como zonas de trabajo.',
+          practicas:['Identifica tu casa 8 (magia) y casa 12 (espiritualidad) en tu carta natal','Haz un ritual durante el tránsito del sol por tu signo lunar natal','Escribe un ritual personalizado usando solo tus propias correspondencias natales','Usa tu Lilith natal para identificar qué poder reprimido quieres reclamar']},
+        {num:4, titulo:'Lilith, la sombra y el corte de lazos', desc:'Lilith como combustible ritual: reclamar lo que fue reprimido. Rituales de corte de lazos: cómo hacerlos bien (y el error que casi todos cometen). La síntesis: ritual completo con todos los elementos.',
+          practicas:['Escribe qué aspectos de ti mismo/a has reprimido por miedo o vergüenza','Ritual de Lilith: una vela negra, escribe lo que reclamas, quémalo','Corte de lazos: visualiza el cordón que te une a quien quieres soltar, córtalo con tijeras','Haz el ritual completo del ciclo integrando luna, planeta y carta natal']},
       ],
       cierre:'Ritual completo con lectura de vela: todo lo aprendido en un acto unificado.'
     },
@@ -4886,10 +5264,14 @@ const LibroModule = (() => {
       num:8, nombre:'Amor y Relaciones', dias:'203–231', emoji:'💜', color:'#4a0040',
       desc:'El amor como práctica mágica. Desde el amor propio como base hasta la magia de atracción, la magia sexual y las relaciones que duelen.',
       semanas:[
-        {num:1, titulo:'Amor propio como base de toda magia', desc:'No puedes atraer lo que no sientes que mereces. Rituales de amor propio: baños, afirmaciones, espejos. La diferencia entre amor propio mágico y autoindulgencia.'},
-        {num:2, titulo:'Magia de atracción y ética del amor mágico', desc:'Tipos de magia de amor: atracción general, apertura, reconciliación, unión. Qué se puede hacer y qué viola el libre albedrío. Cómo hacer magia de amor sin manipular.'},
-        {num:3, titulo:'Energía sexual como combustible ritual', desc:'La transmutación de la energía sexual en poder mágico. Rituales solos y en pareja. La sexualidad como sacramento, no como tabú. Cómo usar el orgasmo como punto de lanzamiento.'},
-        {num:4, titulo:'Relaciones que duelen: sombra y corte de lazos', desc:'La sombra en las relaciones: qué proyectamos en los demás. Corte de lazos emocionales: el ritual que casi todos hacen mal. Sanar sin magia destructiva.'},
+        {num:1, titulo:'Amor propio como base de toda magia', desc:'No puedes atraer lo que no sientes que mereces. Rituales de amor propio: baños, afirmaciones, espejos. La diferencia entre amor propio mágico y autoindulgencia.',
+          practicas:['Baño ritual de amor propio: pétalos de rosa, sal, aceite de lavanda, intención','Frente al espejo 5 minutos: di en voz alta algo que amas de ti. Incómodo es señal de trabajo','Escribe una carta de amor para ti mismo/a — sin ironía, sin peros','Crea una afirmación que venga de ti, no copiada: una frase que sientas verdadera']},
+        {num:2, titulo:'Magia de atracción y ética del amor mágico', desc:'Tipos de magia de amor: atracción general, apertura, reconciliación, unión. Qué se puede hacer y qué viola el libre albedrío. Cómo hacer magia de amor sin manipular.',
+          practicas:['Haz magia de apertura amorosa: una vela rosa con tu nombre, no el de otra persona','Escribe tus 10 cualidades que quieres atraer en otra persona','Ritual de atracción general: vela, rosa, miel — sin nombrar a nadie específico','Escribe tus propias 3 reglas éticas para la magia de amor']},
+        {num:3, titulo:'Energía sexual como combustible ritual', desc:'La transmutación de la energía sexual en poder mágico. Rituales solos y en pareja. La sexualidad como sacramento, no como tabú. Cómo usar el orgasmo como punto de lanzamiento.',
+          practicas:['Lee sobre magia sexual sin tabú: Aleister Crowley, Dion Fortune, Marcia Montenegro','Practica visualizar una intención clara en el momento de mayor energía corporal','Crea un ritual sensorial que no involucre a nadie más: olfato, tacto, intención','Escribe en tu diario cómo tu relación con tu cuerpo afecta tu práctica mágica']},
+        {num:4, titulo:'Relaciones que duelen: sombra y corte de lazos', desc:'La sombra en las relaciones: qué proyectamos en los demás. Corte de lazos emocionales: el ritual que casi todos hacen mal. Sanar sin magia destructiva.',
+          practicas:['Lista qué proyectas en la persona que te duele: ¿qué dice de ti?','Ritual de sanación: vela blanca, foto tuya, sal — sanar, no vengarte','Corte de lazos correcto: cortar el cordón imaginario con compasión, no rabia','Escribe una carta a quien te dolió, no para enviar: solo para sanar y quemar']},
       ],
       cierre:'Ritual del corazón: un ritual completo para lo que necesites sanar o cultivar en el amor.'
     },
@@ -4897,10 +5279,14 @@ const LibroModule = (() => {
       num:9, nombre:'Prosperidad y Manifestación', dias:'232–260', emoji:'💛', color:'#4a3a00',
       desc:'La magia de la abundancia: diferencia entre manifestar y desear. Aprenderás a alinear tu energía con la prosperidad sin contradecir tu propio sistema de creencias.',
       semanas:[
-        {num:1, titulo:'Qué es la abundancia (y qué no es)', desc:'Desmontando la magia del dinero rápido. La prosperidad como estado energético. Por qué la magia de abundancia sin trabajo interior no funciona.'},
-        {num:2, titulo:'Rituales de prosperidad', desc:'Velas verdes y doradas, canela, albahaca, laurel. Sigilos de abundancia. La carta de manifestación. Cómo hacer una billetera mágica.'},
-        {num:3, titulo:'Manifestación consciente', desc:'La ley de vibración más allá del "pensamiento positivo". Cómo anclar una intención en el plano físico. El vision board mágico: más que imágenes bonitas.'},
-        {num:4, titulo:'La relación con el dinero y la sombra', desc:'Tu historia personal con el dinero. Los bloqueos heredados y cómo romperlos. Rituales de desbloqueo financiero. Gratitud como frecuencia, no como performance.'},
+        {num:1, titulo:'Qué es la abundancia (y qué no es)', desc:'Desmontando la magia del dinero rápido. La prosperidad como estado energético. Por qué la magia de abundancia sin trabajo interior no funciona.',
+          practicas:['Escribe tu definición honesta de abundancia (no la del coaching)','Lista 5 creencias que tienes sobre el dinero: ¿de dónde vienen?','Observa esta semana cómo el dinero fluye en tu vida sin juzgarlo','Haz una meditación de abundancia: no pidas, agradece lo que ya tienes']},
+        {num:2, titulo:'Rituales de prosperidad', desc:'Velas verdes y doradas, canela, albahaca, laurel. Sigilos de abundancia. La carta de manifestación. Cómo hacer una billetera mágica.',
+          practicas:['Ritual de jueves: vela verde, canela, billete doblado hacia ti + intención','Crea un sigilo de abundancia: escribe tu deseo, elimina vocales y letras repetidas, compón el símbolo','Haz la carta de manifestación: escribe en presente como si ya hubiera ocurrido','Limpia tu billetera, ponle albahaca seca y una moneda consagrada']},
+        {num:3, titulo:'Manifestación consciente', desc:'La ley de vibración más allá del "pensamiento positivo". Cómo anclar una intención en el plano físico. El vision board mágico: más que imágenes bonitas.',
+          practicas:['Crea un tablero de visión: imágenes que evocan sentimientos, no solo objetos','Ancla tu intención en lo físico: haz algo concreto cada semana hacia tu meta','Practica actuar como si: ¿cómo te vestirías, movería, hablarías si ya lo tuvieras?','Escribe 3 acciones concretas que apoyarán tu intención mágica esta semana']},
+        {num:4, titulo:'La relación con el dinero y la sombra', desc:'Tu historia personal con el dinero. Los bloqueos heredados y cómo romperlos. Rituales de desbloqueo financiero. Gratitud como frecuencia, no como performance.',
+          practicas:['Escribe: ¿qué decían en tu casa sobre el dinero? ¿Lo creíste?','Ritual de desbloqueo: vela negra para quemar el bloqueo, vela verde para atraer','Lista 10 cosas que ya tienes y que son abundancia real (no solo dinero)','Practica gratitud mágica: agradece al dinero que tienes, aunque sea poco']},
       ],
       cierre:'Ritual de prosperidad completo: siembra de intención con seguimiento a 28 días.'
     },
@@ -4908,10 +5294,14 @@ const LibroModule = (() => {
       num:10, nombre:'Sanación, Cuerpo y Energía', dias:'261–289', emoji:'💚', color:'#004a1a',
       desc:'El cuerpo como templo y como barômetro. Aprenderás a trabajar con tu energía corporal, los chakras, las plantas medicinales y la conexión entre magia y salud.',
       semanas:[
-        {num:1, titulo:'El cuerpo en la brujería', desc:'Por qué ignorar el cuerpo es ignorar la mitad de tu poder. Tierra y enraizamiento como práctica física. El cuerpo como sensor de energía.'},
-        {num:2, titulo:'Los centros energéticos', desc:'Los chakras como mapa funcional, no dogma hindú. Cómo detectar bloqueos en tu propio cuerpo. Técnicas de limpieza y activación energética.'},
-        {num:3, titulo:'Plantas medicinales y sanación mágica', desc:'La conexión entre herbolaria mágica y medicinal. Preparados para sanar el cuerpo físico con intención mágica. Los límites entre medicina y magia.'},
-        {num:4, titulo:'Sanación a distancia y cuidado del brujo', desc:'Enviar sanación a otros: cómo y cuándo. El peligro del brujo que sana todo lo ajeno y descuida lo propio. Autocuidado como práctica espiritual.'},
+        {num:1, titulo:'El cuerpo en la brujería', desc:'Por qué ignorar el cuerpo es ignorar la mitad de tu poder. Tierra y enraizamiento como práctica física. El cuerpo como sensor de energía.',
+          practicas:['Haz enraizamiento físico: camina descalzo/a sobre tierra, hierba o arena 10 minutos','Escanea tu cuerpo de cabeza a pies: ¿dónde sientes tensión, vacío o calor?','Come una comida en completo silencio, prestando atención a cada sabor','Practica 5 minutos de respiración consciente: inhala 4, retén 4, exhala 4']},
+        {num:2, titulo:'Los centros energéticos', desc:'Los chakras como mapa funcional, no dogma hindú. Cómo detectar bloqueos en tu propio cuerpo. Técnicas de limpieza y activación energética.',
+          practicas:['Medita en cada chakra 2 minutos: raíz, sacro, plexo, corazón, garganta, tercer ojo, corona','Usa colores: viste de rojo para enraizarte, verde para el corazón, azul para comunicarte','Haz un baño de sal con la intención de limpiar bloqueos energéticos de cada centro','Escribe qué área de tu vida sientes bloqueada: eso te dice qué chakra trabajar']},
+        {num:3, titulo:'Plantas medicinales y sanación mágica', desc:'La conexión entre herbolaria mágica y medicinal. Preparados para sanar el cuerpo físico con intención mágica. Los límites entre medicina y magia.',
+          practicas:['Prepara una infusión curativa: manzanilla (calma), jengibre (energía) o lavanda (sueño)','Haz un cataplasma simple: sábila fresca sobre una zona que necesite alivio','Crea un aceite de masaje: aceite de coco + lavanda + menta para tensión muscular','Visita un mercado o tienda herbolaria y aprende los nombres de 5 plantas nuevas']},
+        {num:4, titulo:'Sanación a distancia y cuidado del brujo', desc:'Enviar sanación a otros: cómo y cuándo. El peligro del brujo que sana todo lo ajeno y descuida lo propio. Autocuidado como práctica espiritual.',
+          practicas:['Envía sanación a alguien con su permiso: vela verde, nombre en papel, visualización','Haz un ritual de autocuidado: baño, té, música, vela — sin magia, solo cuidado','Escribe: ¿cuánto de tu energía mágica diriges hacia otros vs. hacia ti?','Define 3 límites energéticos que pondrás en práctica esta semana']},
       ],
       cierre:'Ritual de autosanación: un trabajo profundo contigo mismo.'
     },
@@ -4919,10 +5309,14 @@ const LibroModule = (() => {
       num:11, nombre:'Entidades y Espíritus', dias:'290–318', emoji:'👁️', color:'#1a0a3a',
       desc:'Cartografía del mundo espiritual sin invocación precipitada. Aprenderás qué existe, cómo funciona y cuándo (y cuándo no) relacionarte con ello.',
       semanas:[
-        {num:1, titulo:'Espíritus de lugar y elementales', desc:'Los espíritus que ya conviven contigo. Cómo percibirlos, cómo relacionarte con ellos, cómo no molestarlos. Los elementales del hogar y el jardín.'},
-        {num:2, titulo:'Ancestros y guías', desc:'El trabajo con ancestros como la raíz de toda práctica. Cómo comunicarte con quienes ya no están. Los guías espirituales: qué son y cómo diferenciarlos de la imaginación.'},
-        {num:3, titulo:'Lo que existe más allá', desc:'Demonología histórica: la Goecia como documento histórico, no como manual de invocación. Las entidades que no conviene convocar. Protocolos básicos de seguridad espiritual.'},
-        {num:4, titulo:'Tu guardiana y tus aliados espirituales', desc:'Cómo identificar a tus aliados espirituales personales. La diferencia entre una entidad que te elige y una que convocas. Relación sostenida con tus apoyos espirituales.'},
+        {num:1, titulo:'Espíritus de lugar y elementales', desc:'Los espíritus que ya conviven contigo. Cómo percibirlos, cómo relacionarte con ellos, cómo no molestarlos. Los elementales del hogar y el jardín.',
+          practicas:['Siéntate en silencio en tu hogar y observa: ¿qué sientes en cada rincón?','Deja una ofrenda simple (agua limpia, flor) para los espíritus del lugar donde vives','Sal a un espacio natural y preséntate en voz baja: tu nombre, tu intención','Aprende a distinguir la energía pesada (bloqueo) de la presencia (entidad)']},
+        {num:2, titulo:'Ancestros y guías', desc:'El trabajo con ancestros como la raíz de toda práctica. Cómo comunicarte con quienes ya no están. Los guías espirituales: qué son y cómo diferenciarlos de la imaginación.',
+          practicas:['Crea un pequeño altar de ancestros: foto, vela, vaso de agua, flor blanca','Escribe una carta a un ancestro: algo que nunca le dijiste, algo que agradeces','Medita 15 minutos en silencio y pregunta qué quieren que sepas','Cocina un plato que cocinaba esa persona y come en su honor']},
+        {num:3, titulo:'Lo que existe más allá', desc:'Demonología histórica: la Goecia como documento histórico, no como manual de invocación. Las entidades que no conviene convocar. Protocolos básicos de seguridad espiritual.',
+          practicas:['Establece un protocolo de protección antes de cualquier trabajo espiritual','Aprende a cerrar correctamente: círculo, llamada y despedida siempre completas','Escribe 3 señales que para ti significarían que algo no está bien energéticamente','Haz una limpieza profunda de tu espacio de trabajo con sal, agua y fuego']},
+        {num:4, titulo:'Tu guardiana y tus aliados espirituales', desc:'Cómo identificar a tus aliados espirituales personales. La diferencia entre una entidad que te elige y una que convocas. Relación sostenida con tus apoyos espirituales.',
+          practicas:['Medita pidiendo conocer a tu aliado espiritual más cercano: observa sin forzar','Escribe qué figuras (animales, símbolos, personas) se repiten en tus sueños','Crea una ofrenda personalizada para tu guardiana o guía principal','Lleva un diario de señales: coincidencias, sueños, intuiciones — ¿hay un patrón?']},
       ],
       cierre:'Ritual de contacto con tus ancestros y reconocimiento de tu guardiana o guía principal.'
     },
@@ -4930,10 +5324,14 @@ const LibroModule = (() => {
       num:12, nombre:'La Magia Oscura, la Sombra y el Grimorio Final', dias:'319–365', emoji:'🌑', color:'#0a0a1a',
       desc:'El cierre del año y la integración total. Trabajo de sombra profundo, magia de protección avanzada, destierro y banishing, y la creación de tu grimorio personal definitivo.',
       semanas:[
-        {num:1, titulo:'Magia oscura: aclaración necesaria', desc:'Qué es y qué no es la magia oscura. Destierro, banishing, protección fuerte: cuándo y cómo. La ética de hacerle daño a alguien versus protegerse de quien te daña.'},
-        {num:2, titulo:'Trabajo de sombra avanzado', desc:'Jung y la brujería: integrar lo que rechazamos. Las partes de ti que has demonizado. Rituales de integración de sombra para el brujo que ya tiene bases.'},
-        {num:3, titulo:'Protección profunda y magia de defensa', desc:'Los escudos energéticos sostenidos. Magia defensiva sin atacar. Cómo proteger a otros. El círculo de protección permanente para tu hogar.'},
-        {num:4, titulo:'Tu grimorio personal y el ritual de graduación', desc:'Qué debe tener tu grimorio: tu voz, tus experiencias, tus descubrimientos. Cómo organizarlo. No es un libro copiado: es el mapa de tu propio camino.'},
+        {num:1, titulo:'Magia oscura: aclaración necesaria', desc:'Qué es y qué no es la magia oscura. Destierro, banishing, protección fuerte: cuándo y cómo. La ética de hacerle daño a alguien versus protegerse de quien te daña.',
+          practicas:['Escribe la diferencia entre protegerte y atacar: ¿cuál es tu línea ética personal?','Ritual de destierro: vela negra, nombre de lo que destieres, límite claro','Aprende la diferencia entre banishing (alejar) y binding (atar): cuándo usar cada uno','Haz un escudo energético reforzado y pon a prueba cuántos días lo mantienes']},
+        {num:2, titulo:'Trabajo de sombra avanzado', desc:'Jung y la brujería: integrar lo que rechazamos. Las partes de ti que has demonizado. Rituales de integración de sombra para el brujo que ya tiene bases.',
+          practicas:['Escribe una lista de todo lo que has reprimido en este año de práctica','Ritual de sombra: vela negra, espejo, escribe lo que ves sin censurarte','Haz una conversación escrita entre tú y tu sombra: dale voz, escúchala','Abraza un rasgo de tu sombra: acéptalo, nómbralo, intégralo — es tuyo']},
+        {num:3, titulo:'Protección profunda y magia de defensa', desc:'Los escudos energéticos sostenidos. Magia defensiva sin atacar. Cómo proteger a otros. El círculo de protección permanente para tu hogar.',
+          practicas:['Sella tu hogar: sal en umbrales, hierro en ventanas, escudo visualizado en cada pared','Programa un cristal de obsidiana o turmalina negra para proteger tu espacio','Crea un frasco de bruja (witch jar): sal, alfileres, hierbas — enterrar en la entrada','Renueva mensualmente tu escudo personal con un ritual breve de recarga']},
+        {num:4, titulo:'Tu grimorio personal y el ritual de graduación', desc:'Qué debe tener tu grimorio: tu voz, tus experiencias, tus descubrimientos. Cómo organizarlo. No es un libro copiado: es el mapa de tu propio camino.',
+          practicas:['Revisa todo lo que escribiste en tu diario este año: ¿cuál es el hilo conductor?','Escribe la primera página de tu grimorio definitivo: quién eres como brujo/a','Crea tu propio sistema de correspondencias: colores, hierbas, planetas según TU experiencia','Planifica el Ritual de Graduación: qué invocarás, qué agradecerás, cómo lo cerrarás']},
       ],
       cierre:'Ritual de Graduación: un año de práctica. Celebra lo que eres ahora.'
     },
@@ -4971,11 +5369,18 @@ const LibroModule = (() => {
     const weeks = c.semanas.map((s, i) => {
       const dIni = inicioNum + i * 7;
       const dFin = dIni + 6;
+      const practicasHtml = s.practicas && s.practicas.length
+        ? `<div class="ciclo-practicas">
+            <div class="ciclo-practicas-titulo">✦ Prácticas de la semana</div>
+            <ul class="ciclo-practicas-list">${s.practicas.map(p=>`<li>${p}</li>`).join('')}</ul>
+           </div>`
+        : '';
       return `
         <div class="ciclo-semana">
           <div class="ciclo-semana-titulo">Semana ${s.num || i+1}: ${s.titulo}</div>
           <div class="ciclo-semana-dias">días ${dIni}–${dFin}</div>
           <div class="ciclo-semana-desc">${s.desc}</div>
+          ${practicasHtml}
         </div>`;
     }).join('');
 
@@ -5466,9 +5871,6 @@ const AltarModule = (() => {
 
   function init() {
     renderSelector();
-    document.getElementById('altar-tab-guia')?.addEventListener('click', ()=>setTab('guia'));
-    document.getElementById('altar-tab-elementos')?.addEventListener('click', ()=>setTab('elementos'));
-    document.getElementById('altar-tab-colores')?.addEventListener('click', ()=>setTab('colores'));
   }
 
   function setTab(tab) {
@@ -5496,54 +5898,56 @@ const AltarModule = (() => {
   function seleccionarPanteon(key) {
     altarActual = ALTARES[key];
     document.querySelectorAll('.altar-btn').forEach(b=>b.classList.toggle('active', b.dataset.panteon===key));
-    renderAltar();
-    document.getElementById('altar-detail')?.classList.remove('hidden');
-  }
-
-  function renderAltar() {
-    if (!altarActual) return;
-    // Guía
-    const guia = document.getElementById('altar-panel-guia');
-    if (guia) {
-      guia.innerHTML = `
-        <div class="altar-nota">${altarActual.nota}</div>
-        <div class="altar-layout">
-          ${altarActual.elementos.map(el=>`
-            <div class="altar-elem">
-              <span class="altar-elem-emoji">${el.emoji}</span>
-              <div>
-                <div class="altar-elem-nombre">${el.nombre}</div>
-                <div class="altar-elem-pos"><strong>${el.pos}</strong> — ${el.uso}</div>
-              </div>
-            </div>`).join('')}
-        </div>`;
-    }
-    // Elementos
-    const elems = document.getElementById('altar-panel-elementos');
-    if (elems) {
-      elems.innerHTML = `
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem">
-          ${altarActual.elementos.map(el=>`
-            <div class="altar-elem-card">
-              <div style="font-size:1.8rem;margin-bottom:.3rem">${el.emoji}</div>
-              <div style="font-weight:600;font-size:.85rem">${el.nombre}</div>
-              <div style="font-size:.75rem;color:var(--muted);margin-top:.2rem">${el.pos}</div>
-            </div>`).join('')}
-        </div>`;
-    }
-    // Colores
-    const col = document.getElementById('altar-panel-colores');
-    if (col) {
-      col.innerHTML = `
-        <p style="margin-bottom:1rem;color:var(--muted);font-size:.88rem">Colores sagrados del ${altarActual.nombre}:</p>
-        <div style="display:flex;gap:.8rem;flex-wrap:wrap">
-          ${altarActual.colores.map(c=>`
-            <div style="display:flex;align-items:center;gap:.5rem">
-              <div style="width:40px;height:40px;border-radius:50%;background:${c};border:2px solid rgba(255,255,255,.2);box-shadow:0 0 10px ${c}66"></div>
-              <span style="font-size:.8rem;color:var(--muted)">${c}</span>
-            </div>`).join('')}
-        </div>`;
-    }
+    const detail = document.getElementById('altar-detail');
+    if (!detail) return;
+    detail.innerHTML = `
+      <div class="card" style="border-top:3px solid ${altarActual.color}">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.2rem">
+          <span style="font-size:2rem">${altarActual.emoji}</span>
+          <div>
+            <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0">${altarActual.nombre}</h3>
+          </div>
+        </div>
+        <div class="altar-tabs-row">
+          <button id="altar-tab-guia" class="altar-tab active" onclick="AltarModule.setTab('guia')">🗺️ Guía</button>
+          <button id="altar-tab-elementos" class="altar-tab" onclick="AltarModule.setTab('elementos')">🌟 Elementos</button>
+          <button id="altar-tab-colores" class="altar-tab" onclick="AltarModule.setTab('colores')">🎨 Colores</button>
+        </div>
+        <div id="altar-panel-guia">
+          <div class="altar-nota">${altarActual.nota}</div>
+          <div class="altar-layout">
+            ${altarActual.elementos.map(el=>`
+              <div class="altar-elem">
+                <span class="altar-elem-emoji">${el.emoji}</span>
+                <div>
+                  <div class="altar-elem-nombre">${el.nombre}</div>
+                  <div class="altar-elem-pos"><strong>${el.pos}</strong> — ${el.uso}</div>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>
+        <div id="altar-panel-elementos" class="hidden">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem">
+            ${altarActual.elementos.map(el=>`
+              <div class="altar-elem-card">
+                <div style="font-size:1.8rem;margin-bottom:.3rem">${el.emoji}</div>
+                <div style="font-weight:600;font-size:.85rem">${el.nombre}</div>
+                <div style="font-size:.75rem;color:var(--muted);margin-top:.2rem">${el.pos}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+        <div id="altar-panel-colores" class="hidden">
+          <p style="margin-bottom:1rem;color:var(--muted);font-size:.88rem">Colores sagrados del ${altarActual.nombre}:</p>
+          <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+            ${altarActual.colores.map(c=>`
+              <div style="display:flex;align-items:center;gap:.5rem">
+                <div style="width:40px;height:40px;border-radius:50%;background:${c};border:2px solid rgba(255,255,255,.2);box-shadow:0 0 10px ${c}66"></div>
+                <span style="font-size:.8rem;color:var(--muted)">${c}</span>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+    tabActiva = 'guia';
   }
 
   return { init, seleccionarPanteon };
@@ -5553,7 +5957,7 @@ const AltarModule = (() => {
 <script>
 'use strict';
 // ============================================================
-// COCINA.JS — Cocina Mágica
+// COCINA.JS — Cocina Mágica: Recetas, Baños y Brebajes
 // ============================================================
 const CocinaModule = (() => {
 
@@ -5570,10 +5974,7 @@ const CocinaModule = (() => {
         'Endulza con miel y recita: "Luna llena, trae tus dones, abre mi mente a tus visiones."',
         'Bébelo antes de dormir para recibir sueños guía.',
       ],
-      planeta: 'Luna',
-      elemento: 'Agua',
-      mejor_momento: 'Noche de luna llena',
-      color: '#C0C0C0',
+      planeta: 'Luna', elemento: 'Agua', mejor_momento: 'Noche de luna llena', color: '#C0C0C0',
     },
     {
       nombre: 'Aceite de Éxito y Abundancia',
@@ -5587,10 +5988,7 @@ const CocinaModule = (() => {
         'Recita: "Que la abundancia fluya hacia mí, que las puertas se abran ante mi camino."',
         'Úsalo para ungir velas verdes o doradas, tu billetera o documentos importantes.',
       ],
-      planeta: 'Júpiter',
-      elemento: 'Fuego',
-      mejor_momento: 'Jueves en luna creciente',
-      color: '#FFD700',
+      planeta: 'Júpiter', elemento: 'Fuego', mejor_momento: 'Jueves en luna creciente', color: '#FFD700',
     },
     {
       nombre: 'Agua de Florida Casera',
@@ -5604,10 +6002,7 @@ const CocinaModule = (() => {
         'Al 7° día, cuela y añade el aceite de bergamota.',
         'Úsala para limpiar tu espacio, tu cuerpo antes de rituales, o como ofrenda.',
       ],
-      planeta: 'Venus / Sol',
-      elemento: 'Aire',
-      mejor_momento: 'Lunes para limpieza, viernes para amor',
-      color: '#90EE90',
+      planeta: 'Venus / Sol', elemento: 'Aire', mejor_momento: 'Lunes para limpieza, viernes para amor', color: '#90EE90',
     },
     {
       nombre: 'Vino de Sabbat (Hidromiel Rápido)',
@@ -5621,10 +6016,7 @@ const CocinaModule = (() => {
         'Cuando burbujee levemente, está listo para usar en rituales.',
         'Úsalo en el cáliz durante los sabbats o compartido en círculo.',
       ],
-      planeta: 'Luna / Sol',
-      elemento: 'Agua',
-      mejor_momento: 'Sabbats y lunas llenas',
-      color: '#8B0000',
+      planeta: 'Luna / Sol', elemento: 'Agua', mejor_momento: 'Sabbats y lunas llenas', color: '#8B0000',
     },
     {
       nombre: 'Galletas de Canela para Hechizos de Amor',
@@ -5636,12 +6028,9 @@ const CocinaModule = (() => {
         'Une las mezclas con el huevo y la vainilla. Amasa con amor y visualizando tu intención.',
         'Forma corazones, lunas o símbolos mágicos con la masa.',
         'Mientras horneas a 180° por 12 minutos, recita tu intención de amor.',
-        'Compártelas con quien desees o cómelas tú para internalizartu intención.',
+        'Compártelas con quien desees o cómelas tú para interiorizar tu intención.',
       ],
-      planeta: 'Venus',
-      elemento: 'Fuego / Tierra',
-      mejor_momento: 'Viernes en luna creciente',
-      color: '#FF69B4',
+      planeta: 'Venus', elemento: 'Fuego / Tierra', mejor_momento: 'Viernes en luna creciente', color: '#FF69B4',
     },
     {
       nombre: 'Sopa Curativa de Raíces',
@@ -5655,10 +6044,7 @@ const CocinaModule = (() => {
         'Cocina a fuego lento 20 minutos. La lentitud del fuego es magia de agua y tierra.',
         'Sirve con gratitud. Cada cucharada es medicina física y espiritual.',
       ],
-      planeta: 'Saturno / Sol',
-      elemento: 'Tierra',
-      mejor_momento: 'Domingo para vitalidad, sábado para destierro de enfermedad',
-      color: '#FF8C00',
+      planeta: 'Saturno / Sol', elemento: 'Tierra', mejor_momento: 'Domingo para vitalidad, sábado para destierro de enfermedad', color: '#FF8C00',
     },
     {
       nombre: 'Infusión de Protección Nocturna',
@@ -5672,10 +6058,7 @@ const CocinaModule = (() => {
         'Recita: "Hierbas de protección, guardad mi sueño. Que nada oscuro cruce este umbral."',
         'Bébela tibia 30 minutos antes de dormir. Coloca sal en las esquinas de la cama.',
       ],
-      planeta: 'Luna / Saturno',
-      elemento: 'Agua',
-      mejor_momento: 'Noche de cualquier luna, especialmente menguante',
-      color: '#191970',
+      planeta: 'Luna / Saturno', elemento: 'Agua', mejor_momento: 'Noche de cualquier luna, especialmente menguante', color: '#191970',
     },
     {
       nombre: 'Miel Encantada para Endulzar Situaciones',
@@ -5689,90 +6072,420 @@ const CocinaModule = (() => {
         'Agrega las especias y los pétalos mientras recitas tu intención.',
         'Sella el frasco y entiérralo o colócalo cerca de la entrada de tu hogar.',
       ],
-      planeta: 'Venus',
-      elemento: 'Tierra / Fuego',
-      mejor_momento: 'Viernes, luna llena o creciente',
-      color: '#DAA520',
+      planeta: 'Venus', elemento: 'Tierra / Fuego', mejor_momento: 'Viernes, luna llena o creciente', color: '#DAA520',
     },
   ];
 
+  const BANOS = [
+    {
+      nombre: 'Baño de Amor Propio',
+      emoji: '💕',
+      intencion: 'Amor propio, sanación emocional, aceptación',
+      ingredientes: ['Sal marina (3 puñados)', 'Pétalos de rosa frescos o secos', 'Lavanda (1 manojo o aceite esencial)', 'Miel (1 cda)', 'Vela rosada'],
+      proceso: [
+        'Llena la tina o prepara un cubo con agua tibia-caliente.',
+        'Disuelve la sal en el agua pronunciando: "Que esta agua limpie lo que ya no sirvo."',
+        'Agrega los pétalos, la lavanda y la miel.',
+        'Enciende la vela rosada. Entra al baño y cierra los ojos.',
+        'Visualiza una luz dorada expandiéndose desde tu corazón hacia todo tu cuerpo.',
+        'Permanece al menos 10 minutos. Al salir, no te seques con toalla — deja que el agua seque sola.',
+      ],
+      luna: 'Creciente o Llena', planeta: 'Venus', elemento: 'Agua', color: '#FFB6C1',
+    },
+    {
+      nombre: 'Baño de Limpieza Profunda',
+      emoji: '🌊',
+      intencion: 'Despejar energía pesada, cortar vínculos, limpiar el aura',
+      ingredientes: ['Sal gruesa (1 taza)', 'Ruda fresca (un manojo)', 'Romero (un manojo)', 'Agua con limón (jugo de 2 limones)', 'Vela blanca o negra'],
+      proceso: [
+        'Hierve la ruda y el romero en agua durante 10 minutos. Deja enfriar.',
+        'Mezcla el agua de hierbas con la sal, el limón y agua fría en el cubo.',
+        'Enciende la vela. Desde la cabeza hacia abajo, derrama el agua sobre tu cuerpo.',
+        'Visualiza la energía densa volviéndose gris y cayendo al suelo con el agua.',
+        'Declara: "Lo que no es mío se va. Lo que es mío permanece."',
+        'Sécate rápidamente. Envuelve en ropa limpia y blanca si tienes.',
+      ],
+      luna: 'Menguante o Nueva', planeta: 'Saturno / Luna', elemento: 'Agua + Tierra', color: '#708090',
+    },
+    {
+      nombre: 'Baño de Prosperidad',
+      emoji: '💛',
+      intencion: 'Atraer dinero, trabajo, oportunidades económicas',
+      ingredientes: ['Canela en rama (2)', 'Albahaca fresca (un manojo)', 'Menta fresca', 'Agua tibia', 'Moneda consagrada (opcional)'],
+      proceso: [
+        'Hierve la canela, albahaca y menta en agua por 7 minutos.',
+        'Agrega el preparado al agua del baño o cubo.',
+        'Sostén la moneda consagrada en la mano derecha mientras te bañas.',
+        'Visualiza dinero y oportunidades llegando a ti desde todas las direcciones.',
+        'Recita: "El flujo de la abundancia llega a mí, natural y perfectamente."',
+        'Deja la moneda en tu altar o billetera al terminar.',
+      ],
+      luna: 'Creciente (jueves preferiblemente)', planeta: 'Júpiter', elemento: 'Fuego + Agua', color: '#FFD700',
+    },
+    {
+      nombre: 'Baño de Protección del Guerrero',
+      emoji: '🛡️',
+      intencion: 'Blindaje energético, protección personal, fuerza',
+      ingredientes: ['Sal negra o sal del Himalaya (1 taza)', 'Ruda (manojo)', 'Palo santo o incienso de cedro', 'Clavo de olor (7 unidades)', 'Vela negra'],
+      proceso: [
+        'Realiza el baño el martes (Marte) o sábado (Saturno) idealmente.',
+        'Prende el incienso de palo santo o cedro para preparar el espacio.',
+        'Hierve la ruda con el clavo 10 minutos. Mezcla con la sal en agua fría.',
+        'Vierte desde la coronilla hacia los pies mientras visualizas un escudo de luz oscura.',
+        'Recita: "Ninguna energía que no sea de luz puede seguirme ni afectarme."',
+        'Después, prende la vela negra en tu altar para sellar el trabajo.',
+      ],
+      luna: 'Menguante o Nueva', planeta: 'Marte / Saturno', elemento: 'Fuego + Tierra', color: '#2F2F2F',
+    },
+    {
+      nombre: 'Baño de Luna Llena (Recarga)',
+      emoji: '🌕',
+      intencion: 'Recarga de energía, conexión lunar, plenitud',
+      ingredientes: ['Agua de luna (agua en frasco expuesta toda la noche de luna llena)', 'Sal del Himalaya (2 cdas)', 'Jazmín o pétalos de gardenia', 'Aceite de coco (1 cda)'],
+      proceso: [
+        'Prepara el agua de luna la noche anterior dejando un frasco al aire libre.',
+        'Mezcla el agua lunar con sal, jazmín y aceite de coco.',
+        'El baño debe hacerse de noche, idealmente bajo o cerca de la luna llena.',
+        'Cierra los ojos. Siente la energía lunar entrando a cada poro de tu piel.',
+        'Declara tu intención de este ciclo: qué quieres cosechar o celebrar.',
+        'Termina con gratitud: gracias a la luna, a tu cuerpo, al agua.',
+      ],
+      luna: 'Luna Llena (obligatorio)', planeta: 'Luna', elemento: 'Agua', color: '#E8E8FF',
+    },
+    {
+      nombre: 'Baño de Desbloqueo y Apertura',
+      emoji: '🗝️',
+      intencion: 'Abrir caminos, quitar bloqueos, nueva etapa',
+      ingredientes: ['7 flores de distintos tipos (blancas preferiblemente)', 'Agua tibia', 'Azúcar blanca (1 taza)', 'Perfume o colonia (unas gotas)', 'Vela amarilla o dorada'],
+      proceso: [
+        'Deshoja las flores sobre el agua dulce. Agrega el azúcar y el perfume.',
+        'Mezcla moviendo en sentido horario mientras pides apertura y nuevos comienzos.',
+        'Enciende la vela dorada antes de entrar al agua o iniciar el baño de pie.',
+        'Desde la cabeza hacia abajo, deja que el agua floral corra por todo tu cuerpo.',
+        'Repite 7 veces: "Que todos mis caminos se abran. Que todo fluya para mí."',
+        'Deja la vela quemar completamente en un lugar seguro.',
+      ],
+      luna: 'Nueva o Creciente', planeta: 'Sol / Mercurio', elemento: 'Agua + Aire', color: '#FFD700',
+    },
+  ];
+
+  const BREBAJES = [
+    {
+      nombre: 'Elixir de Claridad Mental',
+      emoji: '🔮',
+      intencion: 'Foco, intuición, decisiones, estudio',
+      ingredientes: ['Agua filtrada (1 taza)', 'Romero fresco (ramita)', 'Menta (5 hojas)', 'Limón (jugo de 1/2)', 'Miel de abeja (1 cda)'],
+      proceso: [
+        'Hierve el agua con el romero y la menta durante 5 minutos.',
+        'Mientras hierve, visualiza tu mente despejándose como un cielo después de la lluvia.',
+        'Cuela, agrega el jugo de limón y la miel.',
+        'Sostén la taza entre ambas manos y recita: "Mi mente es clara, mi intuición es certera."',
+        'Bebe lentamente antes de un examen, decisión importante o trabajo mágico.',
+      ],
+      uso: 'Beber', planeta: 'Mercurio', elemento: 'Aire', color: '#90EE90',
+    },
+    {
+      nombre: 'Poción de Sueños Lúcidos',
+      emoji: '🌙',
+      intencion: 'Sueños proféticos, comunicación con guías, descanso profundo',
+      ingredientes: ['Agua de luna (1 taza)', 'Lavanda seca (1/2 cdita)', 'Flor de maracuyá (pasiflora) (1 cdita)', 'Artemisa seca (1/4 cdita — precaución en embarazo)', 'Miel'],
+      proceso: [
+        'Mezcla las hierbas y déjalas en remojo en agua de luna durante 20 minutos (sin hervir).',
+        'Cuela y endulza con miel mientras piensas en aquello que deseas soñar o comprender.',
+        'Bebe en silencio 30 minutos antes de dormir.',
+        'Registra TODO lo que sueñes en cuanto despiertes, aunque parezca sin sentido.',
+        'Nota: la artemisa es poderosa — úsala con respeto y no más de 2 veces por semana.',
+      ],
+      uso: 'Beber (antes de dormir)', planeta: 'Luna', elemento: 'Agua', color: '#9B59B6',
+    },
+    {
+      nombre: 'Tintura de Protección',
+      emoji: '🛡️',
+      intencion: 'Protección energética, escudo personal',
+      ingredientes: ['Alcohol de caña o vodka (base, 100ml)', 'Ruda fresca (2 ramitas)', 'Romero (1 ramita)', 'Clavo de olor (5)', 'Pimienta negra (5 granos)'],
+      proceso: [
+        'Coloca todas las hierbas y especias en un frasco de vidrio oscuro.',
+        'Cubre completamente con el alcohol. Cierra bien.',
+        'Deja macerar en luna menguante o nueva durante 14 días en lugar oscuro.',
+        'Agita cada día con la intención de crear un escudo.',
+        'Cuela y guarda en frasquito pequeño. Aplica unas gotas en muñecas o puerta antes de salir.',
+        'Uso externo solamente. Renueva la intención cada luna menguante.',
+      ],
+      uso: 'Externo (muñecas, puertas, ropa)', planeta: 'Saturno / Marte', elemento: 'Fuego', color: '#2F2F2F',
+    },
+    {
+      nombre: 'Brebaje de Amor Propio',
+      emoji: '💕',
+      intencion: 'Autoamor, aceptación, apertura emocional',
+      ingredientes: ['Leche de avena o almendra (1 taza)', 'Canela (1/2 cdita)', 'Cardamomo (1 pizca)', 'Miel rosada o normal', 'Extracto de vainilla (1 cdita)'],
+      proceso: [
+        'Calienta la leche vegetal a fuego bajo — no que hierva, que se entibie con amor.',
+        'Agrega la canela, cardamomo y vainilla revolviendo en sentido horario.',
+        'Mientras mezclas, lista mentalmente 5 cosas que amas de ti mismo/a.',
+        'Endulza con miel y recita: "Soy suficiente. Me amo. Me merezco lo mejor."',
+        'Bebe en un lugar cómodo, en silencio o con música que te haga bien.',
+      ],
+      uso: 'Beber', planeta: 'Venus', elemento: 'Tierra + Agua', color: '#FFB6C1',
+    },
+    {
+      nombre: 'Agua de los 7 Poderes',
+      emoji: '✨',
+      intencion: 'Todo propósito, limpieza, carga de herramientas, ofrenda',
+      ingredientes: ['Agua de lluvia o manantial (1 litro)', '7 flores de diferentes colores', '7 hierbas distintas (lo que tengas)', '7 gotas de aceite esencial (el que resuene)', 'Sal (7 pizcas)'],
+      proceso: [
+        'Reúne 7 flores y 7 hierbas distintas — no importa si no sabes sus nombres mágicos.',
+        'En luna llena, coloca todo en un cuenco grande con el agua.',
+        'Deja reposar bajo la luna toda la noche, tapado con un paño.',
+        'Al amanecer, agrega el aceite y la sal mientras pides los 7 poderes que necesitas.',
+        'Cuela y guarda en frasco. Úsala para limpiar el altar, rociar el hogar o consagrar herramientas.',
+      ],
+      uso: 'Externo / Limpieza / Ofrenda', planeta: 'Luna / Sol', elemento: 'Agua + Todos', color: '#DAA520',
+    },
+  ];
+
+  let tab = 'recetas';
   let filtro = 'todos';
   let busqueda = '';
+  let recetasUsuario = [];
+
+  const RECETAS_SK = 'bruja_cocina_recetas';
+
+  function loadRecetasUsuario() {
+    try { recetasUsuario = JSON.parse(localStorage.getItem(RECETAS_SK) || '[]'); } catch(e){ recetasUsuario = []; }
+  }
+
+  function saveRecetasUsuario() {
+    try { localStorage.setItem(RECETAS_SK, JSON.stringify(recetasUsuario)); } catch(e){}
+  }
 
   function init() {
-    renderFiltros();
-    renderRecetas();
+    loadRecetasUsuario();
+    renderTabs();
+    renderContenido();
     document.getElementById('cocina-search')?.addEventListener('input', e => {
       busqueda = e.target.value.toLowerCase();
-      renderRecetas();
+      renderContenido();
     });
   }
 
-  function renderFiltros() {
-    const f = document.getElementById('cocina-filtros');
-    if (!f) return;
-    const planetas = ['todos', 'Luna', 'Sol', 'Venus', 'Júpiter', 'Saturno'];
-    f.innerHTML = planetas.map(p => `
-      <button class="bib-tab${filtro===p?' active':''}" onclick="CocinaModule.setFiltro('${p}')">${p==='todos'?'✦ Todos':p}</button>
+  function renderTabs() {
+    const tabRow = document.getElementById('cocina-tabs');
+    if (!tabRow) return;
+    const tabs = [
+      { id:'recetas', emoji:'🌿', label:'Recetas' },
+      { id:'banos', emoji:'🛁', label:'Baños' },
+      { id:'brebajes', emoji:'🧪', label:'Brebajes' },
+      { id:'mis-recetas', emoji:'📖', label:'Mis Recetas' },
+    ];
+    tabRow.innerHTML = tabs.map(t => `
+      <button class="bib-tab${tab===t.id?' active':''}"
+              onclick="CocinaModule.setTab('${t.id}')">${t.emoji} ${t.label}</button>
     `).join('');
+  }
+
+  function setTab(t) {
+    tab = t;
+    busqueda = '';
+    const searchEl = document.getElementById('cocina-search');
+    if (searchEl) searchEl.value = '';
+    renderTabs();
+    renderContenido();
+    // Mostrar/ocultar filtros y search según tab
+    const filtrosWrap = document.getElementById('cocina-filtros-wrap');
+    if (filtrosWrap) filtrosWrap.classList.toggle('hidden', t === 'mis-recetas');
+  }
+
+  function renderContenido() {
+    const grid = document.getElementById('cocina-grid');
+    const filtrosEl = document.getElementById('cocina-filtros');
+    if (!grid) return;
+
+    if (tab === 'recetas') {
+      if (filtrosEl) {
+        const planetas = ['todos', 'Luna', 'Sol', 'Venus', 'Júpiter', 'Saturno'];
+        filtrosEl.innerHTML = planetas.map(p => `
+          <button class="bib-tab${filtro===p?' active':''}" onclick="CocinaModule.setFiltro('${p}')">${p==='todos'?'✦ Todos':p}</button>
+        `).join('');
+      }
+      let data = RECETAS;
+      if (filtro !== 'todos') data = data.filter(r => r.planeta.includes(filtro));
+      if (busqueda) data = data.filter(r =>
+        r.nombre.toLowerCase().includes(busqueda) || r.intencion.toLowerCase().includes(busqueda));
+      grid.innerHTML = data.map(r => `
+        <div class="cocina-card" onclick="CocinaModule.openItem('receta','${r.nombre.replace(/'/g,"\\'")}')">
+          <div class="cocina-emoji">${r.emoji}</div>
+          <div class="cocina-nombre">${r.nombre}</div>
+          <div class="cocina-intencion">${r.intencion}</div>
+          <div style="display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap">
+            <span class="tag">${r.planeta}</span><span class="tag">${r.elemento}</span>
+          </div>
+        </div>`).join('');
+    } else if (tab === 'banos') {
+      if (filtrosEl) filtrosEl.innerHTML = '';
+      let data = BANOS;
+      if (busqueda) data = data.filter(b => b.nombre.toLowerCase().includes(busqueda) || b.intencion.toLowerCase().includes(busqueda));
+      grid.innerHTML = data.map(b => `
+        <div class="cocina-card" onclick="CocinaModule.openItem('bano','${b.nombre.replace(/'/g,"\\'")}')">
+          <div class="cocina-emoji">${b.emoji}</div>
+          <div class="cocina-nombre">${b.nombre}</div>
+          <div class="cocina-intencion">${b.intencion}</div>
+          <div style="display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap">
+            <span class="tag">${b.luna}</span><span class="tag">${b.planeta}</span>
+          </div>
+        </div>`).join('');
+    } else if (tab === 'brebajes') {
+      if (filtrosEl) filtrosEl.innerHTML = '';
+      let data = BREBAJES;
+      if (busqueda) data = data.filter(b => b.nombre.toLowerCase().includes(busqueda) || b.intencion.toLowerCase().includes(busqueda));
+      grid.innerHTML = data.map(b => `
+        <div class="cocina-card" onclick="CocinaModule.openItem('brebaje','${b.nombre.replace(/'/g,"\\'")}')">
+          <div class="cocina-emoji">${b.emoji}</div>
+          <div class="cocina-nombre">${b.nombre}</div>
+          <div class="cocina-intencion">${b.intencion}</div>
+          <div style="display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap">
+            <span class="tag">${b.uso}</span><span class="tag">${b.planeta}</span>
+          </div>
+        </div>`).join('');
+    } else if (tab === 'mis-recetas') {
+      if (filtrosEl) filtrosEl.innerHTML = '';
+      if (recetasUsuario.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;padding:2rem">
+            <div style="font-size:2.5rem;margin-bottom:.75rem">📖</div>
+            <p class="text-muted">Aún no tienes recetas propias guardadas.</p>
+            <p class="text-muted" style="font-size:.85rem">Crea tu primera receta mágica con el botón de abajo.</p>
+          </div>`;
+      } else {
+        grid.innerHTML = recetasUsuario.map((r, idx) => `
+          <div class="cocina-card" onclick="CocinaModule.openMiReceta(${idx})">
+            <div class="cocina-emoji">${r.emoji || '📖'}</div>
+            <div class="cocina-nombre">${r.nombre}</div>
+            <div class="cocina-intencion">${r.cualidades || ''}</div>
+            <div style="display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap">
+              ${r.tipo?`<span class="tag">${r.tipo}</span>`:''}
+              <button class="tag" style="background:rgba(255,0,0,.12);border-color:rgba(255,0,0,.3);cursor:pointer"
+                onclick="event.stopPropagation();CocinaModule.eliminarMiReceta(${idx})">🗑</button>
+            </div>
+          </div>`).join('');
+      }
+    }
   }
 
   function setFiltro(p) {
     filtro = p;
-    renderFiltros();
-    renderRecetas();
+    renderContenido();
   }
 
-  function renderRecetas() {
-    const grid = document.getElementById('cocina-grid');
-    if (!grid) return;
-    let data = RECETAS;
-    if (filtro !== 'todos') data = data.filter(r => r.planeta.includes(filtro));
-    if (busqueda) data = data.filter(r =>
-      r.nombre.toLowerCase().includes(busqueda) ||
-      r.intencion.toLowerCase().includes(busqueda) ||
-      r.elemento.toLowerCase().includes(busqueda)
-    );
-    grid.innerHTML = data.map(r => `
-      <div class="cocina-card" onclick="CocinaModule.openReceta('${r.nombre.replace(/'/g,"\\'")}')">
-        <div class="cocina-emoji">${r.emoji}</div>
-        <div class="cocina-nombre">${r.nombre}</div>
-        <div class="cocina-intencion">${r.intencion}</div>
-        <div style="display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap">
-          <span class="tag">${r.planeta}</span>
-          <span class="tag">${r.elemento}</span>
+  // ── Abrir modal ────────────────────────────────────────────
+  function openItem(tipo, nombre) {
+    let item;
+    if (tipo === 'receta') item = RECETAS.find(r => r.nombre === nombre);
+    else if (tipo === 'bano') item = BANOS.find(b => b.nombre === nombre);
+    else if (tipo === 'brebaje') item = BREBAJES.find(b => b.nombre === nombre);
+    if (!item) return;
+
+    const overlay = document.getElementById('cocina-modal');
+    const content = document.getElementById('cocina-modal-content');
+    if (!overlay || !content) return;
+
+    const tags = tipo === 'receta'
+      ? `<span class="tag">${item.planeta}</span><span class="tag">${item.elemento}</span><span class="tag">🌙 ${item.mejor_momento}</span>`
+      : tipo === 'bano'
+      ? `<span class="tag">${item.luna}</span><span class="tag">${item.planeta}</span><span class="tag">${item.elemento}</span>`
+      : `<span class="tag">${item.uso}</span><span class="tag">${item.planeta}</span>`;
+
+    content.innerHTML = `
+      <div class="modal-header" style="background:linear-gradient(135deg,${item.color}22,transparent)">
+        <div style="font-size:2.5rem">${item.emoji}</div>
+        <div>
+          <div class="modal-title">${item.nombre}</div>
+          <div class="modal-tags">${tags}</div>
         </div>
-      </div>`).join('');
+        <button class="modal-close" onclick="CocinaModule.closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-row"><strong>Intención Mágica</strong>✨ ${item.intencion}</div>
+        <div class="modal-row">
+          <strong>Ingredientes</strong>
+          <ul style="list-style:none;padding:0;margin-top:.4rem">${item.ingredientes.map(i=>`<li style="padding:.2rem 0;border-bottom:1px solid rgba(255,255,255,.05)">· ${i}</li>`).join('')}</ul>
+        </div>
+        <div class="modal-row">
+          <strong>${tipo === 'receta' ? 'Proceso Ritual' : tipo === 'bano' ? 'Ritual del Baño' : 'Preparación'}</strong>
+          <ol style="padding-left:1.2rem;margin-top:.4rem">${item.proceso.map(p=>`<li style="margin-bottom:.5rem;line-height:1.6">${p}</li>`).join('')}</ol>
+        </div>
+      </div>`;
+    overlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
   }
 
-  function openReceta(nombre) {
-    const r = RECETAS.find(x => x.nombre === nombre);
+  // ── Mis Recetas ───────────────────────────────────────────
+  function abrirCrearReceta() {
+    const overlay = document.getElementById('cocina-crear-modal');
+    if (!overlay) return;
+    overlay.querySelector('#cr-nombre').value = '';
+    overlay.querySelector('#cr-emoji').value = '';
+    overlay.querySelector('#cr-tipo').value = 'Receta';
+    overlay.querySelector('#cr-cualidades').value = '';
+    overlay.querySelector('#cr-ingredientes').value = '';
+    overlay.querySelector('#cr-proceso').value = '';
+    overlay.querySelector('#cr-nota').value = '';
+    overlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function guardarMiReceta() {
+    const nombre = document.getElementById('cr-nombre')?.value?.trim();
+    if (!nombre) { alert('Ponle nombre a tu receta'); return; }
+    const receta = {
+      nombre,
+      emoji: document.getElementById('cr-emoji')?.value?.trim() || '📖',
+      tipo: document.getElementById('cr-tipo')?.value || 'Receta',
+      cualidades: document.getElementById('cr-cualidades')?.value?.trim() || '',
+      ingredientes: document.getElementById('cr-ingredientes')?.value?.trim() || '',
+      proceso: document.getElementById('cr-proceso')?.value?.trim() || '',
+      nota: document.getElementById('cr-nota')?.value?.trim() || '',
+      creada: new Date().toLocaleDateString('es'),
+    };
+    recetasUsuario.push(receta);
+    saveRecetasUsuario();
+    cerrarCrearReceta();
+    setTab('mis-recetas');
+  }
+
+  function cerrarCrearReceta() {
+    document.getElementById('cocina-crear-modal')?.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  function openMiReceta(idx) {
+    const r = recetasUsuario[idx];
     if (!r) return;
     const overlay = document.getElementById('cocina-modal');
     const content = document.getElementById('cocina-modal-content');
     if (!overlay || !content) return;
     content.innerHTML = `
-      <div class="modal-header" style="background:linear-gradient(135deg,${r.color}22,transparent)">
-        <div style="font-size:2.5rem">${r.emoji}</div>
+      <div class="modal-header">
+        <div style="font-size:2.5rem">${r.emoji || '📖'}</div>
         <div>
           <div class="modal-title">${r.nombre}</div>
-          <div class="modal-tags"><span class="tag">${r.planeta}</span><span class="tag">${r.elemento}</span><span class="tag">🌙 ${r.mejor_momento}</span></div>
+          <div class="modal-tags">${r.tipo?`<span class="tag">${r.tipo}</span>`:''} <span class="tag">📅 ${r.creada}</span></div>
         </div>
         <button class="modal-close" onclick="CocinaModule.closeModal()">✕</button>
       </div>
       <div class="modal-body">
-        <div class="modal-row"><strong>Intención Mágica</strong>✨ ${r.intencion}</div>
-        <div class="modal-row">
-          <strong>Ingredientes</strong>
-          <ul style="list-style:none;padding:0;margin-top:.4rem">${r.ingredientes.map(i=>`<li style="padding:.2rem 0;border-bottom:1px solid rgba(255,255,255,.05)">· ${i}</li>`).join('')}</ul>
-        </div>
-        <div class="modal-row">
-          <strong>Proceso Ritual</strong>
-          <ol style="padding-left:1.2rem;margin-top:.4rem">${r.proceso.map(p=>`<li style="margin-bottom:.5rem;line-height:1.6">${p}</li>`).join('')}</ol>
-        </div>
+        ${r.cualidades?`<div class="modal-row"><strong>Cualidades / Intención</strong>${r.cualidades}</div>`:''}
+        ${r.ingredientes?`<div class="modal-row"><strong>Ingredientes</strong><pre style="font-family:inherit;white-space:pre-wrap;margin-top:.4rem">${r.ingredientes}</pre></div>`:''}
+        ${r.proceso?`<div class="modal-row"><strong>Proceso</strong><pre style="font-family:inherit;white-space:pre-wrap;margin-top:.4rem">${r.proceso}</pre></div>`:''}
+        ${r.nota?`<div class="modal-row"><strong>Notas</strong>${r.nota}</div>`:''}
       </div>`;
     overlay.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+  }
+
+  function eliminarMiReceta(idx) {
+    recetasUsuario.splice(idx, 1);
+    saveRecetasUsuario();
+    renderContenido();
   }
 
   function closeModal() {
@@ -5780,228 +6493,669 @@ const CocinaModule = (() => {
     document.body.style.overflow = '';
   }
 
-  return { init, setFiltro, openReceta, closeModal };
+  // Mantener compatibilidad con código anterior
+  function openReceta(nombre) { openItem('receta', nombre); }
+
+  return { init, setTab, setFiltro, openItem, openReceta, openMiReceta, eliminarMiReceta,
+           abrirCrearReceta, guardarMiReceta, cerrarCrearReceta, closeModal };
 })();
 
 </script>
 <script>
 'use strict';
 // ============================================================
-// ADIVINACION.JS — Tarot y Runas
+// ADIVINACION.JS — Guía de Tarot, Runas y Oráculo de Runas
 // ============================================================
 const AdivinacionModule = (() => {
 
-  // ── TAROT (22 Arcanos Mayores) ────────────────────────────
+  // ── TAROT: 22 Arcanos Mayores ──────────────────────────────
   const TAROT = [
-    { n:0,  name:'El Loco',           sym:'🃏', kw:'Nuevos comienzos, aventura, espontaneidad',    desc:'El Loco representa el inicio puro de un viaje, la libertad de saltar al vacío con confianza ciega. Te invita a comenzar sin miedo, confiando en el universo.', inv:'Imprudencia, ingenuidad, riesgo sin cálculo.' },
-    { n:1,  name:'El Mago',           sym:'🪄', kw:'Voluntad, habilidad, manifestación',           desc:'Tienes todas las herramientas necesarias. El Mago canaliza la energía del universo a través de su voluntad consciente. Es momento de actuar con decisión.', inv:'Manipulación, falta de habilidad, ilusión.' },
-    { n:2,  name:'La Sacerdotisa',    sym:'🌙', kw:'Intuición, misterio, conocimiento interior',  desc:'La Sacerdotisa guarda secretos que solo se revelan en silencio. Tu intuición habla ahora — escúchala. Los sueños traerán mensajes importantes.', inv:'Secretos ocultos, desconexión interior, superficialidad.' },
-    { n:3,  name:'La Emperatriz',     sym:'🌸', kw:'Abundancia, fertilidad, creatividad, natura', desc:'La Emperatriz representa la fuerza creativa de la naturaleza. Abundancia, amor maternal, creatividad artística. Algo hermoso está creciendo en tu vida.', inv:'Dependencia, estancamiento creativo, exceso.' },
-    { n:4,  name:'El Emperador',      sym:'👑', kw:'Autoridad, estructura, estabilidad, control', desc:'El Emperador trae orden y estructura. Es el momento de establecer límites, asumir responsabilidad y construir bases sólidas para el futuro.', inv:'Autoritarismo, rigidez, falta de control.' },
-    { n:5,  name:'El Hierofante',     sym:'⛪', kw:'Tradición, espiritualidad organizada, mentores',desc:'El Hierofante conecta lo divino con lo humano a través de rituales y tradición. Busca un mentor o sigue las enseñanzas probadas.', inv:'Dogmatismo, rebeldía sin causa, falta de guía.' },
-    { n:6,  name:'Los Amantes',       sym:'💕', kw:'Amor, elección, valores, alineación',         desc:'Los Amantes no hablan solo del amor romántico — representan una elección crucial que define tu camino. Elige desde el corazón y tus valores más profundos.', inv:'Desalineación de valores, elecciones difíciles, conflicto interno.' },
-    { n:7,  name:'El Carro',          sym:'🚗', kw:'Victoria, determinación, control, avance',    desc:'El Carro avanza con fuerza y determinación. La victoria está cerca, pero requiere que domines tus impulsos y mantengas el rumbo con disciplina.', inv:'Falta de control, derrota, desvío del camino.' },
-    { n:8,  name:'La Fuerza',         sym:'🦁', kw:'Valentía interior, paciencia, compasión',     desc:'La Fuerza no es violencia sino dominio compasivo. Con gentileza y determinación interior, puedes manejar cualquier situación o persona difícil.', inv:'Cobardía, duda, fuerza mal usada.' },
-    { n:9,  name:'El Ermitaño',       sym:'🕯️', kw:'Introspección, soledad sabia, guía interior', desc:'El Ermitaño llama a retirarse del ruido del mundo para encontrar la verdad interna. Este es un tiempo de reflexión profunda y búsqueda espiritual.', inv:'Aislamiento no elegido, reclusión excesiva, negación de ayuda.' },
-    { n:10, name:'La Rueda de la Fortuna', sym:'☸️', kw:'Destino, ciclos, cambio de suerte',   desc:'La Rueda gira y los ciclos cambian. Lo que sube baja, lo que baja sube. Un giro afortunado está llegando — mantente flexible.', inv:'Mala suerte, resistencia al cambio, ciclos negativos.' },
-    { n:11, name:'La Justicia',        sym:'⚖️', kw:'Verdad, karma, equidad, causa-efecto',       desc:'La Justicia revela que las acciones tienen consecuencias. Lo que has sembrado llegará. También puede indicar asuntos legales o decisiones importantes.', inv:'Injusticia, desequilibrio, deshonestidad.' },
-    { n:12, name:'El Colgado',         sym:'🙃', kw:'Pausa, rendición, nuevo punto de vista',      desc:'El Colgado elige conscientemente rendirse para ganar perspectiva. No es derrota sino sabiduría. Suelta el control y mira el problema desde otro ángulo.', inv:'Martirio inútil, estancamiento, resistencia a soltar.' },
-    { n:13, name:'La Muerte',          sym:'💀', kw:'Transformación, final de ciclo, renacimiento',desc:'La Muerte rara vez anuncia muerte literal — anuncia el fin de una era. Algo debe morir para que algo nuevo nazca. Esta transformación es necesaria y poderosa.', inv:'Resistencia al cambio, estancamiento, miedo a transformar.' },
-    { n:14, name:'La Templanza',       sym:'🌊', kw:'Equilibrio, moderación, paciencia, flujo',    desc:'La Templanza invita a encontrar el punto medio, la alquimia entre opuestos. Paciencia, moderación y el flujo natural llevarán al resultado deseado.', inv:'Exceso, desequilibrio, impaciencia.' },
-    { n:15, name:'El Diablo',          sym:'😈', kw:'Ataduras, materialismo, sombra, adicción',    desc:'El Diablo muestra las cadenas que tú mismo has creado. Puede ser una adicción, una relación tóxica o creencias limitantes. Las cadenas son más flojas de lo que parecen.', inv:'Liberación, rotura de ataduras, recuperación del poder.' },
-    { n:16, name:'La Torre',           sym:'⚡', kw:'Caos repentino, revelación, derrumbe',       desc:'La Torre anuncia un cambio radical e inevitable. Puede ser doloroso, pero lo que se derrumba estaba construido sobre bases falsas. La liberación sigue al caos.', inv:'Evitar el cambio necesario, desastre menos severo, resistencia.' },
-    { n:17, name:'La Estrella',        sym:'⭐', kw:'Esperanza, sanación, inspiración, fe',       desc:'Después de la tormenta, La Estrella brilla. Es una carta de profunda sanación, esperanza renovada y conexión con tu propósito divino. El universo te guía.', inv:'Desesperanza, desconexión espiritual, duda.' },
-    { n:18, name:'La Luna',            sym:'🌙', kw:'Ilusión, subconsciente, sueños, miedos',      desc:'La Luna ilumina lo que está oculto en las sombras de tu psique. Los miedos, ilusiones y sueños cobran fuerza. No todo es lo que parece ahora.', inv:'Confusión disipándose, verdades emergiendo, miedos superados.' },
-    { n:19, name:'El Sol',             sym:'☀️', kw:'Alegría, éxito, vitalidad, claridad',         desc:'El Sol brilla con todo su esplendor. Éxito, alegría genuina, claridad mental y vitalidad. Esta es una de las cartas más afortunadas del tarot.', inv:'Éxito retrasado, optimismo excesivo, dificultades temporales.' },
-    { n:20, name:'El Juicio',          sym:'📯', kw:'Renacimiento, llamado, absolución, despertar',desc:'El Juicio anuncia un llamado profundo al despertar. Es momento de responder a tu propósito superior, dejar el pasado atrás y renacer con nueva conciencia.', inv:'Negación del llamado, autojuicio excesivo, rezago espiritual.' },
-    { n:21, name:'El Mundo',           sym:'🌍', kw:'Completud, éxito total, integración, viaje',  desc:'El Mundo representa la culminación de un ciclo completo. Has llegado a un punto de integración y logro. Un capítulo se cierra con maestría y satisfacción.', inv:'Incompleción, falta de cierre, rezago en el camino.' },
+    { num:'0',   nombre:'El Loco',           sym:'🌀', kw:'Inicio, inocencia, libertad, nuevo camino',
+      desc:'El Loco representa el comienzo absoluto: saltar hacia lo desconocido con confianza ciega. No es locura sino la valentía de empezar sin saber el final. ¿Qué nuevo camino estás a punto de emprender?',
+      invertida:'Imprudencia, falta de dirección, resistencia al cambio.' },
+    { num:'I',   nombre:'El Mago',            sym:'✨', kw:'Voluntad, poder, manifestación, habilidad',
+      desc:'El Mago tiene ante sí todas las herramientas (varita, copa, espada, pentáculo) y la voluntad para usarlas. Es la magia hecha acción: el poder de convertir intención en realidad.',
+      invertida:'Manipulación, poder mal usado, talentos no desarrollados.' },
+    { num:'II',  nombre:'La Suma Sacerdotisa', sym:'🌙', kw:'Intuición, misterio, conocimiento oculto, subconsciente',
+      desc:'La Suma Sacerdotisa guarda los secretos que no se dicen, solo se sienten. Es la puerta al subconsciente. Confía en lo que sientes, no solo en lo que piensas.',
+      invertida:'Secretos dañinos, intuición bloqueada, superficialidad.' },
+    { num:'III', nombre:'La Emperatriz',       sym:'🌿', kw:'Fertilidad, abundancia, naturaleza, creatividad',
+      desc:'La Emperatriz es la Tierra en persona: fértil, generosa, abundante. Gobierna la creatividad, el cuerpo, el placer. Recuerda que eres naturaleza, no estás separado/a de ella.',
+      invertida:'Dependencia, bloqueo creativo, descuido del cuerpo.' },
+    { num:'IV',  nombre:'El Emperador',        sym:'🏔️', kw:'Autoridad, estructura, orden, liderazgo',
+      desc:'El Emperador construye. Es la fuerza que organiza el caos, establece límites sanos y sostiene estructuras duraderas. Puede ser el padre interior o la necesidad de más orden en tu vida.',
+      invertida:'Autoritarismo, rigidez, abuso de poder.' },
+    { num:'V',   nombre:'El Hierofante',       sym:'⛪', kw:'Tradición, sabiduría establecida, mentores, rituales',
+      desc:'El Hierofante representa la sabiduría transmitida: los maestros, las tradiciones. Puede indicar la necesidad de un guía o de revisar las creencias heredadas. ¿Qué tradición te nutre?',
+      invertida:'Dogma, conformismo, rechazo irreflexivo de lo establecido.' },
+    { num:'VI',  nombre:'Los Amantes',         sym:'💕', kw:'Elección, amor, alineación de valores, unión',
+      desc:'Los Amantes hablan de elección más que de amor romántico. ¿Qué eliges? ¿Con qué te alineas? Toma una decisión desde tus valores más profundos, no desde el miedo.',
+      invertida:'Desalineación, decisión evitada, conflicto de valores.' },
+    { num:'VII', nombre:'El Carro',            sym:'🏆', kw:'Victoria, determinación, control, voluntad, movimiento',
+      desc:'El Carro avanza. Las dos bestias apuntan en distintas direcciones, pero la voluntad del conductor las sostiene. Es la determinación que supera obstáculos contradictorios.',
+      invertida:'Falta de dirección, control perdido, esfuerzo sin foco.' },
+    { num:'VIII',nombre:'La Fuerza',           sym:'🦁', kw:'Coraje interior, compasión, paciencia, dominar la bestia',
+      desc:'La Fuerza no grita: susurra. No somete al león con violencia sino con amor. Es el coraje que surge de adentro. ¿Qué en ti necesita ser comprendido, no combatido?',
+      invertida:'Duda, cobardía, dejar que las emociones te controlen.' },
+    { num:'IX',  nombre:'El Ermitaño',         sym:'🕯️', kw:'Soledad elegida, búsqueda interior, sabiduría, retiro',
+      desc:'El Ermitaño se aleja del ruido para encontrar la propia luz. Lleva una linterna — su sabiduría ilumina no para sí solo, sino para quien esté listo. ¿Necesitas tiempo a solas?',
+      invertida:'Aislamiento dañino, rechazo del mundo, sabiduría no compartida.' },
+    { num:'X',   nombre:'La Rueda de la Fortuna', sym:'☸️', kw:'Ciclos, cambio, destino, oportunidad, karma',
+      desc:'La Rueda gira. Lo que sube baja; lo que baja sube. Esta carta recuerda que nada es permanente. Es el momento del cambio de ciclo — acompáñalo en lugar de resistirlo.',
+      invertida:'Mala suerte resistida, ciclos no integrados, resistencia al cambio.' },
+    { num:'XI',  nombre:'La Justicia',         sym:'⚖️', kw:'Equilibrio, verdad, causa y efecto, decisiones justas',
+      desc:'La Justicia no es venganza: es equilibrio. Cada acción tiene consecuencia. Esta carta pide honestidad: ¿estás siendo justo/a en tus acciones? ¿Las consecuencias de qué están llegando?',
+      invertida:'Injusticia, sesgo, negación de responsabilidad.' },
+    { num:'XII', nombre:'El Colgado',          sym:'🙃', kw:'Pausa, rendición, nuevo punto de vista, sacrificio voluntario',
+      desc:'El Colgado eligió su posición: se sacrifica voluntariamente para ver desde otro ángulo. No es víctima — es el que para todo para ganar perspectiva. ¿Qué necesitas soltar para ver con claridad?',
+      invertida:'Martirio, sacrificio inútil, resistencia a un cambio necesario.' },
+    { num:'XIII',nombre:'La Muerte',           sym:'🌑', kw:'Transformación, final de ciclo, renovación',
+      desc:'La Muerte raramente indica muerte física. Es el final de algo — una era, una relación, una versión de ti. No hay renovación sin cierre. ¿Qué está terminando? ¿Puedes soltar con gracia?',
+      invertida:'Estancamiento, resistencia al fin necesario, aferrarse a lo muerto.' },
+    { num:'XIV', nombre:'La Templanza',        sym:'🌊', kw:'Moderación, integración, paciencia, alquimia interior',
+      desc:'La Templanza mezcla y equilibra: lo divino y lo humano, el fuego y el agua. Pide paciencia y moderación, el camino del medio. La sanación llega cuando dejas de forzar.',
+      invertida:'Exceso, desequilibrio, impaciencia que rompe el proceso.' },
+    { num:'XV',  nombre:'El Diablo',           sym:'🔗', kw:'Atadura, sombra, ilusión de no-libertad, adicción',
+      desc:'El Diablo muestra lo que nos ata. Pero las cadenas son holgadas — podríamos quitárnoslas. Es la ilusión del aprisionamiento: adicciones, hábitos, creencias que confundimos con necesidad.',
+      invertida:'Liberación, romper una adicción, ver la trampa por primera vez.' },
+    { num:'XVI', nombre:'La Torre',            sym:'⚡', kw:'Ruptura, revelación, colapso de lo falso, liberación',
+      desc:'La Torre destruye lo que no tiene bases reales. Duele — pero lo que cae necesitaba caer. Es la revelación que lo cambia todo. Después viene la libertad de construir sobre tierra firme.',
+      invertida:'Evitar el colapso necesario, o colapso sin aprendizaje.' },
+    { num:'XVII',nombre:'La Estrella',         sym:'⭐', kw:'Esperanza, sanación, fe, inspiración, guía',
+      desc:'La Estrella viene después de la Torre: es la esperanza que surge de la ruina. Es sanación, fe renovada. Te recuerda que eres parte del cosmos y que siempre hay una luz que guía.',
+      invertida:'Desesperanza, desconexión de lo sagrado, falta de fe.' },
+    { num:'XVIII',nombre:'La Luna',            sym:'🌕', kw:'Ilusión, subconsciente, miedos, ciclos, lo oculto',
+      desc:'La Luna ilumina lo que está en las sombras — y lo distorsiona. Es el reino de los miedos, los sueños, las ilusiones. No todo lo que ves en la oscuridad es real, pero merece ser mirado.',
+      invertida:'Confusión aclarándose, mentiras reveladas, dejar atrás el miedo.' },
+    { num:'XIX', nombre:'El Sol',              sym:'☀️', kw:'Alegría, éxito, vitalidad, claridad, verdad',
+      desc:'El Sol es la carta más luminosa del tarot: alegría pura, éxito ganado, claridad que lo ilumina todo. Es el gozo sin condiciones. Cuando aparece, algo brilla. Disfrútalo.',
+      invertida:'Exceso de ego, optimismo ciego, éxito parcial.' },
+    { num:'XX',  nombre:'El Juicio',           sym:'📯', kw:'Renacimiento, llamado, evaluación, despertar',
+      desc:'El Juicio llama al despertar. Escucha el llamado que has estado ignorando — el de tu alma, el de tu propósito. También es evaluación sin ego: ¿quién has sido? ¿Quién eliges ser?',
+      invertida:'Autojuicio dañino, llamado no escuchado, miedo al renacimiento.' },
+    { num:'XXI', nombre:'El Mundo',            sym:'🌍', kw:'Completud, integración, logro, totalidad',
+      desc:'El Mundo es la carta del ciclo completado: has llegado. Integración total de todos los aprendizajes. No es un final sino una totalidad — y la puerta al próximo ciclo, que empieza de nuevo con El Loco.',
+      invertida:'Ciclo incompleto, falta de cierre, logro que falta ser reconocido.' },
   ];
 
-  // ── RUNAS (Elder Futhark simplificado) ───────────────────
-  const RUNAS_ORACLE = [
-    { sym:'ᚠ', name:'Fehu',    kw:'Riqueza, éxito, abundance',          desc:'Fehu augura prosperidad y éxito material. Las energías favorecen la abundancia ahora.' },
-    { sym:'ᚢ', name:'Uruz',    kw:'Fuerza bruta, salud, poder',          desc:'Uruz trae fuerza y vitalidad. Es tiempo de actuar con todo tu poder.' },
-    { sym:'ᚦ', name:'Thurisaz',kw:'Protección, umbral, desafío',         desc:'Thurisaz protege pero advierte de obstáculos que deben enfrentarse con cuidado.' },
-    { sym:'ᚨ', name:'Ansuz',   kw:'Comunicación, mensajes, sabiduría',   desc:'Ansuz trae mensajes importantes. Presta atención a lo que escuchas hoy.' },
-    { sym:'ᚱ', name:'Raidho',  kw:'Viaje, ritmo, evolución',             desc:'Raidho indica un viaje o movimiento importante en tu vida.' },
-    { sym:'ᚲ', name:'Kenaz',   kw:'Conocimiento, creatividad, llama',    desc:'Kenaz enciende la llama del conocimiento. Inspiración y claridad creativa.' },
-    { sym:'ᚷ', name:'Gebo',    kw:'Regalo, intercambio, asociación',     desc:'Gebo anuncia un don o intercambio significativo. Acepta con gratitud.' },
-    { sym:'ᚹ', name:'Wunjo',   kw:'Alegría, éxito, bienestar',           desc:'Wunjo trae alegría genuina y satisfacción. Los esfuerzos florecen.' },
-    { sym:'ᚺ', name:'Hagalaz', kw:'Disrupción, cambio, granizo',         desc:'Hagalaz anuncia cambio súbito. Puede ser difícil pero necesario.' },
-    { sym:'ᚾ', name:'Naudiz',  kw:'Necesidad, resistencia, aprendizaje', desc:'Naudiz habla de necesidad y de la fuerza que nace de ella.' },
-    { sym:'ᛁ', name:'Isa',     kw:'Hielo, pausa, bloqueo',               desc:'Isa indica un período de pausa o bloqueo. Espera con calma.' },
-    { sym:'ᛃ', name:'Jera',    kw:'Cosecha, ciclos, recompensa',         desc:'Jera promete la cosecha de lo sembrado. Los ciclos se completan.' },
-    { sym:'ᛇ', name:'Eihwaz',  kw:'Transformación, visiones, magia profunda', desc:'Eihwaz conecta mundos. Profunda magia transformadora está activa.' },
-    { sym:'ᛈ', name:'Perthro', kw:'Destino, misterio, lo oculto',        desc:'Perthro abre el velo del misterio. Los secretos podrían revelarse.' },
-    { sym:'ᛉ', name:'Algiz',   kw:'Protección, conexión divina, escudo', desc:'Algiz protege y conecta con fuerzas superiores. Estás resguardado.' },
-    { sym:'ᛊ', name:'Sowilo',  kw:'Sol, éxito, claridad, victoria',      desc:'Sowilo irradia energía solar. Éxito y claridad mental te guían.' },
-    { sym:'ᛏ', name:'Tiwaz',   kw:'Justicia, guerra, sacrificio honrado', desc:'Tiwaz pide valentía y justicia. El sacrificio honrado es recompensado.' },
-    { sym:'ᛒ', name:'Berkano', kw:'Renacimiento, crecimiento, familia',  desc:'Berkano nutre el nuevo crecimiento. Proyectos y relaciones florecen.' },
-    { sym:'ᛖ', name:'Ehwaz',   kw:'Movimiento, trabajo en equipo, progreso', desc:'Ehwaz indica progreso en equipo. La colaboración lleva al éxito.' },
-    { sym:'ᛗ', name:'Mannaz',  kw:'Humanidad, yo, conciencia de sí mismo', desc:'Mannaz invita a conocerte profundamente. La respuesta está en ti.' },
-    { sym:'ᛚ', name:'Laguz',   kw:'Agua, flujo, intuición, subconsciente', desc:'Laguz habla de emociones y flujo. Confía en tu intuición.' },
-    { sym:'ᛜ', name:'Ingwaz',  kw:'Fertilidad, descanso, nuevo ciclo',   desc:'Ingwaz anuncia un ciclo completado y el inicio de algo nuevo.' },
-    { sym:'ᛞ', name:'Dagaz',   kw:'Amanecer, transformación, claridad',  desc:'Dagaz anuncia un amanecer después de la oscuridad. Gran transformación.' },
-    { sym:'ᛟ', name:'Othala',  kw:'Herencia, hogar, tradición, raíces',  desc:'Othala conecta con las raíces y la herencia. El hogar y la familia son importantes ahora.' },
+  // ── RUNAS: 24 Elder Futhark ───────────────────────────────
+  const RUNAS = [
+    { nombre:'Fehu',    sym:'ᚠ', kw:'Riqueza, prosperidad fluida, éxito inicial',
+      desc:'Fehu es la riqueza que circula: abundancia que llega y que debe compartirse para seguir fluyendo. Habla de fuerza vital, creación y el primer paso en cualquier emprendimiento.',
+      invertida:'Pérdida, codicia, energía estancada.' },
+    { nombre:'Uruz',    sym:'ᚢ', kw:'Fuerza bruta, salud, poder primitivo, resistencia',
+      desc:'Uruz es la energía del uro salvaje: fuerza física, salud animal, poder sin domesticar. Habla de resistencia y de la capacidad de transformar lo que nos amenaza en nuestra propia energía.',
+      invertida:'Enfermedad, fuerza mal usada, oportunidad perdida.' },
+    { nombre:'Thurisaz', sym:'ᚦ', kw:'Espinas, umbral, desafío, fuerza defensiva',
+      desc:'Thurisaz es la puerta guardada por espinas. Exige honestidad con nuestros impulsos destructivos antes de seguir. Es protección feroz y cambio que duele pero es necesario.',
+      invertida:'Peligro ignorado, impulsos sin control, mal momento para actuar.' },
+    { nombre:'Ansuz',   sym:'ᚨ', kw:'Comunicación, sabiduría, mensajes divinos, Odín',
+      desc:'Ansuz es la boca de Odín: el soplo que da vida, la palabra que crea. Habla de mensajes importantes, de comunicación inspirada. Escucha lo que el universo intenta decirte.',
+      invertida:'Engaño, mensajes bloqueados, palabras vacías o dañinas.' },
+    { nombre:'Raidho',  sym:'ᚱ', kw:'Viaje, ritmo, camino justo, movimiento',
+      desc:'Raidho es el viaje con propósito: no el movimiento sin rumbo sino el avance alineado. ¿Estás en el camino correcto? ¿A la velocidad correcta?',
+      invertida:'Interrupción del viaje, mal timing, camino equivocado.' },
+    { nombre:'Kenaz',   sym:'ᚲ', kw:'Antorcha, conocimiento, visión, creatividad',
+      desc:'Kenaz es la luz en la oscuridad: la llama del conocimiento y la creatividad. Es la claridad que surge después de la confusión, el calor del hogar y el fuego del arte.',
+      invertida:'Oscuridad, enfermedad, fin de una era.' },
+    { nombre:'Gebo',    sym:'ᚷ', kw:'Regalo, intercambio, unión, equilibrio',
+      desc:'Gebo es el intercambio sagrado: el regalo y el recibir con gracia. Habla de relaciones en equilibrio, de dar sin perder el yo, de recibir sin sentirse en deuda.',
+      invertida:'(Sin merkstave) El regalo siempre tiene significado.' },
+    { nombre:'Wunjo',   sym:'ᚹ', kw:'Alegría, pertenencia, éxito, armonía del grupo',
+      desc:'Wunjo es la alegría pura: el momento en que todo está bien, cuando pertenecemos y somos felices. Habla de éxito ganado con esfuerzo. Aprecia lo que tienes.',
+      invertida:'Melancolía, ilusiones, conflicto grupal.' },
+    { nombre:'Hagalaz', sym:'ᚺ', kw:'Granizo, ruptura, fuerza que libera, caos necesario',
+      desc:'Hagalaz es el granizo sobre los planes: interrupción inevitable, caos que tiene un propósito mayor. No se puede controlar — solo atravesar. Dentro de cada tormenta hay una semilla.',
+      invertida:'(Sin merkstave) El caos simplemente es — más o menos intenso.' },
+    { nombre:'Nauthiz',  sym:'ᚾ', kw:'Necesidad, resistencia, limitación que enseña',
+      desc:'Nauthiz es el fuego que surge de la fricción de la necesidad. Las limitaciones forjan carácter. ¿Qué te hace falta y por qué? La respuesta honesta es la semilla de la transformación.',
+      invertida:'Necesidad ignorada, error que se repite.' },
+    { nombre:'Isa',     sym:'ᛁ', kw:'Hielo, pausa, estancamiento necesario, claridad',
+      desc:'Isa es el hielo que detiene todo. No es el momento de actuar: es el de esperar. El río bajo el hielo sigue fluyendo — solo está en pausa. Deja que lo que necesita clarificarse se aclare.',
+      invertida:'(Sin merkstave) El hielo puede ser una prisión o un descanso.' },
+    { nombre:'Jera',    sym:'ᛃ', kw:'Cosecha, ciclos, paciencia, resultado del trabajo',
+      desc:'Jera es la cosecha: el resultado de lo que sembraste. Los ciclos naturales no se pueden apurar. Lo que siembras hoy, con conciencia o sin ella, determina tu cosecha.',
+      invertida:'(Sin merkstave) La cosecha llega siempre — ¿qué sembraste?' },
+    { nombre:'Eihwaz',  sym:'ᛇ', kw:'Tejo, transformación, muerte y renacimiento, eje',
+      desc:'Eihwaz es el árbol del tejo: vive siglos, es venenoso y sagrado. Habla de transformación profunda, de la fuerza que atraviesa el umbral de la muerte simbólica.',
+      invertida:'Confusión, parálisis, miedo al cambio transformador.' },
+    { nombre:'Perthro',  sym:'ᛈ', kw:'Misterio, suerte, destino oculto, el caldero',
+      desc:'Perthro es el caldero del destino: lo que contiene es desconocido hasta que se saca. Habla de los misterios de la suerte, del karma, de lo que no podemos controlar pero sí alinear.',
+      invertida:'Secretos que dañan, mal timing, destino resistido.' },
+    { nombre:'Algiz',   sym:'ᛉ', kw:'Protección, conexión divina, escudo, límites sanos',
+      desc:'Algiz es la runa de protección: el alce que levanta sus astas. Habla de protección divina, de límites sanos y de la conexión con tus guías o con lo sagrado. Estás protegido/a.',
+      invertida:'Protección perdida, límites vulnerados, peligro no visto.' },
+    { nombre:'Sowilo',  sym:'ᛊ', kw:'Sol, victoria, éxito, fuerza de voluntad, iluminación',
+      desc:'Sowilo es la fuerza solar: victoria, claridad, la voluntad que supera obstáculos. Es la energía que galvaniza e ilumina. El sol siempre brilla, aunque a veces esté cubierto.',
+      invertida:'(Sin merkstave) La victoria puede ser más lenta o más rápida.' },
+    { nombre:'Tiwaz',   sym:'ᛏ', kw:'Justicia, sacrificio, Tyr, guerra justa, dirección',
+      desc:'Tiwaz es la runa del dios Tyr, que sacrificó su mano por el bien colectivo. Habla de justicia, de hacer lo correcto aunque cueste. ¿Estás actuando con integridad?',
+      invertida:'Injusticia, sacrificio que no vale la pena, derrota.' },
+    { nombre:'Berkano',  sym:'ᛒ', kw:'Abedul, nacimiento, sanación, la Gran Madre, inicio',
+      desc:'Berkano es el abedul que florece en primavera: nacimiento, nuevo comienzo, sanación. Habla de la energía femenina generativa, del cuidado y de la protección que nutre lo que crece.',
+      invertida:'Estancamiento, control excesivo, maternidad bloqueada.' },
+    { nombre:'Ehwaz',   sym:'ᛖ', kw:'Caballo, movimiento conjunto, sociedad, confianza',
+      desc:'Ehwaz es el caballo y su jinete en perfecta sincronía: la sociedad donde dos se mueven como uno. Habla de trabajo en equipo, de confianza en la relación, del movimiento cooperativo.',
+      invertida:'Desconfianza, movimiento sin coordinación, cambio brusco.' },
+    { nombre:'Mannaz',  sym:'ᛗ', kw:'Humanidad, el yo en relación, consciencia, inteligencia',
+      desc:'Mannaz es la runa del ser humano en su esencia: la consciencia que se conoce a sí misma. Habla del yo en relación con los demás. Pregunta: ¿quién eres en verdad?',
+      invertida:'Ego inflado o destruido, aislamiento, manipulación.' },
+    { nombre:'Laguz',   sym:'ᛚ', kw:'Agua, flujo, intuición, lo inconsciente, el sueño',
+      desc:'Laguz es el agua que fluye: la intuición, el mundo de los sueños. Pide que confíes en tu flujo interior. El agua siempre encuentra su camino — tú también.',
+      invertida:'Flujo bloqueado, desorientación, desconfianza en la intuición.' },
+    { nombre:'Ingwaz',  sym:'ᛜ', kw:'Semilla, gestación, trabajo interior completo, fertilidad',
+      desc:'Ingwaz es la semilla completamente formada bajo la tierra, lista para germinar. Un proceso interior completado que pronto se manifestará.',
+      invertida:'(Sin merkstave) El proceso puede tardar más, pero la semilla está lista.' },
+    { nombre:'Dagaz',   sym:'ᛞ', kw:'Amanecer, umbral, transformación luminosa, el instante del cambio',
+      desc:'Dagaz es el amanecer: el instante en que la oscuridad se convierte en luz. Es la transformación total y la paradoja del umbral donde los opuestos coexisten. Un cambio completo está llegando.',
+      invertida:'(Sin merkstave) El umbral puede sentirse largo, pero el amanecer llega.' },
+    { nombre:'Othalan', sym:'ᛟ', kw:'Herencia, tierra, hogar, ancestros, lo heredado',
+      desc:'Othalan es la tierra de los ancestros: el hogar, la herencia, todo lo que recibimos de quienes nos precedieron. ¿Qué heredaste — física, emocional y espiritualmente — y qué eliges transformar?',
+      invertida:'Herencia tóxica, falta de raíces, conflicto familiar no resuelto.' },
   ];
 
-  const SPREADS = {
-    una: { nombre:'Una carta', desc:'Respuesta directa del universo', num:1 },
-    tres: { nombre:'Pasado / Presente / Futuro', desc:'Los tres tiempos de tu situación', num:3 },
-    cruz: { nombre:'Cruz Celta', desc:'Lectura profunda de 5 cartas', num:5 },
-  };
+  let modo = 'runas';
 
-  let modo = 'tarot'; // 'tarot' | 'runas'
-  let spread = 'una';
-  let cartaActual = null;
-  let rotaciones = {};
+  // ── Oráculo de Runas ──────────────────────────────────────
+  function tirarRuna() {
+    const runa = RUNAS[Math.floor(Math.random() * RUNAS.length)];
+    const invertida = Math.random() < 0.3;
+    const res = document.getElementById('oraculo-resultado');
+    if (!res) return;
+    res.innerHTML = `
+      <div class="adiv-oraculo-card">
+        <div class="adiv-oraculo-sym${invertida?' invertida':''}">
+          <span>${runa.sym}</span>
+        </div>
+        <div class="adiv-oraculo-nombre">${runa.nombre}${invertida?' <span class="text-muted" style="font-size:.85em">(Invertida)</span>':''}</div>
+        <div class="adiv-oraculo-kw">${invertida && runa.invertida ? runa.invertida : runa.kw}</div>
+        <div class="adiv-oraculo-desc">${runa.desc}</div>
+        <button class="adiv-tirar-btn" onclick="AdivinacionModule.tirar()" style="margin-top:1.5rem">
+          ᚠ Tirar otra runa
+        </button>
+      </div>`;
+    res.classList.remove('hidden');
+    res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 
-  function init() {
-    document.getElementById('adiv-btn-tarot')?.addEventListener('click', ()=>setModo('tarot'));
-    document.getElementById('adiv-btn-runas')?.addEventListener('click', ()=>setModo('runas'));
-    document.getElementById('adiv-btn-spread-una')?.addEventListener('click', ()=>setSpread('una'));
-    document.getElementById('adiv-btn-spread-tres')?.addEventListener('click', ()=>setSpread('tres'));
-    document.getElementById('adiv-btn-spread-cruz')?.addEventListener('click', ()=>setSpread('cruz'));
-    document.getElementById('adiv-btn-tirar')?.addEventListener('click', ()=>tirar());
-    document.getElementById('adiv-modal-close')?.addEventListener('click', closeModal);
-    renderModo();
+  // ── Render grids ──────────────────────────────────────────
+  function renderTarot() {
+    const grid = document.getElementById('adiv-tarot-grid');
+    if (!grid) return;
+    grid.innerHTML = TAROT.map(c => `
+      <div class="adiv-ref-card" onclick="AdivinacionModule.openModal('tarot','${c.num}')">
+        <div class="adiv-ref-sym">${c.sym}</div>
+        <div class="adiv-ref-num">${c.num}</div>
+        <div class="adiv-ref-nombre">${c.nombre}</div>
+        <div class="adiv-ref-kw">${c.kw.split(',')[0].trim()}</div>
+      </div>`).join('');
+  }
+
+  function renderRunas() {
+    const grid = document.getElementById('adiv-runas-grid');
+    if (!grid) return;
+    grid.innerHTML = RUNAS.map(r => `
+      <div class="adiv-ref-card" onclick="AdivinacionModule.openModal('runas','${r.nombre}')">
+        <div class="adiv-ref-sym">${r.sym}</div>
+        <div class="adiv-ref-nombre">${r.nombre}</div>
+        <div class="adiv-ref-kw">${r.kw.split(',')[0].trim()}</div>
+      </div>`).join('');
   }
 
   function setModo(m) {
     modo = m;
-    document.getElementById('adiv-btn-tarot')?.classList.toggle('active', m==='tarot');
-    document.getElementById('adiv-btn-runas')?.classList.toggle('active', m==='runas');
-    document.getElementById('adiv-spreads')?.classList.toggle('hidden', m==='runas');
-    document.getElementById('adiv-resultado')?.classList.add('hidden');
-    renderModo();
-  }
-
-  function setSpread(s) {
-    spread = s;
-    ['una','tres','cruz'].forEach(x =>
-      document.getElementById(`adiv-btn-spread-${x}`)?.classList.toggle('active', x===s)
-    );
-  }
-
-  function renderModo() {
-    const info = document.getElementById('adiv-info');
-    if (!info) return;
-    if (modo==='tarot') {
-      info.innerHTML = `<p>🃏 <strong>Tarot de los Arcanos Mayores</strong> — 22 cartas del camino del alma.<br>
-        Elige un spread y pregunta al universo.</p>`;
-    } else {
-      info.innerHTML = `<p>ᚠ <strong>Oráculo de Runas</strong> — Elder Futhark, 24 runas del cosmos nórdico.<br>
-        Concentra tu pregunta y saca una runa.</p>`;
+    document.querySelectorAll('.adiv-modo-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.modo === m);
+    });
+    document.getElementById('adiv-panel-tarot')?.classList.toggle('hidden', m !== 'tarot');
+    document.getElementById('adiv-panel-runas')?.classList.toggle('hidden', m !== 'runas');
+    document.getElementById('adiv-panel-oraculo')?.classList.toggle('hidden', m !== 'oraculo');
+    if (m !== 'oraculo') {
+      const res = document.getElementById('oraculo-resultado');
+      if (res) res.innerHTML = '';
     }
   }
 
-  function tirar() {
-    document.getElementById('adiv-resultado')?.classList.remove('hidden');
-    if (modo === 'runas') tirarRuna();
-    else tirarTarot();
-  }
+  // ── Modal detalle ─────────────────────────────────────────
+  function openModal(tipo, id) {
+    let item;
+    if (tipo === 'tarot') item = TAROT.find(c => c.num === id);
+    else item = RUNAS.find(r => r.nombre === id);
+    if (!item) return;
 
-  function tirarRuna() {
-    const r = RUNAS_ORACLE[Math.floor(Math.random()*RUNAS_ORACLE.length)];
-    const invertida = Math.random() < 0.3;
-    const res = document.getElementById('adiv-cartas');
-    if (!res) return;
-    res.innerHTML = `
-      <div class="adiv-runa-resultado" onclick="AdivinacionModule.openModal('runa','${r.name}',${invertida})">
-        <div class="adiv-runa-sym${invertida?' invertida':''}">${r.sym}</div>
-        <div class="adiv-runa-name">${r.name}${invertida?' (Invertida)':''}</div>
-        <div class="adiv-runa-kw">${r.kw}</div>
-        <div class="adiv-runa-desc">${r.desc}</div>
-      </div>`;
-    document.getElementById('adiv-interpretacion')?.classList.add('hidden');
-  }
-
-  function tirarTarot() {
-    const sp = SPREADS[spread];
-    const mazo = [...TAROT].sort(()=>Math.random()-.5);
-    const cartas = mazo.slice(0, sp.num).map(c => ({
-      ...c, invertida: Math.random() < 0.25
-    }));
-    const labels = sp.num===1 ? ['Tu carta'] :
-                   sp.num===3 ? ['Pasado','Presente','Futuro'] :
-                   ['Situación','Desafío','Base','Consejo','Resultado'];
-    const res = document.getElementById('adiv-cartas');
-    if (!res) return;
-    res.innerHTML = `<div class="adiv-spread-${spread}">` +
-      cartas.map((c,i) => `
-        <div class="adiv-carta-wrap" onclick="AdivinacionModule.openModal('tarot','${c.name}',${c.invertida})">
-          <div class="adiv-label">${labels[i]||''}</div>
-          <div class="adiv-carta${c.invertida?' invertida':''}">
-            <div class="adiv-carta-sym">${c.sym}</div>
-            <div class="adiv-carta-num">${c.n}</div>
-          </div>
-          <div class="adiv-carta-name">${c.name}${c.invertida?' ↓':''}</div>
-        </div>`).join('') + '</div>';
-    renderInterpretacion(cartas, labels);
-  }
-
-  function renderInterpretacion(cartas, labels) {
-    const el = document.getElementById('adiv-interpretacion');
-    if (!el) return;
-    el.classList.remove('hidden');
-    el.innerHTML = `<h3 style="font-family:var(--font-heading);color:var(--gold-l);margin-bottom:1rem">✦ Interpretación</h3>` +
-      cartas.map((c,i) => `
-        <div style="margin-bottom:1rem;padding:.8rem;background:rgba(255,255,255,.03);border-radius:8px;border-left:3px solid ${c.invertida?'#8B0000':'#C4972A'}">
-          <div style="font-weight:600;color:var(--gold-l);font-family:var(--font-heading);font-size:.85rem;margin-bottom:.3rem">
-            ${labels[i]}: ${c.sym} ${c.name}${c.invertida?' (Invertida)':''}
-          </div>
-          <div style="font-size:.88rem;color:var(--lavender);line-height:1.6">
-            ${c.invertida ? c.inv : c.desc}
-          </div>
-        </div>`).join('');
-  }
-
-  function openModal(tipo, nombre, invertida) {
     const overlay = document.getElementById('adiv-modal');
     const content = document.getElementById('adiv-modal-content');
     if (!overlay || !content) return;
-    let item;
-    if (tipo==='tarot') item = TAROT.find(c=>c.name===nombre);
-    else item = RUNAS_ORACLE.find(r=>r.name===nombre);
-    if (!item) return;
-    if (tipo==='tarot') {
-      content.innerHTML = `
-        <div class="modal-header">
-          <div style="font-size:2.5rem${invertida?';transform:rotate(180deg)':''}">${item.sym}</div>
-          <div>
-            <div class="modal-title">${item.n} · ${item.name}${invertida?' — Invertida':''}</div>
-            <div class="text-muted" style="font-size:.82rem">${item.kw}</div>
-          </div>
-          <button class="modal-close" id="adiv-modal-close" onclick="AdivinacionModule.closeModal()">✕</button>
+
+    const isRuna = tipo === 'runas';
+    content.innerHTML = `
+      <div class="modal-header">
+        <div style="font-size:2.5rem;line-height:1">${item.sym}</div>
+        <div>
+          <div class="modal-title">${isRuna ? item.nombre : item.num + ' · ' + item.nombre}</div>
+          <div class="modal-tags"><span class="tag">${isRuna ? 'Runa' : 'Arcano Mayor'}</span></div>
         </div>
-        <div class="modal-body">
-          <div class="modal-row"><strong>Interpretación ${invertida?'Invertida':'Derecha'}</strong>${invertida?item.inv:item.desc}</div>
-          ${invertida?`<div class="modal-row"><strong>Derecha</strong>${item.desc}</div>`:`<div class="modal-row"><strong>Invertida</strong>${item.inv}</div>`}
-        </div>`;
-    } else {
-      content.innerHTML = `
-        <div class="modal-header">
-          <div style="font-size:3rem;color:var(--gold-g);text-shadow:0 0 20px rgba(255,217,102,.4)${invertida?';transform:rotate(180deg)':''}">${item.sym}</div>
-          <div>
-            <div class="modal-title">${item.name}${invertida?' — Invertida':''}</div>
-            <div class="text-muted" style="font-size:.82rem">${item.kw}</div>
-          </div>
-          <button class="modal-close" onclick="AdivinacionModule.closeModal()">✕</button>
-        </div>
-        <div class="modal-body">
-          <div class="modal-row"><strong>Mensaje</strong>${item.desc}</div>
-        </div>`;
-    }
+        <button class="modal-close" onclick="AdivinacionModule.closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-row"><strong>Palabras Clave</strong>${item.kw}</div>
+        <div class="modal-row"><strong>Significado</strong>${item.desc}</div>
+        ${item.invertida ? `<div class="modal-row"><strong>${isRuna ? 'Invertida / Merkstave' : 'Invertida'}</strong>${item.invertida}</div>` : ''}
+      </div>`;
+
     overlay.classList.remove('hidden');
-    document.body.style.overflow='hidden';
+    document.body.style.overflow = 'hidden';
   }
 
   function closeModal() {
     document.getElementById('adiv-modal')?.classList.add('hidden');
-    document.body.style.overflow='';
+    document.body.style.overflow = '';
   }
 
-  return { init, setModo, setSpread, tirar, openModal, closeModal };
+  function init() {
+    renderTarot();
+    renderRunas();
+    setModo('runas');
+  }
+
+  return { init, setModo, tirar: tirarRuna, openModal, closeModal };
+})();
+
+</script>
+<script>
+'use strict';
+// ============================================================
+// ADMIN.JS — Panel de Administrador
+// Permite gestionar contenido del grimorio:
+// recetas, hechizos, plantas, configuración
+// ============================================================
+const AdminModule = (() => {
+
+  const ADMIN_PIN_KEY = 'bruja_admin_pin';
+  const DEFAULT_PIN   = 'bruja2024';
+  const UNLOCKED_KEY  = 'bruja_admin_unlocked';
+
+  let currentTab = 'cocina';
+  let isUnlocked = false;
+
+  // ── Acceso ───────────────────────────────────────────────
+  function init() {
+    // Mostrar enlace de admin en sidebar
+    const navAdmin = document.getElementById('nav-admin');
+    if (navAdmin) navAdmin.style.display = '';
+    // Comprobar si ya está desbloqueado en esta sesión
+    if (sessionStorage.getItem(UNLOCKED_KEY) === '1') {
+      showPanel();
+    }
+  }
+
+  function getPin() {
+    return localStorage.getItem(ADMIN_PIN_KEY) || DEFAULT_PIN;
+  }
+
+  function unlock() {
+    const input = document.getElementById('admin-pin');
+    const err   = document.getElementById('admin-pin-err');
+    if (!input || !err) return;
+    if (input.value === getPin()) {
+      sessionStorage.setItem(UNLOCKED_KEY, '1');
+      isUnlocked = true;
+      showPanel();
+      input.value = '';
+      err.textContent = '';
+    } else {
+      err.textContent = '❌ PIN incorrecto';
+      input.value = '';
+    }
+  }
+
+  function showPanel() {
+    isUnlocked = true;
+    document.getElementById('admin-lock')?.classList.add('hidden');
+    document.getElementById('admin-panel')?.classList.remove('hidden');
+    setTab('cocina');
+  }
+
+  function lockPanel() {
+    sessionStorage.removeItem(UNLOCKED_KEY);
+    isUnlocked = false;
+    document.getElementById('admin-lock')?.classList.remove('hidden');
+    document.getElementById('admin-panel')?.classList.add('hidden');
+  }
+
+  // ── Tabs ─────────────────────────────────────────────────
+  function setTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.adiv-modo-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent.toLowerCase().includes(tab.slice(0,4)));
+    });
+    renderTab();
+  }
+
+  function renderTab() {
+    const el = document.getElementById('admin-content');
+    if (!el) return;
+    if (currentTab === 'cocina')   el.innerHTML = renderCocina();
+    if (currentTab === 'hechizos') el.innerHTML = renderHechizos();
+    if (currentTab === 'plantas')  el.innerHTML = renderPlantas();
+    if (currentTab === 'config')   el.innerHTML = renderConfig();
+  }
+
+  // ── Tab: Cocina ───────────────────────────────────────────
+  function renderCocina() {
+    let recetas = [];
+    try { recetas = JSON.parse(localStorage.getItem('bruja_cocina_recetas') || '[]'); } catch(e){}
+    const rows = recetas.length === 0
+      ? `<tr><td colspan="4" style="text-align:center;padding:1.5rem;opacity:.6">No hay recetas guardadas aún</td></tr>`
+      : recetas.map((r, i) => `
+        <tr>
+          <td>${r.emoji || '📖'} <strong>${r.nombre}</strong></td>
+          <td>${r.tipo || '-'}</td>
+          <td>${r.cualidades?.slice(0,40) || '-'}</td>
+          <td style="white-space:nowrap">
+            <button class="tag" style="cursor:pointer" onclick="AdminModule.editarReceta(${i})">✏️ Editar</button>
+            <button class="tag" style="background:rgba(255,0,0,.12);cursor:pointer" onclick="AdminModule.borrarReceta(${i})">🗑 Borrar</button>
+          </td>
+        </tr>`).join('');
+    return `
+      <div class="card" style="margin-bottom:1.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0">Mis Recetas (${recetas.length})</h3>
+          <button class="btn-gold" onclick="CocinaModule.abrirCrearReceta();AppModule.goTo('cocina')">+ Crear nueva</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Receta</th><th>Tipo</th><th>Cualidades</th><th>Acciones</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 .75rem">Exportar / Importar Recetas</h3>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+          <button class="btn-outline-sm" onclick="AdminModule.exportarRecetas()">📤 Exportar JSON</button>
+          <label class="btn-outline-sm" style="cursor:pointer">
+            📥 Importar JSON
+            <input type="file" accept=".json" style="display:none" onchange="AdminModule.importarRecetas(event)">
+          </label>
+        </div>
+      </div>`;
+  }
+
+  function editarReceta(idx) {
+    let recetas = [];
+    try { recetas = JSON.parse(localStorage.getItem('bruja_cocina_recetas') || '[]'); } catch(e){}
+    const r = recetas[idx];
+    if (!r) return;
+    // Open edit modal via cocina module
+    if (window.CocinaModule) {
+      CocinaModule.abrirCrearReceta();
+      setTimeout(() => {
+        const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v||''; };
+        setVal('cr-nombre', r.nombre);
+        setVal('cr-emoji', r.emoji);
+        setVal('cr-cualidades', r.cualidades);
+        setVal('cr-ingredientes', r.ingredientes);
+        setVal('cr-proceso', r.proceso);
+        setVal('cr-nota', r.nota);
+        const sel = document.getElementById('cr-tipo');
+        if (sel) sel.value = r.tipo || 'Receta';
+        // Override save to update instead of push
+        const saveBtn = document.querySelector('#cocina-crear-modal .btn-gold');
+        if (saveBtn) {
+          saveBtn.onclick = () => {
+            recetas[idx] = {
+              nombre: document.getElementById('cr-nombre')?.value?.trim() || r.nombre,
+              emoji: document.getElementById('cr-emoji')?.value?.trim() || r.emoji,
+              tipo: document.getElementById('cr-tipo')?.value || r.tipo,
+              cualidades: document.getElementById('cr-cualidades')?.value?.trim() || '',
+              ingredientes: document.getElementById('cr-ingredientes')?.value?.trim() || '',
+              proceso: document.getElementById('cr-proceso')?.value?.trim() || '',
+              nota: document.getElementById('cr-nota')?.value?.trim() || '',
+              creada: r.creada || new Date().toLocaleDateString('es'),
+            };
+            localStorage.setItem('bruja_cocina_recetas', JSON.stringify(recetas));
+            CocinaModule.cerrarCrearReceta();
+            renderTab();
+          };
+        }
+      }, 100);
+    }
+  }
+
+  function borrarReceta(idx) {
+    let recetas = [];
+    try { recetas = JSON.parse(localStorage.getItem('bruja_cocina_recetas') || '[]'); } catch(e){}
+    const nombre = recetas[idx]?.nombre || 'esta receta';
+    if (!confirm(`¿Borrar "${nombre}"?`)) return;
+    recetas.splice(idx, 1);
+    localStorage.setItem('bruja_cocina_recetas', JSON.stringify(recetas));
+    renderTab();
+  }
+
+  function exportarRecetas() {
+    const data = localStorage.getItem('bruja_cocina_recetas') || '[]';
+    const blob = new Blob([data], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'mis-recetas-magicas.json';
+    a.click(); URL.revokeObjectURL(url);
+  }
+
+  function importarRecetas(evt) {
+    const file = evt.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const arr = JSON.parse(e.target.result);
+        if (!Array.isArray(arr)) throw new Error();
+        const existing = JSON.parse(localStorage.getItem('bruja_cocina_recetas') || '[]');
+        const merged = [...existing, ...arr];
+        localStorage.setItem('bruja_cocina_recetas', JSON.stringify(merged));
+        alert(`✅ ${arr.length} receta(s) importada(s).`);
+        renderTab();
+      } catch { alert('❌ Archivo JSON inválido.'); }
+    };
+    reader.readAsText(file);
+  }
+
+  // ── Tab: Hechizos ─────────────────────────────────────────
+  function renderHechizos() {
+    // Mostrar info sobre los datos existentes y un editor visual de propósitos personalizados
+    const SK = 'bruja_admin_propositos';
+    let custom = [];
+    try { custom = JSON.parse(localStorage.getItem(SK) || '[]'); } catch(e){}
+
+    const panteones = Object.values(HechizosData?.PANTEONES || {}).map(p =>
+      `<div class="card" style="margin-bottom:.5rem;padding:.75rem 1rem">
+        <span style="font-size:1.3rem">${p.emoji}</span>
+        <strong style="margin-left:.4rem">${p.name}</strong>
+        <span class="text-muted" style="margin-left:.5rem;font-size:.82rem">${p.deidades.length} deidades</span>
+       </div>`).join('');
+
+    const propositos = (HechizosData?.PROPOSITOS || []).map(p =>
+      `<div style="display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.06)">
+        <span>${p.emoji}</span>
+        <strong>${p.name}</strong>
+        <span class="text-muted" style="font-size:.82rem">${p.descripcion}</span>
+       </div>`).join('');
+
+    return `
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Panteones disponibles</h3>
+        ${panteones}
+      </div>
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Propósitos de hechizos</h3>
+        ${propositos}
+      </div>
+      <div class="card">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 .5rem">Exportar datos de hechizos</h3>
+        <p class="text-muted" style="font-size:.85rem;margin-bottom:.75rem">Descarga una copia de los datos de panteones y propósitos para editarlos.</p>
+        <button class="btn-outline-sm" onclick="AdminModule.exportarHechizos()">📤 Exportar hechizos-data.js</button>
+      </div>`;
+  }
+
+  function exportarHechizos() {
+    const data = JSON.stringify({
+      panteones: HechizosData?.PANTEONES || {},
+      propositos: HechizosData?.PROPOSITOS || [],
+    }, null, 2);
+    const blob = new Blob([data], { type:'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'hechizos-data.json';
+    a.click();
+  }
+
+  // ── Tab: Plantas & Esencias ───────────────────────────────
+  function renderPlantas() {
+    const SK = 'bruja_admin_plantas';
+    let plantas = [];
+    try { plantas = JSON.parse(localStorage.getItem(SK) || '[]'); } catch(e){}
+
+    const rows = plantas.length === 0
+      ? '<p class="text-muted" style="text-align:center;padding:1rem">No hay plantas personalizadas aún.</p>'
+      : `<div class="admin-table-wrap"><table class="admin-table">
+          <thead><tr><th>Nombre</th><th>Tipo</th><th>Propiedades</th><th>Acciones</th></tr></thead>
+          <tbody>${plantas.map((p, i) => `<tr>
+            <td>${p.emoji||'🌿'} <strong>${p.nombre}</strong></td>
+            <td>${p.tipo||'-'}</td>
+            <td>${p.propiedades?.slice(0,50)||'-'}</td>
+            <td><button class="tag" style="background:rgba(255,0,0,.12);cursor:pointer" onclick="AdminModule.borrarPlanta(${i})">🗑</button></td>
+          </tr>`).join('')}
+          </tbody></table></div>`;
+
+    return `
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Agregar Planta / Esencia / Masaje</h3>
+        <div style="display:grid;grid-template-columns:1fr 70px;gap:.5rem;margin-bottom:.5rem">
+          <input id="pl-nombre" class="form-input" placeholder="Nombre (ej: Lavanda, Aceite de argán, Masaje lunar)">
+          <input id="pl-emoji" class="form-input" placeholder="🌿" style="text-align:center">
+        </div>
+        <select id="pl-tipo" class="form-input" style="margin-bottom:.5rem">
+          <option value="Planta">Planta</option>
+          <option value="Esencia">Aceite esencial</option>
+          <option value="Masaje">Técnica de masaje</option>
+          <option value="Cristal">Cristal</option>
+          <option value="Resina">Resina / Incienso</option>
+          <option value="Otro">Otro</option>
+        </select>
+        <textarea id="pl-propiedades" class="form-input" rows="2" placeholder="Propiedades mágicas y usos"></textarea>
+        <textarea id="pl-correspondencias" class="form-input" rows="2" placeholder="Correspondencias: planeta, elemento, chakra..." style="margin-top:.5rem"></textarea>
+        <div style="margin-top:.75rem">
+          <button class="btn-gold" onclick="AdminModule.guardarPlanta()">✦ Guardar</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Mis Plantas & Esencias (${plantas.length})</h3>
+        ${rows}
+      </div>`;
+  }
+
+  function guardarPlanta() {
+    const nombre = document.getElementById('pl-nombre')?.value?.trim();
+    if (!nombre) { alert('Ponle nombre'); return; }
+    const SK = 'bruja_admin_plantas';
+    let plantas = [];
+    try { plantas = JSON.parse(localStorage.getItem(SK) || '[]'); } catch(e){}
+    plantas.push({
+      nombre,
+      emoji: document.getElementById('pl-emoji')?.value?.trim() || '🌿',
+      tipo: document.getElementById('pl-tipo')?.value || 'Planta',
+      propiedades: document.getElementById('pl-propiedades')?.value?.trim() || '',
+      correspondencias: document.getElementById('pl-correspondencias')?.value?.trim() || '',
+    });
+    localStorage.setItem(SK, JSON.stringify(plantas));
+    alert(`✅ "${nombre}" guardada.`);
+    renderTab();
+  }
+
+  function borrarPlanta(idx) {
+    const SK = 'bruja_admin_plantas';
+    let plantas = [];
+    try { plantas = JSON.parse(localStorage.getItem(SK) || '[]'); } catch(e){}
+    if (!confirm(`¿Borrar "${plantas[idx]?.nombre}"?`)) return;
+    plantas.splice(idx, 1);
+    localStorage.setItem(SK, JSON.stringify(plantas));
+    renderTab();
+  }
+
+  // ── Tab: Configuración ────────────────────────────────────
+  function renderConfig() {
+    return `
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 1rem">Cambiar PIN de Administrador</h3>
+        <input id="cfg-pin-actual" class="form-input" type="password" placeholder="PIN actual" style="margin-bottom:.5rem">
+        <input id="cfg-pin-nuevo" class="form-input" type="password" placeholder="Nuevo PIN" style="margin-bottom:.5rem">
+        <input id="cfg-pin-nuevo2" class="form-input" type="password" placeholder="Repetir nuevo PIN" style="margin-bottom:.75rem">
+        <div id="cfg-pin-err" style="color:#ff6b6b;font-size:.82rem;margin-bottom:.5rem"></div>
+        <button class="btn-gold" onclick="AdminModule.cambiarPin()">✦ Guardar PIN</button>
+      </div>
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-family:var(--font-heading);color:var(--gold);margin:0 0 .75rem">Exportar TODO el Grimorio</h3>
+        <p class="text-muted" style="font-size:.85rem;margin-bottom:.75rem">Descarga una copia de seguridad de todos tus datos.</p>
+        <button class="btn-gold" onclick="AdminModule.exportarTodo()">📤 Exportar copia completa</button>
+      </div>
+      <div class="card" style="border:1px solid rgba(255,80,80,.25)">
+        <h3 style="font-family:var(--font-heading);color:#ff6b6b;margin:0 0 .75rem">Zona de peligro</h3>
+        <p class="text-muted" style="font-size:.85rem;margin-bottom:.75rem">Estas acciones no se pueden deshacer.</p>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+          <button class="tag" style="background:rgba(255,0,0,.12);border-color:rgba(255,0,0,.3);cursor:pointer" onclick="AdminModule.borrarRecetasUsuario()">🗑 Borrar mis recetas</button>
+          <button class="tag" style="background:rgba(255,0,0,.12);border-color:rgba(255,0,0,.3);cursor:pointer" onclick="AdminModule.borrarPlantas()">🗑 Borrar plantas</button>
+        </div>
+      </div>`;
+  }
+
+  function cambiarPin() {
+    const actual = document.getElementById('cfg-pin-actual')?.value;
+    const nuevo  = document.getElementById('cfg-pin-nuevo')?.value;
+    const nuevo2 = document.getElementById('cfg-pin-nuevo2')?.value;
+    const err    = document.getElementById('cfg-pin-err');
+    if (!err) return;
+    if (actual !== getPin()) { err.textContent = '❌ PIN actual incorrecto'; return; }
+    if (!nuevo || nuevo.length < 4) { err.textContent = '❌ El nuevo PIN debe tener al menos 4 caracteres'; return; }
+    if (nuevo !== nuevo2) { err.textContent = '❌ Los PINs no coinciden'; return; }
+    localStorage.setItem(ADMIN_PIN_KEY, nuevo);
+    err.style.color = '#4caf50';
+    err.textContent = '✅ PIN actualizado correctamente';
+    document.getElementById('cfg-pin-actual').value = '';
+    document.getElementById('cfg-pin-nuevo').value = '';
+    document.getElementById('cfg-pin-nuevo2').value = '';
+  }
+
+  function exportarTodo() {
+    const keys = ['bruja_cocina_recetas','bruja_admin_plantas','bruja_bib_custom'];
+    const data = {};
+    keys.forEach(k => { const v = localStorage.getItem(k); if (v) data[k] = JSON.parse(v); });
+    // Also export user entries count
+    data._exportado = new Date().toISOString();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `grimorio-backup-${new Date().toLocaleDateString('es').replace(/\//g,'-')}.json`;
+    a.click();
+  }
+
+  function borrarRecetasUsuario() {
+    if (!confirm('¿Borrar TODAS tus recetas propias? Esta acción no se puede deshacer.')) return;
+    localStorage.removeItem('bruja_cocina_recetas');
+    alert('✅ Recetas borradas.');
+    renderTab();
+  }
+
+  function borrarPlantas() {
+    if (!confirm('¿Borrar TODAS las plantas y esencias guardadas?')) return;
+    localStorage.removeItem('bruja_admin_plantas');
+    alert('✅ Plantas borradas.');
+    renderTab();
+  }
+
+  return { init, unlock, lockPanel, setTab, editarReceta, borrarReceta,
+           exportarRecetas, importarRecetas, exportarHechizos,
+           guardarPlanta, borrarPlanta, cambiarPin, exportarTodo,
+           borrarRecetasUsuario, borrarPlantas };
 })();
 
 </script>
@@ -6012,7 +7166,7 @@ const AdivinacionModule = (() => {
 // ============================================================
 const AppModule = (() => {
 
-  const SECTIONS = ['hoy','carta','rueda','biblioteca','hechizos','tareas','diario','libro','calendario','altar','cocina','adivinacion'];
+  const SECTIONS = ['hoy','carta','rueda','biblioteca','hechizos','tareas','diario','libro','calendario','altar','cocina','adivinacion','admin'];
   let currentSection = 'hoy';
   let initialized = {};
 
@@ -6051,6 +7205,7 @@ const AppModule = (() => {
         case 'altar':     AltarModule.init(); break;
         case 'cocina':    CocinaModule.init(); break;
         case 'adivinacion':AdivinacionModule.init(); break;
+        case 'admin':      AdminModule.init(); break;
       }
     }
 
