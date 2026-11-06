@@ -1,0 +1,4254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Año de la Bruja — Libro de Sombras</title>
+  <meta name="description" content="Tu libro de sombras digital: carta astral, rueda del año, biblioteca mágica, diario privado y constructor de hechizos por panteón.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+/* ============================================================
+   EL AÑO DE LA BRUJA — LIBRO DE SOMBRAS DIGITAL
+   Paleta: oscuro/violeta + dorado
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+:root {
+  --bg:        #0D0B1E;
+  --bg-card:   #161228;
+  --bg-hover:  #1E1838;
+  --bg-input:  #130F24;
+  --purple:    #5B2D8E;
+  --purple-l:  #7B4DB3;
+  --gold:      #B8860B;
+  --gold-l:    #DAA520;
+  --gold-g:    #FFD700;
+  --lavender:  #D8C8F0;
+  --text:      #EAE0FF;
+  --muted:     #8B7BA8;
+  --border:    #2A2048;
+  --fire:      #FF6B35;
+  --water:     #4A90D9;
+  --earth:     #7B9E3A;
+  --air:       #A8D8EA;
+  --r:         0.75rem;
+  --r-lg:      1.25rem;
+  --shadow:    0 4px 24px rgba(0,0,0,.5);
+  --glow:      0 0 20px rgba(184,134,11,.2);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── LANDING ───────────────────────────────────────────────── */
+#landing {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  background: linear-gradient(to bottom,
+    #060412 0%, #0D0B1E 30%, rgba(13,11,30,.7) 70%, rgba(13,11,30,.95) 100%);
+  transition: opacity .6s ease, visibility .6s;
+}
+#landing.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+#landing-bg {
+  position: absolute; inset: 0; z-index: -1;
+  background-size: cover; background-position: center top;
+  background-image: url('../assets/portada.jpg');
+  opacity: .85;
+  /* fallback si no hay imagen */
+}
+#landing-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, var(--bg) 100%);
+}
+
+/* fallback placeholder si no hay imagen */
+#landing-bg:not([style*="portada"]) {
+  background: radial-gradient(ellipse at 50% 20%,
+    #3B1F5E 0%, #1A0E3A 40%, var(--bg) 80%);
+}
+
+.landing-content {
+  text-align: center; padding: 0 2rem 4rem;
+  position: relative; z-index: 2; width: 100%; max-width: 480px;
+}
+.landing-moons { font-size: 1.8rem; letter-spacing: .4rem; margin-bottom: 1rem; }
+.landing-title {
+  font-family: 'Cinzel', serif; font-size: clamp(1.8rem, 6vw, 2.6rem);
+  font-weight: 700; color: var(--gold-l);
+  text-shadow: 0 0 40px rgba(218,165,32,.4); margin-bottom: .5rem;
+  line-height: 1.1;
+}
+.landing-sub {
+  font-family: 'Crimson Text', serif; font-style: italic;
+  font-size: 1.1rem; color: var(--lavender); margin-bottom: 2.5rem; opacity: .85;
+}
+.btn-enter {
+  display: inline-block; padding: .9rem 2.5rem;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-l) 100%);
+  color: #0D0B1E; font-family: 'Cinzel', serif; font-weight: 600;
+  font-size: 1rem; letter-spacing: .08em;
+  border: none; border-radius: 50px; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(184,134,11,.4);
+  transition: transform .2s, box-shadow .2s;
+}
+.btn-enter:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(184,134,11,.6); }
+
+/* ── LAYOUT ────────────────────────────────────────────────── */
+.app-shell { display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ───────────────────────────────────────────────── */
+.sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; height: 100vh;
+  z-index: 50; transition: transform .3s ease;
+}
+.sidebar-logo {
+  padding: 1.5rem 1.2rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo .moons { font-size: 1rem; letter-spacing: .2rem; }
+.sidebar-logo h2 {
+  font-family: 'Cinzel', serif; font-size: .85rem;
+  color: var(--gold-l); letter-spacing: .05em; margin-top: .4rem;
+}
+.sidebar-logo p { font-size: .7rem; color: var(--muted); margin-top: .15rem; }
+
+.nav-links { list-style: none; padding: 1rem 0; flex: 1; overflow-y: auto; }
+.nav-links li + li { margin-top: .25rem; }
+
+.nav-link {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .7rem 1.2rem; color: var(--muted);
+  text-decoration: none; font-size: .88rem;
+  border-left: 2px solid transparent;
+  transition: all .2s;
+}
+.nav-link:hover { color: var(--lavender); background: var(--bg-hover); }
+.nav-link.active {
+  color: var(--gold-l); border-left-color: var(--gold);
+  background: rgba(184,134,11,.08);
+}
+.nav-link .icon { font-size: 1.1rem; width: 1.4rem; text-align: center; }
+
+.sidebar-bottom {
+  padding: 1rem 1.2rem; border-top: 1px solid var(--border);
+  font-size: .72rem; color: var(--muted); line-height: 1.6;
+}
+
+/* ── MAIN CONTENT ──────────────────────────────────────────── */
+.main {
+  margin-left: 220px; flex: 1; min-height: 100vh;
+  padding: 1.5rem; max-width: calc(100vw - 220px);
+}
+
+.section { display: none; }
+.section.active { display: block; }
+
+.page-header { margin-bottom: 1.5rem; }
+.page-header h1 {
+  font-family: 'Cinzel', serif; font-size: 1.5rem;
+  color: var(--gold-l); font-weight: 600;
+}
+.page-header p { color: var(--muted); font-size: .88rem; margin-top: .25rem; }
+
+/* ── CARDS ─────────────────────────────────────────────────── */
+.card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-family: 'Cinzel', serif; font-size: .9rem;
+  color: var(--gold-l); letter-spacing: .05em; margin-bottom: .75rem;
+}
+.card-gold { border-color: rgba(184,134,11,.35); box-shadow: var(--glow); }
+
+/* ── GRID HELPERS ──────────────────────────────────────────── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: .75rem; }
+
+/* ── DASHBOARD ─────────────────────────────────────────────── */
+.dashboard-top { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+
+.moon-card { text-align: center; }
+.moon-emoji { font-size: 3.5rem; display: block; margin-bottom: .5rem; }
+.moon-name {
+  font-family: 'Cinzel', serif; font-size: 1rem;
+  color: var(--gold-l); display: block; margin-bottom: .25rem;
+}
+.moon-angle { font-size: .78rem; color: var(--muted); }
+
+.stat-big {
+  font-family: 'Cinzel', serif; font-size: 2rem;
+  color: var(--gold-l); display: block;
+}
+.stat-label { font-size: .78rem; color: var(--muted); margin-top: .25rem; }
+
+.sabbat-card { }
+.sabbat-name {
+  font-family: 'Cinzel', serif; font-size: 1.1rem;
+  color: var(--gold-l); margin-bottom: .4rem;
+}
+.sabbat-date { font-size: .8rem; color: var(--muted); margin-bottom: .5rem; }
+.sabbat-desc { font-family: 'Crimson Text', serif; font-size: .95rem; color: var(--lavender); line-height: 1.6; }
+.sabbat-ritual {
+  margin-top: .75rem; padding: .75rem; background: rgba(184,134,11,.06);
+  border-radius: var(--r); border: 1px solid rgba(184,134,11,.2);
+  font-size: .82rem; color: var(--muted); line-height: 1.6;
+}
+
+.hp-current {
+  display: flex; align-items: center; gap: 1rem;
+}
+.hp-sym { font-size: 2.5rem; }
+.hp-planet { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--gold-l); }
+.hp-magic { font-size: .8rem; color: var(--muted); margin-top: .2rem; }
+.hp-time { font-size: .75rem; color: var(--muted); margin-top: .15rem; }
+
+.today-energy {
+  font-family: 'Crimson Text', serif; font-size: 1rem;
+  color: var(--lavender); line-height: 1.7;
+}
+
+/* ── CARTA ASTRAL ──────────────────────────────────────────── */
+.carta-form { max-width: 520px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-bottom: .75rem; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .75rem; margin-bottom: .75rem; }
+.form-group { display: flex; flex-direction: column; gap: .3rem; }
+.form-group label { font-size: .78rem; color: var(--muted); letter-spacing: .04em; }
+.form-group input, .form-group select {
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--r); padding: .6rem .75rem;
+  color: var(--text); font-size: .9rem; font-family: 'Inter', sans-serif;
+  transition: border-color .2s;
+}
+.form-group input:focus, .form-group select:focus {
+  outline: none; border-color: var(--gold);
+}
+.form-group select option { background: var(--bg-card); }
+
+.btn {
+  padding: .65rem 1.5rem; border-radius: 50px;
+  border: none; cursor: pointer; font-family: 'Cinzel', serif;
+  font-size: .85rem; letter-spacing: .05em; transition: all .2s;
+  font-weight: 600;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-l) 100%);
+  color: #0D0B1E; box-shadow: 0 4px 16px rgba(184,134,11,.3);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(184,134,11,.4); }
+.btn-ghost {
+  background: transparent; color: var(--gold-l);
+  border: 1px solid rgba(184,134,11,.4);
+}
+.btn-ghost:hover { background: rgba(184,134,11,.08); }
+
+.carta-result { margin-top: 1.5rem; }
+.carta-layout { display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; align-items: start; }
+
+#carta-svg-wrap {
+  width: 100%; aspect-ratio: 1; max-width: 480px;
+}
+
+.carta-info h3 {
+  font-family: 'Cinzel', serif; font-size: .9rem;
+  color: var(--gold-l); margin-bottom: .75rem;
+}
+.planet-row {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .4rem 0; border-bottom: 1px solid rgba(255,255,255,.05);
+  font-size: .82rem;
+}
+.planet-row:last-child { border-bottom: none; }
+.planet-sym { font-size: 1rem; width: 1.4rem; }
+.planet-name { color: var(--muted); width: 4.5rem; }
+.planet-sign { color: var(--lavender); font-weight: 500; }
+.planet-deg { color: var(--muted); font-size: .75rem; margin-left: auto; }
+
+.interp-card {
+  margin-top: 1rem; padding: .9rem; background: rgba(91,45,142,.1);
+  border: 1px solid rgba(91,45,142,.3); border-radius: var(--r);
+}
+.interp-planet { font-family: 'Cinzel', serif; font-size: .82rem; color: var(--gold-l); margin-bottom: .3rem; }
+.interp-text { font-family: 'Crimson Text', serif; font-size: .95rem; color: var(--lavender); line-height: 1.6; }
+
+.aspects-list { margin-top: .75rem; }
+.asp-row {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .3rem 0; font-size: .8rem;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.asp-sym { font-size: 1rem; width: 1.2rem; }
+.asp-name { color: var(--lavender); }
+.asp-planets { color: var(--muted); margin-left: auto; font-size: .75rem; }
+
+/* ── RUEDA DEL AÑO ─────────────────────────────────────────── */
+.rueda-layout { display: grid; grid-template-columns: 480px 1fr; gap: 1.5rem; align-items: start; }
+#rueda-svg-wrap { width: 100%; max-width: 480px; aspect-ratio: 1; }
+
+.sabbat-list { }
+.sabbat-item {
+  padding: .75rem; border-radius: var(--r);
+  border: 1px solid var(--border); margin-bottom: .5rem;
+  cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; gap: .75rem;
+}
+.sabbat-item:hover { border-color: rgba(184,134,11,.4); background: var(--bg-hover); }
+.sabbat-item.active-sabbat { border-color: var(--gold); background: rgba(184,134,11,.08); }
+.sabbat-emoji { font-size: 1.5rem; }
+.sabbat-info .s-name { font-family: 'Cinzel', serif; font-size: .88rem; color: var(--gold-l); }
+.sabbat-info .s-date { font-size: .75rem; color: var(--muted); margin-top: .15rem; }
+.sabbat-info .s-days { font-size: .72rem; color: var(--fire); font-weight: 500; }
+.sabbat-detail {
+  padding: 1rem; background: rgba(184,134,11,.06);
+  border: 1px solid rgba(184,134,11,.2); border-radius: var(--r-lg);
+  margin-top: .75rem;
+}
+.sabbat-detail h3 { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--gold-l); margin-bottom: .5rem; }
+.sabbat-detail p { font-family: 'Crimson Text', serif; font-size: .95rem; color: var(--lavender); line-height: 1.7; margin-bottom: .5rem; }
+.sabbat-detail .ritual-box {
+  padding: .75rem; background: rgba(255,255,255,.04); border-radius: var(--r);
+  font-size: .85rem; color: var(--muted); line-height: 1.6; margin-top: .5rem;
+}
+
+/* ── BIBLIOTECA ────────────────────────────────────────────── */
+.bib-tabs { display: flex; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.bib-tab {
+  padding: .4rem 1rem; border-radius: 50px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--muted); font-size: .82rem; cursor: pointer;
+  transition: all .2s;
+}
+.bib-tab.active { background: rgba(184,134,11,.15); border-color: var(--gold); color: var(--gold-l); }
+.bib-tab:hover:not(.active) { border-color: rgba(184,134,11,.4); color: var(--lavender); }
+
+.bib-search {
+  width: 100%; max-width: 380px; margin-bottom: 1rem;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 50px; padding: .55rem 1.1rem;
+  color: var(--text); font-size: .88rem; outline: none;
+  transition: border-color .2s;
+}
+.bib-search:focus { border-color: var(--gold); }
+
+.bib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .75rem; }
+
+.bib-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 1rem; cursor: pointer;
+  transition: all .2s;
+}
+.bib-card:hover { border-color: rgba(184,134,11,.4); transform: translateY(-2px); }
+.bib-card-emoji { font-size: 1.8rem; margin-bottom: .5rem; }
+.bib-card-name { font-family: 'Cinzel', serif; font-size: .9rem; color: var(--gold-l); margin-bottom: .3rem; }
+.bib-card-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-bottom: .4rem; }
+.tag {
+  font-size: .68rem; padding: .15rem .45rem; border-radius: 50px;
+  background: rgba(91,45,142,.25); border: 1px solid rgba(91,45,142,.4);
+  color: var(--lavender);
+}
+.tag.fire { background: rgba(255,107,53,.15); border-color: rgba(255,107,53,.3); color: #FF6B35; }
+.tag.agua { background: rgba(74,144,217,.15); border-color: rgba(74,144,217,.3); color: #4A90D9; }
+.tag.tierra { background: rgba(123,158,58,.15); border-color: rgba(123,158,58,.3); color: #7B9E3A; }
+.tag.aire { background: rgba(168,216,234,.15); border-color: rgba(168,216,234,.3); color: #A8D8EA; }
+.bib-card-desc { font-size: .78rem; color: var(--muted); line-height: 1.5; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.7);
+  z-index: 200; display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+  opacity: 0; visibility: hidden; transition: all .25s;
+}
+.modal-overlay.open { opacity: 1; visibility: visible; }
+.modal {
+  background: var(--bg-card); border: 1px solid rgba(184,134,11,.35);
+  border-radius: var(--r-lg); padding: 1.5rem; max-width: 520px; width: 100%;
+  max-height: 80vh; overflow-y: auto; transform: scale(.96) translateY(8px);
+  transition: transform .25s;
+}
+.modal-overlay.open .modal { transform: scale(1) translateY(0); }
+.modal h3 { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--gold-l); margin-bottom: 1rem; }
+.modal-close {
+  position: sticky; top: 0; float: right;
+  background: transparent; border: none; color: var(--muted);
+  font-size: 1.3rem; cursor: pointer; transition: color .2s;
+}
+.modal-close:hover { color: var(--text); }
+.modal-section { margin-bottom: .75rem; }
+.modal-section strong { font-size: .78rem; color: var(--gold-l); letter-spacing: .04em; display: block; margin-bottom: .25rem; }
+.modal-section p { font-family: 'Crimson Text', serif; font-size: .95rem; color: var(--lavender); line-height: 1.6; }
+.modal-tags { display: flex; flex-wrap: wrap; gap: .3rem; }
+.caution { font-size: .8rem; color: #FF6B35; margin-top: .5rem; }
+
+/* Runa grid */
+.runa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: .6rem; }
+.runa-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r); padding: .75rem; text-align: center; cursor: pointer;
+  transition: all .2s;
+}
+.runa-card:hover { border-color: var(--gold); background: var(--bg-hover); }
+.runa-sym { font-size: 1.8rem; color: var(--gold-l); display: block; margin-bottom: .3rem; }
+.runa-name { font-size: .75rem; color: var(--muted); }
+
+/* ── DIARIO ────────────────────────────────────────────────── */
+.diario-layout { display: grid; grid-template-columns: 260px 1fr; gap: 1rem; height: calc(100vh - 160px); }
+
+.diario-list {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow-y: auto; display: flex; flex-direction: column;
+}
+.diario-list-header {
+  padding: .75rem 1rem; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.diario-list-header span { font-family: 'Cinzel', serif; font-size: .82rem; color: var(--gold-l); }
+.btn-new-entry {
+  background: rgba(184,134,11,.2); border: 1px solid rgba(184,134,11,.4);
+  border-radius: 50px; color: var(--gold-l); font-size: .78rem;
+  padding: .3rem .7rem; cursor: pointer; transition: all .2s;
+}
+.btn-new-entry:hover { background: rgba(184,134,11,.35); }
+
+.entry-list { overflow-y: auto; flex: 1; }
+.entry-item {
+  padding: .75rem 1rem; border-bottom: 1px solid rgba(255,255,255,.04);
+  cursor: pointer; transition: background .15s;
+}
+.entry-item:hover { background: var(--bg-hover); }
+.entry-item.selected { background: rgba(184,134,11,.1); border-left: 2px solid var(--gold); }
+.entry-date { font-size: .72rem; color: var(--muted); }
+.entry-title { font-size: .85rem; color: var(--lavender); margin-top: .2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.entry-preview { font-size: .75rem; color: var(--muted); margin-top: .15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.entry-moon { font-size: .7rem; }
+
+.diario-editor {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r-lg); display: flex; flex-direction: column;
+}
+.editor-toolbar {
+  padding: .75rem 1rem; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; flex-shrink: 0;
+}
+.editor-title-input {
+  background: transparent; border: none; outline: none;
+  font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--gold-l);
+  flex: 1; min-width: 0;
+}
+.editor-title-input::placeholder { color: var(--muted); }
+.editor-meta { font-size: .75rem; color: var(--muted); margin-left: auto; white-space: nowrap; }
+.editor-delete { background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: .9rem; transition: color .2s; }
+.editor-delete:hover { color: #FF6B35; }
+
+.editor-body {
+  flex: 1; display: flex; flex-direction: column; padding: 1rem; gap: .75rem;
+}
+.editor-fields { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+.field-pill {
+  display: flex; align-items: center; gap: .4rem;
+  background: var(--bg-hover); border-radius: 50px; padding: .3rem .7rem;
+  font-size: .78rem; color: var(--muted);
+}
+.field-pill select, .field-pill input {
+  background: transparent; border: none; outline: none;
+  color: var(--lavender); font-size: .78rem; cursor: pointer;
+}
+.field-pill select option { background: var(--bg-card); }
+
+.editor-textarea {
+  flex: 1; background: transparent; border: none; outline: none; resize: none;
+  color: var(--lavender); font-family: 'Crimson Text', serif; font-size: 1rem;
+  line-height: 1.8; min-height: 200px;
+}
+.editor-textarea::placeholder { color: rgba(139,123,168,.4); }
+.editor-save-row {
+  display: flex; justify-content: flex-end; gap: .5rem; padding-top: .75rem;
+  border-top: 1px solid var(--border);
+}
+.empty-state {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  color: var(--muted); text-align: center; gap: .75rem;
+}
+.empty-state .big-icon { font-size: 3rem; opacity: .3; }
+.empty-state p { font-size: .9rem; }
+
+/* ── MOBILE ────────────────────────────────────────────────── */
+.hamburger {
+  display: none; position: fixed; top: 1rem; left: 1rem; z-index: 60;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: .5rem; padding: .5rem .6rem; cursor: pointer; color: var(--gold-l);
+  font-size: 1.2rem;
+}
+.sidebar-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5);
+  z-index: 49;
+}
+
+@media (max-width: 768px) {
+  .hamburger { display: block; }
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.show { display: block; }
+  .main { margin-left: 0; max-width: 100vw; padding: 1rem; padding-top: 3.5rem; }
+  .dashboard-top { grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .carta-layout { grid-template-columns: 1fr; }
+  .rueda-layout { grid-template-columns: 1fr; }
+  #rueda-svg-wrap { max-width: 320px; margin: 0 auto; }
+  .diario-layout { grid-template-columns: 1fr; height: auto; }
+  .diario-list { height: 250px; }
+}
+
+/* ── UTILS ─────────────────────────────────────────────────── */
+.mt-1 { margin-top: .5rem; }
+.mt-2 { margin-top: 1rem; }
+.text-gold { color: var(--gold-l); }
+.text-muted { color: var(--muted); font-size: .82rem; }
+.text-center { text-align: center; }
+.hidden { display: none !important; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(184,134,11,.25); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(184,134,11,.4); }
+
+/* ── ANIMACIONES ───────────────────────────────────────────── */
+@keyframes pulse-gold {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .6; }
+}
+.pulse { animation: pulse-gold 2s ease-in-out infinite; }
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spin-slow { animation: spin-slow 60s linear infinite; }
+
+/* ============================================================
+   ESTILOS ADICIONALES — Hechizos, Tareas, Búsqueda
+   ============================================================ */
+
+/* ── Hechizos ──────────────────────────────────────────────── */
+.panteon-grid, .proposito-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: .75rem;
+  margin-top: .75rem;
+}
+
+.panteon-card, .prop-card {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1rem .75rem;
+  cursor: pointer;
+  transition: border-color .2s, transform .15s;
+  text-align: center;
+}
+
+.panteon-card:hover, .prop-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.panteon-card.active, .prop-card.active {
+  border-color: var(--gold-l);
+  background: rgba(184,134,11,.12);
+  box-shadow: 0 0 12px rgba(184,134,11,.2);
+}
+
+.panteon-emoji, .prop-emoji { font-size: 2rem; margin-bottom: .5rem; }
+.panteon-name, .prop-name { font-family: 'Cinzel', serif; font-size: .85rem; color: var(--gold-l); font-weight: 600; margin-bottom: .35rem; }
+.panteon-desc, .prop-desc { font-size: .75rem; color: var(--muted); line-height: 1.4; }
+
+.deidad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: .75rem;
+  margin-top: .75rem;
+}
+
+.deidad-card {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: .85rem;
+  cursor: pointer;
+  transition: border-color .2s;
+}
+
+.deidad-card:hover { border-color: var(--purple-l); }
+.deidad-card.active { border-color: var(--gold-l); background: rgba(91,45,142,.15); }
+.deidad-name { font-family: 'Cinzel', serif; color: var(--gold-l); font-size: .9rem; margin-bottom: .25rem; }
+.deidad-dominio { font-size: .78rem; color: var(--lavender); margin-bottom: .35rem; }
+.deidad-num, .deidad-ofrenda { font-size: .72rem; color: var(--muted); margin-top: .2rem; }
+
+.hechizo-actions-top { text-align: center; margin: 1.5rem 0; }
+.btn-lg { font-size: 1.05rem; padding: .9rem 2.5rem; letter-spacing: .08em; }
+
+.hechizo-header { margin-bottom: 1.25rem; }
+.hechizo-title-row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-bottom: .5rem; }
+.hechizo-panteon, .hechizo-prop { background: rgba(255,255,255,.05); border: 1px solid var(--border); border-radius: 2rem; padding: .3rem .85rem; font-size: .85rem; }
+.hechizo-luna { color: var(--muted); font-size: .85rem; }
+.hechizo-sec { margin-bottom: 1.25rem; }
+.hechizo-sec-title { color: var(--gold-l); font-family: 'Cinzel', serif; font-size: .9rem; margin-bottom: .75rem; }
+.hechizo-materiales { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 1rem; }
+.mat-col strong { display: block; font-size: .8rem; color: var(--lavender); margin-bottom: .4rem; }
+.mat-col ul { margin: 0; padding-left: 1rem; }
+.mat-col li { font-size: .8rem; color: var(--muted); margin-bottom: .2rem; }
+.hechizo-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+.tag-momento { background: rgba(91,45,142,.2); border-color: rgba(91,45,142,.4); }
+.hechizo-paso { display: flex; gap: .75rem; align-items: flex-start; margin-bottom: .75rem; }
+.paso-num { flex-shrink: 0; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--gold); color: #000; font-size: .75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.paso-text { font-size: .88rem; line-height: 1.6; color: var(--lavender); }
+.hechizo-invocacion { margin-top: .75rem; padding: .75rem 1rem; border-left: 3px solid var(--gold); background: rgba(184,134,11,.06); font-style: italic; font-size: .9rem; color: var(--lavender); }
+.hechizo-nota { margin-top: 1rem; padding: .75rem; background: rgba(255,165,0,.05); border: 1px solid rgba(255,165,0,.2); border-radius: var(--r); font-size: .82rem; color: var(--muted); }
+.hechizo-actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: .6rem 1.2rem; border-radius: var(--r); cursor: pointer; font-size: .85rem; transition: background .2s; }
+.btn-outline:hover { background: rgba(184,134,11,.1); }
+
+/* ── Prácticas / Tareas ─────────────────────────────────────── */
+.tarea-form .form-row { display: flex; gap: .75rem; flex-wrap: wrap; }
+.plantillas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: .75rem;
+}
+
+.plantilla-card {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: .85rem;
+  cursor: pointer;
+  transition: border-color .2s, transform .1s;
+}
+
+.plantilla-card:hover { border-color: var(--purple-l); transform: translateY(-2px); }
+.plantilla-title { font-weight: 600; font-size: .88rem; color: var(--lavender); margin-bottom: .35rem; }
+.plantilla-desc { font-size: .78rem; color: var(--muted); margin-bottom: .5rem; line-height: 1.4; }
+.plantilla-tags { display: flex; gap: .35rem; flex-wrap: wrap; }
+
+.tareas-group { margin-bottom: 1.5rem; }
+.tareas-group-title { font-family: 'Cinzel', serif; font-size: .82rem; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: .75rem; padding-bottom: .4rem; border-bottom: 1px solid var(--border); }
+
+.tarea-item {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  padding: .75rem .5rem;
+  border-bottom: 1px solid rgba(42,32,72,.5);
+  transition: background .15s;
+}
+
+.tarea-item:hover { background: rgba(255,255,255,.02); }
+.tarea-item.done .tarea-title { text-decoration: line-through; opacity: .4; }
+.tarea-item.done .tarea-desc { opacity: .3; }
+
+.tarea-check {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 1.5px solid var(--border);
+  border-radius: .3rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .8rem;
+  color: var(--gold);
+  transition: border-color .2s, background .2s;
+}
+
+.tarea-check.checked { border-color: var(--gold); background: rgba(184,134,11,.2); }
+.tarea-check:hover { border-color: var(--gold-l); }
+.tarea-body { flex: 1; min-width: 0; }
+.tarea-title { font-size: .9rem; color: var(--text); margin-bottom: .25rem; }
+.tarea-desc { font-size: .8rem; color: var(--muted); margin-bottom: .4rem; }
+.tarea-meta { display: flex; flex-wrap: wrap; gap: .3rem; }
+.tarea-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: .9rem; padding: .2rem; opacity: .4; transition: opacity .2s; }
+.tarea-del:hover { opacity: 1; color: #c0392b; }
+.tareas-empty { text-align: center; padding: 2rem; color: var(--muted); }
+
+/* ── Búsqueda global ────────────────────────────────────────── */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13,11,30,.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10vh;
+}
+
+.search-overlay.hidden { display: none; }
+
+.search-box {
+  width: min(640px, 92vw);
+  background: var(--bg-card);
+  border: 1px solid var(--gold);
+  border-radius: var(--r-lg);
+  box-shadow: 0 20px 60px rgba(0,0,0,.8), 0 0 40px rgba(184,134,11,.15);
+  overflow: hidden;
+}
+
+.search-input-row {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-icon { font-size: 1.1rem; }
+
+.search-input-field {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+}
+
+.search-input-field::placeholder { color: var(--muted); }
+
+.search-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: .25rem;
+  transition: color .2s;
+}
+
+.search-close:hover { color: var(--text); }
+
+.search-results {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: .5rem 0;
+}
+
+.search-group { margin-bottom: .5rem; }
+.search-group-title { font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); padding: .4rem 1.25rem; }
+
+.search-result {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .6rem 1.25rem;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.search-result:hover { background: rgba(255,255,255,.04); }
+.search-result-icon { font-size: 1.2rem; width: 1.8rem; text-align: center; flex-shrink: 0; }
+.search-result-body { flex: 1; min-width: 0; }
+.search-result-name { font-size: .9rem; color: var(--text); }
+.search-result-type { font-size: .72rem; color: var(--muted); }
+.search-result-arrow { color: var(--muted); font-size: .9rem; }
+
+.search-hint {
+  padding: .6rem 1.25rem;
+  border-top: 1px solid var(--border);
+  font-size: .72rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+.sidebar-search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--muted);
+  padding: .5rem .85rem;
+  cursor: pointer;
+  font-size: .82rem;
+  transition: border-color .2s;
+  margin-bottom: .5rem;
+}
+
+.sidebar-search-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+.header-search-btn {
+  display: none;
+  position: fixed;
+  top: .75rem;
+  right: 3.5rem;
+  z-index: 100;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+  color: var(--muted);
+  padding: .4rem .6rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: .2rem; padding: .1rem .3rem; }
+
+/* ── Rueda — detalle sabbat ─────────────────────────────────── */
+.sabbat-detail-card { }
+.sabbat-detail-header { display: flex; align-items: center; gap: 1rem; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid; }
+.sabbat-detail-emoji { font-size: 2.5rem; }
+.sabbat-detail-name { font-family: 'Cinzel', serif; font-size: 1.3rem; margin: 0 0 .25rem; }
+.sabbat-detail-fecha { font-size: .82rem; color: var(--muted); margin: 0; }
+.sabbat-detail-desc { font-size: .92rem; line-height: 1.7; color: var(--lavender); margin-bottom: 1rem; }
+.sabbat-ritual-box { background: rgba(91,45,142,.12); border: 1px solid rgba(91,45,142,.3); border-radius: var(--r); padding: 1rem; margin-bottom: 1rem; }
+.sabbat-ritual-box h4 { margin: 0 0 .5rem; font-size: .85rem; color: var(--gold-l); }
+.sabbat-ritual-box p { margin: 0; font-size: .85rem; line-height: 1.6; color: var(--lavender); }
+.sabbat-add-btn { margin-top: .5rem; }
+
+/* ── Carta astral — añadidos ────────────────────────────────── */
+.interp-card {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: .85rem 1rem;
+  margin-bottom: .6rem;
+}
+
+.interp-planet { font-family: 'Cinzel', serif; font-size: .82rem; color: var(--gold-l); margin-bottom: .4rem; }
+.interp-text { font-size: .85rem; line-height: 1.6; color: var(--lavender); margin: 0; }
+
+/* ── Dashboard — añadidos ───────────────────────────────────── */
+.energia-dia {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-top: .5rem;
+  font-size: .88rem;
+}
+
+.hp-tabla { display: flex; flex-direction: column; gap: .2rem; }
+
+.hp-row {
+  display: grid;
+  grid-template-columns: 1.5rem 1.5rem 5rem 1fr 3rem;
+  gap: .5rem;
+  align-items: center;
+  padding: .3rem .4rem;
+  border-radius: .4rem;
+  font-size: .78rem;
+}
+
+.hp-row:nth-child(even) { background: rgba(255,255,255,.02); }
+.hp-row.hp-now { background: rgba(184,134,11,.1); border: 1px solid rgba(184,134,11,.2); }
+.hp-num { color: var(--muted); font-size: .7rem; }
+.hp-sym { font-size: 1rem; }
+.hp-pname { color: var(--lavender); }
+.hp-pmag { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hp-ptime { color: var(--muted); font-size: .7rem; }
+
+/* ── Diario — más estilos ───────────────────────────────────── */
+.diario-toolbar {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.diario-new-btns { display: flex; gap: .4rem; flex-wrap: wrap; }
+.diario-filter-btns { display: flex; gap: .3rem; margin-left: auto; }
+
+.btn-gold-sm {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-l) 100%);
+  color: #0D0B1E;
+  border: none;
+  border-radius: var(--r);
+  padding: .4rem .85rem;
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+
+.btn-gold-sm:hover { opacity: .85; }
+
+.btn-outline-sm {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: var(--r);
+  padding: .4rem .75rem;
+  font-size: .8rem;
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+
+.btn-outline-sm:hover { border-color: var(--gold); color: var(--gold); }
+
+.btn-filter {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: .4rem;
+  padding: .3rem .6rem;
+  font-size: .85rem;
+  cursor: pointer;
+  transition: border-color .2s;
+}
+
+.btn-filter.active { border-color: var(--gold); color: var(--gold); }
+.btn-filter:hover { border-color: var(--purple-l); }
+
+.btn-danger-sm {
+  background: rgba(192,57,43,.15);
+  border: 1px solid rgba(192,57,43,.3);
+  color: #c0392b;
+  border-radius: var(--r);
+  padding: .35rem .65rem;
+  font-size: .85rem;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.btn-danger-sm:hover { background: rgba(192,57,43,.3); }
+
+.diario-title-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  color: var(--gold-l);
+  min-width: 0;
+}
+
+.diario-title-input::placeholder { color: var(--muted); }
+
+.diario-type-select {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: .4rem;
+  color: var(--text);
+  font-size: .78rem;
+  padding: .2rem .4rem;
+}
+
+.diario-tags-editor { margin: .5rem 0; }
+.diario-tags-row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.diario-tag { display: flex; align-items: center; gap: .25rem; }
+.tag-remove { background: none; border: none; color: var(--muted); cursor: pointer; padding: 0 .1rem; line-height: 1; }
+.tag-remove:hover { color: #c0392b; }
+.tag-input { background: none; border: 1px solid var(--border); border-radius: .4rem; color: var(--text); padding: .2rem .5rem; font-size: .78rem; width: 7rem; outline: none; }
+.tag-input::placeholder { color: var(--muted); }
+
+.diario-body-input {
+  width: 100%;
+  min-height: 280px;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: 'Crimson Text', serif;
+  font-size: 1rem;
+  line-height: 1.8;
+  resize: vertical;
+  margin-top: .5rem;
+  box-sizing: border-box;
+}
+
+.diario-body-input::placeholder { color: rgba(139,123,168,.4); }
+
+.diario-editor-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: .75rem;
+  border-top: 1px solid var(--border);
+  margin-top: .5rem;
+}
+
+.diario-save-status { font-size: .78rem; color: var(--muted); }
+
+.diario-no-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 200px;
+  text-align: center;
+  gap: .5rem;
+}
+
+.diario-moon-badge {
+  background: rgba(42,96,144,.2);
+  border: 1px solid rgba(42,96,144,.3);
+  border-radius: 2rem;
+  padding: .2rem .6rem;
+  font-size: .75rem;
+  color: #A8D8EA;
+}
+
+/* ── Responsive nuevas secciones ────────────────────────────── */
+@media (max-width: 768px) {
+  .header-search-btn { display: block; }
+  .sidebar-search-btn { display: none; }
+  .panteon-grid, .proposito-grid { grid-template-columns: repeat(2, 1fr); }
+  .deidad-grid { grid-template-columns: 1fr; }
+  .hechizo-materiales { grid-template-columns: repeat(2, 1fr); }
+  .hp-row { grid-template-columns: 1.5rem 1.5rem 4rem 1fr 2.5rem; gap: .3rem; font-size: .72rem; }
+  .diario-toolbar { flex-direction: column; align-items: flex-start; }
+  .diario-filter-btns { margin-left: 0; }
+}
+
+@media (max-width: 480px) {
+  .panteon-grid { grid-template-columns: 1fr 1fr; }
+  .proposito-grid { grid-template-columns: 1fr 1fr; }
+  .panteon-emoji, .prop-emoji { font-size: 1.5rem; }
+  .hechizo-materiales { grid-template-columns: 1fr 1fr; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     LANDING / PORTADA
+══════════════════════════════════════════════════════════ -->
+<div id="landing">
+  <div id="landing-bg"></div>
+  <div class="landing-content">
+    <div class="landing-text">
+      <p class="landing-sub">Libro de Sombras Digital</p>
+      <h1 class="landing-title">El Año<br><span class="landing-de">de la</span><br>Bruja</h1>
+      <p class="landing-author">Gianfranco Rincón</p>
+      <button class="btn-enter" id="btn-enter">
+        <span>✦ Entrar al Grimorio ✦</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     APP SHELL
+══════════════════════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- OVERLAY MÓVIL -->
+  <div id="sidebar-overlay"></div>
+
+  <!-- BARRA LATERAL -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <span class="sidebar-moon">☽</span>
+      <span class="sidebar-title">Libro de<br>Sombras</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-link active" data-section="hoy" href="#">
+        <span class="nav-icon">🌙</span> Hoy
+      </a>
+      <a class="nav-link" data-section="carta" href="#">
+        <span class="nav-icon">⭐</span> Carta Astral
+      </a>
+      <a class="nav-link" data-section="rueda" href="#">
+        <span class="nav-icon">☀️</span> Rueda del Año
+      </a>
+      <a class="nav-link" data-section="biblioteca" href="#">
+        <span class="nav-icon">📚</span> Biblioteca
+      </a>
+      <a class="nav-link" data-section="hechizos" href="#">
+        <span class="nav-icon">✨</span> Hechizos
+      </a>
+      <a class="nav-link" data-section="tareas" href="#">
+        <span class="nav-icon">📋</span> Prácticas
+      </a>
+      <a class="nav-link" data-section="diario" href="#">
+        <span class="nav-icon">📝</span> Diario
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="sidebar-search-btn" data-search-open>
+        🔍 Buscar <kbd>⌘K</kbd>
+      </button>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main">
+
+    <!-- BOTÓN HAMBURGUESA -->
+    <button class="menu-toggle" id="menu-toggle" aria-label="Menú">☰</button>
+    <!-- BOTÓN BÚSQUEDA HEADER -->
+    <button class="header-search-btn" data-search-open>🔍</button>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: HOY / DASHBOARD
+    ════════════════════════════════════════════ -->
+    <section id="sec-hoy" class="section">
+      <h1 class="section-title">🌙 Hoy</h1>
+      <p id="today-date" class="section-sub"></p>
+
+      <div class="dashboard-grid">
+
+        <!-- Luna -->
+        <div class="card card-gold moon-card">
+          <h3 class="card-title">Fase Lunar</h3>
+          <div id="moon-emoji" class="moon-emoji">🌕</div>
+          <div id="moon-name" class="moon-name"></div>
+          <div id="moon-pct" class="moon-pct text-muted"></div>
+          <div id="moon-angle" class="moon-angle text-muted"></div>
+        </div>
+
+        <!-- Energía del día -->
+        <div class="card">
+          <h3 class="card-title">Energía del Día</h3>
+          <div id="energia-dia" class="energia-dia"></div>
+          <hr class="card-sep">
+          <div id="sun-sign" class="text-muted" style="font-size:.85rem"></div>
+          <div id="moon-sign" class="text-muted" style="font-size:.85rem;margin-top:.25rem"></div>
+        </div>
+
+        <!-- Próximo sabbat -->
+        <div class="card sabbat-card">
+          <h3 class="card-title">Próximo Sabbat</h3>
+          <div id="next-sabbat"></div>
+          <button class="btn-link" onclick="AppModule.goTo('rueda')" style="margin-top:.75rem">
+            Ver Rueda del Año →
+          </button>
+        </div>
+
+        <!-- Hora planetaria actual -->
+        <div class="card card-gold">
+          <h3 class="card-title">Hora Planetaria Actual</h3>
+          <div id="hp-current" class="hp-current"></div>
+        </div>
+
+      </div>
+
+      <!-- Tabla horas del día -->
+      <div class="card" style="margin-top:1.5rem">
+        <h3 class="card-title">⏰ Horas Mágicas de Hoy</h3>
+        <p class="text-muted" style="font-size:.8rem;margin-bottom:1rem">Las primeras 12 horas del día. Cada planeta rige su hora con su energía.</p>
+        <div id="hp-tabla" class="hp-tabla"></div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: CARTA ASTRAL
+    ════════════════════════════════════════════ -->
+    <section id="sec-carta" class="section hidden">
+      <h1 class="section-title">⭐ Carta Astral</h1>
+      <p class="section-sub">Calcula tu carta natal con algoritmos astronómicos reales (Meeus, VSOP87)</p>
+
+      <div class="card">
+        <form id="carta-form" class="carta-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tu nombre</label>
+              <input id="birth-name" type="text" class="form-input" placeholder="Nombre (opcional)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fecha de nacimiento</label>
+              <input id="birth-date" type="date" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hora de nacimiento</label>
+              <input id="birth-time" type="time" class="form-input" value="12:00">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group form-group-wide">
+              <label class="form-label">Ciudad de nacimiento</label>
+              <select id="city-select" class="form-input"></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">&nbsp;</label>
+              <button type="submit" class="btn-gold">✦ Calcular Carta</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Resultado de la carta -->
+      <div id="carta-result" class="hidden">
+        <div id="carta-summary" class="carta-summary-bar"></div>
+
+        <div class="carta-layout">
+          <!-- SVG de la carta -->
+          <div class="carta-svg-panel">
+            <div id="carta-svg-wrap" class="carta-svg-wrap"></div>
+          </div>
+
+          <!-- Panel de información -->
+          <div class="carta-info-panel">
+            <div class="card" style="margin-bottom:1rem">
+              <h3 class="card-title">Posiciones Planetarias</h3>
+              <div id="planeta-tabla" class="planeta-tabla"></div>
+            </div>
+            <div class="card">
+              <h3 class="card-title">Aspectos Principales</h3>
+              <div id="aspectos-lista" class="aspectos-lista"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interpretaciones -->
+        <div class="card" style="margin-top:1.5rem">
+          <h3 class="card-title">🔮 Interpretaciones</h3>
+          <div id="interp-wrap" class="interp-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: RUEDA DEL AÑO
+    ════════════════════════════════════════════ -->
+    <section id="sec-rueda" class="section hidden">
+      <h1 class="section-title">☀️ Rueda del Año</h1>
+      <p class="section-sub">Los 8 sabbats del año. Haz clic en cada sector para ver detalles y sugerencias de ritual.</p>
+
+      <div class="rueda-layout">
+        <!-- SVG Rueda -->
+        <div class="rueda-svg-panel">
+          <div id="rueda-svg-wrap" class="rueda-svg-wrap"></div>
+          <div id="next-sabbat-info" class="rueda-next-info"></div>
+        </div>
+
+        <!-- Detalle sabbat -->
+        <div class="rueda-detail-panel">
+          <div id="sabbat-detail-wrap"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: BIBLIOTECA
+    ════════════════════════════════════════════ -->
+    <section id="sec-biblioteca" class="section hidden">
+      <h1 class="section-title">📚 Biblioteca Mágica</h1>
+
+      <div class="bib-toolbar">
+        <div id="bib-tabs" class="bib-tabs"></div>
+        <div class="bib-search-wrap">
+          <input id="bib-search" class="bib-search" placeholder="🔍 Buscar hierbas, cristales, runas…">
+          <span id="bib-count" class="bib-count text-muted"></span>
+        </div>
+      </div>
+
+      <div id="bib-grid" class="bib-grid"></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: HECHIZOS
+    ════════════════════════════════════════════ -->
+    <section id="sec-hechizos" class="section hidden">
+      <h1 class="section-title">✨ Constructor de Hechizos</h1>
+      <p class="section-sub">Genera un hechizo personalizado eligiendo panteón, deidad y propósito.</p>
+
+      <!-- Paso 1: Panteón -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <h3 class="card-title">1. Elige tu Panteón</h3>
+        <div id="panteon-grid" class="panteon-grid"></div>
+      </div>
+
+      <!-- Paso 2: Deidad -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <h3 class="card-title">2. Deidad (opcional)</h3>
+        <div id="deidad-grid" class="deidad-grid"></div>
+      </div>
+
+      <!-- Paso 3: Propósito -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <h3 class="card-title">3. Propósito del Hechizo</h3>
+        <div id="proposito-grid" class="proposito-grid"></div>
+      </div>
+
+      <div class="hechizo-actions-top">
+        <button id="btn-generar-hechizo" class="btn-gold btn-lg">
+          ✦ Generar Mi Hechizo ✦
+        </button>
+      </div>
+
+      <!-- Resultado -->
+      <div id="hechizo-result" class="card hidden" style="margin-top:1.5rem">
+        <h3 class="card-title">🌟 Tu Hechizo</h3>
+        <div id="hechizo-output"></div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: PRÁCTICAS / TAREAS
+    ════════════════════════════════════════════ -->
+    <section id="sec-tareas" class="section hidden">
+      <h1 class="section-title">📋 Prácticas Mágicas</h1>
+      <p class="section-sub">Registra y sigue tus rituales, prácticas diarias, estudio y más.</p>
+
+      <div class="tareas-layout">
+
+        <!-- Formulario nueva tarea -->
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3 class="card-title">➕ Nueva Práctica</h3>
+          <form id="tarea-form" class="tarea-form">
+            <div class="form-row">
+              <div class="form-group form-group-wide">
+                <input id="tarea-title" class="form-input" placeholder="Nombre de la práctica…" required>
+              </div>
+              <div class="form-group">
+                <select id="tarea-categoria" class="form-input"></select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group form-group-wide">
+                <input id="tarea-desc" class="form-input" placeholder="Descripción (opcional)">
+              </div>
+              <div class="form-group">
+                <select id="tarea-rec" class="form-input">
+                  <option value="unica">Una vez</option>
+                  <option value="diario">Diario</option>
+                  <option value="semanal">Semanal</option>
+                  <option value="mensual">Mensual (Luna)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <input id="tarea-fecha" type="date" class="form-input">
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn-gold">Agregar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Lista de tareas -->
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3 class="card-title">Mi Lista</h3>
+          <div id="tareas-lista"></div>
+        </div>
+
+        <!-- Plantillas -->
+        <div class="card">
+          <h3 class="card-title">📌 Plantillas Rápidas</h3>
+          <p class="text-muted" style="font-size:.85rem;margin-bottom:1rem">Haz clic para agregar a tu lista.</p>
+          <div id="plantillas-grid" class="plantillas-grid"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: DIARIO
+    ════════════════════════════════════════════ -->
+    <section id="sec-diario" class="section hidden">
+      <h1 class="section-title">📝 Diario Privado</h1>
+      <p class="section-sub">Solo tú puedes leer esto. Las entradas se guardan en tu dispositivo.</p>
+
+      <div class="diario-toolbar">
+        <div class="diario-new-btns">
+          <button class="btn-gold-sm" data-new-entry="diario">📖 Entrada</button>
+          <button class="btn-outline-sm" data-new-entry="ritual">🕯️ Ritual</button>
+          <button class="btn-outline-sm" data-new-entry="practica">✨ Práctica</button>
+          <button class="btn-outline-sm" data-new-entry="sueno">💤 Sueño</button>
+        </div>
+        <div class="diario-filter-btns">
+          <button class="btn-filter active" data-filter-type="all">Todos</button>
+          <button class="btn-filter" data-filter-type="diario">📖</button>
+          <button class="btn-filter" data-filter-type="ritual">🕯️</button>
+          <button class="btn-filter" data-filter-type="practica">✨</button>
+          <button class="btn-filter" data-filter-type="sueno">💤</button>
+        </div>
+      </div>
+
+      <div class="diario-layout">
+        <div id="diario-list" class="diario-list"></div>
+        <div id="diario-editor" class="diario-editor"></div>
+      </div>
+    </section>
+
+  </main><!-- /.main -->
+</div><!-- /#app -->
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL BIBLIOTECA
+══════════════════════════════════════════════════════════ -->
+<div id="bib-modal" class="modal-overlay hidden" role="dialog">
+  <div class="modal-box">
+    <div id="bib-modal-content"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     OVERLAY BÚSQUEDA GLOBAL
+══════════════════════════════════════════════════════════ -->
+<div id="search-overlay" class="search-overlay hidden" role="search">
+  <div class="search-box">
+    <div class="search-input-row">
+      <span class="search-icon">🔍</span>
+      <input id="search-input" class="search-input-field"
+             placeholder="Buscar hierbas, cristales, runas, deidades, sabbats…"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="search-close" onclick="BusquedaModule.close()">✕</button>
+    </div>
+    <div id="search-results" class="search-results"></div>
+    <div class="search-hint">↵ seleccionar · Esc cerrar · ⌘K abrir</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════════════════ -->
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+// === app.js ===
+'use strict';
+// ============================================================
+// APP.JS — Controlador principal
+// ============================================================
+const AppModule = (() => {
+
+  const SECTIONS = ['hoy','carta','rueda','biblioteca','hechizos','tareas','diario'];
+  let currentSection = 'hoy';
+  let initialized = {};
+
+  // ── Navegación ────────────────────────────────────────────
+  function goTo(section) {
+    if (!SECTIONS.includes(section)) return;
+    currentSection = section;
+
+    // Ocultar todas las secciones
+    SECTIONS.forEach(s => {
+      document.getElementById(`sec-${s}`)?.classList.add('hidden');
+    });
+    document.getElementById(`sec-${section}`)?.classList.remove('hidden');
+
+    // Actualizar nav
+    document.querySelectorAll('.nav-link').forEach(l => {
+      l.classList.toggle('active', l.dataset.section === section);
+    });
+
+    // Cerrar menú móvil
+    document.getElementById('sidebar')?.classList.remove('open');
+    document.getElementById('sidebar-overlay')?.classList.remove('show');
+
+    // Inicializar sección si no ha sido inicializada
+    if (!initialized[section]) {
+      initialized[section] = true;
+      switch(section) {
+        case 'carta':     CartaModule.init(); break;
+        case 'rueda':     RuedaModule.init(); break;
+        case 'biblioteca':BibliotecaModule.init(); break;
+        case 'hechizos':  HechizosModule.init(); break;
+        case 'tareas':    TareasModule.init(); break;
+        case 'diario':    DiarioModule.init(); break;
+      }
+    }
+
+    // Scroll arriba
+    document.querySelector('.main')?.scrollTo(0, 0);
+  }
+
+  // ── Dashboard (Hoy) ────────────────────────────────────────
+  function initDashboard() {
+    const now  = new Date();
+    const jd   = Astro.jd(now.getFullYear(), now.getMonth()+1, now.getDate(),
+                           now.getHours(), now.getMinutes());
+
+    // Fase lunar
+    const moon = Astro.moonPhase(jd);
+    document.getElementById('moon-emoji').textContent   = moon.emoji;
+    document.getElementById('moon-name').textContent    = moon.name;
+    document.getElementById('moon-pct').textContent     = moon.pct + '% iluminada';
+    document.getElementById('moon-angle').textContent   = Math.round(moon.angle) + '° del ciclo';
+
+    // Fecha
+    const dateStr = now.toLocaleDateString('es', {
+      weekday:'long', day:'numeric', month:'long', year:'numeric'
+    });
+    const el = document.getElementById('today-date');
+    if (el) el.textContent = dateStr;
+
+    // Sol y luna del día
+    const sunLon = Astro.sunLon(Astro.T(jd));
+    const sunSign = Astro.ZODIAC.find(z => Math.floor(Astro.norm(sunLon)/30) === Astro.ZODIAC.indexOf(z));
+    const moonLon = Astro.moonLon(Astro.T(jd));
+    const moonSign = Astro.ZODIAC.find((_,i) => i === Math.floor(Astro.norm(moonLon)/30));
+    if (sunSign)  { document.getElementById('sun-sign').textContent  = `☉ Sol en ${sunSign.sym} ${sunSign.name}`; }
+    if (moonSign) { document.getElementById('moon-sign').textContent = `☽ Luna en ${moonSign.sym} ${moonSign.name}`; }
+
+    // Próximo sabbat
+    const next = Astro.nextSabbat(now);
+    if (next) {
+      const days = Astro.daysUntil(next.date, now);
+      const info = RuedaModule?.SABBAT_INFO?.[next.name] || {};
+      const el   = document.getElementById('next-sabbat');
+      if (el) el.innerHTML = `${info.emoji||'☽'} <strong>${next.name}</strong> — en <span class="text-gold">${days} días</span>`;
+    }
+
+    // Horas planetarias
+    initHorasPlaneтarias(now, jd);
+
+    // Energía del día
+    initEnergiaDia(now);
+  }
+
+  function initHorasPlaneтarias(now, jd) {
+    const lat = -0.23; // Ecuador por defecto; en la carta astral el usuario puede personalizar
+    const horas = Astro.planetaryHours(now, lat);
+    if (!horas) return;
+
+    const current = Astro.currentHP(horas.hours, now.getHours() + now.getMinutes()/60);
+
+    // Hora actual
+    const curEl = document.getElementById('hp-current');
+    if (curEl && current) {
+      curEl.innerHTML = `
+        <span class="hp-planet-sym" style="color:${current.color}">${current.sym}</span>
+        <div>
+          <div class="hp-planet-name">${current.planet}</div>
+          <div class="hp-magic">${current.magic}</div>
+          <div class="hp-time">${formatHHMM(current.st)} – ${formatHHMM(current.en)}</div>
+        </div>`;
+    }
+
+    // Tabla de horas del día
+    const tbl = document.getElementById('hp-tabla');
+    if (tbl) {
+      tbl.innerHTML = horas.hours.slice(0,12).map((h,i) => {
+        const isNow = current && h.h === current.h;
+        return `
+          <div class="hp-row${isNow?' hp-now':''}">
+            <span class="hp-num">${h.h}</span>
+            <span class="hp-sym" style="color:${h.color}">${h.sym}</span>
+            <span class="hp-pname">${h.planet}</span>
+            <span class="hp-pmag">${h.magic}</span>
+            <span class="hp-ptime">${formatHHMM(h.st)}</span>
+          </div>`;
+      }).join('');
+    }
+  }
+
+  const ENERGIA_DIA = {
+    0: { name:'Domingo', planeta:'Sol', emoji:'☀️', energia:'Poder, éxito, claridad, creatividad', color:'#FFD700' },
+    1: { name:'Lunes',   planeta:'Luna', emoji:'🌙', energia:'Intuición, sueños, magia, emociones', color:'#C0C0C0' },
+    2: { name:'Martes',  planeta:'Marte', emoji:'🔴', energia:'Fuerza, acción, protección, coraje', color:'#8B0000' },
+    3: { name:'Miércoles',planeta:'Mercurio',emoji:'💜',energia:'Comunicación, estudio, magia, viajes', color:'#8A2BE2' },
+    4: { name:'Jueves',  planeta:'Júpiter',emoji:'💛',energia:'Abundancia, expansión, suerte, justicia', color:'#B8860B' },
+    5: { name:'Viernes', planeta:'Venus', emoji:'💕', energia:'Amor, belleza, placer, armonía', color:'#FF69B4' },
+    6: { name:'Sábado',  planeta:'Saturno',emoji:'🖤',energia:'Protección, destierro, límites, magia oscura', color:'#696969' },
+  };
+
+  function initEnergiaDia(now) {
+    const dia = ENERGIA_DIA[now.getDay()];
+    if (!dia) return;
+    const el = document.getElementById('energia-dia');
+    if (el) el.innerHTML = `
+      <span style="font-size:1.5rem">${dia.emoji}</span>
+      <div>
+        <strong style="color:${dia.color}">${dia.planeta}</strong>
+        <span class="text-muted"> · ${dia.energia}</span>
+      </div>`;
+  }
+
+  function formatHHMM(h) {
+    if (h == null) return '';
+    const hh = Math.floor(h);
+    const mm = Math.round((h - hh) * 60);
+    return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+  }
+
+  // ── Landing ────────────────────────────────────────────────
+  function initLanding() {
+    const btn = document.getElementById('btn-enter');
+    if (btn) {
+      btn.addEventListener('click', enterApp);
+    }
+    const landing = document.getElementById('landing');
+    if (landing) {
+      landing.addEventListener('click', e => {
+        if (e.target === landing) enterApp();
+      });
+    }
+  }
+
+  function enterApp() {
+    const landing = document.getElementById('landing');
+    if (landing) {
+      landing.style.opacity = '0';
+      landing.style.transition = 'opacity .6s';
+      setTimeout(() => landing.classList.add('hidden'), 600);
+    }
+  }
+
+  // ── Menú móvil ────────────────────────────────────────────
+  function initMobileMenu() {
+    const toggle  = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    toggle?.addEventListener('click', () => {
+      sidebar?.classList.toggle('open');
+      overlay?.classList.toggle('show');
+    });
+    overlay?.addEventListener('click', () => {
+      sidebar?.classList.remove('open');
+      overlay?.classList.remove('show');
+    });
+  }
+
+  // ── Nav links ─────────────────────────────────────────────
+  function initNav() {
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        goTo(link.dataset.section);
+      });
+    });
+  }
+
+  // ── Inicializar ───────────────────────────────────────────
+  function init() {
+    initLanding();
+    initMobileMenu();
+    initNav();
+    BusquedaModule.init();
+
+    // Dashboard se inicializa de inmediato
+    initialized['hoy'] = true;
+    initDashboard();
+
+    // Mostrar sección por defecto
+    SECTIONS.forEach(s => {
+      if (s !== 'hoy') document.getElementById(`sec-${s}`)?.classList.add('hidden');
+    });
+  }
+
+  return { init, goTo };
+})();
+
+// ── Arranque ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  AppModule.init();
+});
+
+// === astro.js ===
+'use strict';
+// ============================================================
+// ASTRO.JS — Cálculos astronómicos precisos
+// Jean Meeus "Astronomical Algorithms" 2ª ed.
+// ============================================================
+const Astro = (() => {
+  const DEG = Math.PI / 180;
+  const RAD = 180 / Math.PI;
+
+  const ZODIAC = [
+    { name:'Aries',       sym:'♈', el:'fuego',  mode:'cardinal', ruler:'Marte',          start:0   },
+    { name:'Tauro',       sym:'♉', el:'tierra', mode:'fijo',     ruler:'Venus',           start:30  },
+    { name:'Géminis',     sym:'♊', el:'aire',   mode:'mutable',  ruler:'Mercurio',        start:60  },
+    { name:'Cáncer',      sym:'♋', el:'agua',   mode:'cardinal', ruler:'Luna',            start:90  },
+    { name:'Leo',         sym:'♌', el:'fuego',  mode:'fijo',     ruler:'Sol',             start:120 },
+    { name:'Virgo',       sym:'♍', el:'tierra', mode:'mutable',  ruler:'Mercurio',        start:150 },
+    { name:'Libra',       sym:'♎', el:'aire',   mode:'cardinal', ruler:'Venus',           start:180 },
+    { name:'Escorpio',    sym:'♏', el:'agua',   mode:'fijo',     ruler:'Marte/Plutón',   start:210 },
+    { name:'Sagitario',   sym:'♐', el:'fuego',  mode:'mutable',  ruler:'Júpiter',        start:240 },
+    { name:'Capricornio', sym:'♑', el:'tierra', mode:'cardinal', ruler:'Saturno',         start:270 },
+    { name:'Acuario',     sym:'♒', el:'aire',   mode:'fijo',     ruler:'Urano',           start:300 },
+    { name:'Piscis',      sym:'♓', el:'agua',   mode:'mutable',  ruler:'Júpiter/Neptuno',start:330 },
+  ];
+
+  const EL_COLORS = { fuego:'#FF6B35', tierra:'#7B9E3A', aire:'#A8D8EA', agua:'#4A90D9' };
+  const EL_EMOJI  = { fuego:'🔥', tierra:'🌍', aire:'💨', agua:'💧' };
+
+  const PLANETS = {
+    SUN:     { name:'Sol',      sym:'☉', color:'#FFD700' },
+    MOON:    { name:'Luna',     sym:'☽', color:'#C0C0C0' },
+    MERCURY: { name:'Mercurio', sym:'☿', color:'#B5B5B5' },
+    VENUS:   { name:'Venus',    sym:'♀', color:'#FFB6C1' },
+    MARS:    { name:'Marte',    sym:'♂', color:'#FF6347' },
+    JUPITER: { name:'Júpiter',  sym:'♃', color:'#DEB887' },
+    SATURN:  { name:'Saturno',  sym:'♄', color:'#8B7355' },
+    URANUS:  { name:'Urano',    sym:'♅', color:'#7EC8E3' },
+    NEPTUNE: { name:'Neptuno',  sym:'♆', color:'#4169E1' },
+    PLUTO:   { name:'Plutón',   sym:'♇', color:'#8B4513' },
+    LILITH:  { name:'Lilith',   sym:'⚸', color:'#800020' },
+    NNODE:   { name:'Nodo ☊',  sym:'☊', color:'#DAA520' },
+  };
+
+  function norm(a){ return ((a%360)+360)%360; }
+
+  function jd(yr,mo,dy,hr=12,mn=0){
+    const h=hr+mn/60; let y=yr,m=mo;
+    if(m<=2){y--;m+=12;}
+    const A=Math.floor(y/100), B=2-A+Math.floor(A/4);
+    return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+dy+h/24+B-1524.5;
+  }
+  function T(jday){ return (jday-2451545)/36525; }
+
+  function sunLon(t){
+    const L0=norm(280.46646+36000.76983*t+0.0003032*t*t);
+    const M=norm(357.52911+35999.05029*t-0.0001537*t*t);
+    const Mrad=M*DEG;
+    const C=(1.914602-0.004817*t-0.000014*t*t)*Math.sin(Mrad)
+           +(0.019993-0.000101*t)*Math.sin(2*Mrad)
+           +0.000289*Math.sin(3*Mrad);
+    const omega=125.04-1934.136*t;
+    return norm(L0+C-0.00569-0.00478*Math.sin(omega*DEG));
+  }
+
+  function moonLon(t){
+    const L0=norm(218.3165+481267.8813*t);
+    const M=norm(357.5291+35999.0503*t);
+    const Mp=norm(134.9634+477198.8676*t);
+    const D=norm(297.8502+445267.1115*t);
+    const F=norm(93.2721+483202.0175*t);
+    const [Mrad,Mprad,Drad,Frad]=[M,Mp,D,F].map(x=>x*DEG);
+    const sl=6288774*Math.sin(Mprad)
+            +1274027*Math.sin(2*Drad-Mprad)
+            +658314*Math.sin(2*Drad)
+            +213618*Math.sin(2*Mprad)
+            -185116*Math.sin(Mrad)
+            -114332*Math.sin(2*Frad)
+            +58793*Math.sin(2*Drad-2*Mprad)
+            +57066*Math.sin(2*Drad-Mrad-Mprad)
+            +53322*Math.sin(2*Drad+Mprad)
+            +45758*Math.sin(2*Drad-Mrad)
+            -40923*Math.sin(Mrad-Mprad)
+            -34720*Math.sin(Drad)
+            -30383*Math.sin(Mrad+Mprad)
+            +15327*Math.sin(2*Drad-2*Frad)
+            +10980*Math.sin(Mprad-2*Frad)
+            +10675*Math.sin(4*Drad-Mprad)
+            +10034*Math.sin(3*Mprad)
+            +8548*Math.sin(4*Drad-2*Mprad);
+    return norm(L0+sl/1000000);
+  }
+
+  function planetLon(t, p){
+    const tab = {
+      MERCURY: [252.251,149472.6746, 0],
+      VENUS:   [181.979, 58517.8158, 0],
+      MARS:    [355.433, 19140.2993, 10.6912],
+      JUPITER: [ 34.351,  3034.9057,  5.5549],
+      SATURN:  [ 50.077,  1222.1138,  6.3585],
+      URANUS:  [314.055,   428.4759,  5.3042],
+      NEPTUNE: [304.348,   218.4600,  1.0302],
+      PLUTO:   [238.929,   144.9600,  0],
+    };
+    const [L0,n,eqC] = tab[p]||[0,0,0];
+    const L=norm(L0+n*t);
+    if(!eqC) return L;
+    const M=norm(L0+n*t-280);
+    return norm(L+eqC*Math.sin(M*DEG)+0.2*Math.sin(2*M*DEG));
+  }
+
+  function lilith(t){ return norm(83.3532+40690.1360*t); }
+  function nnode(t) { return norm(125.0445-1934.1363*t); }
+
+  function obliquity(t){ return 23.439291111-0.013004167*t; }
+
+  function gmst(jday){
+    const t0=T(jday);
+    return norm(280.46061837+360.98564736629*(jday-2451545)+0.000387933*t0*t0);
+  }
+
+  function ascendant(jday, lat, lon){
+    const t0=T(jday);
+    const eps=obliquity(t0)*DEG;
+    const LST=norm(gmst(jday)+lon);
+    const RAMC=LST*DEG;
+    const latR=lat*DEG;
+    const y=-Math.cos(RAMC);
+    const x=Math.sin(RAMC)*Math.cos(eps)+Math.tan(latR)*Math.sin(eps);
+    let asc=Math.atan2(y,x)*RAD;
+    if(x<0) asc+=180;
+    return norm(asc);
+  }
+
+  function mc(jday, lon){
+    const t0=T(jday);
+    const eps=obliquity(t0)*DEG;
+    const LST=norm(gmst(jday)+lon);
+    const RAMC=LST*DEG;
+    return norm(Math.atan2(Math.sin(RAMC),Math.cos(RAMC)*Math.cos(eps))*RAD);
+  }
+
+  function wholeSignHouses(asc){
+    const start=Math.floor(asc/30)*30;
+    return Array.from({length:12},(_,i)=>norm(start+i*30));
+  }
+
+  function moonPhase(jday){
+    const t0=T(jday);
+    const angle=norm(moonLon(t0)-sunLon(t0));
+    const pct=angle/360;
+    if(angle<22.5)  return {name:'Luna Nueva',       emoji:'🌑',pct:0,angle};
+    if(angle<67.5)  return {name:'Luna Creciente',   emoji:'🌒',pct:pct,angle};
+    if(angle<112.5) return {name:'Cuarto Creciente', emoji:'🌓',pct:pct,angle};
+    if(angle<157.5) return {name:'Gibosa Creciente', emoji:'🌔',pct:pct,angle};
+    if(angle<202.5) return {name:'Luna Llena',       emoji:'🌕',pct:1,angle};
+    if(angle<247.5) return {name:'Gibosa Menguante', emoji:'🌖',pct:pct,angle};
+    if(angle<292.5) return {name:'Cuarto Menguante', emoji:'🌗',pct:pct,angle};
+    if(angle<337.5) return {name:'Luna Balsámica',   emoji:'🌘',pct:pct,angle};
+    return {name:'Luna Nueva',emoji:'🌑',pct:0,angle};
+  }
+
+  function chartData(yr,mo,dy,hr,mn,lat,lon){
+    const jday=jd(yr,mo,dy,hr,mn);
+    const t0=T(jday);
+    const pos={
+      SUN:sunLon(t0), MOON:moonLon(t0),
+      MERCURY:planetLon(t0,'MERCURY'), VENUS:planetLon(t0,'VENUS'),
+      MARS:planetLon(t0,'MARS'),       JUPITER:planetLon(t0,'JUPITER'),
+      SATURN:planetLon(t0,'SATURN'),   URANUS:planetLon(t0,'URANUS'),
+      NEPTUNE:planetLon(t0,'NEPTUNE'), PLUTO:planetLon(t0,'PLUTO'),
+      LILITH:lilith(t0), NNODE:nnode(t0),
+    };
+    const asc=ascendant(jday,lat,lon);
+    const MC=mc(jday,lon);
+    const houses=wholeSignHouses(asc);
+    const signs={};
+    for(const [k,v] of Object.entries(pos)){
+      const idx=Math.floor(v/30)%12;
+      const deg=v%30;
+      signs[k]={lon:v,sign:ZODIAC[idx],deg:Math.floor(deg),min:Math.floor((deg%1)*60),info:PLANETS[k]};
+    }
+    return {pos,signs,asc,MC,houses,ascSign:ZODIAC[Math.floor(asc/30)%12],mcSign:ZODIAC[Math.floor(MC/30)%12]};
+  }
+
+  const ASPECTS=[
+    {name:'Conjunción',sym:'☌',angle:0,  orb:8, color:'#FFD700'},
+    {name:'Sextil',    sym:'⚹',angle:60, orb:6, color:'#7EC8E3'},
+    {name:'Cuadratura',sym:'□',angle:90, orb:8, color:'#FF4500'},
+    {name:'Trígono',   sym:'△',angle:120,orb:8, color:'#4CAF50'},
+    {name:'Oposición', sym:'☍',angle:180,orb:8, color:'#E91E63'},
+  ];
+
+  function calcAspects(pos){
+    const res=[]; const keys=Object.keys(pos);
+    for(let i=0;i<keys.length-1;i++){
+      for(let j=i+1;j<keys.length;j++){
+        let diff=Math.abs(pos[keys[i]]-pos[keys[j]]);
+        if(diff>180) diff=360-diff;
+        for(const asp of ASPECTS){
+          if(Math.abs(diff-asp.angle)<=asp.orb){
+            res.push({p1:keys[i],p2:keys[j],asp,exact:Math.abs(diff-asp.angle)});
+            break;
+          }
+        }
+      }
+    }
+    return res.sort((a,b)=>a.exact-b.exact);
+  }
+
+  // Sabbats 2026-2027
+  const SABBATS=[
+    {name:'Samhain',     date:'2026-11-01',emoji:'🎃',el:'tierra',
+     desc:'La noche más oscura. El velo entre mundos se adelgaza. Honra a tus ancestros y lo que quieres soltar.',
+     ritual:'Altar de ancestros con fotos y ofrendas. Velas negras y blancas. Meditación de tránsito.'},
+    {name:'Yule',        date:'2026-12-21',emoji:'☀️',el:'fuego',
+     desc:'Solsticio de Invierno. El sol renace desde la oscuridad. La luz comienza a crecer.',
+     ritual:'Encender velas al amanecer. Círculo de manifestación para el año nuevo. Árbol de deseos.'},
+    {name:'Imbolc',      date:'2027-02-01',emoji:'🕯️',el:'fuego',
+     desc:'Brigid despierta la tierra. Las primeras semillas de intención se plantan bajo la nieve.',
+     ritual:'Limpieza profunda del altar. Dedicación a un proyecto nuevo. Velas blancas o doradas.'},
+    {name:'Ostara',      date:'2027-03-20',emoji:'🌸',el:'aire',
+     desc:'Equinoccio de Primavera. Equilibrio y renacimiento. La tierra florece.',
+     ritual:'Planta semillas reales con intenciones escritas. Ritual de equilibrio. Ofrendas florales.'},
+    {name:'Beltane',     date:'2027-05-01',emoji:'🔥',el:'fuego',
+     desc:'El fuego de la vida. Celebración del deseo creativo y la abundancia que germina.',
+     ritual:'Fuego de Beltane. Danza. Ritual de amor y fertilidad (en sus múltiples formas).'},
+    {name:'Litha',       date:'2027-06-21',emoji:'🌞',el:'fuego',
+     desc:'Solsticio de Verano. El sol en su cénit. Poder solar máximo antes del descenso.',
+     ritual:'Vigilia solar. Ritual al mediodía. Hierbas mágicas cosechadas en el solsticio.'},
+    {name:'Lughnasadh',  date:'2027-08-01',emoji:'🌾',el:'tierra',
+     desc:'Primera cosecha. El sacrificio que da frutos. Gratitud por lo que creaste.',
+     ritual:'Ofrenda de los primeros frutos. Ritual de gratitud. Pan sagrado hecho a mano.'},
+    {name:'Mabon',       date:'2027-09-22',emoji:'🍂',el:'tierra',
+     desc:'Equinoccio de Otoño. Balance final antes del descenso. Segunda cosecha.',
+     ritual:'Inventario de lo cosechado en el año. Equilibrio en el altar. Preparación para el invierno.'},
+  ];
+
+  function nextSabbat(now=new Date()){
+    const today=now.toISOString().split('T')[0];
+    return SABBATS.find(s=>s.date>=today)||SABBATS[0];
+  }
+  function daysUntil(ds,now=new Date()){
+    return Math.ceil((new Date(ds+'T00:00:00')- now)/(864e5));
+  }
+
+  // Horas planetarias
+  const HP_ORDER=['Saturno','Júpiter','Marte','Sol','Venus','Mercurio','Luna'];
+  const HP_DOW={0:6,1:3,2:4,3:1,4:5,5:2,6:0}; // dom=0
+  const HP_MAGIC={
+    'Sol':      {color:'#FFD700',magic:['éxito','prosperidad','liderazgo'],    sym:'☉'},
+    'Luna':     {color:'#C0C0C0',magic:['intuición','sueños','emociones'],     sym:'☽'},
+    'Marte':    {color:'#FF4500',magic:['coraje','fuerza','protección'],       sym:'♂'},
+    'Mercurio': {color:'#9370DB',magic:['comunicación','viajes','negocios'],   sym:'☿'},
+    'Júpiter':  {color:'#1E90FF',magic:['abundancia','expansión','suerte'],    sym:'♃'},
+    'Venus':    {color:'#FF69B4',magic:['amor','belleza','armonía'],           sym:'♀'},
+    'Saturno':  {color:'#708090',magic:['karma','límites','disciplina'],       sym:'♄'},
+  };
+
+  function planetaryHours(date,lat){
+    const latR=lat*DEG;
+    // Hora del amanecer/atardecer aproximada
+    const dec=23.45*Math.sin((284+360*(date.getMonth()*30+date.getDate())/365)*DEG)*DEG;
+    const ha=Math.acos(-Math.tan(latR)*Math.tan(dec))*RAD/15;
+    const noon=12;
+    const sr=noon-ha, ss=noon+ha;
+    const dLen=ss-sr, nLen=24-dLen;
+    const idx=HP_DOW[date.getDay()];
+    const hours=[];
+    for(let h=0;h<24;h++){
+      const pIdx=(idx+h)%7;
+      const planet=HP_ORDER[pIdx];
+      let st,en;
+      if(h<12){st=sr+h*dLen/12;en=sr+(h+1)*dLen/12;}
+      else{const nh=h-12;st=ss+nh*nLen/12;en=ss+(nh+1)*nLen/12;}
+      hours.push({h:h+1,planet,st,en,...HP_MAGIC[planet]});
+    }
+    return {hours,sunrise:sr,sunset:ss};
+  }
+
+  function currentHP(hours,nowH){
+    return hours.find(h=>nowH>=h.st&&nowH<h.en)||hours[hours.length-1];
+  }
+
+  return {
+    ZODIAC,EL_COLORS,EL_EMOJI,PLANETS,ASPECTS,SABBATS,HP_MAGIC,
+    jd,T,norm,sunLon,moonLon,planetLon,moonPhase,
+    chartData,calcAspects,nextSabbat,daysUntil,
+    planetaryHours,currentHP,
+    sign:(lon)=>ZODIAC[Math.floor(norm(lon)/30)%12],
+  };
+})();
+
+// === biblioteca-data.js ===
+'use strict';
+// ============================================================
+// BIBLIOTECA-DATA.JS — Hierbas, cristales, runas
+// ============================================================
+const BibData = {
+  hierbas: [
+    { name:'Albahaca', element:'fuego', planeta:'Marte', signo:'Escorpio',
+      magic:['prosperidad','amor','protección','exorcismo'],
+      uses:'Aceite, baños, incienso, macetas en el hogar.',
+      notes:'Colócala en la entrada para atraer prosperidad. En agua de piso para limpieza.',
+      caution:'',emoji:'🌿' },
+    { name:'Romero', element:'fuego', planeta:'Sol', signo:'Leo',
+      magic:['purificación','protección','memoria','amor'],
+      uses:'Sahumerio, baños, aceite, hechizos de amor y memoria.',
+      notes:'Reemplaza al sándalo en muchos rituales. Excelente para consagrar herramientas.',
+      caution:'',emoji:'🌿' },
+    { name:'Lavanda', element:'aire', planeta:'Mercurio', signo:'Virgo',
+      magic:['amor','paz','sueños','purificación'],
+      uses:'Sachets de sueño, aceite relajante, baños de pureza.',
+      notes:'Colocada bajo la almohada atrae sueños proféticos y calma la mente.',
+      caution:'',emoji:'💜' },
+    { name:'Menta', element:'aire', planeta:'Venus', signo:'Géminis',
+      magic:['prosperidad','viajes','salud','claridad'],
+      uses:'Infusión, aceite, bolsas de dinero, rituales de viaje.',
+      notes:'Hierba del viajero. Llévala en el bolsillo para atraer dinero y proteger en viajes.',
+      caution:'No usar internamente en exceso.',emoji:'🌱' },
+    { name:'Salvia', element:'aire', planeta:'Júpiter', signo:'Sagitario',
+      magic:['purificación','sabiduría','protección','inmortalidad'],
+      uses:'Sahumerio (smudge), infusión, baños.',
+      notes:'La hierba purificadora por excelencia. Limpia espacios, objetos y personas.',
+      caution:'No usar en embarazo.',emoji:'🌿' },
+    { name:'Cedro', element:'fuego', planeta:'Sol', signo:'Leo',
+      magic:['purificación','protección','prosperidad','curación'],
+      uses:'Chips de cedro, aceite, sahumerio.',
+      notes:'Uno de los árboles sagrados más antiguos. Excelente para altares y protección del hogar.',
+      caution:'',emoji:'🌲' },
+    { name:'Rosa', element:'agua', planeta:'Venus', signo:'Libra',
+      magic:['amor','belleza','clarividencia','paz'],
+      uses:'Pétalos en baños, aceite esencial, hechizos de amor.',
+      notes:'Los pétalos rojos: amor romántico. Blancos: amor puro y espiritual. Rosa: autoamor.',
+      caution:'',emoji:'🌹' },
+    { name:'Canela', element:'fuego', planeta:'Sol', signo:'Aries',
+      magic:['éxito','poder','amor','prosperidad','velocidad'],
+      uses:'Polvo, aceite, varitas, dinero en cartera.',
+      notes:'Acelera cualquier hechizo. Añádela a tus rituales para potenciar resultados.',
+      caution:'No aplicar directamente sobre piel sensible.',emoji:'🟤' },
+    { name:'Jazmín', element:'agua', planeta:'Luna', signo:'Cáncer',
+      magic:['amor','sueños proféticos','dinero','intuición'],
+      uses:'Aceite, té de flores, ritual de luna llena.',
+      notes:'Sagrada de la Luna. Sus flores son ofrendas perfectas en rituales lunares.',
+      caution:'',emoji:'🌸' },
+    { name:'Muérdago', element:'aire', planeta:'Sol', signo:'Sagitario',
+      magic:['protección','fertilidad','amor','salud','caza de suerte'],
+      uses:'Colgar sobre puertas, amuletos, bolsas de suerte.',
+      notes:'Sagrado en la tradición druídica. Recolectarlo con hoz de oro en solsticio de invierno.',
+      caution:'Planta tóxica si se ingiere.',emoji:'🌿' },
+    { name:'Copal', element:'fuego', planeta:'Sol', signo:'Leo',
+      magic:['purificación','conexión con dioses','ofrendas','limpias'],
+      uses:'Sahumerio en ceremonias, ofrendas en altares.',
+      notes:'Sagrado en tradiciones mesoamericanas. Ideal para día de muertos y conexión ancestral.',
+      caution:'',emoji:'🤍' },
+    { name:'Tabaco', element:'fuego', planeta:'Marte', signo:'Escorpio',
+      magic:['ofrendas','conexión con espíritus','protección'],
+      uses:'Ofrenda (no para consumo), siembra ritual.',
+      notes:'En muchas tradiciones indígenas americanas es una ofrenda sagrada a los espíritus y la tierra.',
+      caution:'No para consumo en hechizos. Uso ritual únicamente.',emoji:'🌿' },
+    { name:'Ruda', element:'fuego', planeta:'Marte', signo:'Escorpio',
+      magic:['protección fuerte','romper hechizos','exorcismo','salud'],
+      uses:'Ramito fresco en casa, baños de despojos, limpias.',
+      notes:'Hierba protectora por excelencia en América Latina. Coloca en la entrada o llévala encima.',
+      caution:'No usar en embarazo.',emoji:'🌿' },
+    { name:'Flor de Jamaica', element:'agua', planeta:'Venus', signo:'Libra',
+      magic:['amor','belleza','protección femenina','clarividencia'],
+      uses:'Infusión, baños, hechizos de amor femenino.',
+      notes:'Planta de la tradición latinoamericana. Sus flores rojas son ofrendas de amor.',
+      caution:'',emoji:'🌺' },
+    { name:'Palo Santo', element:'aire', planeta:'Luna', signo:'Piscis',
+      magic:['purificación profunda','paz','inspiración','conexión espiritual'],
+      uses:'Sahumerio, aceite, ritual de limpieza.',
+      notes:'Nativo de América del Sur. Su humo sagrado limpia y atrae buena energía.',
+      caution:'Usar con responsabilidad, es especie en estudio de conservación.',emoji:'🪵' },
+  ],
+
+  cristales: [
+    { name:'Amatista', color:'#9B59B6', chakra:'Corona', element:'aire',
+      magic:['intuición','protección','sueños','espiritual'],
+      uses:'Colocar bajo almohada, meditar, llevar al tercer ojo.',
+      notes:'Piedra del camino espiritual. Protege contra energías negativas y amplifica intuición.',emoji:'💜' },
+    { name:'Cuarzo Claro', color:'#FFFFFF', chakra:'Todos', element:'todos',
+      magic:['amplificación','claridad','programación','curación'],
+      uses:'Programar con intención, amplificar otros cristales, altar.',
+      notes:'El maestro amplificador. Programa con tu intención tocándolo y visualizando.',emoji:'🔮' },
+    { name:'Obsidiana Negra', color:'#1A1A1A', chakra:'Raíz', element:'tierra',
+      magic:['protección fuerte','verdad','sombra','anclaje'],
+      uses:'Espejo de obsidiana, llevar encima, límite del altar.',
+      notes:'Piedra de la verdad sin filtros. Muestra lo que necesitas ver, no lo que quieres.',emoji:'⚫' },
+    { name:'Cuarzo Rosa', color:'#FFB6C1', chakra:'Corazón', element:'agua',
+      magic:['amor propio','compasión','sanación emocional','paz'],
+      uses:'Baños de amor, colocar en habitación, meditar con el corazón.',
+      notes:'La piedra del amor incondicional. Especialmente para sanar el amor hacia uno mismo.',emoji:'💗' },
+    { name:'Citrino', color:'#FFA500', chakra:'Plexo Solar', element:'fuego',
+      magic:['abundancia','alegría','energía','manifestación'],
+      uses:'Colocar en billetera, altar de prosperidad, llevar en bolsillo.',
+      notes:'Piedra del sol. No absorbe energía negativa, la transforma. No necesita limpieza frecuente.',emoji:'🌟' },
+    { name:'Labradorita', color:'#2E4482', chakra:'Tercer Ojo', element:'agua',
+      magic:['magia','protección','intuición','viajes astrales'],
+      uses:'Meditar, colocar en altar, llevar en rituales nocturnos.',
+      notes:'La piedra del mago. Crea un escudo energético y amplifica habilidades psíquicas.',emoji:'🔵' },
+    { name:'Malaquita', color:'#1ABC9C', chakra:'Corazón', element:'tierra',
+      magic:['transformación','protección','éxito en negocios','claridad emocional'],
+      uses:'No en agua. Meditar con transformación, llevar en trabajo.',
+      notes:'Espejo del alma. Absorbe energías negativas activamente. Limpiar seguido.',emoji:'💚' },
+    { name:'Turmalina Negra', color:'#1A1A2E', chakra:'Raíz', element:'tierra',
+      magic:['protección absoluta','anclaje','escudo energético'],
+      uses:'Colocar en esquinas del hogar, llevar al salir.',
+      notes:'La protectora número uno. Crea un escudo impenetrable contra energías oscuras.',emoji:'⚫' },
+    { name:'Selenita', color:'#F5F5F5', chakra:'Corona', element:'aire',
+      magic:['limpieza','conexión angélica','claridad mental','paz'],
+      uses:'Limpiar otros cristales poniéndolos sobre ella, altar de paz.',
+      notes:'No la pongas en agua, se disuelve. Limpia automáticamente otros cristales a su lado.',emoji:'🤍' },
+    { name:'Cornalina', color:'#E05C00', chakra:'Sacro', element:'fuego',
+      magic:['valentía','creatividad','motivación','acción'],
+      uses:'Llevar encima en momentos de duda, meditar en acción.',
+      notes:'La piedra del guerrero. Te da impulso para actuar cuando el miedo paraliza.',emoji:'🔴' },
+    { name:'Lápis Lázuli', color:'#003580', chakra:'Garganta', element:'agua',
+      magic:['verdad','sabiduría','comunicación','intuición'],
+      uses:'Colocar en garganta al meditar, escribir ritual.',
+      notes:'Piedra de los faraones y adivinos. Abre la voz para decir la propia verdad.',emoji:'💙' },
+    { name:'Ojo de Tigre', color:'#B5651D', chakra:'Plexo Solar', element:'fuego',
+      magic:['protección','claridad','confianza','equilibrio'],
+      uses:'Llevar en entrevistas, rituales de confianza, amuleto.',
+      notes:'Integra luz y sombra. Protege y ayuda a tomar decisiones con claridad.',emoji:'🟤' },
+  ],
+
+  runas: [
+    { name:'Fehu', symbol:'ᚠ', meaning:'Riqueza, ganado, suerte', energy:'yang',
+      magic:'Prosperidad, nuevos comienzos económicos, fertilidad de proyectos.',
+      reverse:'Pérdida, estancamiento económico, bloqueo de flujo.',
+      num:1 },
+    { name:'Uruz', symbol:'ᚢ', meaning:'Toro, fuerza primal', energy:'yang',
+      magic:'Fuerza física, salud, coraje ante desafíos, poder instintivo.',
+      reverse:'Fuerza no canalizada, debilidad, enfermedad.',num:2 },
+    { name:'Thurisaz', symbol:'ᚦ', meaning:'Thor, gigante, umbral', energy:'yang',
+      magic:'Protección activa, limpiar caminos, hacer espacio con fuerza.',
+      reverse:'Peligro, impulsividad, bloqueo.',num:3 },
+    { name:'Ansuz', symbol:'ᚨ', meaning:'Odin, boca, mensaje divino', energy:'yang',
+      magic:'Comunicación inspirada, mensajes del universo, sabiduría ancestral.',
+      reverse:'Bloqueo comunicativo, mentiras, mal consejo.',num:4 },
+    { name:'Raidho', symbol:'ᚱ', meaning:'Rueda, viaje, ritmo', energy:'yang',
+      magic:'Viajes físicos y espirituales, encontrar el ritmo correcto, caminos.',
+      reverse:'Viaje perturbado, falta de dirección.',num:5 },
+    { name:'Kenaz', symbol:'ᚲ', meaning:'Antorcha, conocimiento, llama', energy:'yang',
+      magic:'Iluminación, creatividad, aprendizaje, transformación por el fuego.',
+      reverse:'Oscuridad, fin de relación, bloqueo creativo.',num:6 },
+    { name:'Gebo', symbol:'ᚷ', meaning:'Regalo, intercambio, unión', energy:'neutro',
+      magic:'Alianzas, amor, generosidad, equilibrio en dar y recibir.',
+      reverse:'No reversible. Desequilibrio en dones.',num:7 },
+    { name:'Wunjo', symbol:'ᚹ', meaning:'Alegría, tribu, deseo cumplido', energy:'yang',
+      magic:'Felicidad, armonía en grupos, deseos que se cumplen.',
+      reverse:'Tristeza, disarmonía, deseo bloqueado.',num:8 },
+    { name:'Hagalaz', symbol:'ᚺ', meaning:'Granizo, caos necesario', energy:'yang',
+      magic:'Transformación radical, romper lo que no sirve, apertura forzada.',
+      reverse:'No reversible. Lección difícil inevitable.',num:9 },
+    { name:'Nauthiz', symbol:'ᚾ', meaning:'Necesidad, restricción', energy:'yin',
+      magic:'Encontrar la necesidad real bajo el deseo, trabajo con sombra, paciencia.',
+      reverse:'Restricción mayor, necesidad ignorada.',num:10 },
+    { name:'Isa', symbol:'ᛁ', meaning:'Hielo, quietud, pausa', energy:'yin',
+      magic:'Detener proyectos dañinos, período de quietud necesaria, anclar la mente.',
+      reverse:'No reversible. Bloqueo o pausa forzada.',num:11 },
+    { name:'Jera', symbol:'ᛃ', meaning:'Cosecha, ciclo, justicia', energy:'neutro',
+      magic:'Resultados justos de semillas plantadas, ciclos que se completan, karman.',
+      reverse:'No reversible. Paciencia requerida.',num:12 },
+    { name:'Eihwaz', symbol:'ᛇ', meaning:'Tejo, mundo entre mundos', energy:'yin',
+      magic:'Comunicación con el mundo inferior, transformación profunda, resistencia.',
+      reverse:'No reversible.',num:13 },
+    { name:'Perthro', symbol:'ᛈ', meaning:'Dado, misterio, vientre', energy:'yin',
+      magic:'Magia adivinatoria, misterios ocultos, lo que aún no puedes ver.',
+      reverse:'Secretos dañinos, adicción, ilusión.',num:14 },
+    { name:'Algiz', symbol:'ᛉ', meaning:'Alce, escudo, protección', energy:'yin',
+      magic:'Protección divina, escudo espiritual, conexión con lo alto.',
+      reverse:'Protección retirada, vulnerabilidad.',num:15 },
+    { name:'Sowilo', symbol:'ᛊ', meaning:'Sol, victoria, totalidad', energy:'yang',
+      magic:'Éxito, claridad, sanación, victoria ante la oscuridad.',
+      reverse:'No reversible. Sol que todo lo quema si excesivo.',num:16 },
+    { name:'Tiwaz', symbol:'ᛏ', meaning:'Tyr, justicia, sacrificio', energy:'yang',
+      magic:'Justicia, coraje en batalla, sacrificio con propósito, contratos.',
+      reverse:'Injusticia, cobardía, traición.',num:17 },
+    { name:'Berkana', symbol:'ᛒ', meaning:'Abedul, nacimiento, Diosa', energy:'yin',
+      magic:'Nacimiento de proyectos, fertilidad, sanación, trabajo con lo sagrado femenino.',
+      reverse:'Proyectos que no nacen, problemas familiares.',num:18 },
+    { name:'Ehwaz', symbol:'ᛖ', meaning:'Caballo, movimiento, gemelos', energy:'yang',
+      magic:'Cambio positivo, trabajo en pareja, viajes físicos, progreso fluido.',
+      reverse:'Cambio brusco, desacuerdo con socios.',num:19 },
+    { name:'Mannaz', symbol:'ᛗ', meaning:'Humanidad, mente, yo', energy:'neutro',
+      magic:'Autoconocimiento, trabajo con la mente, humanidad compartida.',
+      reverse:'Separación, engaño, ego inflado.',num:20 },
+    { name:'Laguz', symbol:'ᛚ', meaning:'Agua, flujo, lo inconsciente', energy:'yin',
+      magic:'Intuición, fluir con la corriente, magia acuática, trabajo con emociones.',
+      reverse:'Ahogarse en emociones, flujo bloqueado.',num:21 },
+    { name:'Ingwaz', symbol:'ᛜ', meaning:'Ing, semilla, potencial', energy:'yin',
+      magic:'Potencial guardado, fertilidad interior, descanso antes del nacimiento.',
+      reverse:'No reversible. Tiempo de incubación.',num:22 },
+    { name:'Dagaz', symbol:'ᛞ', meaning:'Día, amanecer, umbral', energy:'neutro',
+      magic:'Transformación del día, umbral entre estados, claridad que rompe la oscuridad.',
+      reverse:'No reversible.',num:23 },
+    { name:'Othala', symbol:'ᛟ', meaning:'Herencia, tierra ancestral', energy:'yin',
+      magic:'Conexión con ancestros, herencia (material y espiritual), hogar sagrado.',
+      reverse:'Pérdida de raíces, herencia dañina.',num:24 },
+  ],
+
+  aceites: [
+    { name:'Aceite de Almendra Dulce', base:true, uses:'Base ideal para todos los aceites. Suave, versátil.',magic:['amor','bienestar']},
+    { name:'Aceite de Jojoba', base:true, uses:'La base más larga duración. Excelente para consagrar herramientas.',magic:['pureza','conservación']},
+    { name:'Aceite Esencial de Lavanda', base:false, arom:'floral',
+      magic:['amor','paz','sueños lúcidos','limpieza'], uses:'Difusor, baños, ritual lunar.'},
+    { name:'Aceite Esencial de Rosa', base:false, arom:'floral',
+      magic:['amor','autoestima','venus'], uses:'Amor romántico, Venus, belleza interior.'},
+    { name:'Aceite Esencial de Sándalo', base:false, arom:'maderoso',
+      magic:['meditación','conexión espiritual','santidad'], uses:'Incienso, altar, meditación profunda.'},
+    { name:'Aceite Esencial de Patchouli', base:false, arom:'terroso',
+      magic:['dinero','lujuria','tierra','prosperidad'], uses:'Hechizos de dinero, conexión con tierra.'},
+    { name:'Aceite Esencial de Neroli', base:false, arom:'floral-cítrico',
+      magic:['amor eterno','confianza','claridad'], uses:'Rituales de matrimonio, autoconfianza.'},
+    { name:'Aceite Esencial de Ylang Ylang', base:false, arom:'floral-exótico',
+      magic:['amor','sensualidad','confianza','alegría'], uses:'Rituales de amor, autoestima sensual.'},
+    { name:'Aceite Esencial de Naranja', base:false, arom:'cítrico',
+      magic:['alegría','sol','prosperidad','amistad'], uses:'Rituales solares, energía, amistad.'},
+    { name:'Aceite Esencial de Ciprés', base:false, arom:'maderoso',
+      magic:['ancestros','transición','consuelo'], uses:'Samhain, rituales de duelo, límites.'},
+    { name:'Aceite Esencial de Incienso', base:false, arom:'resinoso',
+      magic:['protección','espiritualidad','meditación','exorcismo'], uses:'El más sagrado. Rituales, altar.'},
+    { name:'Aceite Esencial de Clavo', base:false, arom:'especiado',
+      magic:['protección','dinero','expulsar lo negativo'], uses:'Usar con moderación. Protección activa.'},
+  ],
+};
+
+// === biblioteca.js ===
+'use strict';
+// ============================================================
+// BIBLIOTECA.JS — Hierbas, Cristales, Runas, Aceites
+// ============================================================
+const BibliotecaModule = (() => {
+
+  let activeTab = 'hierbas';
+  let searchQuery = '';
+  let modalOpen = false;
+
+  const TABS = [
+    { id:'hierbas',   label:'🌿 Hierbas',   data:()=>BibData.hierbas },
+    { id:'cristales', label:'💎 Cristales',  data:()=>BibData.cristales },
+    { id:'runas',     label:'ᚠ Runas',      data:()=>BibData.runas, special:true },
+    { id:'aceites',   label:'🫙 Aceites',   data:()=>BibData.aceites },
+  ];
+
+  function renderHierba(item) {
+    return `
+      <div class="bib-card" data-name="${item.name}" onclick="BibliotecaModule.openModal('hierbas','${item.name}')">
+        <div class="bib-emoji">${item.emoji}</div>
+        <div class="bib-name">${item.name}</div>
+        <div class="bib-tags">
+          <span class="tag">${item.element}</span>
+          <span class="tag">${item.planeta}</span>
+          <span class="tag">${item.signo}</span>
+        </div>
+        <div class="bib-magic">${item.magic.slice(0,3).join(' · ')}</div>
+      </div>`;
+  }
+
+  function renderCristal(item) {
+    return `
+      <div class="bib-card" data-name="${item.name}" onclick="BibliotecaModule.openModal('cristales','${item.name}')">
+        <div class="bib-emoji">${item.emoji}</div>
+        <div class="bib-name">${item.name}</div>
+        <div class="bib-tags">
+          <span class="tag">${item.chakra}</span>
+          <span class="tag">${item.element}</span>
+        </div>
+        <div class="bib-magic">${item.magic.slice(0,3).join(' · ')}</div>
+      </div>`;
+  }
+
+  function renderRuna(item) {
+    return `
+      <div class="runa-card" data-name="${item.name}" onclick="BibliotecaModule.openModal('runas','${item.name}')">
+        <div class="runa-symbol">${item.symbol}</div>
+        <div class="runa-name">${item.name}</div>
+        <div class="runa-meaning">${item.meaning}</div>
+      </div>`;
+  }
+
+  function renderAceite(item) {
+    return `
+      <div class="bib-card" data-name="${item.name}" onclick="BibliotecaModule.openModal('aceites','${item.name}')">
+        <div class="bib-emoji">🫙</div>
+        <div class="bib-name">${item.name}</div>
+        <div class="bib-tags">
+          <span class="tag">${item.base ? 'Base' : 'Esencial'}</span>
+          <span class="tag">${item.arom}</span>
+        </div>
+        <div class="bib-magic">${item.magic.slice(0,3).join(' · ')}</div>
+      </div>`;
+  }
+
+  function getFilteredData() {
+    const tab = TABS.find(t=>t.id===activeTab);
+    if (!tab) return [];
+    const data = tab.data();
+    if (!searchQuery) return data;
+    const q = searchQuery.toLowerCase();
+    return data.filter(item => {
+      const name = (item.name||'').toLowerCase();
+      const magic = (item.magic||[]).join(' ').toLowerCase();
+      const uses  = (item.uses||'').toLowerCase();
+      const chakra = (item.chakra||'').toLowerCase();
+      const element = (item.element||'').toLowerCase();
+      const meaning = (item.meaning||'').toLowerCase();
+      return name.includes(q)||magic.includes(q)||uses.includes(q)||
+             chakra.includes(q)||element.includes(q)||meaning.includes(q);
+    });
+  }
+
+  function renderGrid() {
+    const grid = document.getElementById('bib-grid');
+    if (!grid) return;
+    const data = getFilteredData();
+
+    if (data.length === 0) {
+      grid.innerHTML = `<div class="bib-empty">🔍 No se encontraron resultados para "<em>${searchQuery}</em>"</div>`;
+      return;
+    }
+
+    if (activeTab === 'runas') {
+      grid.className = 'runa-grid';
+      grid.innerHTML = data.map(renderRuna).join('');
+    } else if (activeTab === 'hierbas') {
+      grid.className = 'bib-grid';
+      grid.innerHTML = data.map(renderHierba).join('');
+    } else if (activeTab === 'cristales') {
+      grid.className = 'bib-grid';
+      grid.innerHTML = data.map(renderCristal).join('');
+    } else if (activeTab === 'aceites') {
+      grid.className = 'bib-grid';
+      grid.innerHTML = data.map(renderAceite).join('');
+    }
+
+    // Actualizar contador
+    const count = document.getElementById('bib-count');
+    if (count) count.textContent = `${data.length} resultado${data.length!==1?'s':''}`;
+  }
+
+  function openModal(type, name) {
+    const tab = TABS.find(t=>t.id===type);
+    if (!tab) return;
+    const item = tab.data().find(d=>d.name===name);
+    if (!item) return;
+
+    const overlay = document.getElementById('bib-modal');
+    const content = document.getElementById('bib-modal-content');
+    if (!overlay || !content) return;
+
+    content.innerHTML = buildModalContent(type, item);
+    overlay.classList.remove('hidden');
+    modalOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function buildModalContent(type, item) {
+    if (type === 'runas') {
+      return `
+        <div class="modal-header">
+          <div class="modal-runa-sym">${item.symbol}</div>
+          <div>
+            <h2 class="modal-title">${item.name}</h2>
+            <p class="text-muted">Runa ${item.num} del Elder Futhark</p>
+          </div>
+          <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-row"><strong>Significado:</strong> ${item.meaning}</div>
+          <div class="modal-row"><strong>Energía:</strong> ${item.energy}</div>
+          <div class="modal-row"><strong>Magia:</strong> ${item.magic}</div>
+          <div class="modal-row"><strong>Invertida:</strong> ${item.reverse}</div>
+        </div>`;
+    }
+    if (type === 'hierbas') {
+      return `
+        <div class="modal-header">
+          <div style="font-size:2.5rem">${item.emoji}</div>
+          <div>
+            <h2 class="modal-title">${item.name}</h2>
+            <div class="bib-tags modal-tags">
+              <span class="tag">${item.element}</span>
+              <span class="tag">${item.planeta}</span>
+              <span class="tag">${item.signo}</span>
+            </div>
+          </div>
+          <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-row"><strong>✨ Usos mágicos:</strong> ${item.magic.join(', ')}</div>
+          <div class="modal-row"><strong>🌿 Usos herbales:</strong> ${item.uses}</div>
+          ${item.notes ? `<div class="modal-row"><strong>📝 Notas:</strong> ${item.notes}</div>` : ''}
+          ${item.caution ? `<div class="modal-row modal-caution"><strong>⚠️ Precaución:</strong> ${item.caution}</div>` : ''}
+        </div>`;
+    }
+    if (type === 'cristales') {
+      return `
+        <div class="modal-header">
+          <div style="font-size:2.5rem">${item.emoji}</div>
+          <div>
+            <h2 class="modal-title">${item.name}</h2>
+            <div class="bib-tags modal-tags">
+              <span class="tag">${item.chakra}</span>
+              <span class="tag">${item.element}</span>
+              <span class="tag" style="background:${item.color};color:#fff">${item.color}</span>
+            </div>
+          </div>
+          <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-row"><strong>✨ Usos mágicos:</strong> ${item.magic.join(', ')}</div>
+          <div class="modal-row"><strong>💎 Usos:</strong> ${item.uses}</div>
+          ${item.notes ? `<div class="modal-row"><strong>📝 Notas:</strong> ${item.notes}</div>` : ''}
+        </div>`;
+    }
+    if (type === 'aceites') {
+      return `
+        <div class="modal-header">
+          <div style="font-size:2.5rem">🫙</div>
+          <div>
+            <h2 class="modal-title">${item.name}</h2>
+            <div class="bib-tags modal-tags">
+              <span class="tag">${item.base ? 'Aceite base' : 'Aceite esencial'}</span>
+              <span class="tag">${item.arom}</span>
+            </div>
+          </div>
+          <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-row"><strong>✨ Usos mágicos:</strong> ${item.magic.join(', ')}</div>
+          <div class="modal-row"><strong>🌿 Usos:</strong> ${item.uses}</div>
+        </div>`;
+    }
+    return '';
+  }
+
+  function closeModal() {
+    const overlay = document.getElementById('bib-modal');
+    if (overlay) overlay.classList.add('hidden');
+    modalOpen = false;
+    document.body.style.overflow = '';
+  }
+
+  function init() {
+    // Tabs
+    const tabsWrap = document.getElementById('bib-tabs');
+    if (tabsWrap) {
+      tabsWrap.innerHTML = TABS.map(t=>`
+        <button class="bib-tab${t.id===activeTab?' active':''}" data-tab="${t.id}">
+          ${t.label}
+        </button>`).join('');
+      tabsWrap.addEventListener('click', e=>{
+        const btn = e.target.closest('[data-tab]');
+        if (!btn) return;
+        activeTab = btn.dataset.tab;
+        tabsWrap.querySelectorAll('.bib-tab').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        renderGrid();
+      });
+    }
+
+    // Búsqueda
+    const searchInput = document.getElementById('bib-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', e=>{
+        searchQuery = e.target.value.trim();
+        renderGrid();
+      });
+    }
+
+    // Modal close
+    const overlay = document.getElementById('bib-modal');
+    if (overlay) {
+      overlay.addEventListener('click', e=>{
+        if (e.target === overlay) closeModal();
+      });
+    }
+
+    // ESC
+    document.addEventListener('keydown', e=>{
+      if (e.key==='Escape' && modalOpen) closeModal();
+    });
+
+    renderGrid();
+  }
+
+  return { init, openModal, closeModal };
+})();
+
+// === busqueda.js ===
+'use strict';
+// ============================================================
+// BUSQUEDA.JS — Motor de búsqueda global
+// ============================================================
+const BusquedaModule = (() => {
+
+  let isOpen = false;
+
+  function getAllItems() {
+    const items = [];
+
+    // Hierbas
+    BibData.hierbas.forEach(h => {
+      items.push({
+        type: 'hierba', icon: h.emoji, name: h.name,
+        text: `${h.magic.join(' ')} ${h.uses} ${h.element} ${h.planeta}`,
+        section: 'biblioteca',
+        action: () => { goTo('biblioteca'); BibliotecaModule.openModal('hierbas', h.name); }
+      });
+    });
+
+    // Cristales
+    BibData.cristales.forEach(c => {
+      items.push({
+        type: 'cristal', icon: c.emoji, name: c.name,
+        text: `${c.magic.join(' ')} ${c.uses} ${c.chakra} ${c.element}`,
+        section: 'biblioteca',
+        action: () => { goTo('biblioteca'); BibliotecaModule.openModal('cristales', c.name); }
+      });
+    });
+
+    // Runas
+    BibData.runas.forEach(r => {
+      items.push({
+        type: 'runa', icon: r.symbol, name: r.name,
+        text: `${r.meaning} ${r.energy} ${r.magic}`,
+        section: 'biblioteca',
+        action: () => { goTo('biblioteca'); BibliotecaModule.openModal('runas', r.name); }
+      });
+    });
+
+    // Aceites
+    BibData.aceites.forEach(a => {
+      items.push({
+        type: 'aceite', icon: '🫙', name: a.name,
+        text: `${a.magic.join(' ')} ${a.uses} ${a.arom}`,
+        section: 'biblioteca',
+        action: () => { goTo('biblioteca'); BibliotecaModule.openModal('aceites', a.name); }
+      });
+    });
+
+    // Sabbats
+    Astro.SABBATS.forEach(s => {
+      const info = RuedaModule.SABBAT_INFO[s.name] || {};
+      items.push({
+        type: 'sabbat', icon: info.emoji || '☽', name: s.name,
+        text: `${info.desc||''} ${info.ritual||''} sabbat rueda del año`,
+        section: 'rueda',
+        action: () => goTo('rueda'),
+      });
+    });
+
+    // Panteones
+    Object.values(HechizosData.PANTEONES).forEach(p => {
+      items.push({
+        type: 'panteon', icon: p.emoji, name: p.name,
+        text: p.desc + ' ' + p.deidades.map(d=>d.name+' '+d.dominio).join(' '),
+        section: 'hechizos',
+        action: () => { goTo('hechizos'); HechizosModule.selectPanteon(p.id); }
+      });
+
+      // Deidades
+      p.deidades.forEach(d => {
+        items.push({
+          type: 'deidad', icon: p.emoji, name: d.name,
+          text: `${d.dominio} ${d.ofrendas} ${p.name}`,
+          section: 'hechizos',
+          action: () => { goTo('hechizos'); HechizosModule.selectPanteon(p.id); }
+        });
+      });
+    });
+
+    // Propósitos de hechizos
+    HechizosData.PROPOSITOS.forEach(p => {
+      const receta = HechizosData.RECETAS[p.id] || {};
+      items.push({
+        type: 'proposito', icon: p.emoji, name: p.name,
+        text: `${p.descripcion} ${(receta.hierbas||[]).join(' ')} ${(receta.cristales||[]).join(' ')} hechizo magia`,
+        section: 'hechizos',
+        action: () => { goTo('hechizos'); HechizosModule.selectProposito(p.id); }
+      });
+    });
+
+    return items;
+  }
+
+  function search(query) {
+    if (!query || query.length < 2) return [];
+    const q = query.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+    const all = getAllItems();
+    const scored = all.map(item => {
+      const nameN = item.name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+      const textN = item.text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+      let score = 0;
+      if (nameN === q) score += 100;
+      else if (nameN.startsWith(q)) score += 60;
+      else if (nameN.includes(q)) score += 40;
+      if (textN.includes(q)) score += 10;
+      return { ...item, score };
+    }).filter(i => i.score > 0).sort((a,b) => b.score - a.score);
+    return scored.slice(0, 12);
+  }
+
+  function goTo(section) {
+    if (window.AppModule) AppModule.goTo(section);
+    close();
+  }
+
+  function open() {
+    const overlay = document.getElementById('search-overlay');
+    const input   = document.getElementById('search-input');
+    if (!overlay) return;
+    overlay.classList.remove('hidden');
+    isOpen = true;
+    setTimeout(() => input?.focus(), 50);
+  }
+
+  function close() {
+    const overlay = document.getElementById('search-overlay');
+    if (overlay) overlay.classList.add('hidden');
+    isOpen = false;
+    const input = document.getElementById('search-input');
+    if (input) input.value = '';
+    renderResults([]);
+  }
+
+  function renderResults(results) {
+    const wrap = document.getElementById('search-results');
+    if (!wrap) return;
+
+    if (results.length === 0) {
+      wrap.innerHTML = '';
+      return;
+    }
+
+    const typeLabels = {
+      hierba:'Hierba', cristal:'Cristal', runa:'Runa', aceite:'Aceite',
+      sabbat:'Sabbat', panteon:'Panteón', deidad:'Deidad', proposito:'Propósito',
+    };
+
+    // Agrupar por sección
+    const groups = {};
+    results.forEach(r => {
+      if (!groups[r.section]) groups[r.section] = [];
+      groups[r.section].push(r);
+    });
+
+    const sectionNames = { biblioteca:'📚 Biblioteca', hechizos:'✨ Hechizos', rueda:'☀️ Rueda del Año' };
+
+    wrap.innerHTML = Object.entries(groups).map(([sec, items]) => `
+      <div class="search-group">
+        <div class="search-group-title">${sectionNames[sec]||sec}</div>
+        ${items.map(r => `
+          <div class="search-result" onclick="(${r.action.toString()})()">
+            <span class="search-result-icon">${r.icon}</span>
+            <div class="search-result-body">
+              <div class="search-result-name">${r.name}</div>
+              <div class="search-result-type">${typeLabels[r.type]||r.type}</div>
+            </div>
+            <span class="search-result-arrow">→</span>
+          </div>`).join('')}
+      </div>`).join('');
+  }
+
+  function init() {
+    // Botón de búsqueda
+    const btns = document.querySelectorAll('[data-search-open]');
+    btns.forEach(b => b.addEventListener('click', open));
+
+    // Atajo de teclado Ctrl+K / Cmd+K
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        isOpen ? close() : open();
+      }
+      if (e.key === 'Escape' && isOpen) close();
+    });
+
+    // Input de búsqueda
+    const input = document.getElementById('search-input');
+    if (input) {
+      let timer;
+      input.addEventListener('input', () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          const results = search(input.value.trim());
+          renderResults(results);
+        }, 150);
+      });
+    }
+
+    // Click fuera para cerrar
+    const overlay = document.getElementById('search-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) close();
+      });
+    }
+  }
+
+  return { init, open, close, search };
+})();
+
+// === carta.js ===
+'use strict';
+// ============================================================
+// CARTA.JS — Carta natal: formulario + render SVG
+// ============================================================
+const CartaModule = (() => {
+
+  let currentChart = null;
+  const STORAGE_KEY = 'bruja_natal_data';
+
+  // ── Coordenadas ciudad → lat/lon (ciudades principales) ───
+  const CITIES = {
+    'Quito, Ecuador':          [-0.23,  -78.52],
+    'Guayaquil, Ecuador':      [-2.17,  -79.92],
+    'Cuenca, Ecuador':         [-2.90,  -79.00],
+    'Bogotá, Colombia':        [ 4.71,  -74.07],
+    'Lima, Perú':              [-12.05, -77.04],
+    'Buenos Aires, Argentina': [-34.61, -58.38],
+    'Santiago, Chile':         [-33.45, -70.67],
+    'Ciudad de México':        [ 19.43, -99.13],
+    'Caracas, Venezuela':      [ 10.49, -66.88],
+    'Medellín, Colombia':      [  6.25, -75.56],
+    'Madrid, España':          [ 40.42,  -3.70],
+    'Nueva York, USA':         [ 40.71, -74.01],
+    'Miami, USA':              [ 25.77, -80.19],
+  };
+
+  // ── Render SVG de la carta ────────────────────────────────
+  function renderChart(chart) {
+    const wrap = document.getElementById('carta-svg-wrap');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+
+    const size = 480;
+    const cx = size / 2, cy = size / 2;
+    const R = {
+      outer: 220, zodiac: 200, houseOuter: 165, houseInner: 145,
+      planets: 110, center: 60,
+    };
+
+    const svg = createSVG(size);
+
+    // Fondo
+    addDef(svg, cx, cy, R);
+
+    // Fondo oscuro
+    const bgCircle = el('circle', { cx, cy, r: R.outer + 4, fill: '#0A0818' });
+    svg.appendChild(bgCircle);
+
+    // Círculos de delimitación
+    [[R.outer,'#2A2048',1],[R.zodiac,'#3A3060',1],[R.houseOuter,'#2A2048',.7],
+     [R.houseInner,'#3A3060',.7],[R.center,'#2A2048',.5]].forEach(([r,col,op])=>{
+      svg.appendChild(el('circle',{cx,cy,r,fill:'none',stroke:col,
+        'stroke-width':.7,'stroke-opacity':op}));
+    });
+
+    // Símbolos del zodíaco
+    Astro.ZODIAC.forEach((sign, i) => {
+      const angle = (i * 30 - chart.asc + 90) * Math.PI / 180;
+      const r = (R.zodiac + R.outer) / 2;
+      const x = cx + r * Math.cos(angle);
+      const y = cy + r * Math.sin(angle);
+
+      // Sector de fondo por elemento
+      const elColors = { fuego:'rgba(255,107,53,.1)', tierra:'rgba(123,158,58,.1)',
+                         aire:'rgba(168,216,234,.1)', agua:'rgba(74,144,217,.1)' };
+      const sectorPath = sectorArc(cx,cy,R.zodiac,R.outer, (i*30-chart.asc)*Math.PI/180,
+                                   ((i+1)*30-chart.asc)*Math.PI/180);
+      const sectorEl = el('path',{d:sectorPath,fill:elColors[sign.el]||'transparent'});
+      svg.insertBefore(sectorEl, svg.firstChild.nextSibling);
+
+      // Divisor de signo
+      const divAngle = (i * 30 - chart.asc + 90) * Math.PI / 180;
+      const lx1 = cx + R.zodiac * Math.cos(divAngle - Math.PI/2);
+      const ly1 = cy + R.zodiac * Math.sin(divAngle - Math.PI/2);
+      const lx2 = cx + R.outer * Math.cos(divAngle - Math.PI/2);
+      const ly2 = cy + R.outer * Math.sin(divAngle - Math.PI/2);
+      svg.appendChild(el('line',{x1:lx1,y1:ly1,x2:lx2,y2:ly2,
+        stroke:'#3A3060','stroke-width':.5}));
+
+      // Símbolo del signo
+      const sym = el('text',{ x:x, y:y,
+        fill:Astro.EL_COLORS[sign.el]||'#D8C8F0',
+        'font-size':'13','text-anchor':'middle',
+        'dominant-baseline':'middle','font-family':'serif' });
+      sym.textContent = sign.sym;
+      svg.appendChild(sym);
+    });
+
+    // Líneas de casas
+    for(let h=0;h<12;h++){
+      const houseAngle = (chart.houses[h] - chart.asc + 90) * Math.PI / 180;
+      const isAngular = h%3===0;
+      const x1 = cx + R.houseInner * Math.cos(houseAngle);
+      const y1 = cy + R.houseInner * Math.sin(houseAngle);
+      const x2 = cx + R.houseOuter * Math.cos(houseAngle);
+      const y2 = cy + R.houseOuter * Math.sin(houseAngle);
+      svg.appendChild(el('line',{x1,y1,x2,y2,
+        stroke: isAngular ? '#B8860B' : '#2A2048',
+        'stroke-width': isAngular ? 1.5 : .5}));
+
+      // Número de casa
+      const mr = (R.houseOuter + R.houseInner) / 2;
+      const midAngle = (chart.houses[h] - chart.asc + 15 + 90) * Math.PI / 180;
+      const hx = cx + mr * Math.cos(midAngle);
+      const hy = cy + mr * Math.sin(midAngle);
+      const ht = el('text',{x:hx,y:hy,fill:'#5A5080','font-size':'9',
+        'text-anchor':'middle','dominant-baseline':'middle','font-family':'sans-serif'});
+      ht.textContent = h+1;
+      svg.appendChild(ht);
+    }
+
+    // Ejes ASC/DSC y MC/IC
+    [[chart.asc,'ASC','#B8860B'],[chart.asc+180,'DSC','#8B6600'],
+     [chart.MC,'MC','#4A90D9'],[chart.MC+180,'IC','#2A6090']].forEach(([lon,lbl,col])=>{
+      const a = (lon - chart.asc + 90) * Math.PI / 180;
+      const ax1 = cx + R.houseInner * Math.cos(a);
+      const ay1 = cy + R.houseInner * Math.sin(a);
+      const ax2 = cx + R.houseOuter * Math.cos(a);
+      const ay2 = cy + R.houseOuter * Math.sin(a);
+      svg.appendChild(el('line',{x1:ax1,y1:ay1,x2:ax2,y2:ay2,
+        stroke:col,'stroke-width':2}));
+      const lx = cx + (R.houseOuter+8) * Math.cos(a);
+      const ly = cy + (R.houseOuter+8) * Math.sin(a);
+      const lt = el('text',{x:lx,y:ly,fill:col,'font-size':'8',
+        'text-anchor':'middle','dominant-baseline':'middle','font-weight':'bold','font-family':'sans-serif'});
+      lt.textContent = lbl;
+      svg.appendChild(lt);
+    });
+
+    // Líneas de aspecto (en el centro)
+    const aspects = Astro.calcAspects(chart.pos);
+    aspects.slice(0,15).forEach(asp=>{
+      const a1 = (chart.pos[asp.p1] - chart.asc + 90) * Math.PI / 180;
+      const a2 = (chart.pos[asp.p2] - chart.asc + 90) * Math.PI / 180;
+      const x1 = cx + R.planets * Math.cos(a1);
+      const y1 = cy + R.planets * Math.sin(a1);
+      const x2 = cx + R.planets * Math.cos(a2);
+      const y2 = cy + R.planets * Math.sin(a2);
+      const line = el('line',{x1,y1,x2,y2,
+        stroke: asp.asp.color, 'stroke-width':.6,'stroke-opacity':.4});
+      svg.insertBefore(line, svg.children[5]);
+    });
+
+    // Planetas
+    const PLANET_KEYS = ['SUN','MOON','MERCURY','VENUS','MARS','JUPITER','SATURN','URANUS','NEPTUNE','PLUTO','LILITH','NNODE'];
+    PLANET_KEYS.forEach(key => {
+      const data = chart.signs[key];
+      if (!data) return;
+      const angle = (data.lon - chart.asc + 90) * Math.PI / 180;
+      const px = cx + R.planets * Math.cos(angle);
+      const py = cy + R.planets * Math.sin(angle);
+
+      // Punto del planeta
+      svg.appendChild(el('circle',{cx:px,cy:py,r:12,
+        fill: 'rgba(13,11,30,.8)', stroke: data.info.color, 'stroke-width':1.2}));
+
+      // Símbolo
+      const psym = el('text',{x:px,y:py,fill:data.info.color,
+        'font-size':'11','text-anchor':'middle','dominant-baseline':'middle','font-family':'serif'});
+      psym.textContent = data.info.sym;
+      svg.appendChild(psym);
+
+      // Línea al anillo
+      const lAngle = angle;
+      const lx1 = cx + (R.planets+13)*Math.cos(lAngle);
+      const ly1 = cy + (R.planets+13)*Math.sin(lAngle);
+      const lx2 = cx + (R.houseInner-2)*Math.cos(lAngle);
+      const ly2 = cy + (R.houseInner-2)*Math.sin(lAngle);
+      svg.insertBefore(el('line',{x1:lx1,y1:ly1,x2:lx2,y2:ly2,
+        stroke:data.info.color,'stroke-width':.5,'stroke-opacity':.5}), svg.lastChild);
+    });
+
+    // Centro: símbolo del sol
+    const centerText = el('text',{x:cx,y:cy,fill:'rgba(255,215,0,.2)',
+      'font-size':'28','text-anchor':'middle','dominant-baseline':'middle','font-family':'serif'});
+    centerText.textContent = '☉';
+    svg.appendChild(centerText);
+
+    wrap.appendChild(svg);
+  }
+
+  function sectorArc(cx,cy,r1,r2,a1,a2){
+    const x1=cx+r2*Math.cos(a1-Math.PI/2), y1=cy+r2*Math.sin(a1-Math.PI/2);
+    const x2=cx+r2*Math.cos(a2-Math.PI/2), y2=cy+r2*Math.sin(a2-Math.PI/2);
+    const x3=cx+r1*Math.cos(a2-Math.PI/2), y3=cy+r1*Math.sin(a2-Math.PI/2);
+    const x4=cx+r1*Math.cos(a1-Math.PI/2), y4=cy+r1*Math.sin(a1-Math.PI/2);
+    return `M${x1},${y1} A${r2},${r2} 0 0,1 ${x2},${y2} L${x3},${y3} A${r1},${r1} 0 0,0 ${x4},${y4} Z`;
+  }
+
+  function createSVG(size){
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('viewBox',`0 0 ${size} ${size}`);
+    svg.setAttribute('width','100%');
+    svg.setAttribute('height','100%');
+    return svg;
+  }
+
+  function el(tag, attrs){
+    const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for(const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+    return e;
+  }
+
+  function addDef(svg, cx, cy, R){
+    const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+    const grad = document.createElementNS('http://www.w3.org/2000/svg','radialGradient');
+    grad.id='bgGrad'; grad.setAttribute('cx','50%'); grad.setAttribute('cy','50%');
+    const s1=document.createElementNS('http://www.w3.org/2000/svg','stop');
+    s1.setAttribute('offset','0%'); s1.setAttribute('stop-color','#161228');
+    const s2=document.createElementNS('http://www.w3.org/2000/svg','stop');
+    s2.setAttribute('offset','100%'); s2.setAttribute('stop-color','#0A0818');
+    grad.appendChild(s1); grad.appendChild(s2); defs.appendChild(grad);
+    svg.appendChild(defs);
+  }
+
+  // ── Render tabla de planetas ───────────────────────────────
+  function renderPlanetTable(chart) {
+    const wrap = document.getElementById('planeta-tabla');
+    if (!wrap) return;
+    const keys = ['SUN','MOON','MERCURY','VENUS','MARS','JUPITER','SATURN','URANUS','NEPTUNE','PLUTO','LILITH','NNODE'];
+    wrap.innerHTML = keys.map(k => {
+      const d = chart.signs[k];
+      if(!d) return '';
+      return `<div class="planet-row">
+        <span class="planet-sym" style="color:${d.info.color}">${d.info.sym}</span>
+        <span class="planet-name">${d.info.name}</span>
+        <span class="planet-sign">${d.sign.sym} ${d.sign.name}</span>
+        <span class="planet-deg">${d.deg}°${String(d.min).padStart(2,'0')}'</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Render aspectos ───────────────────────────────────────
+  function renderAspects(chart){
+    const wrap = document.getElementById('aspectos-lista');
+    if(!wrap) return;
+    const aspects = Astro.calcAspects(chart.pos).slice(0,12);
+    wrap.innerHTML = aspects.map(a=>`
+      <div class="asp-row">
+        <span class="asp-sym" style="color:${a.asp.color}">${a.asp.sym}</span>
+        <span class="asp-name">${a.asp.name}</span>
+        <span class="asp-planets">
+          ${Astro.PLANETS[a.p1]?.sym||''} ${Astro.PLANETS[a.p1]?.name||a.p1}
+          —
+          ${Astro.PLANETS[a.p2]?.sym||''} ${Astro.PLANETS[a.p2]?.name||a.p2}
+        </span>
+      </div>`).join('');
+  }
+
+  // ── Render interpretaciones ───────────────────────────────
+  const INTERPS = {
+    SUN:     s=>`Tu esencia, tu propósito vital y tu fuerza de vida funcionan en modo <strong>${s}</strong>. Es el combustible de tu vitalidad.`,
+    MOON:    s=>`Emocionalmente, tu instinto responde desde <strong>${s}</strong>. Así nutres, así necesitas ser nutrido/a.`,
+    MERCURY: s=>`Tu mente, comunicación y forma de procesar el mundo vibran en <strong>${s}</strong>.`,
+    VENUS:   s=>`En amor y estética, atraes y amas en modo <strong>${s}</strong>. Lo que valoras lleva este sello.`,
+    MARS:    s=>`Tu fuerza, deseo y acción se mueven al ritmo de <strong>${s}</strong>. Así peleas, logras y deseas.`,
+    JUPITER: s=>`Tu expansión y abundancia naturales crecen mejor a través de <strong>${s}</strong>. Aquí está tu suerte.`,
+    SATURN:  s=>`Saturno en <strong>${s}</strong> marca tus lecciones más profundas y dónde construyes autoridad genuina.`,
+    URANUS:  s=>`Tu generación reforma el mundo usando la energía de <strong>${s}</strong>. Es tu sello de ruptura.`,
+    NEPTUNE: s=>`Tu espiritualidad y visión transpersonal se tiñen de <strong>${s}</strong>. Es la niebla de tu era.`,
+    PLUTO:   s=>`Plutón en <strong>${s}</strong> es la transformación generacional de tu tiempo. Fuerza de cambio colectivo.`,
+    LILITH:  s=>`Tu Lilith en <strong>${s}</strong> señala el poder instintivo que aprendiste a suprimir — y que espera integrarse.`,
+    NNODE:   s=>`Tu Nodo Norte en <strong>${s}</strong> marca la dirección de evolución de esta vida.`,
+  };
+
+  function renderInterpretaciones(chart){
+    const wrap = document.getElementById('interp-wrap');
+    if(!wrap) return;
+    const main=['SUN','MOON','MERCURY','VENUS','MARS','JUPITER','SATURN'];
+    const asc = chart.ascSign;
+    let html = `<div class="interp-card" style="border-color:rgba(184,134,11,.4);margin-bottom:.75rem">
+      <div class="interp-planet">🌅 Ascendente — ${asc.sym} ${asc.name}</div>
+      <p class="interp-text">Tu máscara social, cómo el mundo te percibe al primer encuentro. También la puerta de entrada a tu vida. Ascendente en <strong>${asc.name}</strong>: llegas al mundo con la energía de ${asc.el} y el estilo ${asc.mode}.</p>
+    </div>`;
+    main.forEach(k=>{
+      const d=chart.signs[k]; if(!d) return;
+      const fn=INTERPS[k]; if(!fn) return;
+      html+=`<div class="interp-card">
+        <div class="interp-planet">${d.info.sym} ${d.info.name} en ${d.sign.sym} ${d.sign.name}</div>
+        <p class="interp-text">${fn(d.sign.name)}</p>
+      </div>`;
+    });
+    wrap.innerHTML=html;
+  }
+
+  // ── Inicializar sección ───────────────────────────────────
+  function init() {
+    const form = document.getElementById('carta-form');
+    if (!form) return;
+
+    // Llenar selector de ciudades
+    const citySelect = document.getElementById('city-select');
+    if(citySelect){
+      Object.keys(CITIES).forEach(c=>{
+        const opt=document.createElement('option');
+        opt.value=c; opt.textContent=c;
+        if(c.includes('Quito')) opt.selected=true;
+        citySelect.appendChild(opt);
+      });
+    }
+
+    // Cargar datos guardados
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+      if(saved){
+        ['birth-name','birth-date','birth-time'].forEach(id=>{
+          const el=document.getElementById(id);
+          if(el&&saved[id]) el.value=saved[id];
+        });
+        if(saved.city && citySelect){
+          citySelect.value=saved.city;
+          if(!citySelect.value) citySelect.value='Quito, Ecuador';
+        }
+      }
+    }catch(e){}
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      calcChart();
+    });
+  }
+
+  function calcChart(){
+    const dateVal = document.getElementById('birth-date')?.value;
+    const timeVal = document.getElementById('birth-time')?.value || '12:00';
+    const city    = document.getElementById('city-select')?.value || 'Quito, Ecuador';
+    const name    = document.getElementById('birth-name')?.value || '';
+
+    if (!dateVal) return;
+
+    const [yr,mo,dy] = dateVal.split('-').map(Number);
+    const [hr,mn]    = timeVal.split(':').map(Number);
+    const [lat,lon]  = CITIES[city] || [-0.23,-78.52];
+
+    // Guardar
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        'birth-date':dateVal,'birth-time':timeVal,'city':city,'birth-name':name
+      }));
+    }catch(e){}
+
+    currentChart = Astro.chartData(yr,mo,dy,hr,mn,lat,lon);
+
+    // Mostrar resultado
+    const result = document.getElementById('carta-result');
+    if(result) result.classList.remove('hidden');
+
+    // Resumen encabezado
+    const summ = document.getElementById('carta-summary');
+    if(summ){
+      summ.innerHTML = `
+        <span class="text-gold">☉</span> Sol en <strong>${currentChart.signs.SUN.sign.name}</strong>
+        &nbsp;·&nbsp;
+        <span class="text-gold">☽</span> Luna en <strong>${currentChart.signs.MOON.sign.name}</strong>
+        &nbsp;·&nbsp;
+        <span class="text-gold">↑</span> Ascendente <strong>${currentChart.ascSign.name}</strong>
+        ${name ? `<br><small class="text-muted">${name}</small>` : ''}
+      `;
+    }
+
+    renderChart(currentChart);
+    renderPlanetTable(currentChart);
+    renderAspects(currentChart);
+    renderInterpretaciones(currentChart);
+
+    // Scroll al resultado
+    document.getElementById('carta-result')?.scrollIntoView({behavior:'smooth'});
+  }
+
+  return { init };
+})();
+
+// === diario.js ===
+'use strict';
+// ============================================================
+// DIARIO.JS — Diario privado con localStorage
+// Solo el usuario puede leer sus entradas.
+// ============================================================
+const DiarioModule = (() => {
+
+  const STORAGE_KEY = 'bruja_diario_entries';
+  let entries = [];
+  let currentId = null;
+  let saveTimer = null;
+
+  // ── CRUD ─────────────────────────────────────────────────
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      entries = raw ? JSON.parse(raw) : [];
+    } catch(e) { entries = []; }
+  }
+
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); }
+    catch(e) { console.warn('Diario: no se pudo guardar', e); }
+  }
+
+  function newEntry(opts = {}) {
+    const now = new Date();
+    const moon = Astro ? Astro.moonPhase(Astro.jd(
+      now.getFullYear(), now.getMonth()+1, now.getDate(),
+      now.getHours(), now.getMinutes()
+    )) : { name:'Luna', emoji:'🌙' };
+
+    const entry = {
+      id: Date.now(),
+      title: opts.title || '',
+      body: opts.body || '',
+      date: now.toISOString(),
+      moon: moon.emoji + ' ' + moon.name,
+      tags: opts.tags || [],
+      type: opts.type || 'diario', // diario | ritual | practica | sueno
+    };
+    entries.unshift(entry);
+    save();
+    return entry;
+  }
+
+  function deleteEntry(id) {
+    entries = entries.filter(e => e.id !== id);
+    save();
+  }
+
+  function getEntry(id) {
+    return entries.find(e => e.id === id);
+  }
+
+  function updateEntry(id, fields) {
+    const idx = entries.findIndex(e => e.id === id);
+    if (idx < 0) return;
+    entries[idx] = { ...entries[idx], ...fields, updated: new Date().toISOString() };
+    save();
+  }
+
+  // ── RENDER LISTA ─────────────────────────────────────────
+  function renderList(filterType) {
+    const listWrap = document.getElementById('diario-list');
+    if (!listWrap) return;
+
+    let filtered = entries;
+    if (filterType && filterType !== 'all') {
+      filtered = entries.filter(e => e.type === filterType);
+    }
+
+    if (filtered.length === 0) {
+      listWrap.innerHTML = `<div class="diario-empty">
+        <p>✨ Aún no hay entradas.</p>
+        <p class="text-muted">Tu diario es completamente privado — solo tú puedes leerlo.</p>
+      </div>`;
+      return;
+    }
+
+    listWrap.innerHTML = filtered.map(e => {
+      const d = new Date(e.date);
+      const dateStr = d.toLocaleDateString('es', { day:'numeric', month:'short', year:'numeric' });
+      const preview = e.body.replace(/<[^>]+>/g,'').slice(0,80) + (e.body.length > 80 ? '…' : '');
+      const typeIcons = { diario:'📖', ritual:'🕯️', practica:'✨', sueno:'💤' };
+      const isActive = e.id === currentId;
+      return `
+        <div class="diario-item${isActive?' active':''}" data-id="${e.id}" onclick="DiarioModule.selectEntry(${e.id})">
+          <div class="diario-item-header">
+            <span class="diario-item-type">${typeIcons[e.type]||'📖'}</span>
+            <span class="diario-item-date">${dateStr}</span>
+            <span class="diario-item-moon">${e.moon.split(' ')[0]}</span>
+          </div>
+          <div class="diario-item-title">${e.title || '<em>Sin título</em>'}</div>
+          <div class="diario-item-preview">${preview || '<em>Entrada vacía</em>'}</div>
+          ${e.tags.length > 0 ? `<div class="diario-item-tags">${e.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>` : ''}
+        </div>`;
+    }).join('');
+  }
+
+  // ── RENDER EDITOR ────────────────────────────────────────
+  function renderEditor(entry) {
+    const editor = document.getElementById('diario-editor');
+    if (!editor) return;
+
+    if (!entry) {
+      editor.innerHTML = `
+        <div class="diario-no-entry">
+          <p class="text-gold">✨ Selecciona una entrada o crea una nueva</p>
+          <p class="text-muted">Tu diario nunca es compartido ni visto por nadie más.</p>
+        </div>`;
+      return;
+    }
+
+    const d = new Date(entry.date);
+    const dateStr = d.toLocaleDateString('es', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    const timeStr = d.toLocaleTimeString('es', { hour:'2-digit', minute:'2-digit' });
+    const typeOpts = [
+      {v:'diario',l:'📖 Diario'},{v:'ritual',l:'🕯️ Ritual'},{v:'practica',l:'✨ Práctica'},{v:'sueno',l:'💤 Sueño'},
+    ];
+
+    editor.innerHTML = `
+      <div class="diario-editor-header">
+        <input id="entry-title" class="diario-title-input"
+               placeholder="Título de la entrada…"
+               value="${escHtml(entry.title)}"
+               oninput="DiarioModule.autoSave()">
+        <button class="btn-danger-sm" onclick="DiarioModule.confirmDelete(${entry.id})">🗑️</button>
+      </div>
+      <div class="diario-meta">
+        <span class="text-muted">${dateStr} · ${timeStr}</span>
+        <span class="diario-moon-badge">${entry.moon}</span>
+        <select class="diario-type-select" onchange="DiarioModule.changeType(this.value)">
+          ${typeOpts.map(o=>`<option value="${o.v}"${entry.type===o.v?' selected':''}>${o.l}</option>`).join('')}
+        </select>
+      </div>
+      <div id="diario-tags-wrap" class="diario-tags-editor">
+        ${renderTagsEditor(entry.tags)}
+      </div>
+      <textarea id="entry-body" class="diario-body-input"
+                placeholder="Escribe aquí tus reflexiones, rituales, sueños, prácticas…"
+                oninput="DiarioModule.autoSave()">${escHtml(entry.body)}</textarea>
+      <div class="diario-editor-footer">
+        <span id="diario-save-status" class="diario-save-status">✓ Guardado</span>
+        <button class="btn-gold-sm" onclick="DiarioModule.downloadEntry()">📄 Exportar</button>
+      </div>`;
+  }
+
+  function renderTagsEditor(tags) {
+    return `
+      <div class="diario-tags-row">
+        ${tags.map(t=>`<span class="tag diario-tag">${t}<button class="tag-remove" onclick="DiarioModule.removeTag('${escHtml(t)}')">×</button></span>`).join('')}
+        <input id="tag-input" class="tag-input" placeholder="+ etiqueta"
+               onkeydown="if(event.key==='Enter'||event.key===','){DiarioModule.addTag();event.preventDefault()}">
+      </div>`;
+  }
+
+  // ── ACCIONES ─────────────────────────────────────────────
+  function selectEntry(id) {
+    currentId = id;
+    const entry = getEntry(id);
+    renderEditor(entry);
+    // Resaltar en lista
+    document.querySelectorAll('.diario-item').forEach(el => {
+      el.classList.toggle('active', Number(el.dataset.id) === id);
+    });
+  }
+
+  function addNew(type) {
+    const entry = newEntry({ type: type || 'diario' });
+    renderList();
+    selectEntry(entry.id);
+  }
+
+  function addSabbatEntry(sabbatName) {
+    const entry = newEntry({
+      title: `Ritual de ${sabbatName}`,
+      type: 'ritual',
+      tags: [sabbatName, 'sabbat', 'ritual'],
+    });
+    // Cambiar a sección diario
+    if (window.AppModule) AppModule.goTo('diario');
+    setTimeout(() => { renderList(); selectEntry(entry.id); }, 100);
+  }
+
+  function autoSave() {
+    const status = document.getElementById('diario-save-status');
+    if (status) status.textContent = '…guardando';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      if (!currentId) return;
+      const title = document.getElementById('entry-title')?.value || '';
+      const body  = document.getElementById('entry-body')?.value || '';
+      updateEntry(currentId, { title, body });
+      renderList();
+      if (status) status.textContent = '✓ Guardado';
+    }, 800);
+  }
+
+  function changeType(type) {
+    if (!currentId) return;
+    updateEntry(currentId, { type });
+    renderList();
+  }
+
+  function addTag() {
+    const input = document.getElementById('tag-input');
+    if (!input || !currentId) return;
+    const tag = input.value.trim().replace(/,$/,'');
+    if (!tag) return;
+    const entry = getEntry(currentId);
+    if (!entry || entry.tags.includes(tag)) { input.value=''; return; }
+    updateEntry(currentId, { tags: [...entry.tags, tag] });
+    input.value = '';
+    document.getElementById('diario-tags-wrap').innerHTML = renderTagsEditor(getEntry(currentId).tags);
+    renderList();
+  }
+
+  function removeTag(tag) {
+    if (!currentId) return;
+    const entry = getEntry(currentId);
+    if (!entry) return;
+    updateEntry(currentId, { tags: entry.tags.filter(t=>t!==tag) });
+    document.getElementById('diario-tags-wrap').innerHTML = renderTagsEditor(getEntry(currentId).tags);
+    renderList();
+  }
+
+  function confirmDelete(id) {
+    if (!confirm('¿Eliminar esta entrada? No se puede deshacer.')) return;
+    deleteEntry(id);
+    currentId = null;
+    renderList();
+    renderEditor(null);
+  }
+
+  function downloadEntry() {
+    if (!currentId) return;
+    const entry = getEntry(currentId);
+    if (!entry) return;
+    const text = `# ${entry.title || 'Sin título'}\n\n${entry.date}\n${entry.moon}\n\n${entry.body}`;
+    const blob = new Blob([text], { type:'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `diario_${entry.id}.txt`;
+    a.click();
+  }
+
+  function escHtml(str) {
+    return String(str||'')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function init() {
+    load();
+
+    // Botones tipo de entrada
+    const addBtns = document.querySelectorAll('[data-new-entry]');
+    addBtns.forEach(btn => {
+      btn.addEventListener('click', () => addNew(btn.dataset.newEntry));
+    });
+
+    // Filtros de tipo
+    const filterBtns = document.querySelectorAll('[data-filter-type]');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        renderList(btn.dataset.filterType);
+      });
+    });
+
+    renderList();
+    // Abrir primera entrada si hay
+    if (entries.length > 0) selectEntry(entries[0].id);
+    else renderEditor(null);
+  }
+
+  return { init, addNew, selectEntry, autoSave, changeType, addTag, removeTag, confirmDelete, downloadEntry, addSabbatEntry };
+})();
+
+// === hechizos-data.js ===
+'use strict';
+// ============================================================
+// HECHIZOS-DATA.JS — Panteones y componentes de hechizos
+// ============================================================
+const HechizosData = (() => {
+
+  const PANTEONES = {
+    universal: {
+      id: 'universal',
+      name: 'Universal / Sin Panteón',
+      emoji: '✨',
+      desc: 'Magia elemental y de intención pura, sin devoción a deidades específicas.',
+      deidades: [],
+      colores: {
+        amor: '#FF69B4', dinero: '#228B22', proteccion: '#000080',
+        salud: '#2E8B57', claridad: '#FFD700', limpieza: '#F5F5F5',
+        suerte: '#FFA500', transformacion: '#8B008B',
+      },
+      elementos: ['fuego','agua','tierra','aire'],
+      invocacion: null,
+    },
+    yoruba: {
+      id: 'yoruba',
+      name: 'Yoruba / Lukumí',
+      emoji: '🌊',
+      desc: 'Tradición afrocubana con Orishas como guardianes y mediadores.',
+      deidades: [
+        { name:'Elegguá', dominio:'caminos, destino, inicio', color:'#FF0000,#000000', num:3, ofrendas:'dulces, tabaco, ron, coco' },
+        { name:'Yemayá', dominio:'mar, maternidad, abundancia', color:'#0000FF,#FFFFFF', num:7, ofrendas:'melón, plátano, flores azules' },
+        { name:'Ochún', dominio:'amor, dulzura, ríos, fertilidad', color:'#FFD700', num:5, ofrendas:'miel, canela, girasoles, calabaza' },
+        { name:'Changó', dominio:'trueno, fuerza, justicia', color:'#FF0000,#FFFFFF', num:4, ofrendas:'manzanas, plátano macho, ron' },
+        { name:'Ogún', dominio:'trabajo, hierro, guerra, salud', color:'#228B22,#000000', num:7, ofrendas:'frijoles negros, ron, tabaco, hierro' },
+        { name:'Obatalá', dominio:'paz, justicia, pureza, sabiduría', color:'#FFFFFF', num:8, ofrendas:'coco blanco, arroz, mantequilla de cacao' },
+        { name:'Oyá', dominio:'vientos, cementerio, cambio, magia', color:'#9400D3,#C0C0C0', num:9, ofrendas:'berenjenas, uvas negras, ron' },
+        { name:'Babalú Ayé', dominio:'enfermedades, sanación, misericordia', color:'#8B4513,#FFFFFF', num:17, ofrendas:'maíz tostado, frijoles, aceite de palma' },
+      ],
+      invocacion: 'Modupé, [Orisha]. Que tu ashe guíe este trabajo.',
+      nota: 'Siempre comenzar limpiando con agua de coco o cascarilla. Consultar el dilogún si es posible.',
+    },
+    greco: {
+      id: 'greco',
+      name: 'Greco-Romano',
+      emoji: '🏛️',
+      desc: 'Dioses olímpicos del panteón griego y romano en magia ceremonial.',
+      deidades: [
+        { name:'Hécate', dominio:'magia, luna, cruces de camino, brujería', color:'#C0C0C0,#000000', num:3, ofrendas:'ajo, huevos, miel negra, llaves' },
+        { name:'Afrodita/Venus', dominio:'amor, belleza, placer', color:'#FFB6C1,#FFD700', num:5, ofrendas:'rosas, mirra, manzanas, vino' },
+        { name:'Hermes/Mercurio', dominio:'comunicación, viaje, magia, mensajes', color:'#C0C0C0', num:4, ofrendas:'monedas, aceite de laurel, incienso' },
+        { name:'Artemisa/Diana', dominio:'luna, caza, protección, parto', color:'#C0C0C0,#FFFFFF', num:3, ofrendas:'Luna llena, hierbas del bosque, flechas' },
+        { name:'Apolo', dominio:'sol, arte, profecía, sanación', color:'#FFD700', num:7, ofrendas:'laurel, aceite de oliva, lira dorada' },
+        { name:'Deméter/Ceres', dominio:'cosecha, tierra, maternidad', color:'#228B22,#FFD700', num:3, ofrendas:'trigo, espigas, granada' },
+        { name:'Dioniso/Baco', dominio:'éxtasis, transformación, vino', color:'#8B008B', num:7, ofrendas:'uvas, vino, hiedra' },
+        { name:'Atenea/Minerva', dominio:'sabiduría, estrategia, artesanía', color:'#808080', num:9, ofrendas:'aceite de oliva, búho, laurel' },
+      ],
+      invocacion: 'Yo te invoco, [Deidad], que reinas en [dominio]. Préstame tu poder en este rito.',
+      nota: 'Limpiar el espacio con laurel antes del rito. Los griegos usaban libaciones de agua, vino o aceite.',
+    },
+    nordico: {
+      id: 'nordico',
+      name: 'Nórdico',
+      emoji: '⚡',
+      desc: 'Los Aesir y Vanir del panteón vikingo, magia rúnica y seiðr.',
+      deidades: [
+        { name:'Odín', dominio:'sabiduría, magia, runas, muerte, conocimiento', color:'#000080', num:9, ofrendas:'hidromiel, cuervo, lanza, runas' },
+        { name:'Freyja', dominio:'amor, fertilidad, magia seiðr, guerra, muerte', color:'#FFD700,#C0C0C0', num:9, ofrendas:'ámbar, flores, hidromiel, gato' },
+        { name:'Thor', dominio:'trueno, protección, fuerza, trabajo', color:'#8B0000,#C0C0C0', num:5, ofrendas:'cerveza, martillo, roble' },
+        { name:'Loki', dominio:'caos, magia, transformación, engaño', color:'#FF4500,#228B22', num:8, ofrendas:'elementos contradictorios, serpientes' },
+        { name:'Freyr', dominio:'fertilidad, cosecha, prosperidad, paz', color:'#228B22,#FFD700', num:3, ofrendas:'hidromiel, granos, ciervo' },
+        { name:'Hel', dominio:'reino de los muertos, inframundo, transición', color:'#000000,#FFFFFF', num:9, ofrendas:'alimentos de la tierra, negro y blanco' },
+        { name:'Skadi', dominio:'montañas, invierno, caza, independencia', color:'#FFFFFF,#808080', num:3, ofrendas:'nieve, lobo, esquíes' },
+      ],
+      invocacion: 'Heil og sæl, [Deidad]. Vínculo de sangre y voluntad te convoco.',
+      nota: 'El galdr (canto rúnico) puede usarse para invocar poder. Las runas son centrales en este panteón.',
+    },
+    egipcio: {
+      id: 'egipcio',
+      name: 'Egipcio',
+      emoji: '𓂀',
+      desc: 'Netjeru del Kemet antiguo — dioses eternos del Nilo.',
+      deidades: [
+        { name:'Isis', dominio:'magia, maternidad, sanación, resurrección', color:'#000080,#FFD700', num:7, ofrendas:'mirra, lotus azul, lino blanco' },
+        { name:'Thoth', dominio:'sabiduría, escritura, magia, luna, tiempo', color:'#C0C0C0,#000000', num:8, ofrendas:'papiro, cálamo, ibis' },
+        { name:'Anubis', dominio:'muerte, transición, juicio, protección', color:'#000000,#FFD700', num:4, ofrendas:'incienso de mirra, lino negro' },
+        { name:'Sekhmet', dominio:'guerra, sanación, poder, fuego solar', color:'#FF4500', num:4, ofrendas:'sangre (simbólica), cerveza roja, carne' },
+        { name:'Hathor', dominio:'amor, belleza, música, maternidad, cielo', color:'#FFB6C1,#FFD700', num:7, ofrendas:'sistroo, espejos, vino, turquesa' },
+        { name:'Bastet', dominio:'protección, hogar, maternidad, placer', color:'#228B22,#000000', num:7, ofrendas:'gato, perfumes, sistro' },
+        { name:'Horus', dominio:'realeza, cielo, sol, visión, victoria', color:'#FFD700,#0000FF', num:5, ofrendas:'ojo de horus, halcón, loto' },
+      ],
+      invocacion: 'Djed medu! [Deidad], Netjeru eterno/a, que tu ka se una a este rito.',
+      nota: 'El kyphi (incienso compuesto) es tradicional. La purificación con natrón o sal marina es esencial.',
+    },
+    celta: {
+      id: 'celta',
+      name: 'Celta',
+      emoji: '🌿',
+      desc: 'Tuatha Dé Danann y espíritus de la tierra de las tradiciones gaélica y britónica.',
+      deidades: [
+        { name:'La Morrigan', dominio:'guerra, destino, magia, corvidos, soberanía', color:'#000000,#8B0000', num:3, ofrendas:'sangre (simbólica), cuervo, hierro' },
+        { name:'Brigid', dominio:'fuego sagrado, sanación, herrería, poesía, parto', color:'#FF4500,#FFFFFF', num:3, ofrendas:'llama, copos de avena, cruces de paja' },
+        { name:'Cernunnos', dominio:'animales, naturaleza, fertilidad, mundo salvaje', color:'#228B22,#8B4513', num:7, ofrendas:'hojas, semillas, astas, monedas' },
+        { name:'Danu', dominio:'tierra, maternidad, druidas, flujo', color:'#228B22,#4169E1', num:7, ofrendas:'agua de río, manzanas, flor de saúco' },
+        { name:'Lugh', dominio:'sol, artesanía, destreza, luz', color:'#FFD700', num:3, ofrendas:'grano, pan, juegos, llama dorada' },
+        { name:'Manannán mac Lir', dominio:'mar, magia, otro mundo, ilusión', color:'#4169E1,#C0C0C0', num:9, ofrendas:'sal marina, conchas, capa giratoria' },
+      ],
+      invocacion: 'Que las tres vertientes de la tierra te convoquen, [Deidad]. Que el velo sea delgado aquí.',
+      nota: 'Los cruces de camino, el roble y el agua corriente son portales al mundo céltico. Respetar los ciclos lunares.',
+    },
+  };
+
+  const PROPOSITOS = [
+    { id:'amor', name:'Amor y Relaciones', emoji:'💕', descripcion:'Atraer amor, fortalecer vínculos, reconciliación, autoamor' },
+    { id:'proteccion', name:'Protección', emoji:'🛡️', descripcion:'Escudo energético, destierro, corte de lazos tóxicos' },
+    { id:'dinero', name:'Abundancia y Dinero', emoji:'💰', descripcion:'Prosperidad, trabajo, oportunidades, flujo económico' },
+    { id:'salud', name:'Salud y Sanación', emoji:'🌿', descripcion:'Recuperación, equilibrio energético, alivio del dolor' },
+    { id:'claridad', name:'Claridad y Sabiduría', emoji:'🔮', descripcion:'Decisiones, visión, intuición, apertura mental' },
+    { id:'limpieza', name:'Limpieza Energética', emoji:'💨', descripcion:'Purificar el hogar, el cuerpo o situaciones' },
+    { id:'suerte', name:'Suerte y Oportunidades', emoji:'🍀', descripcion:'Magnetismo, puertas que se abren, sincronía' },
+    { id:'transformacion', name:'Transformación', emoji:'🦋', descripcion:'Cambio profundo, dejar ir, renacimiento personal' },
+  ];
+
+  const FASES_LUNA = {
+    nueva:    { name:'Luna Nueva', best:['inicio','manifestación','intención'], avoid:['destierro'] },
+    creciente:{ name:'Luna Creciente', best:['abundancia','crecimiento','amor','salud'], avoid:[] },
+    llena:    { name:'Luna Llena', best:['potenciación','máximo poder','claridad','todo'], avoid:[] },
+    menguante:{ name:'Luna Menguante', best:['destierro','limpieza','dejar ir','protección'], avoid:['amor nuevo'] },
+  };
+
+  const HERRAMIENTAS = {
+    velas:    { name:'Velas', desc:'La llama activa el hechizo; el color dirige la energía.' },
+    incienso: { name:'Incienso', desc:'Eleva la vibración y comunica al mundo invisible.' },
+    cristal:  { name:'Cristal principal', desc:'Ancla y amplifica la intención.' },
+    hierba:   { name:'Hierba sagrada', desc:'Vibración vegetal alineada con el propósito.' },
+    sigil:    { name:'Sigilo / Sello', desc:'Símbolo de la intención cargado y activado.' },
+    agua:     { name:'Agua', desc:'Luna llena, bendecida, de río o de lluvia según necesidad.' },
+    papel:    { name:'Papel y pluma', desc:'Para escribir la intención o el hechizo.' },
+  };
+
+  // Recetas de hechizos base por propósito
+  const RECETAS = {
+    amor: {
+      colores: ['Rosa', 'Rojo', 'Blanco', 'Naranja'],
+      hierbas: ['Rosa', 'Jazmín', 'Canela', 'Lavanda', 'Albahaca'],
+      cristales: ['Cuarzo Rosa', 'Rodocrosita', 'Malaquita', 'Cornalina'],
+      aceites: ['Rosa absoluta', 'Jazmín', 'Ylang ylang', 'Pachulí'],
+      momento: ['Venus (viernes)', 'Luna creciente', 'Luna llena'],
+      pasos: [
+        'Baño de purificación con sal y flores antes del rito',
+        'Preparar altar con velas rosas/rojas y flores frescas',
+        'Escribir la intención en papel rosado',
+        'Ungir la vela con aceite de rosa desde el centro hacia afuera (para atraer)',
+        'Encender y visualizar el amor deseado con detalle sensorial',
+        'Dejar la vela quemar en seguridad; guardar el papel bajo la cama',
+      ],
+    },
+    proteccion: {
+      colores: ['Negro', 'Blanco', 'Azul Oscuro', 'Morado'],
+      hierbas: ['Ruda', 'Romero', 'Salvia', 'Tabaco', 'Cedro'],
+      cristales: ['Obsidiana Negra', 'Turmalina Negra', 'Ojo de Tigre', 'Cuarzo Claro'],
+      aceites: ['Pino', 'Mirra', 'Benjuí', 'Copal'],
+      momento: ['Marte (martes)', 'Saturno (sábado)', 'Luna Menguante'],
+      pasos: [
+        'Limpiar el espacio con humo de salvia o palo santo',
+        'Trazar un círculo de sal alrededor del espacio de trabajo',
+        'Encender vela negra (para absorber) o blanca (para proteger)',
+        'Sostener la obsidiana y visualizar un escudo de luz oscura',
+        'Pronunciar la intención de protección en voz alta tres veces',
+        'Colocar la obsidiana en la entrada del hogar al terminar',
+      ],
+    },
+    dinero: {
+      colores: ['Verde', 'Dorado', 'Naranja', 'Marrón'],
+      hierbas: ['Canela', 'Albahaca', 'Menta', 'Cedro', 'Jengibre'],
+      cristales: ['Citrino', 'Pirita', 'Ojo de Tigre', 'Malaquita'],
+      aceites: ['Canela', 'Pachulí', 'Jengibre', 'Naranja dulce'],
+      momento: ['Júpiter (jueves)', 'Sol (domingo)', 'Luna creciente'],
+      pasos: [
+        'Limpiar el espacio y manos con incienso de copal o cedro',
+        'Preparar altar con monedas, hierba verde y vela dorada',
+        'Escribir la cantidad o situación específica que se desea',
+        'Ungir la vela con aceite de canela desde abajo hacia arriba (para traer)',
+        'Quemar la escritura sobre la llama (con cuidado) y mezclar cenizas con tierra',
+        'Enterrar cerca de la puerta principal o en una maceta de entrada',
+      ],
+    },
+    salud: {
+      colores: ['Verde', 'Blanco', 'Azul Claro', 'Amarillo'],
+      hierbas: ['Lavanda', 'Menta', 'Romero', 'Manzanilla', 'Ruda'],
+      cristales: ['Amatista', 'Cuarzo Claro', 'Selenita', 'Malaquita'],
+      aceites: ['Eucalipto', 'Lavanda', 'Árbol de Té', 'Menta'],
+      momento: ['Sol (domingo)', 'Luna (lunes)', 'Luna creciente'],
+      pasos: [
+        'Baño con sal del Himalaya y lavanda antes del rito',
+        'Preparar vela azul o verde con la parte del cuerpo afectada dibujada',
+        'Colocar cristal sobre el área a sanar mientras meditas',
+        'Visualizar luz dorada o verde bañando el área hasta que sane',
+        'Preparar bolsita de tela con hierbas de sanación para cargar',
+        'Dar gracias a la deidad o elemento elegido al terminar',
+      ],
+    },
+    claridad: {
+      colores: ['Amarillo', 'Morado', 'Blanco', 'Azul Claro'],
+      hierbas: ['Lavanda', 'Salvia', 'Romero', 'Canela'],
+      cristales: ['Amatista', 'Labradorita', 'Cuarzo Claro', 'Lápis Lázuli'],
+      aceites: ['Lavanda', 'Sándalo', 'Incienso', 'Menta'],
+      momento: ['Mercurio (miércoles)', 'Luna llena', 'Mediodía solar'],
+      pasos: [
+        'Meditar cinco minutos antes del rito vaciando la mente',
+        'Encender vela morada o amarilla e incienso de lavanda',
+        'Sostener cristal de claridad (amatista o cuarzo) en la frente',
+        'Escribir la pregunta o situación que necesita claridad',
+        'Leer en voz alta y esperar imágenes, sensaciones o palabras',
+        'Escribir lo que venga sin censurarlo; eso es el mensaje',
+      ],
+    },
+    limpieza: {
+      colores: ['Blanco', 'Azul Claro', 'Plata', 'Transparente'],
+      hierbas: ['Salvia', 'Palo Santo', 'Cedro', 'Ruda', 'Copal'],
+      cristales: ['Selenita', 'Cuarzo Claro', 'Obsidiana Negra', 'Amatista'],
+      aceites: ['Eucalipto', 'Pino', 'Limón', 'Incienso'],
+      momento: ['Luna Menguante', 'Sábado (Saturno)', 'Amanecer'],
+      pasos: [
+        'Abrir todas las ventanas para que salga la energía estancada',
+        'Barrer de adentro hacia afuera, barriendo la mala energía',
+        'Sahumerio de salvia o palo santo en cada rincón',
+        'Aspersión de agua salada o agua florida en pisos y paredes',
+        'Vela blanca encendida en el centro de cada habitación',
+        'Cierre: selenita en el umbral para mantener el espacio limpio',
+      ],
+    },
+    suerte: {
+      colores: ['Naranja', 'Dorado', 'Verde', 'Amarillo'],
+      hierbas: ['Canela', 'Albahaca', 'Menta', 'Flor de Jamaica'],
+      cristales: ['Citrino', 'Aventurina Verde', 'Ojo de Tigre', 'Cornalina'],
+      aceites: ['Naranja', 'Canela', 'Clavo', 'Ylang ylang'],
+      momento: ['Júpiter (jueves)', 'Sol (domingo)', 'Luna creciente nueva'],
+      pasos: [
+        'Darse un baño de siete frutas cítricas con azúcar y canela',
+        'Preparar bolsita de la suerte con moneda, canela y piedra verde',
+        'Trazar un sigilo de suerte y quemarlo para activarlo',
+        'Mantener la bolsita sobre el corazón durante 21 días',
+        'Recargar cada luna llena con tu aliento e intención',
+        'Dar las gracias cada vez que la suerte se manifieste',
+      ],
+    },
+    transformacion: {
+      colores: ['Negro', 'Morado', 'Rojo Oscuro', 'Naranja'],
+      hierbas: ['Ruda', 'Palo Santo', 'Copal', 'Tabaco', 'Cedro'],
+      cristales: ['Obsidiana Negra', 'Labradorita', 'Turmalina Negra', 'Cornalina'],
+      aceites: ['Mirra', 'Pachulí', 'Incienso', 'Vetiver'],
+      momento: ['Luna Menguante', 'Samhain', 'Eclipse', 'Saturno (sábado)'],
+      pasos: [
+        'Escribir lo que se quiere soltar con todo el detalle emocional',
+        'Leer en voz alta sintiendo el peso de lo que se suelta',
+        'Quemar el papel con llama negra o morada con intención plena',
+        'Mezclar cenizas con tierra de la raíz de un árbol viejo',
+        'Declarar en voz alta: "Lo que fui ya no me define. Renazco."',
+        'Darse un baño de agua fría al finalizar para sellar el cambio',
+      ],
+    },
+  };
+
+  return { PANTEONES, PROPOSITOS, FASES_LUNA, HERRAMIENTAS, RECETAS };
+})();
+
+// === hechizos.js ===
+'use strict';
+// ============================================================
+// HECHIZOS.JS — Constructor de hechizos por panteón
+// ============================================================
+const HechizosModule = (() => {
+
+  let selectedPanteon = 'universal';
+  let selectedProposito = '';
+  let selectedDeidad = null;
+  let generatedHechizo = null;
+
+  function renderPanteones() {
+    const wrap = document.getElementById('panteon-grid');
+    if (!wrap) return;
+    wrap.innerHTML = Object.values(HechizosData.PANTEONES).map(p => `
+      <div class="panteon-card${p.id===selectedPanteon?' active':''}"
+           data-panteon="${p.id}" onclick="HechizosModule.selectPanteon('${p.id}')">
+        <div class="panteon-emoji">${p.emoji}</div>
+        <div class="panteon-name">${p.name}</div>
+        <div class="panteon-desc">${p.desc.slice(0,60)}…</div>
+      </div>`).join('');
+  }
+
+  function renderPropositos() {
+    const wrap = document.getElementById('proposito-grid');
+    if (!wrap) return;
+    wrap.innerHTML = HechizosData.PROPOSITOS.map(p => `
+      <div class="prop-card${p.id===selectedProposito?' active':''}"
+           data-prop="${p.id}" onclick="HechizosModule.selectProposito('${p.id}')">
+        <div class="prop-emoji">${p.emoji}</div>
+        <div class="prop-name">${p.name}</div>
+        <div class="prop-desc">${p.descripcion}</div>
+      </div>`).join('');
+  }
+
+  function renderDeidades() {
+    const wrap = document.getElementById('deidad-grid');
+    if (!wrap) return;
+    const panteon = HechizosData.PANTEONES[selectedPanteon];
+    if (!panteon || panteon.deidades.length === 0) {
+      wrap.innerHTML = `<p class="text-muted">Este panteón trabaja con la energía universal sin deidades específicas.</p>`;
+      selectedDeidad = null;
+      return;
+    }
+    wrap.innerHTML = panteon.deidades.map(d => `
+      <div class="deidad-card${selectedDeidad?.name===d.name?' active':''}"
+           onclick="HechizosModule.selectDeidad(${JSON.stringify(d).replace(/"/g,"'")})">
+        <div class="deidad-name">${d.name}</div>
+        <div class="deidad-dominio">${d.dominio}</div>
+        <div class="deidad-num">Número sagrado: ${d.num}</div>
+        <div class="deidad-ofrenda">🌸 ${d.ofrendas}</div>
+      </div>`).join('');
+  }
+
+  function selectPanteon(id) {
+    selectedPanteon = id;
+    selectedDeidad = null;
+    document.querySelectorAll('.panteon-card').forEach(c=>c.classList.toggle('active',c.dataset.panteon===id));
+    renderDeidades();
+    clearResult();
+  }
+
+  function selectProposito(id) {
+    selectedProposito = id;
+    document.querySelectorAll('.prop-card').forEach(c=>c.classList.toggle('active',c.dataset.prop===id));
+    clearResult();
+  }
+
+  function selectDeidad(d) {
+    selectedDeidad = d;
+    document.querySelectorAll('.deidad-card').forEach(c=>{
+      c.classList.toggle('active', c.querySelector('.deidad-name')?.textContent===d.name);
+    });
+  }
+
+  function clearResult() {
+    const result = document.getElementById('hechizo-result');
+    if (result) result.classList.add('hidden');
+  }
+
+  function generarHechizo() {
+    if (!selectedProposito) {
+      alert('Elige un propósito para tu hechizo.');
+      return;
+    }
+
+    const panteon  = HechizosData.PANTEONES[selectedPanteon];
+    const receta   = HechizosData.RECETAS[selectedProposito];
+    const prop     = HechizosData.PROPOSITOS.find(p=>p.id===selectedProposito);
+    const now      = new Date();
+    const jd       = Astro.jd(now.getFullYear(), now.getMonth()+1, now.getDate(), now.getHours(), now.getMinutes());
+    const moon     = Astro.moonPhase(jd);
+    const lunaRec  = HechizosData.FASES_LUNA[moon.name.toLowerCase().replace(/ /g,'_')] || HechizosData.FASES_LUNA['llena'];
+
+    const deidad = selectedDeidad || (panteon.deidades.length > 0 ? panteon.deidades[0] : null);
+
+    generatedHechizo = {
+      panteon, prop, receta, deidad, moon, panteonId: selectedPanteon,
+    };
+
+    renderHechizo(generatedHechizo);
+
+    const result = document.getElementById('hechizo-result');
+    if (result) {
+      result.classList.remove('hidden');
+      result.scrollIntoView({ behavior:'smooth' });
+    }
+  }
+
+  function renderHechizo({ panteon, prop, receta, deidad, moon, panteonId }) {
+    const wrap = document.getElementById('hechizo-output');
+    if (!wrap) return;
+
+    const invocacion = deidad && panteon.invocacion
+      ? panteon.invocacion.replace('[Orisha]', deidad.name)
+                          .replace('[Deidad]', deidad.name)
+                          .replace('[dominio]', deidad.dominio.split(',')[0])
+      : '';
+
+    const pasos = receta.pasos.map((p,i) => `
+      <div class="hechizo-paso">
+        <span class="paso-num">${i+1}</span>
+        <span class="paso-text">${p}</span>
+      </div>`).join('');
+
+    const deitySec = deidad ? `
+      <div class="hechizo-sec">
+        <h4 class="hechizo-sec-title">🌟 Deidad Invocada — ${deidad.name}</h4>
+        <p><strong>Dominio:</strong> ${deidad.dominio}</p>
+        <p><strong>Ofrenda:</strong> ${deidad.ofrendas}</p>
+        <p><strong>Número sagrado:</strong> ${deidad.num}</p>
+        ${invocacion ? `<div class="hechizo-invocacion">"${invocacion}"</div>` : ''}
+      </div>` : '';
+
+    const notaSec = panteon.nota ? `
+      <div class="hechizo-nota">
+        <strong>📜 Nota del panteón ${panteon.name}:</strong> ${panteon.nota}
+      </div>` : '';
+
+    wrap.innerHTML = `
+      <div class="hechizo-header">
+        <div class="hechizo-title-row">
+          <span class="hechizo-panteon">${panteon.emoji} ${panteon.name}</span>
+          <span class="hechizo-prop">${prop.emoji} ${prop.name}</span>
+        </div>
+        <div class="hechizo-luna">
+          ${moon.emoji} ${moon.name} · ${moon.pct}% iluminada
+        </div>
+      </div>
+
+      ${deitySec}
+
+      <div class="hechizo-sec">
+        <h4 class="hechizo-sec-title">🕯️ Materiales</h4>
+        <div class="hechizo-materiales">
+          <div class="mat-col">
+            <strong>Colores de velas</strong>
+            <ul>${receta.colores.map(c=>`<li>${c}</li>`).join('')}</ul>
+          </div>
+          <div class="mat-col">
+            <strong>Hierbas sagradas</strong>
+            <ul>${receta.hierbas.map(h=>`<li>${h}</li>`).join('')}</ul>
+          </div>
+          <div class="mat-col">
+            <strong>Cristales</strong>
+            <ul>${receta.cristales.map(c=>`<li>${c}</li>`).join('')}</ul>
+          </div>
+          <div class="mat-col">
+            <strong>Aceites</strong>
+            <ul>${receta.aceites.map(a=>`<li>${a}</li>`).join('')}</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="hechizo-sec">
+        <h4 class="hechizo-sec-title">⏰ Mejor momento</h4>
+        <div class="hechizo-tags">
+          ${receta.momento.map(m=>`<span class="tag tag-momento">${m}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="hechizo-sec">
+        <h4 class="hechizo-sec-title">📋 Pasos del Ritual</h4>
+        ${pasos}
+      </div>
+
+      ${notaSec}
+
+      <div class="hechizo-actions">
+        <button class="btn-gold" onclick="HechizosModule.guardarComoRitual()">
+          📝 Guardar en mi Diario
+        </button>
+        <button class="btn-outline" onclick="HechizosModule.copiarHechizo()">
+          📋 Copiar Hechizo
+        </button>
+      </div>`;
+  }
+
+  function guardarComoRitual() {
+    if (!generatedHechizo) return;
+    const { panteon, prop, receta, deidad } = generatedHechizo;
+    const title = `${prop.emoji} Hechizo de ${prop.name} — ${panteon.name}`;
+    const body = `Panteón: ${panteon.name}\nDeidad: ${deidad?.name || 'Sin deidad específica'}\n\nMateriales:\n- Velas: ${receta.colores.join(', ')}\n- Hierbas: ${receta.hierbas.join(', ')}\n- Cristales: ${receta.cristales.join(', ')}\n\nPasos:\n${receta.pasos.map((p,i)=>`${i+1}. ${p}`).join('\n')}`;
+
+    if (window.DiarioModule) {
+      DiarioModule.addNew('ritual');
+      setTimeout(() => {
+        const titleEl = document.getElementById('entry-title');
+        const bodyEl  = document.getElementById('entry-body');
+        if (titleEl) titleEl.value = title;
+        if (bodyEl)  bodyEl.value  = body;
+        DiarioModule.autoSave();
+        if (window.AppModule) AppModule.goTo('diario');
+      }, 150);
+    }
+  }
+
+  function copiarHechizo() {
+    if (!generatedHechizo) return;
+    const { panteon, prop, receta, deidad } = generatedHechizo;
+    const text = `✨ HECHIZO DE ${prop.name.toUpperCase()} — ${panteon.name}\n${'─'.repeat(40)}\n${deidad ? `Deidad: ${deidad.name}\nOfrenda: ${deidad.ofrendas}\n\n` : ''}Materiales:\n• Velas: ${receta.colores.join(', ')}\n• Hierbas: ${receta.hierbas.join(', ')}\n• Cristales: ${receta.cristales.join(', ')}\n• Aceites: ${receta.aceites.join(', ')}\n\nPasos:\n${receta.pasos.map((p,i)=>`${i+1}. ${p}`).join('\n')}\n${panteon.nota ? `\nNota: ${panteon.nota}` : ''}`;
+    navigator.clipboard.writeText(text).then(() => alert('✅ Hechizo copiado al portapapeles'));
+  }
+
+  function init() {
+    renderPanteones();
+    renderPropositos();
+    renderDeidades();
+
+    const btn = document.getElementById('btn-generar-hechizo');
+    if (btn) btn.addEventListener('click', generarHechizo);
+  }
+
+  return { init, selectPanteon, selectProposito, selectDeidad, generarHechizo, guardarComoRitual, copiarHechizo };
+})();
+
+// === rueda.js ===
+'use strict';
+// ============================================================
+// RUEDA.JS — Rueda del Año: SVG interactivo
+// ============================================================
+const RuedaModule = (() => {
+
+  const SABBAT_INFO = {
+    'Samhain':    { desc:'El velo entre mundos es el más delgado. Noche de honrar a los ancestros y lo que termina.', ritual:'Altar de ancestros, velas negras y naranjas, ofrendas de marigold y manzanas.', color:'#8B0000', emoji:'🎃' },
+    'Yule':       { desc:'El solsticio de invierno: la noche más larga. El sol renace; la esperanza vuelve.', ritual:'Velas en rueda, Yule log, decoraciones de hiedra y muérdago, canto al sol.', color:'#1a4d1a', emoji:'🌲' },
+    'Imbolc':     { desc:'El primer aliento de primavera. El fuego de Brigid purifica y prepara lo nuevo.', ritual:'Cruz de Brigid, velas blancas, semillas a bendecir, baño de leche.', color:'#F0E68C', emoji:'🌱' },
+    'Ostara':     { desc:'Equinoccio de primavera: equilibrio de luz y oscuridad. Renacimiento y fertilidad.', ritual:'Huevos decorados, semillas plantadas, ritual de amanecer al este.', color:'#90EE90', emoji:'🌸' },
+    'Beltane':    { desc:'El fuego de mayo. Celebración del pico de vida, fertilidad y la magia del amor.', ritual:'Danza del palo de mayo, fuego de Beltane, flores en la cabeza y el altar.', color:'#FF4500', emoji:'🔥' },
+    'Litha':      { desc:'Solsticio de verano: el sol en su máximo poder. Punto de plenitud antes del retorno.', ritual:'Fogata al amanecer, hierbas de midsummer, agua de sol, meditación a mediodía.', color:'#FFD700', emoji:'☀️' },
+    'Lughnasadh': { desc:'Primera cosecha del año. Se celebra lo que ya maduró; gratitud y abundancia.', ritual:'Pan horneado con intención, ritual de acción de gracias, altar de granos.', color:'#DAA520', emoji:'🌾' },
+    'Mabon':      { desc:'Equinoccio de otoño: segunda cosecha. Equilibrio y preparación para lo que vendrá.', ritual:'Vino o jugo de manzana, altar de frutos del otoño, meditación de gratitud.', color:'#B8860B', emoji:'🍂' },
+  };
+
+  let selectedSabbat = null;
+
+  function renderRueda(containerId, sabbats, now) {
+    const wrap = document.getElementById(containerId);
+    if (!wrap) return;
+
+    const size = 460;
+    const cx = size / 2, cy = size / 2;
+    const R = { outer: 215, mid: 155, inner: 95, center: 40 };
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('height', '100%');
+    svg.style.cursor = 'pointer';
+
+    // Fondo
+    const bg = circle(cx, cy, R.outer + 5, '#080616', 'none');
+    svg.appendChild(bg);
+
+    // Días del año para posición actual
+    const dayOfYear = getDayOfYear(now);
+    const totalDays = isLeapYear(now.getFullYear()) ? 366 : 365;
+    const currentAngle = (dayOfYear / totalDays) * 360 - 90; // Inicio arriba
+
+    // Ocho sectores del año
+    sabbats.forEach((sab, i) => {
+      const startAngle = (i * 45 - 90 - 22.5) * Math.PI / 180;
+      const endAngle   = ((i + 1) * 45 - 90 - 22.5) * Math.PI / 180;
+      const info = SABBAT_INFO[sab.name] || {};
+
+      // Sector
+      const path = sectorPath(cx, cy, R.inner, R.mid, startAngle, endAngle);
+      const sector = document.createElementNS('http://www.w3.org/2000/svg','path');
+      sector.setAttribute('d', path);
+      sector.setAttribute('fill', hexToRgba(info.color || '#3A3060', 0.25));
+      sector.setAttribute('stroke', info.color || '#3A3060');
+      sector.setAttribute('stroke-width', '1');
+      sector.style.cursor = 'pointer';
+      sector.style.transition = 'fill .2s';
+
+      sector.addEventListener('click', () => onSabbatClick(sab, info));
+      sector.addEventListener('mouseenter', () => {
+        sector.setAttribute('fill', hexToRgba(info.color || '#3A3060', 0.5));
+      });
+      sector.addEventListener('mouseleave', () => {
+        sector.setAttribute('fill', hexToRgba(info.color || '#3A3060', 0.25));
+      });
+      svg.appendChild(sector);
+
+      // Anillo exterior (estaciones)
+      const outerPath = sectorPath(cx, cy, R.mid, R.outer, startAngle, endAngle);
+      const outer = document.createElementNS('http://www.w3.org/2000/svg','path');
+      outer.setAttribute('d', outerPath);
+      outer.setAttribute('fill', hexToRgba(info.color || '#3A3060', 0.1));
+      outer.setAttribute('stroke', '#2A2048');
+      outer.setAttribute('stroke-width', '.5');
+      svg.appendChild(outer);
+
+      // Emoji del sabbat
+      const midAngle = ((i * 45 - 90) * Math.PI / 180);
+      const er = (R.inner + R.mid) / 2;
+      const ex = cx + er * Math.cos(midAngle);
+      const ey = cy + er * Math.sin(midAngle);
+      const emj = text(ex, ey, info.emoji || '☽', '18', '#fff');
+      emj.style.pointerEvents = 'none';
+      svg.appendChild(emj);
+
+      // Nombre del sabbat (anillo exterior)
+      const nr = (R.mid + R.outer) / 2;
+      const nx = cx + nr * Math.cos(midAngle);
+      const ny = cy + nr * Math.sin(midAngle);
+      const lbl = text(nx, ny, sab.name, '8.5', info.color || '#D8C8F0');
+      lbl.setAttribute('font-weight','bold');
+      lbl.style.pointerEvents = 'none';
+      svg.appendChild(lbl);
+
+      // Fecha
+      const fdate = formatSabbatDate(sab.date);
+      const fd = text(nx, ny + 10, fdate, '7', 'rgba(216,200,240,.6)');
+      fd.style.pointerEvents = 'none';
+      svg.appendChild(fd);
+    });
+
+    // Círculos estructurales
+    [R.outer, R.mid, R.inner].forEach(r => {
+      const c = circle(cx, cy, r, 'none', '#2A2048');
+      c.setAttribute('stroke-width', '.8');
+      svg.appendChild(c);
+    });
+
+    // Indicador del día actual
+    const curA = currentAngle * Math.PI / 180;
+    const ix1 = cx + R.inner * Math.cos(curA);
+    const iy1 = cy + R.inner * Math.sin(curA);
+    const ix2 = cx + R.outer * Math.cos(curA);
+    const iy2 = cy + R.outer * Math.sin(curA);
+    const nowLine = document.createElementNS('http://www.w3.org/2000/svg','line');
+    nowLine.setAttribute('x1', ix1); nowLine.setAttribute('y1', iy1);
+    nowLine.setAttribute('x2', ix2); nowLine.setAttribute('y2', iy2);
+    nowLine.setAttribute('stroke', '#FFD700');
+    nowLine.setAttribute('stroke-width', '2');
+    nowLine.setAttribute('stroke-dasharray', '4,3');
+    svg.appendChild(nowLine);
+
+    // Punto en el centro del indicador
+    const nowDot = circle(cx + (R.inner + R.outer)/2 * Math.cos(curA),
+                          cy + (R.inner + R.outer)/2 * Math.sin(curA),
+                          4, '#FFD700', 'none');
+    svg.appendChild(nowDot);
+
+    // Sol en el centro
+    const centerCircle = circle(cx, cy, R.center, '#1a1030', '#B8860B');
+    centerCircle.setAttribute('stroke-width','1.5');
+    svg.appendChild(centerCircle);
+
+    const sunText = text(cx, cy, '☀', '28', 'rgba(218,165,32,.7)');
+    svg.appendChild(sunText);
+
+    wrap.innerHTML = '';
+    wrap.appendChild(svg);
+  }
+
+  function onSabbatClick(sab, info) {
+    selectedSabbat = sab;
+    const detWrap = document.getElementById('sabbat-detail-wrap');
+    if (!detWrap) return;
+
+    const daysLeft = Math.ceil((new Date(sab.date) - new Date()) / 86400000);
+    const dStr = daysLeft > 0 ? `en ${daysLeft} días` : (daysLeft === 0 ? 'HOY' : `hace ${-daysLeft} días`);
+
+    detWrap.innerHTML = `
+      <div class="sabbat-detail-card">
+        <div class="sabbat-detail-header" style="border-color:${info.color}">
+          <span class="sabbat-detail-emoji">${info.emoji}</span>
+          <div>
+            <h2 class="sabbat-detail-name" style="color:${info.color}">${sab.name}</h2>
+            <p class="sabbat-detail-fecha">${formatFechaLarga(sab.date)} · <span class="text-gold">${dStr}</span></p>
+          </div>
+        </div>
+        <p class="sabbat-detail-desc">${info.desc}</p>
+        <div class="sabbat-ritual-box">
+          <h4>🕯️ Ritual sugerido</h4>
+          <p>${info.ritual}</p>
+        </div>
+        <button class="btn-gold sabbat-add-btn" onclick="DiarioModule && DiarioModule.addSabbatEntry('${sab.name}')">
+          📝 Agregar al Diario
+        </button>
+      </div>
+    `;
+  }
+
+  function sectorPath(cx, cy, r1, r2, a1, a2) {
+    const x1 = cx + r2 * Math.cos(a1), y1 = cy + r2 * Math.sin(a1);
+    const x2 = cx + r2 * Math.cos(a2), y2 = cy + r2 * Math.sin(a2);
+    const x3 = cx + r1 * Math.cos(a2), y3 = cy + r1 * Math.sin(a2);
+    const x4 = cx + r1 * Math.cos(a1), y4 = cy + r1 * Math.sin(a1);
+    return `M${x1},${y1} A${r2},${r2} 0 0,1 ${x2},${y2} L${x3},${y3} A${r1},${r1} 0 0,0 ${x4},${y4} Z`;
+  }
+
+  function circle(cx, cy, r, fill, stroke) {
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',cx); c.setAttribute('cy',cy); c.setAttribute('r',r);
+    c.setAttribute('fill',fill); c.setAttribute('stroke',stroke);
+    return c;
+  }
+
+  function text(x, y, content, size, fill) {
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',x); t.setAttribute('y',y);
+    t.setAttribute('font-size',size);
+    t.setAttribute('fill',fill);
+    t.setAttribute('text-anchor','middle');
+    t.setAttribute('dominant-baseline','middle');
+    t.setAttribute('font-family','Cinzel, serif');
+    t.textContent = content;
+    return t;
+  }
+
+  function getDayOfYear(d) {
+    const start = new Date(d.getFullYear(), 0, 0);
+    return Math.floor((d - start) / 86400000);
+  }
+
+  function isLeapYear(y) { return (y%4===0 && y%100!==0) || y%400===0; }
+
+  function formatSabbatDate(ds) {
+    const d = new Date(ds + 'T12:00:00');
+    return d.toLocaleDateString('es', { day:'numeric', month:'short' });
+  }
+
+  function formatFechaLarga(ds) {
+    const d = new Date(ds + 'T12:00:00');
+    return d.toLocaleDateString('es', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  }
+
+  function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  function init() {
+    const now = new Date();
+    const sabbats = Astro.SABBATS;
+    renderRueda('rueda-svg-wrap', sabbats, now);
+
+    // Próximo sabbat info
+    const next = Astro.nextSabbat(now);
+    const nextInfo = document.getElementById('next-sabbat-info');
+    if (nextInfo && next) {
+      const info = SABBAT_INFO[next.name] || {};
+      const days = Astro.daysUntil(next.date, now);
+      nextInfo.innerHTML = `
+        <span class="text-gold">${info.emoji} ${next.name}</span>
+        <span class="text-muted"> — ${formatSabbatDate(next.date)} · faltan <strong style="color:var(--gold)">${days} días</strong></span>
+      `;
+    }
+
+    // Click en el primer sabbat por defecto
+    if (sabbats.length > 0) {
+      onSabbatClick(sabbats[0], SABBAT_INFO[sabbats[0].name] || {});
+    }
+  }
+
+  return { init, SABBAT_INFO };
+})();
+
+// === tareas.js ===
+'use strict';
+// ============================================================
+// TAREAS.JS — Prácticas y Tareas mágicas
+// ============================================================
+const TareasModule = (() => {
+
+  const STORAGE_KEY = 'bruja_tareas';
+  let tareas = [];
+
+  const CATEGORIAS = [
+    { id:'practica', name:'✨ Práctica', color:'#5B2D8E' },
+    { id:'ritual',   name:'🕯️ Ritual',   color:'#8B0000' },
+    { id:'estudio',  name:'📚 Estudio',  color:'#1a4d6e' },
+    { id:'lunar',    name:'🌙 Lunar',    color:'#2A6090' },
+    { id:'personal', name:'🌱 Personal', color:'#1a4d1a' },
+  ];
+
+  const PLANTILLAS = [
+    { title:'Meditación diaria', desc:'10-20 min de meditación antes de dormir o al despertar', categoria:'practica', recurrente:'diario' },
+    { title:'Ritual de Luna Nueva', desc:'Poner intenciones, escribir deseos y encender vela blanca', categoria:'ritual', recurrente:'mensual' },
+    { title:'Ritual de Luna Llena', desc:'Liberar lo que ya no sirve, dar gracias, ritual de agua', categoria:'ritual', recurrente:'mensual' },
+    { title:'Limpiar cristales', desc:'Sahumerio, agua de luna o sonido sagrado para recargar cristales', categoria:'practica', recurrente:'mensual' },
+    { title:'Estudio: una runa', desc:'Elegir una runa y estudiarla durante una semana', categoria:'estudio', recurrente:'semanal' },
+    { title:'Baño ritual', desc:'Sal, hierbas y intención para el baño de purificación semanal', categoria:'ritual', recurrente:'semanal' },
+    { title:'Journaling mágico', desc:'Escribir tres cosas mágicas que noté hoy', categoria:'practica', recurrente:'diario' },
+    { title:'Carta astral: leer una casa', desc:'Estudiar una casa de tu carta natal cada semana', categoria:'estudio', recurrente:'semanal' },
+  ];
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      tareas = raw ? JSON.parse(raw) : [];
+    } catch(e) { tareas = []; }
+  }
+
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tareas)); }
+    catch(e) {}
+  }
+
+  function addTarea(fields) {
+    const t = {
+      id: Date.now(),
+      title: fields.title || '',
+      desc:  fields.desc || '',
+      categoria: fields.categoria || 'practica',
+      recurrente: fields.recurrente || 'unica',
+      fecha: fields.fecha || '',
+      done: false,
+      created: new Date().toISOString(),
+    };
+    tareas.unshift(t);
+    save();
+    return t;
+  }
+
+  function toggleDone(id) {
+    const t = tareas.find(t=>t.id===id);
+    if (t) { t.done = !t.done; save(); render(); }
+  }
+
+  function deleteTarea(id) {
+    tareas = tareas.filter(t=>t.id!==id);
+    save();
+    render();
+  }
+
+  function render() {
+    const wrap = document.getElementById('tareas-lista');
+    if (!wrap) return;
+
+    const pending = tareas.filter(t=>!t.done);
+    const done    = tareas.filter(t=>t.done);
+
+    if (tareas.length === 0) {
+      wrap.innerHTML = `<div class="tareas-empty">
+        <p>✨ No hay tareas aún. Agrega tus prácticas mágicas o usa una plantilla.</p>
+      </div>`;
+      return;
+    }
+
+    const renderGroup = (arr, title, collapsed) => {
+      if (!arr.length) return '';
+      return `
+        <div class="tareas-group">
+          <h4 class="tareas-group-title">${title} (${arr.length})</h4>
+          ${arr.map(t => {
+            const cat = CATEGORIAS.find(c=>c.id===t.categoria)||CATEGORIAS[0];
+            return `
+              <div class="tarea-item${t.done?' done':''}">
+                <div class="tarea-check${t.done?' checked':''}" onclick="TareasModule.toggleDone(${t.id})">
+                  ${t.done ? '✓' : ''}
+                </div>
+                <div class="tarea-body">
+                  <div class="tarea-title">${t.title}</div>
+                  ${t.desc ? `<div class="tarea-desc">${t.desc}</div>` : ''}
+                  <div class="tarea-meta">
+                    <span class="tag" style="background:${cat.color}20;border-color:${cat.color}40;color:${cat.color}">${cat.name}</span>
+                    ${t.recurrente !== 'unica' ? `<span class="tag">🔄 ${t.recurrente}</span>` : ''}
+                    ${t.fecha ? `<span class="tag">📅 ${t.fecha}</span>` : ''}
+                  </div>
+                </div>
+                <button class="tarea-del" onclick="TareasModule.deleteTarea(${t.id})">🗑️</button>
+              </div>`;
+          }).join('')}
+        </div>`;
+    };
+
+    wrap.innerHTML = renderGroup(pending, '⏳ Pendientes') + renderGroup(done, '✅ Completadas');
+  }
+
+  function renderPlantillas() {
+    const wrap = document.getElementById('plantillas-grid');
+    if (!wrap) return;
+    wrap.innerHTML = PLANTILLAS.map(p => `
+      <div class="plantilla-card" onclick="TareasModule.addFromPlantilla(${JSON.stringify(p).replace(/"/g,"'")})">
+        <div class="plantilla-title">${p.title}</div>
+        <div class="plantilla-desc">${p.desc}</div>
+        <div class="plantilla-tags">
+          <span class="tag">${CATEGORIAS.find(c=>c.id===p.categoria)?.name||p.categoria}</span>
+          <span class="tag">🔄 ${p.recurrente}</span>
+        </div>
+      </div>`).join('');
+  }
+
+  function addFromPlantilla(p) {
+    addTarea(p);
+    render();
+  }
+
+  function initForm() {
+    const form = document.getElementById('tarea-form');
+    if (!form) return;
+
+    // Categorías en el select
+    const catSel = document.getElementById('tarea-categoria');
+    if (catSel) {
+      catSel.innerHTML = CATEGORIAS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const title = document.getElementById('tarea-title')?.value?.trim();
+      if (!title) return;
+      addTarea({
+        title,
+        desc:       document.getElementById('tarea-desc')?.value || '',
+        categoria:  catSel?.value || 'practica',
+        recurrente: document.getElementById('tarea-rec')?.value || 'unica',
+        fecha:      document.getElementById('tarea-fecha')?.value || '',
+      });
+      form.reset();
+      render();
+    });
+  }
+
+  function init() {
+    load();
+    render();
+    renderPlantillas();
+    initForm();
+  }
+
+  return { init, toggleDone, deleteTarea, addFromPlantilla };
+})();
+
+</script>
+</body>
+</html>
