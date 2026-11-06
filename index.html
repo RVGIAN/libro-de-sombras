@@ -14,30 +14,33 @@
    Paleta: oscuro/violeta + dorado
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
 
 :root {
-  --bg:        #0D0B1E;
-  --bg-card:   #161228;
-  --bg-hover:  #1E1838;
-  --bg-input:  #130F24;
-  --purple:    #5B2D8E;
-  --purple-l:  #7B4DB3;
-  --gold:      #B8860B;
-  --gold-l:    #DAA520;
-  --gold-g:    #FFD700;
-  --lavender:  #D8C8F0;
-  --text:      #EAE0FF;
-  --muted:     #8B7BA8;
-  --border:    #2A2048;
+  --bg:        #07050F;
+  --bg-card:   #100D22;
+  --bg-hover:  #18143A;
+  --bg-input:  #0D0A1E;
+  --purple:    #4A1A7A;
+  --purple-l:  #6B3AAF;
+  --gold:      #C4972A;
+  --gold-l:    #E8B84B;
+  --gold-g:    #FFD966;
+  --lavender:  #DDD0F5;
+  --text:      #F0E8FF;
+  --muted:     #7A6A9A;
+  --border:    #221A42;
   --fire:      #FF6B35;
   --water:     #4A90D9;
   --earth:     #7B9E3A;
   --air:       #A8D8EA;
   --r:         0.75rem;
   --r-lg:      1.25rem;
-  --shadow:    0 4px 24px rgba(0,0,0,.5);
-  --glow:      0 0 20px rgba(184,134,11,.2);
+  --shadow:    0 8px 32px rgba(0,0,0,.7);
+  --glow:      0 0 30px rgba(196,151,42,.25);
+  --font-title: 'Cinzel Decorative', serif;
+  --font-heading: 'Cinzel', serif;
+  --font-body:  'Crimson Text', serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -123,13 +126,15 @@ body {
 .sidebar-logo {
   padding: 1.5rem 1.2rem 1rem;
   border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(196,151,42,.07) 0%, transparent 100%);
 }
-.sidebar-logo .moons { font-size: 1rem; letter-spacing: .2rem; }
+.sidebar-logo .moons { font-size: 1.1rem; letter-spacing: .3rem; color: var(--gold-l); text-shadow: 0 0 12px rgba(196,151,42,.5); }
 .sidebar-logo h2 {
-  font-family: 'Cinzel', serif; font-size: .85rem;
-  color: var(--gold-l); letter-spacing: .05em; margin-top: .4rem;
+  font-family: var(--font-title); font-size: .78rem;
+  color: var(--gold-g); letter-spacing: .04em; margin-top: .5rem;
+  text-shadow: 0 0 16px rgba(255,217,102,.35);
 }
-.sidebar-logo p { font-size: .7rem; color: var(--muted); margin-top: .15rem; }
+.sidebar-logo p { font-size: .68rem; color: var(--muted); margin-top: .15rem; font-family: var(--font-body); }
 
 .nav-links { list-style: none; padding: 1rem 0; flex: 1; overflow-y: auto; }
 .nav-links li + li { margin-top: .25rem; }
@@ -176,8 +181,9 @@ body {
   box-shadow: var(--shadow);
 }
 .card-title {
-  font-family: 'Cinzel', serif; font-size: .9rem;
-  color: var(--gold-l); letter-spacing: .05em; margin-bottom: .75rem;
+  font-family: var(--font-heading); font-size: .9rem;
+  color: var(--gold-l); letter-spacing: .07em; margin-bottom: .75rem;
+  text-transform: uppercase;
 }
 .card-gold { border-color: rgba(184,134,11,.35); box-shadow: var(--glow); }
 
@@ -375,30 +381,45 @@ body {
 
 /* Modal */
 .modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,.7);
+  position: fixed; inset: 0; background: rgba(0,0,0,.8);
   z-index: 200; display: flex; align-items: center; justify-content: center;
-  padding: 1rem;
-  opacity: 0; visibility: hidden; transition: all .25s;
+  padding: 1rem; backdrop-filter: blur(4px);
+  opacity: 1; visibility: visible; transition: all .25s;
 }
-.modal-overlay.open { opacity: 1; visibility: visible; }
-.modal {
-  background: var(--bg-card); border: 1px solid rgba(184,134,11,.35);
-  border-radius: var(--r-lg); padding: 1.5rem; max-width: 520px; width: 100%;
-  max-height: 80vh; overflow-y: auto; transform: scale(.96) translateY(8px);
-  transition: transform .25s;
+.modal-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.modal-box {
+  background: linear-gradient(160deg, #18143A 0%, #100D22 100%);
+  border: 1px solid rgba(196,151,42,.4);
+  border-radius: var(--r-lg); padding: 0; max-width: 540px; width: 100%;
+  max-height: 85vh; overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,.8), 0 0 40px rgba(196,151,42,.1);
+  transform: scale(1) translateY(0); transition: transform .25s;
 }
-.modal-overlay.open .modal { transform: scale(1) translateY(0); }
-.modal h3 { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--gold-l); margin-bottom: 1rem; }
+.modal-overlay.hidden .modal-box { transform: scale(.95) translateY(16px); }
+.modal-header {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, rgba(196,151,42,.12), transparent);
+  border-bottom: 1px solid rgba(196,151,42,.2);
+  position: sticky; top: 0; z-index: 1;
+  backdrop-filter: blur(8px);
+}
+.modal-title { font-family: var(--font-heading); font-size: 1.2rem; color: var(--gold-l); margin-bottom: .2rem; }
+.modal-body { padding: 1.25rem 1.5rem; }
+.modal-row { margin-bottom: .9rem; font-size: .92rem; line-height: 1.65; color: var(--lavender); }
+.modal-row strong { font-family: var(--font-heading); font-size: .75rem; color: var(--gold-l); letter-spacing: .08em; display: block; margin-bottom: .2rem; text-transform: uppercase; }
+.modal-runa-sym { font-size: 2.8rem; line-height: 1; color: var(--gold-g); text-shadow: 0 0 20px rgba(255,217,102,.4); }
+.modal-caution { background: rgba(255,107,53,.08); border-left: 3px solid #FF6B35; border-radius: 6px; padding: .5rem .75rem; }
 .modal-close {
-  position: sticky; top: 0; float: right;
-  background: transparent; border: none; color: var(--muted);
-  font-size: 1.3rem; cursor: pointer; transition: color .2s;
+  margin-left: auto; flex-shrink: 0;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+  color: var(--muted); font-size: 1rem; cursor: pointer; border-radius: 50%;
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
 }
-.modal-close:hover { color: var(--text); }
-.modal-section { margin-bottom: .75rem; }
-.modal-section strong { font-size: .78rem; color: var(--gold-l); letter-spacing: .04em; display: block; margin-bottom: .25rem; }
-.modal-section p { font-family: 'Crimson Text', serif; font-size: .95rem; color: var(--lavender); line-height: 1.6; }
-.modal-tags { display: flex; flex-wrap: wrap; gap: .3rem; }
+.modal-close:hover { color: var(--text); background: rgba(255,255,255,.12); }
+.modal-actions { display: flex; gap: .6rem; padding: 1rem 1.5rem; border-top: 1px solid rgba(196,151,42,.15); }
+.modal-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .4rem; }
 .caution { font-size: .8rem; color: #FF6B35; margin-top: .5rem; }
 
 /* Runa grid */
@@ -1220,6 +1241,134 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
   pointer-events: none; white-space: nowrap;
 }
 
+/* ════════════════════════════════════════════════════════════
+   SIDEBAR — LOGOUT & ACCOUNT BUTTONS
+════════════════════════════════════════════════════════════ */
+.sidebar-logout-btn {
+  display: block; width: 100%; padding: .5rem .75rem;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 8px; color: var(--muted); font-size: .78rem;
+  cursor: pointer; text-align: left; transition: all .2s;
+}
+.sidebar-logout-btn:hover { background: rgba(255,255,255,.08); color: var(--text); }
+.nav-sep { height: 1px; background: var(--border); margin: .5rem 0; }
+
+/* ════════════════════════════════════════════════════════════
+   ALTAR
+════════════════════════════════════════════════════════════ */
+.altar-selector {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+}
+.altar-btn {
+  padding: .4rem .9rem; border-radius: 20px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--muted); cursor: pointer; font-size: .82rem;
+  transition: all .2s; white-space: nowrap;
+}
+.altar-btn:hover { border-color: var(--gold); color: var(--text); }
+.altar-btn.active {
+  background: rgba(196,151,42,.15); border-color: var(--gold);
+  color: var(--gold-l); font-weight: 600;
+}
+.altar-nota {
+  padding: .75rem 1rem; border-left: 3px solid var(--gold);
+  background: rgba(196,151,42,.07); border-radius: 0 8px 8px 0;
+  font-size: .85rem; color: var(--lavender); margin-top: 1rem; line-height: 1.6;
+}
+.altar-layout {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr));
+  gap: .75rem; margin-top: 1rem;
+}
+.altar-elem-card {
+  padding: .85rem; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg-hover); transition: all .2s;
+}
+.altar-elem-card:hover { border-color: var(--gold); }
+.altar-elem-emoji { font-size: 1.5rem; margin-bottom: .3rem; }
+.altar-elem-nombre { font-weight: 600; font-family: var(--font-heading); font-size: .88rem; color: var(--gold-l); }
+.altar-elem-pos { font-size: .75rem; color: var(--muted); margin: .15rem 0; }
+.altar-elem-uso { font-size: .8rem; color: var(--lavender); line-height: 1.5; }
+.altar-colores { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1rem; }
+.altar-color-swatch {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .4rem .75rem; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.1); font-size: .82rem;
+}
+.altar-tabs { display: flex; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+
+/* ════════════════════════════════════════════════════════════
+   COCINA MÁGICA
+════════════════════════════════════════════════════════════ */
+.cocina-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.cocina-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.1rem 1rem;
+  cursor: pointer; transition: all .2s;
+}
+.cocina-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: var(--glow); }
+.cocina-emoji { font-size: 2rem; margin-bottom: .4rem; }
+.cocina-nombre {
+  font-family: var(--font-heading); font-size: .92rem;
+  color: var(--gold-l); font-weight: 600; margin-bottom: .3rem;
+}
+.cocina-intencion { font-size: .78rem; color: var(--muted); line-height: 1.4; }
+
+/* ════════════════════════════════════════════════════════════
+   ADIVINACIÓN
+════════════════════════════════════════════════════════════ */
+.adiv-spread-una { display: flex; justify-content: center; }
+.adiv-spread-tres { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+.adiv-spread-cruz { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: auto auto; gap: 1rem; }
+.adiv-spread-cruz .adiv-carta-wrap:nth-child(1) { grid-column: 2; }
+.adiv-spread-cruz .adiv-carta-wrap:nth-child(2) { grid-column: 1; grid-row: 2; }
+.adiv-spread-cruz .adiv-carta-wrap:nth-child(3) { grid-column: 2; grid-row: 2; }
+.adiv-spread-cruz .adiv-carta-wrap:nth-child(4) { grid-column: 3; grid-row: 2; }
+.adiv-spread-cruz .adiv-carta-wrap:nth-child(5) { grid-column: 2; grid-row: 3; }
+
+.adiv-carta-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: .4rem;
+  cursor: pointer;
+}
+.adiv-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.adiv-carta {
+  width: 90px; height: 140px; border-radius: 10px;
+  background: linear-gradient(160deg, #1E1548, #0F0B28);
+  border: 2px solid var(--gold); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: .4rem;
+  transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 4px 15px rgba(0,0,0,.5);
+}
+.adiv-carta:hover { transform: translateY(-4px); box-shadow: var(--glow); }
+.adiv-carta.invertida { transform: rotate(180deg); border-color: #8B0000; }
+.adiv-carta.invertida:hover { transform: rotate(180deg) translateY(-4px); }
+.adiv-carta-sym { font-size: 2rem; }
+.adiv-carta-num { font-size: .7rem; color: var(--muted); }
+.adiv-carta-name { font-size: .78rem; color: var(--lavender); text-align: center; max-width: 90px; }
+
+.adiv-runa-resultado {
+  display: flex; flex-direction: column; align-items: center;
+  gap: .6rem; cursor: pointer; padding: 2rem;
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--bg-hover); transition: all .2s;
+  max-width: 300px; margin: 0 auto;
+}
+.adiv-runa-resultado:hover { border-color: var(--gold); }
+.adiv-runa-sym {
+  font-size: 4rem; color: var(--gold-g);
+  text-shadow: 0 0 25px rgba(255,217,102,.5);
+  line-height: 1;
+}
+.adiv-runa-sym.invertida { transform: rotate(180deg); }
+.adiv-runa-name { font-family: var(--font-heading); font-size: 1.1rem; color: var(--gold-l); }
+.adiv-runa-kw { font-size: .82rem; color: var(--muted); text-align: center; }
+.adiv-runa-desc { font-size: .88rem; color: var(--lavender); text-align: center; line-height: 1.6; }
+
+/* Modal tags */
+.modal-tags { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: .3rem; }
+
 </style>
 </head>
 <body>
@@ -1299,11 +1448,27 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
       <a class="nav-link" data-section="calendario" href="#">
         <span class="nav-icon">📅</span> Calendario
       </a>
+      <div class="nav-sep"></div>
+      <a class="nav-link" data-section="altar" href="#">
+        <span class="nav-icon">🕯️</span> Altar
+      </a>
+      <a class="nav-link" data-section="cocina" href="#">
+        <span class="nav-icon">🌿</span> Cocina Mágica
+      </a>
+      <a class="nav-link" data-section="adivinacion" href="#">
+        <span class="nav-icon">🃏</span> Adivinación
+      </a>
     </nav>
 
     <div class="sidebar-bottom">
       <button class="sidebar-search-btn" data-search-open>
         🔍 Buscar <kbd>⌘K</kbd>
+      </button>
+      <button class="sidebar-logout-btn" id="sidebar-logout" onclick="AppModule.logout()">
+        🚪 Cerrar sesión
+      </button>
+      <button class="sidebar-logout-btn" id="btn-change-pass" onclick="AppModule.showChangePass()" style="margin-top:.3rem">
+        🗝 Cambiar contraseña
       </button>
     </div>
   </aside>
@@ -1660,12 +1825,102 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
       </div>
     </section>
 
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: ALTAR
+    ════════════════════════════════════════════ -->
+    <section id="sec-altar" class="section">
+      <h1 class="section-title">🕯️ Altar</h1>
+      <p class="section-sub">Elementos sagrados por panteón — dispón tu altar con intención</p>
+      <div class="card" style="margin-bottom:1.5rem">
+        <h3 class="card-title">Elige tu Panteón</h3>
+        <div id="altar-selector" class="altar-selector"></div>
+      </div>
+      <div id="altar-detail"></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: COCINA MÁGICA
+    ════════════════════════════════════════════ -->
+    <section id="sec-cocina" class="section">
+      <h1 class="section-title">🌿 Cocina Mágica</h1>
+      <p class="section-sub">Recetas con intención — alquimia en tu cocina</p>
+      <div class="card" style="margin-bottom:1rem">
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
+          <div id="cocina-filtros" style="display:flex;gap:.4rem;flex-wrap:wrap;flex:1"></div>
+          <input id="cocina-search" class="form-input" placeholder="🔍 Buscar receta…" style="max-width:220px">
+        </div>
+      </div>
+      <div id="cocina-grid" class="cocina-grid"></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         SECCIÓN: ADIVINACIÓN
+    ════════════════════════════════════════════ -->
+    <section id="sec-adivinacion" class="section">
+      <h1 class="section-title">🃏 Adivinación</h1>
+      <p class="section-sub">Tarot de los Arcanos Mayores · Oráculo de Runas Elder Futhark</p>
+      <div class="card" style="margin-bottom:1.5rem">
+        <div style="display:flex;gap:.6rem;margin-bottom:1rem">
+          <button id="adiv-btn-tarot" class="bib-tab active">🃏 Tarot</button>
+          <button id="adiv-btn-runas" class="bib-tab">ᚠ Runas</button>
+        </div>
+        <div id="adiv-spreads" style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem">
+          <button id="adiv-btn-spread-una" class="bib-tab active">Una carta</button>
+          <button id="adiv-btn-spread-tres" class="bib-tab">Pasado · Presente · Futuro</button>
+          <button id="adiv-btn-spread-cruz" class="bib-tab">Cruz Celta (5)</button>
+        </div>
+        <div id="adiv-info" class="text-muted" style="font-size:.88rem;margin-bottom:1rem"></div>
+        <button id="adiv-btn-tirar" class="btn-gold" style="width:100%;font-size:1rem;padding:.85rem">
+          ✦ Consultar el Oráculo ✦
+        </button>
+      </div>
+      <div id="adiv-resultado" class="hidden">
+        <div id="adiv-cartas" class="card" style="padding:1.5rem"></div>
+        <div id="adiv-interpretacion" class="card hidden" style="margin-top:1rem;padding:1.5rem"></div>
+      </div>
+    </section>
+
   </main><!-- /.main -->
 </div><!-- /#app -->
 
 <!-- ══════════════════════════════════════════════════════════
      MODAL BIBLIOTECA
 ══════════════════════════════════════════════════════════ -->
+<!-- MODAL COCINA -->
+<div id="cocina-modal" class="modal-overlay hidden" role="dialog">
+  <div class="modal-box">
+    <div id="cocina-modal-content"></div>
+  </div>
+</div>
+
+<!-- MODAL ADIVINACIÓN -->
+<div id="adiv-modal" class="modal-overlay hidden" role="dialog">
+  <div class="modal-box">
+    <div id="adiv-modal-content"></div>
+  </div>
+</div>
+
+<!-- MODAL CAMBIO DE CONTRASEÑA -->
+<div id="changepass-modal" class="modal-overlay hidden" role="dialog">
+  <div class="modal-box" style="max-width:420px">
+    <div class="modal-header">
+      <span style="font-size:1.5rem">🗝</span>
+      <div><div class="modal-title">Cambiar contraseña</div></div>
+      <button class="modal-close" onclick="AppModule.closeChangePass()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input id="cp-old" class="login-input" type="password" placeholder="Contraseña actual" style="margin-bottom:.6rem">
+      <input id="cp-new" class="login-input" type="password" placeholder="Nueva contraseña" style="margin-bottom:.6rem">
+      <input id="cp-new2" class="login-input" type="password" placeholder="Repetir nueva contraseña">
+      <div id="cp-err" style="color:#ff6b6b;font-size:.82rem;margin-top:.5rem"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-gold" onclick="AppModule.doChangePass()">✦ Guardar</button>
+      <button class="btn-outline-sm" onclick="AppModule.closeChangePass()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <div id="bib-modal" class="modal-overlay hidden" role="dialog">
   <div class="modal-box">
     <div id="bib-modal-content"></div>
@@ -3323,6 +3578,17 @@ const BibliotecaModule = (() => {
   let activeTab = 'hierbas';
   let searchQuery = '';
   let modalOpen = false;
+  const CUSTOM_KEY = 'bruja_bib_custom'; // {hierbas:[], cristales:[], aceites:[]}
+
+  function loadCustom() {
+    try { return JSON.parse(localStorage.getItem(CUSTOM_KEY) || '{}'); } catch(e){ return {}; }
+  }
+  function saveCustom(data) {
+    try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(data)); } catch(e){}
+  }
+  function getCustomForTab(tab) {
+    const c = loadCustom(); return c[tab] || [];
+  }
 
   const TABS = [
     { id:'hierbas',   label:'🌿 Hierbas',   data:()=>BibData.hierbas },
@@ -3383,7 +3649,9 @@ const BibliotecaModule = (() => {
   function getFilteredData() {
     const tab = TABS.find(t=>t.id===activeTab);
     if (!tab) return [];
-    const data = tab.data();
+    const base = tab.data();
+    const custom = (activeTab !== 'runas') ? getCustomForTab(activeTab).map(x=>({...x, _custom:true})) : [];
+    const data = [...base, ...custom];
     if (!searchQuery) return data;
     const q = searchQuery.toLowerCase();
     return data.filter(item => {
@@ -3443,82 +3711,130 @@ const BibliotecaModule = (() => {
     document.body.style.overflow = 'hidden';
   }
 
+  function deleteCustomItem(type, name) {
+    const c = loadCustom();
+    if (c[type]) c[type] = c[type].filter(x=>x.name!==name);
+    saveCustom(c);
+    closeModal();
+    renderGrid();
+  }
+
+  function openAddForm(type) {
+    const overlay = document.getElementById('bib-modal');
+    const content = document.getElementById('bib-modal-content');
+    if (!overlay || !content) return;
+    const fields = type === 'hierbas'
+      ? `<input class="login-input" id="add-name" placeholder="Nombre *" style="margin-bottom:.6rem">
+         <input class="login-input" id="add-emoji" placeholder="Emoji (ej: 🌿)" style="margin-bottom:.6rem">
+         <input class="login-input" id="add-element" placeholder="Elemento (Fuego, Agua…)" style="margin-bottom:.6rem">
+         <input class="login-input" id="add-planeta" placeholder="Planeta" style="margin-bottom:.6rem">
+         <input class="login-input" id="add-magic" placeholder="Usos mágicos (sep. por comas)" style="margin-bottom:.6rem">
+         <textarea class="login-input" id="add-uses" placeholder="Usos herbales" rows="2" style="margin-bottom:.6rem;resize:vertical"></textarea>
+         <textarea class="login-input" id="add-notes" placeholder="Notas adicionales" rows="2" style="resize:vertical"></textarea>`
+      : type === 'cristales'
+      ? `<input class="login-input" id="add-name" placeholder="Nombre *" style="margin-bottom:.6rem">
+         <input class="login-input" id="add-emoji" placeholder="Emoji (ej: 💜)" style="margin-bottom:.6rem">
+         <input class="login-input" id="add-chakra" placeholder="Chakra" style="margin-bottom:.6rem">
+         <input class="login-input" id="add-element" placeholder="Elemento" style="margin-bottom:.6rem">
+         <input class="login-input" id="add-magic" placeholder="Usos mágicos (sep. por comas)" style="margin-bottom:.6rem">
+         <textarea class="login-input" id="add-uses" placeholder="Usos" rows="2" style="resize:vertical"></textarea>`
+      : `<input class="login-input" id="add-name" placeholder="Nombre *" style="margin-bottom:.6rem">
+         <input class="login-input" id="add-magic" placeholder="Usos mágicos (sep. por comas)" style="margin-bottom:.6rem">
+         <input class="login-input" id="add-arom" placeholder="Aroma" style="margin-bottom:.6rem">
+         <textarea class="login-input" id="add-uses" placeholder="Usos" rows="2" style="resize:vertical"></textarea>`;
+
+    content.innerHTML = `
+      <div class="modal-header">
+        <span style="font-size:1.5rem">✨</span>
+        <div><div class="modal-title">Agregar a ${type}</div></div>
+        <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex;flex-direction:column;gap:.2rem">${fields}</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-gold" onclick="BibliotecaModule.saveNewItem('${type}')">✦ Guardar</button>
+        <button class="btn-outline-sm" onclick="BibliotecaModule.closeModal()">Cancelar</button>
+      </div>`;
+    overlay.classList.remove('hidden');
+    modalOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function saveNewItem(type) {
+    const name = document.getElementById('add-name')?.value?.trim();
+    if (!name) return;
+    const magic = (document.getElementById('add-magic')?.value||'').split(',').map(s=>s.trim()).filter(Boolean);
+    const uses  = document.getElementById('add-uses')?.value?.trim() || '';
+    let item = { name, magic, uses,
+      emoji: document.getElementById('add-emoji')?.value?.trim() || '✨',
+      notes: document.getElementById('add-notes')?.value?.trim() || '',
+      _custom: true };
+    if (type==='hierbas')   { item.element=document.getElementById('add-element')?.value||''; item.planeta=document.getElementById('add-planeta')?.value||''; item.signo=''; }
+    if (type==='cristales') { item.chakra=document.getElementById('add-chakra')?.value||''; item.element=document.getElementById('add-element')?.value||''; item.color='#9B59B6'; }
+    if (type==='aceites')   { item.arom=document.getElementById('add-arom')?.value||''; item.base=false; }
+    const c = loadCustom(); if (!c[type]) c[type]=[]; c[type].push(item); saveCustom(c);
+    closeModal(); renderGrid();
+  }
+
   function buildModalContent(type, item) {
+    const delBtn = item._custom ? `<button class="btn-danger-xs" onclick="BibliotecaModule.deleteCustomItem('${type}','${item.name.replace(/'/g,"\\'")}')">🗑 Eliminar</button>` : '';
     if (type === 'runas') {
       return `
         <div class="modal-header">
           <div class="modal-runa-sym">${item.symbol}</div>
-          <div>
-            <h2 class="modal-title">${item.name}</h2>
-            <p class="text-muted">Runa ${item.num} del Elder Futhark</p>
-          </div>
+          <div><div class="modal-title">${item.name}</div>
+          <div class="text-muted" style="font-size:.8rem">Runa ${item.num} · Elder Futhark</div></div>
           <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
         </div>
         <div class="modal-body">
-          <div class="modal-row"><strong>Significado:</strong> ${item.meaning}</div>
-          <div class="modal-row"><strong>Energía:</strong> ${item.energy}</div>
-          <div class="modal-row"><strong>Magia:</strong> ${item.magic}</div>
-          <div class="modal-row"><strong>Invertida:</strong> ${item.reverse}</div>
+          <div class="modal-row"><strong>Significado</strong>${item.meaning}</div>
+          <div class="modal-row"><strong>Energía</strong>${item.energy}</div>
+          <div class="modal-row"><strong>Magia</strong>${item.magic}</div>
+          <div class="modal-row"><strong>Invertida</strong>${item.reverse}</div>
         </div>`;
     }
     if (type === 'hierbas') {
       return `
         <div class="modal-header">
           <div style="font-size:2.5rem">${item.emoji}</div>
-          <div>
-            <h2 class="modal-title">${item.name}</h2>
-            <div class="bib-tags modal-tags">
-              <span class="tag">${item.element}</span>
-              <span class="tag">${item.planeta}</span>
-              <span class="tag">${item.signo}</span>
-            </div>
-          </div>
+          <div><div class="modal-title">${item.name}</div>
+          <div class="modal-tags"><span class="tag">${item.element||''}</span><span class="tag">${item.planeta||''}</span>${item.signo?`<span class="tag">${item.signo}</span>`:''}</div></div>
           <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
         </div>
         <div class="modal-body">
-          <div class="modal-row"><strong>✨ Usos mágicos:</strong> ${item.magic.join(', ')}</div>
-          <div class="modal-row"><strong>🌿 Usos herbales:</strong> ${item.uses}</div>
-          ${item.notes ? `<div class="modal-row"><strong>📝 Notas:</strong> ${item.notes}</div>` : ''}
-          ${item.caution ? `<div class="modal-row modal-caution"><strong>⚠️ Precaución:</strong> ${item.caution}</div>` : ''}
-        </div>`;
+          <div class="modal-row"><strong>Usos mágicos</strong>${Array.isArray(item.magic)?item.magic.join(', '):item.magic}</div>
+          <div class="modal-row"><strong>Usos herbales</strong>${item.uses||''}</div>
+          ${item.notes ? `<div class="modal-row"><strong>Notas</strong>${item.notes}</div>` : ''}
+          ${item.caution ? `<div class="modal-row modal-caution"><strong>⚠️ Precaución</strong>${item.caution}</div>` : ''}
+        </div>${delBtn?`<div class="modal-actions">${delBtn}</div>`:''}`;
     }
     if (type === 'cristales') {
       return `
         <div class="modal-header">
           <div style="font-size:2.5rem">${item.emoji}</div>
-          <div>
-            <h2 class="modal-title">${item.name}</h2>
-            <div class="bib-tags modal-tags">
-              <span class="tag">${item.chakra}</span>
-              <span class="tag">${item.element}</span>
-              <span class="tag" style="background:${item.color};color:#fff">${item.color}</span>
-            </div>
-          </div>
+          <div><div class="modal-title">${item.name}</div>
+          <div class="modal-tags"><span class="tag">${item.chakra||''}</span><span class="tag">${item.element||''}</span></div></div>
           <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
         </div>
         <div class="modal-body">
-          <div class="modal-row"><strong>✨ Usos mágicos:</strong> ${item.magic.join(', ')}</div>
-          <div class="modal-row"><strong>💎 Usos:</strong> ${item.uses}</div>
-          ${item.notes ? `<div class="modal-row"><strong>📝 Notas:</strong> ${item.notes}</div>` : ''}
-        </div>`;
+          <div class="modal-row"><strong>Usos mágicos</strong>${Array.isArray(item.magic)?item.magic.join(', '):item.magic}</div>
+          <div class="modal-row"><strong>Usos</strong>${item.uses||''}</div>
+          ${item.notes ? `<div class="modal-row"><strong>Notas</strong>${item.notes}</div>` : ''}
+        </div>${delBtn?`<div class="modal-actions">${delBtn}</div>`:''}`;
     }
     if (type === 'aceites') {
       return `
         <div class="modal-header">
           <div style="font-size:2.5rem">🫙</div>
-          <div>
-            <h2 class="modal-title">${item.name}</h2>
-            <div class="bib-tags modal-tags">
-              <span class="tag">${item.base ? 'Aceite base' : 'Aceite esencial'}</span>
-              <span class="tag">${item.arom}</span>
-            </div>
-          </div>
+          <div><div class="modal-title">${item.name}</div>
+          <div class="modal-tags"><span class="tag">${item.base ? 'Aceite base' : 'Aceite esencial'}</span><span class="tag">${item.arom||''}</span></div></div>
           <button class="modal-close" onclick="BibliotecaModule.closeModal()">✕</button>
         </div>
         <div class="modal-body">
-          <div class="modal-row"><strong>✨ Usos mágicos:</strong> ${item.magic.join(', ')}</div>
-          <div class="modal-row"><strong>🌿 Usos:</strong> ${item.uses}</div>
-        </div>`;
+          <div class="modal-row"><strong>Usos mágicos</strong>${Array.isArray(item.magic)?item.magic.join(', '):item.magic}</div>
+          <div class="modal-row"><strong>Usos</strong>${item.uses||''}</div>
+        </div>${delBtn?`<div class="modal-actions">${delBtn}</div>`:''}`;
     }
     return '';
   }
@@ -3573,7 +3889,7 @@ const BibliotecaModule = (() => {
     renderGrid();
   }
 
-  return { init, openModal, closeModal };
+  return { init, openModal, closeModal, openAddForm, saveNewItem, deleteCustomItem };
 })();
 
 </script>
@@ -4946,11 +5262,757 @@ const CalendarioModule = (() => {
 <script>
 'use strict';
 // ============================================================
+// ALTAR.JS — Módulo del Altar Mágico
+// ============================================================
+const AltarModule = (() => {
+
+  const ALTARES = {
+    wicca: {
+      nombre: 'Wicca / Tradición Occidental',
+      emoji: '☽',
+      color: '#7B4FBF',
+      elementos: [
+        { nombre:'Vela Blanca', pos:'Centro', uso:'Representa la Diosa y la pureza', emoji:'🕯️' },
+        { nombre:'Vela Negra', pos:'Norte', uso:'Protección y absorción de energía negativa', emoji:'🕯️' },
+        { nombre:'Atame (daga ritual)', pos:'Este', uso:'Elemento Aire, dirección del intelecto', emoji:'🗡️' },
+        { nombre:'Cáliz con agua', pos:'Oeste', uso:'Elemento Agua, emociones y sueños', emoji:'🏺' },
+        { nombre:'Pentáculo', pos:'Norte', uso:'Elemento Tierra, materialización', emoji:'⭐' },
+        { nombre:'Varita', pos:'Sur', uso:'Elemento Fuego, voluntad y magia activa', emoji:'🪄' },
+        { nombre:'Incienso', pos:'Este', uso:'Purifica el espacio y eleva vibraciones', emoji:'🌸' },
+        { nombre:'Sal', pos:'Norte', uso:'Purificación y protección física', emoji:'🧂' },
+        { nombre:'Libro de Sombras', pos:'Izquierda', uso:'Tu grimorio personal', emoji:'📖' },
+      ],
+      colores: ['#FFFFFF','#000000','#8B0000','#006400'],
+      nota: 'Coloca los elementos formando un círculo. Traza el círculo mágico en sentido horario (deosil) para atraer y en sentido antihorario (widdershins) para desterrar.',
+    },
+    nordico: {
+      nombre: 'Panteón Nórdico (Asatru)',
+      emoji: '⚡',
+      color: '#1A3A5C',
+      elementos: [
+        { nombre:'Cuerno para mead', pos:'Centro', uso:'Ofrenda a los Dioses Aesir', emoji:'🍺' },
+        { nombre:'Runa Thurisaz', pos:'Norte', uso:'Protección del altar y del hogar', emoji:'ᚦ' },
+        { nombre:'Runa Algiz', pos:'Este', uso:'Protección y conexión con lo divino', emoji:'ᛉ' },
+        { nombre:'Vela azul/plateada', pos:'Centro', uso:'Honra a Odin, dios del conocimiento', emoji:'🕯️' },
+        { nombre:'Martillo (símbolo de Mjolnir)', pos:'Norte', uso:'Consagración y protección de Thor', emoji:'🔨' },
+        { nombre:'Ramas de roble o fresno', pos:'Costado', uso:'Árbol sagrado de Yggdrasil', emoji:'🌳' },
+        { nombre:'Piel de animal', pos:'Base', uso:'Conexión con los mundos y los animales guía', emoji:'🦌' },
+        { nombre:'Manzanas o hidromiel', pos:'Ofrenda', uso:'Ofrendas para los Dioses', emoji:'🍎' },
+      ],
+      colores: ['#1A3A5C','#C0C0C0','#8B0000','#2F4F2F'],
+      nota: 'El altar nórdico se orienta hacia el Norte (Yggdrasil). Las runas se tallan o escriben en madera. Las ofrendas se dan con sinceridad; Odin valora la sabiduría sobre la perfección ritual.',
+    },
+    egipcio: {
+      nombre: 'Panteón Egipcio',
+      emoji: '𓂀',
+      color: '#8B6914',
+      elementos: [
+        { nombre:'Incienso de mirra o kyphi', pos:'Centro', uso:'Sagrado para Ra y los dioses solares', emoji:'🌸' },
+        { nombre:'Vela dorada', pos:'Este (amanecer)', uso:'Honra a Ra, dios del sol', emoji:'☀️' },
+        { nombre:'Vela azul', pos:'Centro', uso:'Honra a Isis y el Nilo sagrado', emoji:'🕯️' },
+        { nombre:'Pluma de Maat', pos:'Centro', uso:'Símbolo de verdad y justicia divina', emoji:'🪶' },
+        { nombre:'Ojo de Horus (ojo de Udjat)', pos:'Protección', uso:'Protección y sanación', emoji:'𓂀' },
+        { nombre:'Agua del Nilo o agua pura', pos:'Oeste', uso:'Purificación y ofrendas', emoji:'💧' },
+        { nombre:'Flores de loto', pos:'Ofrenda', uso:'Símbolo de creación y renacimiento', emoji:'🌸' },
+        { nombre:'Escarabeo (amuleto)', pos:'Norte', uso:'Protección y transformación (Khepri)', emoji:'🪲' },
+        { nombre:'Papiro con oraciones', pos:'Lateral', uso:'Oraciones o conjuros escritos para los dioses', emoji:'📜' },
+      ],
+      colores: ['#FFD700','#000000','#1A5276','#E74C3C'],
+      nota: 'El altar egipcio se orienta hacia el Este (el sol naciente). Las ofrendas de comida, cerveza y flores eran tradicionales. Realiza rituales al amanecer para Ra y al atardecer para Osiris.',
+    },
+    greco: {
+      nombre: 'Panteón Grecorromano',
+      emoji: '⚡',
+      color: '#1F618D',
+      elementos: [
+        { nombre:'Laurel o olivo', pos:'Lateral', uso:'Sagrado para Apolo y Atenea', emoji:'🌿' },
+        { nombre:'Vino o agua de mar', pos:'Ofrenda', uso:'Ofrendas (spondé) a los olímpicos', emoji:'🍷' },
+        { nombre:'Vela blanca', pos:'Centro', uso:'Pureza y conexión con lo divino', emoji:'🕯️' },
+        { nombre:'Incienso de laurel', pos:'Centro', uso:'Profecía y claridad mental (Apolo)', emoji:'🌸' },
+        { nombre:'Monedas', pos:'Ofrenda', uso:'Ofrendas a Hermes y para peticiones', emoji:'🪙' },
+        { nombre:'Espejo', pos:'Lateral', uso:'Reflexión mágica y conexión con Afrodita', emoji:'🪞' },
+        { nombre:'Pomegranate (granada)', pos:'Ofrenda', uso:'Sagrado para Perséfone y el inframundo', emoji:'🍎' },
+        { nombre:'Búho o pluma', pos:'Lateral', uso:'Símbolo de Atenea, sabiduría', emoji:'🦉' },
+      ],
+      colores: ['#FFFFFF','#FFD700','#1F618D','#8E44AD'],
+      nota: 'Los griegos hacían libaciones (spondé) vertiendo líquido en la tierra o en el fuego. Reza en voz alta — los dioses griegos aprecian la invocación oral. Ofrece siempre con gratitud y respeto.',
+    },
+    celta: {
+      nombre: 'Panteón Celta',
+      emoji: '🌙',
+      color: '#1A6B3C',
+      elementos: [
+        { nombre:'Vela verde', pos:'Norte', uso:'Elemento Tierra y la naturaleza celta', emoji:'🕯️' },
+        { nombre:'Triskele (trisquel)', pos:'Centro', uso:'Símbolo de los tres mundos: tierra, mar, cielo', emoji:'☘️' },
+        { nombre:'Agua de manantial', pos:'Oeste', uso:'Sagrada para Brigid y las fuentes curativas', emoji:'💧' },
+        { nombre:'Ramas de roble, fresno o tejo', pos:'Norte', uso:'Árboles sagrados de los druidas', emoji:'🌳' },
+        { nombre:'Miel o mantequilla', pos:'Ofrenda', uso:'Ofrendas para las Tuatha Dé Danann', emoji:'🍯' },
+        { nombre:'Vela de Brigid (trenza)', pos:'Este', uso:'Festividad de Imbolc y artesanía', emoji:'🕯️' },
+        { nombre:'Piedra ogham', pos:'Norte', uso:'Inscripciones en el antiguo alfabeto irlandés', emoji:'🪨' },
+        { nombre:'Plata o cuarzo', pos:'Centro', uso:'Metal sagrado celta, poder lunar', emoji:'💎' },
+      ],
+      colores: ['#1A6B3C','#C0C0C0','#8B0000','#F4A460'],
+      nota: 'El altar celta puede ser a cielo abierto o junto a un árbol sagrado. Los celtas honraban los ciclos de la naturaleza — el altar se renueva con cada estación y sabbat celta.',
+    },
+    shinto: {
+      nombre: 'Sintoísmo Japonés',
+      emoji: '⛩️',
+      color: '#8B0000',
+      elementos: [
+        { nombre:'Masakaki (ramas sagradas)', pos:'Centro', uso:'Árbol sagrado del Kami', emoji:'🌿' },
+        { nombre:'Ofrendas de arroz (shinsen)', pos:'Centro', uso:'Comida sagrada para los Kami', emoji:'🍚' },
+        { nombre:'Sal pura (shio)', pos:'Esquinas', uso:'Purificación del espacio', emoji:'🧂' },
+        { nombre:'Agua limpia (mizu)', pos:'Centro', uso:'Purificación y ofrenda', emoji:'💧' },
+        { nombre:'Espejo sagrado (kagami)', pos:'Centro', uso:'Símbolo de la diosa Amaterasu', emoji:'🪞' },
+        { nombre:'Espada ritual (tsurugi)', pos:'Lateral', uso:'Protección y pureza', emoji:'⚔️' },
+        { nombre:'Jewel/Magatama', pos:'Lateral', uso:'Los tres tesoros imperiales del Japón', emoji:'💚' },
+        { nombre:'Sakaki (árbol sagrado)', pos:'Lateral', uso:'Árbol de los Kami', emoji:'🌳' },
+        { nombre:'Gohei (varita con papel zigzag)', pos:'Centro', uso:'Purificación ritual harae', emoji:'🪄' },
+      ],
+      colores: ['#8B0000','#FFFFFF','#FFD700','#1A3A5C'],
+      nota: 'El altar sintoísta (kamidana) se coloca en alto, nunca a nivel del suelo. Realiza harae (purificación) con sal y agua antes de cada rito. Las ofrendas se dejan y luego se retiran con respeto.',
+    },
+    maria_lionza: {
+      nombre: 'María Lionza (Venezuela)',
+      emoji: '🌿',
+      color: '#228B22',
+      elementos: [
+        { nombre:'Aguardiente o ron', pos:'Ofrenda', uso:'Ofrenda esencial para las cortes', emoji:'🥃' },
+        { nombre:'Tabaco (cigarro o puro)', pos:'Ofrenda', uso:'Comunicación con los espíritus', emoji:'🌿' },
+        { nombre:'Velas de colores', pos:'Centro', uso:'Cada corte tiene su color sagrado', emoji:'🕯️' },
+        { nombre:'Flores silvestres', pos:'Ofrenda', uso:'Especialmente para María Lionza', emoji:'🌺' },
+        { nombre:'Perfume (Florida Water)', pos:'Purificación', uso:'Limpiar el espacio y la persona', emoji:'🌸' },
+        { nombre:'Miel y canela', pos:'Ofrenda', uso:'Dulzura y prosperidad', emoji:'🍯' },
+        { nombre:'Imagen de María Lionza', pos:'Centro', uso:'La Reina, diosa de la naturaleza venezolana', emoji:'👸' },
+        { nombre:'Agua del río o de lluvia', pos:'Agua', uso:'Sagrada para María Lionza como reina de los ríos', emoji:'💧' },
+      ],
+      colores: ['#228B22','#FFFFFF','#FFD700','#8B0000'],
+      nota: 'El trabajo con María Lionza se hace con mucho respeto. Visitar la Montaña de Sorte es el acto supremo. Las cortes se atienden con sus colores y atributos específicos. La chicha y el aguardiente son ofrendas tradicionales.',
+    },
+    azteca: {
+      nombre: 'Panteón Azteca (Mexica)',
+      emoji: '☀️',
+      color: '#8B0000',
+      elementos: [
+        { nombre:'Copal (incienso)', pos:'Centro', uso:'Sagrado para todos los dioses aztecas', emoji:'🌸' },
+        { nombre:'Agua de jade (chalchiuh-atl)', pos:'Oeste', uso:'Agua sagrada para Tlaloc', emoji:'💧' },
+        { nombre:'Flores de cempasúchil', pos:'Ofrenda', uso:'Flores de los muertos y del sol', emoji:'🌼' },
+        { nombre:'Maíz (5 colores)', pos:'Norte', uso:'Alimento sagrado de la humanidad', emoji:'🌽' },
+        { nombre:'Obsidiana', pos:'Norte', uso:'Espejo de Tezcatlipoca, verdad y magia negra', emoji:'🖤' },
+        { nombre:'Plumas de quetzal', pos:'Este', uso:'Sagradas para Quetzalcóatl', emoji:'🪶' },
+        { nombre:'Caracola', pos:'Oeste', uso:'Símbolo de Quetzalcóatl y el viento', emoji:'🐚' },
+        { nombre:'Vela roja', pos:'Sur', uso:'Tezcatlipoca rojo, Xipe Tótec', emoji:'🕯️' },
+        { nombre:'Sal y chile', pos:'Ofrenda', uso:'Ofrendas de la tierra y el fuego', emoji:'🧂' },
+      ],
+      colores: ['#8B0000','#006400','#000000','#FFD700'],
+      nota: 'El altar azteca (momoztli) se orienta a los cuatro rumbos cardinales. El copal se quema al inicio de todo rito. Las ofrendas son actos de gratitud (tlazocamati), no solo peticiones.',
+    },
+    kichwa: {
+      nombre: 'Cosmovisión Kichwa (Ecuador/Andes)',
+      emoji: '🌍',
+      color: '#228B22',
+      elementos: [
+        { nombre:'Chicha de jora', pos:'Centro', uso:'Bebida sagrada para Pacha Mama', emoji:'🫙' },
+        { nombre:'Flores de los Andes', pos:'Ofrenda', uso:'Especialmente para Pacha Mama', emoji:'🌸' },
+        { nombre:'Maíz y papa', pos:'Ofrenda', uso:'Alimentos de la tierra andina', emoji:'🌽' },
+        { nombre:'Hoja de coca', pos:'Centro', uso:'Sagrada para la conexión espiritual andina', emoji:'🌿' },
+        { nombre:'Piedra del río', pos:'Norte', uso:'Conexión con los Apus (espíritus de montaña)', emoji:'🪨' },
+        { nombre:'Agua de vertiente', pos:'Centro', uso:'Sagrada para Yaku Warmi (Madre Agua)', emoji:'💧' },
+        { nombre:'Oro o cobre', pos:'Ofrenda', uso:'Metal sagrado del Sol (Inti)', emoji:'🌞' },
+        { nombre:'Vela amarilla o dorada', pos:'Este', uso:'Honra a Inti, el Padre Sol', emoji:'🕯️' },
+      ],
+      colores: ['#228B22','#FFD700','#8B0000','#4B0082'],
+      nota: 'La despacho (ofrenda andina) se envuelve en papel y se quema para que el humo lleve las intenciones al cielo. El altar kichwa honra la reciprocidad (ayni) con la naturaleza. Se ofrece antes de pedir.',
+    },
+    candomble: {
+      nombre: 'Candomblé (Brasil)',
+      emoji: '🌊',
+      color: '#1A5276',
+      elementos: [
+        { nombre:'Aceite de dendê (palma)', pos:'Centro', uso:'Sagrado para los Orixás, especialmente Exu', emoji:'🫙' },
+        { nombre:'Velas de colores', pos:'Ofrenda', uso:'Cada Orixá tiene su color sagrado', emoji:'🕯️' },
+        { nombre:'Flores blancas', pos:'Ofrenda', uso:'Para Oxalá, el padre creador', emoji:'🌸' },
+        { nombre:'Agua de mar', pos:'Oeste', uso:'Sagrada para Iemanjá', emoji:'🌊' },
+        { nombre:'Miel y girasoles', pos:'Ofrenda', uso:'Para Oxum, diosa del amor y el agua dulce', emoji:'🌻' },
+        { nombre:'Hierro y herramientas', pos:'Norte', uso:'Para Ogum, dios de la guerra y los caminos', emoji:'⚔️' },
+        { nombre:'Aguardiente (cachaça)', pos:'Ofrenda', uso:'Para Exu, mensajero entre mundos', emoji:'🥃' },
+        { nombre:'Palomas o collares de colores', pos:'Lateral', uso:'Iniciación y conexión con los Orixás', emoji:'🕊️' },
+      ],
+      colores: ['#FFFFFF','#FFD700','#1A5276','#228B22'],
+      nota: 'El axé (energía sagrada) se activa con canto, danza y toque de atabaque. El altar de Candomblé (peji) es el hogar del Orixá. Ofrece con sinceridad y el Orixá responderá. Exu siempre se saluda primero.',
+    },
+    chino: {
+      nombre: 'Tradición China',
+      emoji: '🏮',
+      color: '#8B0000',
+      elementos: [
+        { nombre:'Incienso de sándalo', pos:'Centro', uso:'Purificación y comunicación con espíritus', emoji:'🌸' },
+        { nombre:'Velas rojas', pos:'Costados', uso:'Suerte y energía yang', emoji:'🕯️' },
+        { nombre:'Flores de loto o melocotón', pos:'Ofrenda', uso:'Longevidad y espiritualidad', emoji:'🌸' },
+        { nombre:'Naranjas y mandarinas', pos:'Ofrenda', uso:'Abundancia y buena fortuna', emoji:'🍊' },
+        { nombre:'Monedas de I Ching', pos:'Centro', uso:'Adivinación y energía del metal', emoji:'🪙' },
+        { nombre:'Dragón o fénix (figuras)', pos:'Lateral', uso:'Yang (dragón) y Yin (fénix)', emoji:'🐉' },
+        { nombre:'Agua en cuenco', pos:'Norte', uso:'Elemento agua del feng shui', emoji:'💧' },
+        { nombre:'Papel de ofrenda (joss paper)', pos:'Ofrenda', uso:'Se quema para enviar al mundo espiritual', emoji:'📄' },
+      ],
+      colores: ['#8B0000','#FFD700','#FFFFFF','#000000'],
+      nota: 'El altar chino (shén tán) se coloca alto, mirando hacia la puerta. Se ofrendan frutas, incienso y papel antes de pedir. La quema de papel de ofrenda transmite recursos al mundo espiritual.',
+    },
+  };
+
+  let altarActual = null;
+  let panteones = Object.keys(ALTARES);
+  let tabActiva = 'guia';
+
+  function init() {
+    renderSelector();
+    document.getElementById('altar-tab-guia')?.addEventListener('click', ()=>setTab('guia'));
+    document.getElementById('altar-tab-elementos')?.addEventListener('click', ()=>setTab('elementos'));
+    document.getElementById('altar-tab-colores')?.addEventListener('click', ()=>setTab('colores'));
+  }
+
+  function setTab(tab) {
+    tabActiva = tab;
+    ['guia','elementos','colores'].forEach(t => {
+      document.getElementById(`altar-tab-${t}`)?.classList.toggle('active', t===tab);
+      document.getElementById(`altar-panel-${t}`)?.classList.toggle('hidden', t!==tab);
+    });
+  }
+
+  function renderSelector() {
+    const sel = document.getElementById('altar-selector');
+    if (!sel) return;
+    sel.innerHTML = panteones.map(k => {
+      const a = ALTARES[k];
+      return `<button class="altar-btn" data-panteon="${k}"
+        style="border-color:${a.color}44;background:${a.color}22"
+        onclick="AltarModule.seleccionarPanteon('${k}')">
+        <span style="font-size:1.5rem">${a.emoji}</span>
+        <span style="font-size:.78rem;font-family:var(--font-heading)">${a.nombre}</span>
+      </button>`;
+    }).join('');
+  }
+
+  function seleccionarPanteon(key) {
+    altarActual = ALTARES[key];
+    document.querySelectorAll('.altar-btn').forEach(b=>b.classList.toggle('active', b.dataset.panteon===key));
+    renderAltar();
+    document.getElementById('altar-detail')?.classList.remove('hidden');
+  }
+
+  function renderAltar() {
+    if (!altarActual) return;
+    // Guía
+    const guia = document.getElementById('altar-panel-guia');
+    if (guia) {
+      guia.innerHTML = `
+        <div class="altar-nota">${altarActual.nota}</div>
+        <div class="altar-layout">
+          ${altarActual.elementos.map(el=>`
+            <div class="altar-elem">
+              <span class="altar-elem-emoji">${el.emoji}</span>
+              <div>
+                <div class="altar-elem-nombre">${el.nombre}</div>
+                <div class="altar-elem-pos"><strong>${el.pos}</strong> — ${el.uso}</div>
+              </div>
+            </div>`).join('')}
+        </div>`;
+    }
+    // Elementos
+    const elems = document.getElementById('altar-panel-elementos');
+    if (elems) {
+      elems.innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem">
+          ${altarActual.elementos.map(el=>`
+            <div class="altar-elem-card">
+              <div style="font-size:1.8rem;margin-bottom:.3rem">${el.emoji}</div>
+              <div style="font-weight:600;font-size:.85rem">${el.nombre}</div>
+              <div style="font-size:.75rem;color:var(--muted);margin-top:.2rem">${el.pos}</div>
+            </div>`).join('')}
+        </div>`;
+    }
+    // Colores
+    const col = document.getElementById('altar-panel-colores');
+    if (col) {
+      col.innerHTML = `
+        <p style="margin-bottom:1rem;color:var(--muted);font-size:.88rem">Colores sagrados del ${altarActual.nombre}:</p>
+        <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+          ${altarActual.colores.map(c=>`
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <div style="width:40px;height:40px;border-radius:50%;background:${c};border:2px solid rgba(255,255,255,.2);box-shadow:0 0 10px ${c}66"></div>
+              <span style="font-size:.8rem;color:var(--muted)">${c}</span>
+            </div>`).join('')}
+        </div>`;
+    }
+  }
+
+  return { init, seleccionarPanteon };
+})();
+
+</script>
+<script>
+'use strict';
+// ============================================================
+// COCINA.JS — Cocina Mágica
+// ============================================================
+const CocinaModule = (() => {
+
+  const RECETAS = [
+    {
+      nombre: 'Té de Luna Llena',
+      emoji: '🌕',
+      intencion: 'Intuición, sueños proféticos, magia lunar',
+      ingredientes: ['Manzanilla (1 cdita)', 'Lavanda seca (1/2 cdita)', 'Pétalos de rosa (1/2 cdita)', 'Agua de luna (1 taza)', 'Miel orgánica'],
+      proceso: [
+        'Llena una taza con agua de luna (agua dejada bajo la luna llena toda la noche).',
+        'Infusiona la manzanilla, lavanda y pétalos de rosa durante 7 minutos.',
+        'Mientras el té reposa, visualiza la luz de la luna llenando el líquido.',
+        'Endulza con miel y recita: "Luna llena, trae tus dones, abre mi mente a tus visiones."',
+        'Bébelo antes de dormir para recibir sueños guía.',
+      ],
+      planeta: 'Luna',
+      elemento: 'Agua',
+      mejor_momento: 'Noche de luna llena',
+      color: '#C0C0C0',
+    },
+    {
+      nombre: 'Aceite de Éxito y Abundancia',
+      emoji: '✨',
+      intencion: 'Prosperidad, éxito, apertura de caminos',
+      ingredientes: ['Aceite de almendras (base, 30ml)', 'Canela en polvo (1 pizca)', 'Clavo de olor (3 unidades)', 'Jengibre fresco rallado (1/4 cdita)', 'Pizca de pirita en polvo (opcional)', 'Aceite esencial de naranja (5 gotas)'],
+      proceso: [
+        'Calienta suavemente el aceite de almendras (sin hervir) en un día de jueves.',
+        'Agrega la canela, clavo y jengibre mientras visualizas dinero y éxito fluyendo hacia ti.',
+        'Retira del calor y deja enfriar. Añade el aceite de naranja.',
+        'Recita: "Que la abundancia fluya hacia mí, que las puertas se abran ante mi camino."',
+        'Úsalo para ungir velas verdes o doradas, tu billetera o documentos importantes.',
+      ],
+      planeta: 'Júpiter',
+      elemento: 'Fuego',
+      mejor_momento: 'Jueves en luna creciente',
+      color: '#FFD700',
+    },
+    {
+      nombre: 'Agua de Florida Casera',
+      emoji: '💫',
+      intencion: 'Limpieza energética, protección, claridad',
+      ingredientes: ['Alcohol 70° (1/2 taza)', 'Agua de rosas (1/4 taza)', 'Pétalos de rosa fresca', 'Lavanda seca', 'Romero fresco', 'Cáscara de naranja o limón', 'Aceite esencial de bergamota (10 gotas)'],
+      proceso: [
+        'Mezcla el alcohol con el agua de rosas en un frasco de vidrio.',
+        'Agrega las hierbas frescas, los pétalos y la cáscara cítrica.',
+        'Deja reposar 7 días en un lugar oscuro, agitando cada día.',
+        'Al 7° día, cuela y añade el aceite de bergamota.',
+        'Úsala para limpiar tu espacio, tu cuerpo antes de rituales, o como ofrenda.',
+      ],
+      planeta: 'Venus / Sol',
+      elemento: 'Aire',
+      mejor_momento: 'Lunes para limpieza, viernes para amor',
+      color: '#90EE90',
+    },
+    {
+      nombre: 'Vino de Sabbat (Hidromiel Rápido)',
+      emoji: '🍷',
+      intencion: 'Conexión con los ciclos, celebración sagrada',
+      ingredientes: ['Miel pura (200g)', 'Agua tibia (1 litro)', 'Levadura de pan (1/4 cdita)', 'Pizca de canela', 'Flores de saúco o manzana (opcionales)'],
+      proceso: [
+        'Disuelve la miel en el agua tibia hasta que no queden grumos.',
+        'Agrega la levadura, canela y flores. Mezcla con intención sagrada.',
+        'Cubre con un paño limpio y deja fermentar 2-3 días en lugar cálido.',
+        'Cuando burbujee levemente, está listo para usar en rituales.',
+        'Úsalo en el cáliz durante los sabbats o compartido en círculo.',
+      ],
+      planeta: 'Luna / Sol',
+      elemento: 'Agua',
+      mejor_momento: 'Sabbats y lunas llenas',
+      color: '#8B0000',
+    },
+    {
+      nombre: 'Galletas de Canela para Hechizos de Amor',
+      emoji: '🍪',
+      intencion: 'Amor propio, atracción, dulzura en relaciones',
+      ingredientes: ['Harina integral (2 tazas)', 'Canela (2 cditas)', 'Miel (3 cdas)', 'Mantequilla sin sal (1/2 taza)', 'Huevo (1)', 'Azúcar morena (1/3 taza)', 'Extracto de vainilla (1 cdita)', 'Clavos molidos (pizca)'],
+      proceso: [
+        'Mezcla los ingredientes secos. Aparte, bate la mantequilla con el azúcar y la miel.',
+        'Une las mezclas con el huevo y la vainilla. Amasa con amor y visualizando tu intención.',
+        'Forma corazones, lunas o símbolos mágicos con la masa.',
+        'Mientras horneas a 180° por 12 minutos, recita tu intención de amor.',
+        'Compártelas con quien desees o cómelas tú para internalizartu intención.',
+      ],
+      planeta: 'Venus',
+      elemento: 'Fuego / Tierra',
+      mejor_momento: 'Viernes en luna creciente',
+      color: '#FF69B4',
+    },
+    {
+      nombre: 'Sopa Curativa de Raíces',
+      emoji: '🥣',
+      intencion: 'Salud, arraigo, sanación del cuerpo y el espíritu',
+      ingredientes: ['Zanahoria (2)', 'Ajo (4 dientes)', 'Jengibre fresco (trozo)', 'Cúrcuma (1 cdita)', 'Papas andinas (si tienes)', 'Caldo de verduras', 'Sal, pimienta', 'Laurel (2 hojas — protección)'],
+      proceso: [
+        'Pica todas las verduras con intención curativa. El corte ritual es parte del hechizo.',
+        'Sofríe el ajo y el jengibre visualizando la curación que necesitas.',
+        'Agrega las raíces y el caldo. Coloca el laurel con una plegaria de salud.',
+        'Cocina a fuego lento 20 minutos. La lentitud del fuego es magia de agua y tierra.',
+        'Sirve con gratitud. Cada cucharada es medicina física y espiritual.',
+      ],
+      planeta: 'Saturno / Sol',
+      elemento: 'Tierra',
+      mejor_momento: 'Domingo para vitalidad, sábado para destierro de enfermedad',
+      color: '#FF8C00',
+    },
+    {
+      nombre: 'Infusión de Protección Nocturna',
+      emoji: '🌙',
+      intencion: 'Protección durante el sueño, alejar pesadillas',
+      ingredientes: ['Raíz de valeriana (1/2 cdita)', 'Pasionaria seca (1 cdita)', 'Verbena (1/2 cdita)', 'Sal del Himalaya (pizca)', 'Agua filtrada (1 taza)'],
+      proceso: [
+        'Prepara la infusión en un recipiente de cerámica o vidrio, nunca plástico.',
+        'Mientras el agua hierve, dibuja un pentagrama sobre la taza con tu dedo.',
+        'Deja reposar 10 minutos tapado. Las hierbas necesitan privacidad para trabajar.',
+        'Recita: "Hierbas de protección, guardad mi sueño. Que nada oscuro cruce este umbral."',
+        'Bébela tibia 30 minutos antes de dormir. Coloca sal en las esquinas de la cama.',
+      ],
+      planeta: 'Luna / Saturno',
+      elemento: 'Agua',
+      mejor_momento: 'Noche de cualquier luna, especialmente menguante',
+      color: '#191970',
+    },
+    {
+      nombre: 'Miel Encantada para Endulzar Situaciones',
+      emoji: '🍯',
+      intencion: 'Suavizar conflictos, atraer dulzura, hechizos de miel',
+      ingredientes: ['Miel pura cruda (200g)', 'Canela (1 rama)', 'Clavo de olor (3)', 'Pétalos de rosa secos', 'Lavanda (pizca)', 'Nombre de la persona o situación en papel'],
+      proceso: [
+        'Escribe la situación o nombre en un papel pequeño. Dóblalo hacia ti (para atraer).',
+        'Coloca el papel en el fondo de un frasco pequeño.',
+        'Cubre con la miel visualizando que todo fluye suavemente.',
+        'Agrega las especias y los pétalos mientras recitas tu intención.',
+        'Sella el frasco y entiérralo o colócalo cerca de la entrada de tu hogar.',
+      ],
+      planeta: 'Venus',
+      elemento: 'Tierra / Fuego',
+      mejor_momento: 'Viernes, luna llena o creciente',
+      color: '#DAA520',
+    },
+  ];
+
+  let filtro = 'todos';
+  let busqueda = '';
+
+  function init() {
+    renderFiltros();
+    renderRecetas();
+    document.getElementById('cocina-search')?.addEventListener('input', e => {
+      busqueda = e.target.value.toLowerCase();
+      renderRecetas();
+    });
+  }
+
+  function renderFiltros() {
+    const f = document.getElementById('cocina-filtros');
+    if (!f) return;
+    const planetas = ['todos', 'Luna', 'Sol', 'Venus', 'Júpiter', 'Saturno'];
+    f.innerHTML = planetas.map(p => `
+      <button class="bib-tab${filtro===p?' active':''}" onclick="CocinaModule.setFiltro('${p}')">${p==='todos'?'✦ Todos':p}</button>
+    `).join('');
+  }
+
+  function setFiltro(p) {
+    filtro = p;
+    renderFiltros();
+    renderRecetas();
+  }
+
+  function renderRecetas() {
+    const grid = document.getElementById('cocina-grid');
+    if (!grid) return;
+    let data = RECETAS;
+    if (filtro !== 'todos') data = data.filter(r => r.planeta.includes(filtro));
+    if (busqueda) data = data.filter(r =>
+      r.nombre.toLowerCase().includes(busqueda) ||
+      r.intencion.toLowerCase().includes(busqueda) ||
+      r.elemento.toLowerCase().includes(busqueda)
+    );
+    grid.innerHTML = data.map(r => `
+      <div class="cocina-card" onclick="CocinaModule.openReceta('${r.nombre.replace(/'/g,"\\'")}')">
+        <div class="cocina-emoji">${r.emoji}</div>
+        <div class="cocina-nombre">${r.nombre}</div>
+        <div class="cocina-intencion">${r.intencion}</div>
+        <div style="display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap">
+          <span class="tag">${r.planeta}</span>
+          <span class="tag">${r.elemento}</span>
+        </div>
+      </div>`).join('');
+  }
+
+  function openReceta(nombre) {
+    const r = RECETAS.find(x => x.nombre === nombre);
+    if (!r) return;
+    const overlay = document.getElementById('cocina-modal');
+    const content = document.getElementById('cocina-modal-content');
+    if (!overlay || !content) return;
+    content.innerHTML = `
+      <div class="modal-header" style="background:linear-gradient(135deg,${r.color}22,transparent)">
+        <div style="font-size:2.5rem">${r.emoji}</div>
+        <div>
+          <div class="modal-title">${r.nombre}</div>
+          <div class="modal-tags"><span class="tag">${r.planeta}</span><span class="tag">${r.elemento}</span><span class="tag">🌙 ${r.mejor_momento}</span></div>
+        </div>
+        <button class="modal-close" onclick="CocinaModule.closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-row"><strong>Intención Mágica</strong>✨ ${r.intencion}</div>
+        <div class="modal-row">
+          <strong>Ingredientes</strong>
+          <ul style="list-style:none;padding:0;margin-top:.4rem">${r.ingredientes.map(i=>`<li style="padding:.2rem 0;border-bottom:1px solid rgba(255,255,255,.05)">· ${i}</li>`).join('')}</ul>
+        </div>
+        <div class="modal-row">
+          <strong>Proceso Ritual</strong>
+          <ol style="padding-left:1.2rem;margin-top:.4rem">${r.proceso.map(p=>`<li style="margin-bottom:.5rem;line-height:1.6">${p}</li>`).join('')}</ol>
+        </div>
+      </div>`;
+    overlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('cocina-modal')?.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  return { init, setFiltro, openReceta, closeModal };
+})();
+
+</script>
+<script>
+'use strict';
+// ============================================================
+// ADIVINACION.JS — Tarot y Runas
+// ============================================================
+const AdivinacionModule = (() => {
+
+  // ── TAROT (22 Arcanos Mayores) ────────────────────────────
+  const TAROT = [
+    { n:0,  name:'El Loco',           sym:'🃏', kw:'Nuevos comienzos, aventura, espontaneidad',    desc:'El Loco representa el inicio puro de un viaje, la libertad de saltar al vacío con confianza ciega. Te invita a comenzar sin miedo, confiando en el universo.', inv:'Imprudencia, ingenuidad, riesgo sin cálculo.' },
+    { n:1,  name:'El Mago',           sym:'🪄', kw:'Voluntad, habilidad, manifestación',           desc:'Tienes todas las herramientas necesarias. El Mago canaliza la energía del universo a través de su voluntad consciente. Es momento de actuar con decisión.', inv:'Manipulación, falta de habilidad, ilusión.' },
+    { n:2,  name:'La Sacerdotisa',    sym:'🌙', kw:'Intuición, misterio, conocimiento interior',  desc:'La Sacerdotisa guarda secretos que solo se revelan en silencio. Tu intuición habla ahora — escúchala. Los sueños traerán mensajes importantes.', inv:'Secretos ocultos, desconexión interior, superficialidad.' },
+    { n:3,  name:'La Emperatriz',     sym:'🌸', kw:'Abundancia, fertilidad, creatividad, natura', desc:'La Emperatriz representa la fuerza creativa de la naturaleza. Abundancia, amor maternal, creatividad artística. Algo hermoso está creciendo en tu vida.', inv:'Dependencia, estancamiento creativo, exceso.' },
+    { n:4,  name:'El Emperador',      sym:'👑', kw:'Autoridad, estructura, estabilidad, control', desc:'El Emperador trae orden y estructura. Es el momento de establecer límites, asumir responsabilidad y construir bases sólidas para el futuro.', inv:'Autoritarismo, rigidez, falta de control.' },
+    { n:5,  name:'El Hierofante',     sym:'⛪', kw:'Tradición, espiritualidad organizada, mentores',desc:'El Hierofante conecta lo divino con lo humano a través de rituales y tradición. Busca un mentor o sigue las enseñanzas probadas.', inv:'Dogmatismo, rebeldía sin causa, falta de guía.' },
+    { n:6,  name:'Los Amantes',       sym:'💕', kw:'Amor, elección, valores, alineación',         desc:'Los Amantes no hablan solo del amor romántico — representan una elección crucial que define tu camino. Elige desde el corazón y tus valores más profundos.', inv:'Desalineación de valores, elecciones difíciles, conflicto interno.' },
+    { n:7,  name:'El Carro',          sym:'🚗', kw:'Victoria, determinación, control, avance',    desc:'El Carro avanza con fuerza y determinación. La victoria está cerca, pero requiere que domines tus impulsos y mantengas el rumbo con disciplina.', inv:'Falta de control, derrota, desvío del camino.' },
+    { n:8,  name:'La Fuerza',         sym:'🦁', kw:'Valentía interior, paciencia, compasión',     desc:'La Fuerza no es violencia sino dominio compasivo. Con gentileza y determinación interior, puedes manejar cualquier situación o persona difícil.', inv:'Cobardía, duda, fuerza mal usada.' },
+    { n:9,  name:'El Ermitaño',       sym:'🕯️', kw:'Introspección, soledad sabia, guía interior', desc:'El Ermitaño llama a retirarse del ruido del mundo para encontrar la verdad interna. Este es un tiempo de reflexión profunda y búsqueda espiritual.', inv:'Aislamiento no elegido, reclusión excesiva, negación de ayuda.' },
+    { n:10, name:'La Rueda de la Fortuna', sym:'☸️', kw:'Destino, ciclos, cambio de suerte',   desc:'La Rueda gira y los ciclos cambian. Lo que sube baja, lo que baja sube. Un giro afortunado está llegando — mantente flexible.', inv:'Mala suerte, resistencia al cambio, ciclos negativos.' },
+    { n:11, name:'La Justicia',        sym:'⚖️', kw:'Verdad, karma, equidad, causa-efecto',       desc:'La Justicia revela que las acciones tienen consecuencias. Lo que has sembrado llegará. También puede indicar asuntos legales o decisiones importantes.', inv:'Injusticia, desequilibrio, deshonestidad.' },
+    { n:12, name:'El Colgado',         sym:'🙃', kw:'Pausa, rendición, nuevo punto de vista',      desc:'El Colgado elige conscientemente rendirse para ganar perspectiva. No es derrota sino sabiduría. Suelta el control y mira el problema desde otro ángulo.', inv:'Martirio inútil, estancamiento, resistencia a soltar.' },
+    { n:13, name:'La Muerte',          sym:'💀', kw:'Transformación, final de ciclo, renacimiento',desc:'La Muerte rara vez anuncia muerte literal — anuncia el fin de una era. Algo debe morir para que algo nuevo nazca. Esta transformación es necesaria y poderosa.', inv:'Resistencia al cambio, estancamiento, miedo a transformar.' },
+    { n:14, name:'La Templanza',       sym:'🌊', kw:'Equilibrio, moderación, paciencia, flujo',    desc:'La Templanza invita a encontrar el punto medio, la alquimia entre opuestos. Paciencia, moderación y el flujo natural llevarán al resultado deseado.', inv:'Exceso, desequilibrio, impaciencia.' },
+    { n:15, name:'El Diablo',          sym:'😈', kw:'Ataduras, materialismo, sombra, adicción',    desc:'El Diablo muestra las cadenas que tú mismo has creado. Puede ser una adicción, una relación tóxica o creencias limitantes. Las cadenas son más flojas de lo que parecen.', inv:'Liberación, rotura de ataduras, recuperación del poder.' },
+    { n:16, name:'La Torre',           sym:'⚡', kw:'Caos repentino, revelación, derrumbe',       desc:'La Torre anuncia un cambio radical e inevitable. Puede ser doloroso, pero lo que se derrumba estaba construido sobre bases falsas. La liberación sigue al caos.', inv:'Evitar el cambio necesario, desastre menos severo, resistencia.' },
+    { n:17, name:'La Estrella',        sym:'⭐', kw:'Esperanza, sanación, inspiración, fe',       desc:'Después de la tormenta, La Estrella brilla. Es una carta de profunda sanación, esperanza renovada y conexión con tu propósito divino. El universo te guía.', inv:'Desesperanza, desconexión espiritual, duda.' },
+    { n:18, name:'La Luna',            sym:'🌙', kw:'Ilusión, subconsciente, sueños, miedos',      desc:'La Luna ilumina lo que está oculto en las sombras de tu psique. Los miedos, ilusiones y sueños cobran fuerza. No todo es lo que parece ahora.', inv:'Confusión disipándose, verdades emergiendo, miedos superados.' },
+    { n:19, name:'El Sol',             sym:'☀️', kw:'Alegría, éxito, vitalidad, claridad',         desc:'El Sol brilla con todo su esplendor. Éxito, alegría genuina, claridad mental y vitalidad. Esta es una de las cartas más afortunadas del tarot.', inv:'Éxito retrasado, optimismo excesivo, dificultades temporales.' },
+    { n:20, name:'El Juicio',          sym:'📯', kw:'Renacimiento, llamado, absolución, despertar',desc:'El Juicio anuncia un llamado profundo al despertar. Es momento de responder a tu propósito superior, dejar el pasado atrás y renacer con nueva conciencia.', inv:'Negación del llamado, autojuicio excesivo, rezago espiritual.' },
+    { n:21, name:'El Mundo',           sym:'🌍', kw:'Completud, éxito total, integración, viaje',  desc:'El Mundo representa la culminación de un ciclo completo. Has llegado a un punto de integración y logro. Un capítulo se cierra con maestría y satisfacción.', inv:'Incompleción, falta de cierre, rezago en el camino.' },
+  ];
+
+  // ── RUNAS (Elder Futhark simplificado) ───────────────────
+  const RUNAS_ORACLE = [
+    { sym:'ᚠ', name:'Fehu',    kw:'Riqueza, éxito, abundance',          desc:'Fehu augura prosperidad y éxito material. Las energías favorecen la abundancia ahora.' },
+    { sym:'ᚢ', name:'Uruz',    kw:'Fuerza bruta, salud, poder',          desc:'Uruz trae fuerza y vitalidad. Es tiempo de actuar con todo tu poder.' },
+    { sym:'ᚦ', name:'Thurisaz',kw:'Protección, umbral, desafío',         desc:'Thurisaz protege pero advierte de obstáculos que deben enfrentarse con cuidado.' },
+    { sym:'ᚨ', name:'Ansuz',   kw:'Comunicación, mensajes, sabiduría',   desc:'Ansuz trae mensajes importantes. Presta atención a lo que escuchas hoy.' },
+    { sym:'ᚱ', name:'Raidho',  kw:'Viaje, ritmo, evolución',             desc:'Raidho indica un viaje o movimiento importante en tu vida.' },
+    { sym:'ᚲ', name:'Kenaz',   kw:'Conocimiento, creatividad, llama',    desc:'Kenaz enciende la llama del conocimiento. Inspiración y claridad creativa.' },
+    { sym:'ᚷ', name:'Gebo',    kw:'Regalo, intercambio, asociación',     desc:'Gebo anuncia un don o intercambio significativo. Acepta con gratitud.' },
+    { sym:'ᚹ', name:'Wunjo',   kw:'Alegría, éxito, bienestar',           desc:'Wunjo trae alegría genuina y satisfacción. Los esfuerzos florecen.' },
+    { sym:'ᚺ', name:'Hagalaz', kw:'Disrupción, cambio, granizo',         desc:'Hagalaz anuncia cambio súbito. Puede ser difícil pero necesario.' },
+    { sym:'ᚾ', name:'Naudiz',  kw:'Necesidad, resistencia, aprendizaje', desc:'Naudiz habla de necesidad y de la fuerza que nace de ella.' },
+    { sym:'ᛁ', name:'Isa',     kw:'Hielo, pausa, bloqueo',               desc:'Isa indica un período de pausa o bloqueo. Espera con calma.' },
+    { sym:'ᛃ', name:'Jera',    kw:'Cosecha, ciclos, recompensa',         desc:'Jera promete la cosecha de lo sembrado. Los ciclos se completan.' },
+    { sym:'ᛇ', name:'Eihwaz',  kw:'Transformación, visiones, magia profunda', desc:'Eihwaz conecta mundos. Profunda magia transformadora está activa.' },
+    { sym:'ᛈ', name:'Perthro', kw:'Destino, misterio, lo oculto',        desc:'Perthro abre el velo del misterio. Los secretos podrían revelarse.' },
+    { sym:'ᛉ', name:'Algiz',   kw:'Protección, conexión divina, escudo', desc:'Algiz protege y conecta con fuerzas superiores. Estás resguardado.' },
+    { sym:'ᛊ', name:'Sowilo',  kw:'Sol, éxito, claridad, victoria',      desc:'Sowilo irradia energía solar. Éxito y claridad mental te guían.' },
+    { sym:'ᛏ', name:'Tiwaz',   kw:'Justicia, guerra, sacrificio honrado', desc:'Tiwaz pide valentía y justicia. El sacrificio honrado es recompensado.' },
+    { sym:'ᛒ', name:'Berkano', kw:'Renacimiento, crecimiento, familia',  desc:'Berkano nutre el nuevo crecimiento. Proyectos y relaciones florecen.' },
+    { sym:'ᛖ', name:'Ehwaz',   kw:'Movimiento, trabajo en equipo, progreso', desc:'Ehwaz indica progreso en equipo. La colaboración lleva al éxito.' },
+    { sym:'ᛗ', name:'Mannaz',  kw:'Humanidad, yo, conciencia de sí mismo', desc:'Mannaz invita a conocerte profundamente. La respuesta está en ti.' },
+    { sym:'ᛚ', name:'Laguz',   kw:'Agua, flujo, intuición, subconsciente', desc:'Laguz habla de emociones y flujo. Confía en tu intuición.' },
+    { sym:'ᛜ', name:'Ingwaz',  kw:'Fertilidad, descanso, nuevo ciclo',   desc:'Ingwaz anuncia un ciclo completado y el inicio de algo nuevo.' },
+    { sym:'ᛞ', name:'Dagaz',   kw:'Amanecer, transformación, claridad',  desc:'Dagaz anuncia un amanecer después de la oscuridad. Gran transformación.' },
+    { sym:'ᛟ', name:'Othala',  kw:'Herencia, hogar, tradición, raíces',  desc:'Othala conecta con las raíces y la herencia. El hogar y la familia son importantes ahora.' },
+  ];
+
+  const SPREADS = {
+    una: { nombre:'Una carta', desc:'Respuesta directa del universo', num:1 },
+    tres: { nombre:'Pasado / Presente / Futuro', desc:'Los tres tiempos de tu situación', num:3 },
+    cruz: { nombre:'Cruz Celta', desc:'Lectura profunda de 5 cartas', num:5 },
+  };
+
+  let modo = 'tarot'; // 'tarot' | 'runas'
+  let spread = 'una';
+  let cartaActual = null;
+  let rotaciones = {};
+
+  function init() {
+    document.getElementById('adiv-btn-tarot')?.addEventListener('click', ()=>setModo('tarot'));
+    document.getElementById('adiv-btn-runas')?.addEventListener('click', ()=>setModo('runas'));
+    document.getElementById('adiv-btn-spread-una')?.addEventListener('click', ()=>setSpread('una'));
+    document.getElementById('adiv-btn-spread-tres')?.addEventListener('click', ()=>setSpread('tres'));
+    document.getElementById('adiv-btn-spread-cruz')?.addEventListener('click', ()=>setSpread('cruz'));
+    document.getElementById('adiv-btn-tirar')?.addEventListener('click', ()=>tirar());
+    document.getElementById('adiv-modal-close')?.addEventListener('click', closeModal);
+    renderModo();
+  }
+
+  function setModo(m) {
+    modo = m;
+    document.getElementById('adiv-btn-tarot')?.classList.toggle('active', m==='tarot');
+    document.getElementById('adiv-btn-runas')?.classList.toggle('active', m==='runas');
+    document.getElementById('adiv-spreads')?.classList.toggle('hidden', m==='runas');
+    document.getElementById('adiv-resultado')?.classList.add('hidden');
+    renderModo();
+  }
+
+  function setSpread(s) {
+    spread = s;
+    ['una','tres','cruz'].forEach(x =>
+      document.getElementById(`adiv-btn-spread-${x}`)?.classList.toggle('active', x===s)
+    );
+  }
+
+  function renderModo() {
+    const info = document.getElementById('adiv-info');
+    if (!info) return;
+    if (modo==='tarot') {
+      info.innerHTML = `<p>🃏 <strong>Tarot de los Arcanos Mayores</strong> — 22 cartas del camino del alma.<br>
+        Elige un spread y pregunta al universo.</p>`;
+    } else {
+      info.innerHTML = `<p>ᚠ <strong>Oráculo de Runas</strong> — Elder Futhark, 24 runas del cosmos nórdico.<br>
+        Concentra tu pregunta y saca una runa.</p>`;
+    }
+  }
+
+  function tirar() {
+    document.getElementById('adiv-resultado')?.classList.remove('hidden');
+    if (modo === 'runas') tirarRuna();
+    else tirarTarot();
+  }
+
+  function tirarRuna() {
+    const r = RUNAS_ORACLE[Math.floor(Math.random()*RUNAS_ORACLE.length)];
+    const invertida = Math.random() < 0.3;
+    const res = document.getElementById('adiv-cartas');
+    if (!res) return;
+    res.innerHTML = `
+      <div class="adiv-runa-resultado" onclick="AdivinacionModule.openModal('runa','${r.name}',${invertida})">
+        <div class="adiv-runa-sym${invertida?' invertida':''}">${r.sym}</div>
+        <div class="adiv-runa-name">${r.name}${invertida?' (Invertida)':''}</div>
+        <div class="adiv-runa-kw">${r.kw}</div>
+        <div class="adiv-runa-desc">${r.desc}</div>
+      </div>`;
+    document.getElementById('adiv-interpretacion')?.classList.add('hidden');
+  }
+
+  function tirarTarot() {
+    const sp = SPREADS[spread];
+    const mazo = [...TAROT].sort(()=>Math.random()-.5);
+    const cartas = mazo.slice(0, sp.num).map(c => ({
+      ...c, invertida: Math.random() < 0.25
+    }));
+    const labels = sp.num===1 ? ['Tu carta'] :
+                   sp.num===3 ? ['Pasado','Presente','Futuro'] :
+                   ['Situación','Desafío','Base','Consejo','Resultado'];
+    const res = document.getElementById('adiv-cartas');
+    if (!res) return;
+    res.innerHTML = `<div class="adiv-spread-${spread}">` +
+      cartas.map((c,i) => `
+        <div class="adiv-carta-wrap" onclick="AdivinacionModule.openModal('tarot','${c.name}',${c.invertida})">
+          <div class="adiv-label">${labels[i]||''}</div>
+          <div class="adiv-carta${c.invertida?' invertida':''}">
+            <div class="adiv-carta-sym">${c.sym}</div>
+            <div class="adiv-carta-num">${c.n}</div>
+          </div>
+          <div class="adiv-carta-name">${c.name}${c.invertida?' ↓':''}</div>
+        </div>`).join('') + '</div>';
+    renderInterpretacion(cartas, labels);
+  }
+
+  function renderInterpretacion(cartas, labels) {
+    const el = document.getElementById('adiv-interpretacion');
+    if (!el) return;
+    el.classList.remove('hidden');
+    el.innerHTML = `<h3 style="font-family:var(--font-heading);color:var(--gold-l);margin-bottom:1rem">✦ Interpretación</h3>` +
+      cartas.map((c,i) => `
+        <div style="margin-bottom:1rem;padding:.8rem;background:rgba(255,255,255,.03);border-radius:8px;border-left:3px solid ${c.invertida?'#8B0000':'#C4972A'}">
+          <div style="font-weight:600;color:var(--gold-l);font-family:var(--font-heading);font-size:.85rem;margin-bottom:.3rem">
+            ${labels[i]}: ${c.sym} ${c.name}${c.invertida?' (Invertida)':''}
+          </div>
+          <div style="font-size:.88rem;color:var(--lavender);line-height:1.6">
+            ${c.invertida ? c.inv : c.desc}
+          </div>
+        </div>`).join('');
+  }
+
+  function openModal(tipo, nombre, invertida) {
+    const overlay = document.getElementById('adiv-modal');
+    const content = document.getElementById('adiv-modal-content');
+    if (!overlay || !content) return;
+    let item;
+    if (tipo==='tarot') item = TAROT.find(c=>c.name===nombre);
+    else item = RUNAS_ORACLE.find(r=>r.name===nombre);
+    if (!item) return;
+    if (tipo==='tarot') {
+      content.innerHTML = `
+        <div class="modal-header">
+          <div style="font-size:2.5rem${invertida?';transform:rotate(180deg)':''}">${item.sym}</div>
+          <div>
+            <div class="modal-title">${item.n} · ${item.name}${invertida?' — Invertida':''}</div>
+            <div class="text-muted" style="font-size:.82rem">${item.kw}</div>
+          </div>
+          <button class="modal-close" id="adiv-modal-close" onclick="AdivinacionModule.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-row"><strong>Interpretación ${invertida?'Invertida':'Derecha'}</strong>${invertida?item.inv:item.desc}</div>
+          ${invertida?`<div class="modal-row"><strong>Derecha</strong>${item.desc}</div>`:`<div class="modal-row"><strong>Invertida</strong>${item.inv}</div>`}
+        </div>`;
+    } else {
+      content.innerHTML = `
+        <div class="modal-header">
+          <div style="font-size:3rem;color:var(--gold-g);text-shadow:0 0 20px rgba(255,217,102,.4)${invertida?';transform:rotate(180deg)':''}">${item.sym}</div>
+          <div>
+            <div class="modal-title">${item.name}${invertida?' — Invertida':''}</div>
+            <div class="text-muted" style="font-size:.82rem">${item.kw}</div>
+          </div>
+          <button class="modal-close" onclick="AdivinacionModule.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-row"><strong>Mensaje</strong>${item.desc}</div>
+        </div>`;
+    }
+    overlay.classList.remove('hidden');
+    document.body.style.overflow='hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('adiv-modal')?.classList.add('hidden');
+    document.body.style.overflow='';
+  }
+
+  return { init, setModo, setSpread, tirar, openModal, closeModal };
+})();
+
+</script>
+<script>
+'use strict';
+// ============================================================
 // APP.JS — Controlador principal
 // ============================================================
 const AppModule = (() => {
 
-  const SECTIONS = ['hoy','carta','rueda','biblioteca','hechizos','tareas','diario','libro','calendario'];
+  const SECTIONS = ['hoy','carta','rueda','biblioteca','hechizos','tareas','diario','libro','calendario','altar','cocina','adivinacion'];
   let currentSection = 'hoy';
   let initialized = {};
 
@@ -4986,6 +6048,9 @@ const AppModule = (() => {
         case 'diario':    DiarioModule.init(); break;
         case 'libro':     LibroModule.init(); break;
         case 'calendario':CalendarioModule.init(); break;
+        case 'altar':     AltarModule.init(); break;
+        case 'cocina':    CocinaModule.init(); break;
+        case 'adivinacion':AdivinacionModule.init(); break;
       }
     }
 
@@ -5180,9 +6245,54 @@ const AppModule = (() => {
       screen.style.transition = 'opacity .5s';
       setTimeout(() => screen.classList.add('hidden'), 500);
     }
-    // Mostrar username en sidebar
+    updateSidebarUser();
+  }
+
+  function updateSidebarUser() {
     const userEl = document.getElementById('sidebar-user');
-    if (userEl && currentUser) userEl.textContent = `✨ ${currentUser}`;
+    if (userEl && currentUser) {
+      userEl.innerHTML = `<span style="color:var(--gold-l)">✨ ${currentUser}</span>`;
+    }
+  }
+
+  function logout() {
+    currentUser = null;
+    localStorage.removeItem('bruja_session');
+    location.reload();
+  }
+
+  function showChangePass() {
+    document.getElementById('cp-old').value = '';
+    document.getElementById('cp-new').value = '';
+    document.getElementById('cp-new2').value = '';
+    document.getElementById('cp-err').textContent = '';
+    document.getElementById('changepass-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeChangePass() {
+    document.getElementById('changepass-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  function doChangePass() {
+    const old = document.getElementById('cp-old').value;
+    const nw  = document.getElementById('cp-new').value;
+    const nw2 = document.getElementById('cp-new2').value;
+    const err = document.getElementById('cp-err');
+    if (!old || !nw || !nw2) { err.textContent = 'Completa todos los campos'; return; }
+    if (nw !== nw2) { err.textContent = 'Las contraseñas nuevas no coinciden'; return; }
+    if (nw.length < 4) { err.textContent = 'La contraseña debe tener al menos 4 caracteres'; return; }
+    const users = loadUsers();
+    if (!users[currentUser] || users[currentUser].hash !== hashSimple(old)) {
+      err.textContent = '🗝 Contraseña actual incorrecta'; return;
+    }
+    users[currentUser].hash = hashSimple(nw);
+    saveUsers(users);
+    closeChangePass();
+    // Breve confirmación visual
+    const userEl = document.getElementById('sidebar-user');
+    if (userEl) { const prev = userEl.innerHTML; userEl.innerHTML = `<span style="color:#4caf50">✓ Contraseña cambiada</span>`; setTimeout(()=>userEl.innerHTML=prev,2000); }
   }
 
   // ── Landing ────────────────────────────────────────────────
@@ -5252,7 +6362,7 @@ const AppModule = (() => {
     });
   }
 
-  return { init, goTo };
+  return { init, goTo, logout, showChangePass, closeChangePass, doChangePass };
 })();
 
 // ── Arranque ──────────────────────────────────────────────────
