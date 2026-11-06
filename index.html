@@ -1519,6 +1519,58 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
 }
 
 /* ══════════════════════════════════════════════════════════
+   TAROT — Tabs de Arcanos Mayores / Menores
+══════════════════════════════════════════════════════════ */
+.adiv-tarot-tabs {
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+}
+.adiv-tab-btn {
+  padding: .4rem .9rem;
+  border: 1px solid rgba(180,120,255,.3);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: .8rem;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: var(--font-body);
+}
+.adiv-tab-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.adiv-tab-btn.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #1a0a2e;
+  font-weight: 600;
+}
+.adiv-tarot-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
+  gap: .8rem;
+}
+.adiv-palo-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .6rem .8rem;
+  background: rgba(180,120,255,.08);
+  border-radius: 10px;
+  font-size: 1.3rem;
+  margin-bottom: .2rem;
+}
+.adiv-palo-header strong {
+  font-family: var(--font-heading);
+  color: var(--gold);
+  font-size: .95rem;
+}
+
+/* ══════════════════════════════════════════════════════════
    COCINA MÁGICA — Tabs y nuevas secciones
 ══════════════════════════════════════════════════════════ */
 .cocina-card {
@@ -6628,6 +6680,185 @@ const AdivinacionModule = (() => {
       invertida:'Ciclo incompleto, falta de cierre, logro que falta ser reconocido.' },
   ];
 
+  // ── ARCANOS MENORES: 56 cartas (4 palos × 14) ─────────────
+  const ARCANOS_MENORES = [
+    // ── BASTOS (Fuego, voluntad, acción, creatividad) ──────
+    { palo:'bastos', num:'As',  nombre:'As de Bastos',    sym:'🔥', kw:'Inicio, inspiración, fuego creativo, potencial',
+      desc:'El As de Bastos es una chispa pura: el inicio de algo apasionante. Una idea nueva, un proyecto que nace, la energía que enciende. Este es el momento de decir sí a la aventura.',
+      invertida:'Bloqueo creativo, inicio fallido, energía dispersa.' },
+    { palo:'bastos', num:'2',   nombre:'Dos de Bastos',   sym:'🌐', kw:'Planificación, visión, poder personal, expansión',
+      desc:'El Dos de Bastos mira al horizonte con un mundo en la mano. Ya tienes una base — ahora toca planificar la expansión. ¿Qué tan lejos quieres llegar?',
+      invertida:'Falta de planes, miedo a expandirse, poder no aprovechado.' },
+    { palo:'bastos', num:'3',   nombre:'Tres de Bastos',  sym:'⛵', kw:'Progreso, espera de resultados, visión a largo plazo',
+      desc:'Los barcos han partido. El Tres de Bastos indica que pusiste algo en movimiento y ahora esperas con confianza los resultados. La visión que tuviste está dando frutos.',
+      invertida:'Retrasos, falta de foresight, planes que no regresan.' },
+    { palo:'bastos', num:'4',   nombre:'Cuatro de Bastos', sym:'🎉', kw:'Celebración, hogar, estabilidad, logro comunitario',
+      desc:'El Cuatro de Bastos es la fiesta merecida: un logro que se celebra con otros. También habla del hogar como lugar de alegría y estabilidad. Celebra lo que has construido.',
+      invertida:'Tensión en el hogar, celebración interrumpida, inestabilidad.' },
+    { palo:'bastos', num:'5',   nombre:'Cinco de Bastos',  sym:'⚔️', kw:'Conflicto, competencia, caos, lucha de egos',
+      desc:'El Cinco de Bastos es el caos de las voluntades que chocan. No es guerra — es competencia, desacuerdo creativo. ¿Estás luchando contra otros o contra partes de ti mismo?',
+      invertida:'Conflicto evitado, acuerdo alcanzado, caos que se calma.' },
+    { palo:'bastos', num:'6',   nombre:'Seis de Bastos',   sym:'🏇', kw:'Victoria, reconocimiento público, éxito, liderazgo',
+      desc:'El Seis de Bastos llega victorioso, aclamado por otros. Es el reconocimiento que sigue al esfuerzo. Tu trabajo ha sido visto. Recibe con gracia el reconocimiento.',
+      invertida:'Ego inflado, victoria sin reconocimiento, caída del líder.' },
+    { palo:'bastos', num:'7',   nombre:'Siete de Bastos',  sym:'🛡️', kw:'Defensa, perseverancia, mantener tu posición',
+      desc:'El Siete de Bastos está en la cima pero bajo ataque. Defiende lo que has logrado con confianza. Tienes la ventaja de la altura — úsala. No cedas por presión externa.',
+      invertida:'Rendirse, abrumarse, perder terreno por no defender.' },
+    { palo:'bastos', num:'8',   nombre:'Ocho de Bastos',   sym:'💨', kw:'Movimiento rápido, noticias, acción, energía en vuelo',
+      desc:'El Ocho de Bastos es velocidad pura: todo sucede rápido. Noticias en camino, proyectos que aceleran, energía que viaja. No lo frenes — cabalga la ola.',
+      invertida:'Retrasos frustrantes, mensajes bloqueados, energía dispersa.' },
+    { palo:'bastos', num:'9',   nombre:'Nueve de Bastos',  sym:'🤕', kw:'Resiliencia, guardia levantada, perseverancia herida',
+      desc:'El Nueve de Bastos está cansado pero no vencido. Ha peleado muchas batallas y sabe que puede haber más. Es la fuerza que queda cuando todo lo demás se fue. Resiste un poco más.',
+      invertida:'Paranoia, agotamiento total, rendirse a las puertas del final.' },
+    { palo:'bastos', num:'10',  nombre:'Diez de Bastos',   sym:'😤', kw:'Carga excesiva, responsabilidad, esfuerzo final',
+      desc:'El Diez de Bastos lleva más de lo que puede. ¿Es toda esa carga tuya? ¿Puedes delegar? La meta está cerca, pero si no sueltas algo, podrías caer antes de llegar.',
+      invertida:'Carga soltada, delegación, alivio después del esfuerzo.' },
+    { palo:'bastos', num:'Paje', nombre:'Paje de Bastos',  sym:'🌱', kw:'Entusiasmo, exploración, mensajes de aventura, inicio',
+      desc:'El Paje de Bastos es el eterno principiante entusiasmado: curioso, lleno de energía, listo para cualquier aventura. Puede traer buenas noticias o indicar una actitud de apertura total.',
+      invertida:'Impulsividad sin dirección, noticias tardías, entusiasmo vacío.' },
+    { palo:'bastos', num:'Caballero', nombre:'Caballero de Bastos', sym:'🏹', kw:'Acción audaz, aventura, impulsividad, energía desbocada',
+      desc:'El Caballero de Bastos actúa antes de pensar — y a veces funciona. Es energía pura en movimiento, el aventurero que persigue su pasión. Genial para actuar, peligroso sin dirección.',
+      invertida:'Imprudencia, energía mal dirigida, aventura que sale mal.' },
+    { palo:'bastos', num:'Reina', nombre:'Reina de Bastos', sym:'🦁', kw:'Confianza, carisma, pasión, liderazgo cálido',
+      desc:'La Reina de Bastos irradia confianza y vitalidad. Es magnética, creativa y apasionada. Sabe lo que quiere y lo atrae naturalmente. Liderar con calidez y determinación.',
+      invertida:'Ego, celos, energía que intimida en lugar de inspirar.' },
+    { palo:'bastos', num:'Rey',  nombre:'Rey de Bastos',   sym:'🦅', kw:'Visión, liderazgo emprendedor, dominio de la energía',
+      desc:'El Rey de Bastos es el visionario que ejecuta. No solo sueña — construye. Lidera con carisma y sabe inspirar a otros. Es la maestría del fuego: poderoso sin ser destructivo.',
+      invertida:'Autoritarismo, impulsividad de poder, visión sin ejecución.' },
+
+    // ── COPAS (Agua, emociones, intuición, relaciones) ─────
+    { palo:'copas', num:'As',  nombre:'As de Copas',    sym:'💧', kw:'Amor nuevo, intuición, apertura emocional, don espiritual',
+      desc:'El As de Copas es el corazón abierto: amor que desborda, intuición que fluye, conexión espiritual. Es el inicio de una relación, una experiencia de amor incondicional o un despertar emocional.',
+      invertida:'Bloqueo emocional, amor reprimido, intuición silenciada.' },
+    { palo:'copas', num:'2',   nombre:'Dos de Copas',   sym:'💑', kw:'Unión, conexión mutua, amor recíproco, sociedad',
+      desc:'El Dos de Copas es el encuentro de dos almas que se eligen. No solo amor romántico — también cualquier alianza genuina, amistad profunda o sociedad que nace desde el respeto mutuo.',
+      invertida:'Desconexión, ruptura de acuerdos, amor desequilibrado.' },
+    { palo:'copas', num:'3',   nombre:'Tres de Copas',  sym:'🥂', kw:'Celebración, amistad, comunidad, abundancia compartida',
+      desc:'El Tres de Copas levanta las copas con otros: es la celebración con quienes amamos, la amistad que nutre. Habla de crear juntos, de gozo compartido, de comunidad como refugio.',
+      invertida:'Excesos sociales, amistades superficiales, celebración vacía.' },
+    { palo:'copas', num:'4',   nombre:'Cuatro de Copas', sym:'😒', kw:'Apatía, contemplación, oportunidades no vistas, descontento',
+      desc:'El Cuatro de Copas está aburrido de lo que tiene y no ve la copa que se le ofrece. ¿Estás tan enfocado en lo que falta que no ves lo que llega? A veces la gratitud cambia todo.',
+      invertida:'Apertura repentina, salir del letargo, ver la oportunidad.' },
+    { palo:'copas', num:'5',   nombre:'Cinco de Copas',  sym:'😢', kw:'Pérdida, duelo, enfoque en lo perdido, transición emocional',
+      desc:'El Cinco de Copas llora las copas derramadas sin ver las dos que siguen en pie. Es el duelo válido y necesario. Llora lo que se fue — y cuando puedas, voltea a ver lo que queda.',
+      invertida:'Aceptación, comenzar a sanar, ver lo que permanece.' },
+    { palo:'copas', num:'6',   nombre:'Seis de Copas',   sym:'🌸', kw:'Nostalgia, infancia, pureza, recuerdos que sanan',
+      desc:'El Seis de Copas huele a pasado: recuerdos dulces, inocencia recuperada, conexión con el niño interior. Puede indicar personas o situaciones del pasado que regresan — o la necesidad de sanar viejas heridas.',
+      invertida:'Estancamiento en el pasado, idealización, resistencia a crecer.' },
+    { palo:'copas', num:'7',   nombre:'Siete de Copas',  sym:'🌈', kw:'Ilusión, fantasía, demasiadas opciones, ensoñación',
+      desc:'El Siete de Copas ofrece siete sueños en la niebla. Es la trampa de la fantasía: todo parece posible pero nada es real. ¿Estás soñando o actuando? Elige una copa y bájala a tierra.',
+      invertida:'Claridad después de la ilusión, decisión tomada, enfoque.' },
+    { palo:'copas', num:'8',   nombre:'Ocho de Copas',   sym:'🌙', kw:'Partir, dejar ir, búsqueda de algo más profundo, desapego',
+      desc:'El Ocho de Copas se va de noche, dejando ocho copas apiladas. No hay problema visible — pero algo interior llama a ir más lejos. Es el valor de alejarse de lo que ya no satisface el alma.',
+      invertida:'Miedo a partir, quedarse por obligación, búsqueda evitada.' },
+    { palo:'copas', num:'9',   nombre:'Nueve de Copas',  sym:'😊', kw:'Satisfacción, deseos cumplidos, bienestar, el deseo del corazón',
+      desc:'El Nueve de Copas es la carta del deseo cumplido: aquello que querías, llegó. Es gozo interior, autocomplacencia sana y gratitud plena. Disfruta este momento — lo mereces.',
+      invertida:'Deseo superficial, satisfacción vacía, autocomplacencia excesiva.' },
+    { palo:'copas', num:'10',  nombre:'Diez de Copas',   sym:'🌈', kw:'Felicidad familiar, plenitud emocional, armonía duradera',
+      desc:'El Diez de Copas es el horizonte de arcoíris: familia unida, amor que se sostiene en el tiempo, plenitud emocional compartida. Es el HEA — el "felices para siempre" que se construye cada día.',
+      invertida:'Disfunción familiar, armonía fingida, expectativas no cumplidas.' },
+    { palo:'copas', num:'Paje', nombre:'Paje de Copas',  sym:'🐟', kw:'Mensajes del corazón, creatividad soñadora, intuición tierna',
+      desc:'El Paje de Copas trae mensajes del mundo emocional: sueños, intuiciones, noticias afectivas. Es curioso, sensible y abierto. Presta atención a las señales emocionales y creativas.',
+      invertida:'Inmadurez emocional, fantasías poco realistas, mensajes mal interpretados.' },
+    { palo:'copas', num:'Caballero', nombre:'Caballero de Copas', sym:'💌', kw:'Romance, encanto, mensajero emocional, visión poética',
+      desc:'El Caballero de Copas llega con una propuesta del corazón: romántico, encantador, lleno de visión poética. Puede traer una invitación afectiva o indicar la necesidad de seguir el corazón.',
+      invertida:'Manipulación emocional, promesas vacías, encanto sin sustancia.' },
+    { palo:'copas', num:'Reina', nombre:'Reina de Copas', sym:'🌊', kw:'Empatía profunda, intuición, cuidado, profundidad emocional',
+      desc:'La Reina de Copas siente todo — y aun así no se ahoga. Es la maestra de la empatía, la que cuida desde la profundidad sin perder su centro. Escucha con el corazón.',
+      invertida:'Codependencia, emociones que abruman, manipulación afectiva.' },
+    { palo:'copas', num:'Rey',  nombre:'Rey de Copas',   sym:'🌊', kw:'Dominio emocional, compasión madura, liderazgo con corazón',
+      desc:'El Rey de Copas gobierna el mundo emocional con calma: siente profundo pero no se deja arrastrar. Es el consejero compasivo, el líder que cuida. La madurez del corazón en acción.',
+      invertida:'Manipulación afectiva, represión, emociones que estallan.' },
+
+    // ── ESPADAS (Aire, mente, verdad, conflicto) ───────────
+    { palo:'espadas', num:'As',  nombre:'As de Espadas',    sym:'🗡️', kw:'Verdad, claridad mental, corte certero, nuevo pensamiento',
+      desc:'El As de Espadas es la mente en su máximo poder: claridad que corta, verdad que libera, pensamiento que inaugura. Es el momento de ver las cosas como son — sin filtros, sin excusas.',
+      invertida:'Confusión mental, verdad bloqueada, claridad que se tarda.' },
+    { palo:'espadas', num:'2',   nombre:'Dos de Espadas',   sym:'😶', kw:'Bloqueo, decisión evitada, punto muerto, negación',
+      desc:'El Dos de Espadas tiene los ojos vendados y dos espadas cruzadas. No quiere ver — o no puede. Es la parálisis antes de una decisión difícil. La venda es voluntaria: ¿qué evitas ver?',
+      invertida:'Decisión tomada, levantamiento de la venda, verdad que emerge.' },
+    { palo:'espadas', num:'3',   nombre:'Tres de Espadas',  sym:'💔', kw:'Dolor, traición, corazón roto, verdad que duele',
+      desc:'El Tres de Espadas duele — y eso es exactamente lo que dice. Tres espadas en el corazón: traición, pena, pérdida. Este dolor es real. Pero la lluvia pasa, y el corazón que llora también sana.',
+      invertida:'Proceso de sanación, dolor que disminuye, herida que cierra.' },
+    { palo:'espadas', num:'4',   nombre:'Cuatro de Espadas', sym:'😴', kw:'Descanso, retiro, recuperación, pausa estratégica',
+      desc:'El Cuatro de Espadas descansa después de la batalla. No es rendición — es recuperación inteligente. El guerrero que no descansa se vuelve su propio enemigo. ¿Cuándo fue la última vez que paraste?',
+      invertida:'Agotamiento sin pausa, descanso que se tarda, insomnio mental.' },
+    { palo:'espadas', num:'5',   nombre:'Cinco de Espadas',  sym:'🏳️', kw:'Conflicto, derrota, victoria amarga, deshonor',
+      desc:'El Cinco de Espadas ganó — pero a qué costo. Tiene las espadas de los vencidos y una sonrisa que no convence. ¿Vale la pena ganar si el precio es la relación, la integridad o la paz?',
+      invertida:'Reconciliación, dejar ir la victoria amarga, paz después del conflicto.' },
+    { palo:'espadas', num:'6',   nombre:'Seis de Espadas',   sym:'⛵', kw:'Transición, alejarse del conflicto, aguas más calmas',
+      desc:'El Seis de Espadas se aleja en barca de aguas turbulentas hacia aguas más tranquilas. No es fuga — es transición sabia. Las espadas van contigo (los recuerdos permanecen), pero el horizonte es más calmado.',
+      invertida:'Estancamiento, incapacidad de alejarse, aguas que siguen agitadas.' },
+    { palo:'espadas', num:'7',   nombre:'Siete de Espadas',  sym:'🤫', kw:'Engaño, estrategia, furtividad, hacer las cosas a solas',
+      desc:'El Siete de Espadas se escapa con espadas ajenas mirando hacia atrás. Puede ser engaño, estrategia solitaria o la trampa de creer que puedes con todo sin ayuda. ¿A quién no estás diciendo la verdad?',
+      invertida:'Verdad que sale a la luz, traición descubierta, cambio de táctica.' },
+    { palo:'espadas', num:'8',   nombre:'Ocho de Espadas',   sym:'🙈', kw:'Trampa mental, restricción, víctima de los propios pensamientos',
+      desc:'El Ocho de Espadas está atado y vendado — pero las espadas forman una jaula que tiene salida. La prisión es mental. Los pensamientos que te limitan no son la realidad. Un paso a la vez, puedes salir.',
+      invertida:'Liberación mental, ver la salida, romper con la narrativa limitante.' },
+    { palo:'espadas', num:'9',   nombre:'Nueve de Espadas',  sym:'😱', kw:'Ansiedad, pesadillas, pensamiento catastrófico, noche oscura',
+      desc:'El Nueve de Espadas se despierta en la noche con nueve espadas sobre la cabeza — pero son pensamientos, no realidad. Es la carta de la ansiedad pura. ¿Qué tanto de lo que temes es real?',
+      invertida:'Ansiedad que disminuye, ver que el miedo fue mayor que la amenaza.' },
+    { palo:'espadas', num:'10',  nombre:'Diez de Espadas',   sym:'💀', kw:'Final definitivo, traición total, el punto más bajo',
+      desc:'El Diez de Espadas es el fondo absoluto — y solo puede ir hacia arriba. Algo terminó de manera brutal, sin posibilidad de retorno. Pero el amanecer siempre sigue a la noche más oscura.',
+      invertida:'Sobrevivir al peor momento, levantarse lentamente.' },
+    { palo:'espadas', num:'Paje', nombre:'Paje de Espadas',  sym:'💡', kw:'Curiosidad intelectual, mensajes, vigilancia, mente ágil',
+      desc:'El Paje de Espadas está alerta y curioso: observa todo, aprende rápido, lleva noticias. Puede indicar una mente brillante e inquieta, o información que llega. Escucha y observa.',
+      invertida:'Chisme, información mal usada, mente que no para de girar.' },
+    { palo:'espadas', num:'Caballero', nombre:'Caballero de Espadas', sym:'⚡', kw:'Acción rápida, determinación, intelecto en movimiento, impulsividad',
+      desc:'El Caballero de Espadas va a toda velocidad: intelecto y acción unidos. Corta lo que necesita ser cortado. Brillante y directo — pero necesita pensar dos veces antes de hablar.',
+      invertida:'Precipitación, argumentos sin sustancia, velocidad que destruye.' },
+    { palo:'espadas', num:'Reina', nombre:'Reina de Espadas', sym:'🌪️', kw:'Claridad, independencia, pensamiento agudo, honestidad sin filtro',
+      desc:'La Reina de Espadas ha pasado por el dolor y salió más clara. No tolera engaños ni rodeos. Es independiente, inteligente y directa. Su honestidad puede doler — pero siempre es justa.',
+      invertida:'Frialdad, crueldad velada bajo inteligencia, amargura.' },
+    { palo:'espadas', num:'Rey',  nombre:'Rey de Espadas',   sym:'👁️', kw:'Autoridad intelectual, verdad, liderazgo justo, pensamiento maestro',
+      desc:'El Rey de Espadas gobierna con la mente: justo, lógico, imparcial. Es el juez, el estratega, el que dice la verdad aunque incomode. La maestría del pensamiento en su más alto nivel.',
+      invertida:'Tiranía intelectual, frialdad, poder que usa la verdad como arma.' },
+
+    // ── OROS (Tierra, materia, trabajo, cuerpo, dinero) ────
+    { palo:'oros', num:'As',  nombre:'As de Oros',    sym:'💰', kw:'Oportunidad material, abundancia nueva, fundamento sólido',
+      desc:'El As de Oros es una semilla de oro: una nueva oportunidad de abundancia, un trabajo nuevo, dinero que llega o un proyecto con bases sólidas. La tierra está lista. ¿Qué quieres sembrar?',
+      invertida:'Oportunidad perdida, fundamento débil, abundancia bloqueada.' },
+    { palo:'oros', num:'2',   nombre:'Dos de Oros',   sym:'⚖️', kw:'Equilibrio, malabarismo, adaptabilidad, flujo entre opuestos',
+      desc:'El Dos de Oros hace malabares con dos monedas entre las olas. Es la vida que sube y baja — y el arte de mantener el equilibrio en movimiento. Sé flexible. Las cosas siempre cambian.',
+      invertida:'Desequilibrio, demasiadas cosas a la vez, caos financiero.' },
+    { palo:'oros', num:'3',   nombre:'Tres de Oros',  sym:'🏛️', kw:'Colaboración, maestría en construcción, trabajo en equipo',
+      desc:'El Tres de Oros es el artesano que trabaja con otros para crear algo magnífico. Habla de colaboración que produce excelencia, de planes bien hechos y de habilidades que se complementan.',
+      invertida:'Falta de equipo, trabajo sin reconocimiento, mediocridad aceptada.' },
+    { palo:'oros', num:'4',   nombre:'Cuatro de Oros', sym:'💎', kw:'Control, ahorro, posesividad, miedo a perder',
+      desc:'El Cuatro de Oros abraza sus monedas con fuerza. Puede ser prudencia financiera — o miedo a soltar. ¿Estás guardando por seguridad o por miedo? La abundancia necesita fluir.',
+      invertida:'Generosidad recuperada, soltar el control, dinero que fluye.' },
+    { palo:'oros', num:'5',   nombre:'Cinco de Oros',  sym:'❄️', kw:'Carencia, exclusión, dificultad material, fe en el invierno',
+      desc:'El Cinco de Oros pasa bajo una vidriera iluminada en la tormenta. Hay ayuda disponible — pero a veces el orgullo o el dolor impiden pedirla. La carencia es real, pero no es permanente.',
+      invertida:'Recuperación, ayuda que llega, el invierno que termina.' },
+    { palo:'oros', num:'6',   nombre:'Seis de Oros',   sym:'🤲', kw:'Generosidad, dar y recibir, equilibrio de recursos',
+      desc:'El Seis de Oros da y recibe en equilibrio. Es la generosidad como práctica espiritual. ¿Estás en posición de dar o de recibir? Los dos son actos de gracia.',
+      invertida:'Caridad condicionada, desequilibrio en dar/recibir, deuda de poder.' },
+    { palo:'oros', num:'7',   nombre:'Siete de Oros',  sym:'🌱', kw:'Paciencia, inversión a largo plazo, evaluar el progreso',
+      desc:'El Siete de Oros observa sus plantas crecer con paciencia. El trabajo ya está hecho — ahora es esperar. Evalúa: ¿tus inversiones (tiempo, dinero, energía) están dando fruto?',
+      invertida:'Impaciencia, trabajo sin rendimiento, inversión cuestionable.' },
+    { palo:'oros', num:'8',   nombre:'Ocho de Oros',   sym:'🔨', kw:'Dedicación, aprendizaje, maestría del oficio, diligencia',
+      desc:'El Ocho de Oros trabaja en silencio, afinando su arte pieza por pieza. Es la carta de la maestría que se construye con práctica. No busca atajos — busca excelencia.',
+      invertida:'Perfeccionismo paralizante, trabajo sin propósito, falta de habilidad.' },
+    { palo:'oros', num:'9',   nombre:'Nueve de Oros',  sym:'🦅', kw:'Independencia, lujo ganado, autoconfianza material, logro propio',
+      desc:'El Nueve de Oros disfruta lo que construyó con sus propias manos: abundancia, independencia, el placer de lo ganado. No necesita a nadie para ser suficiente. Es la satisfacción del propio esfuerzo.',
+      invertida:'Dependencia, lujo que no satisface, éxito que sabe a vacío.' },
+    { palo:'oros', num:'10',  nombre:'Diez de Oros',   sym:'🏡', kw:'Legado, riqueza familiar, estabilidad duradera, herencia',
+      desc:'El Diez de Oros es la abundancia que trasciende generaciones: el legado que dejas, la estabilidad que sostiene a toda una familia. Es la completud material en su expresión más plena.',
+      invertida:'Conflictos de herencia, inestabilidad familiar, riqueza sin sentido.' },
+    { palo:'oros', num:'Paje', nombre:'Paje de Oros',  sym:'🌿', kw:'Estudio, oportunidad nueva, curiosidad práctica, inicio de un proyecto',
+      desc:'El Paje de Oros sostiene su moneda con asombro: hay algo nuevo que aprender o comenzar. Es el estudiante dedicado, el inicio de un camino práctico. Aprende bien desde el principio.',
+      invertida:'Distracción, falta de foco, oportunidad que no se aprovecha.' },
+    { palo:'oros', num:'Caballero', nombre:'Caballero de Oros', sym:'🐂', kw:'Metódico, trabajador, confiable, lento pero seguro',
+      desc:'El Caballero de Oros avanza despacio y seguro sobre su buey. No es el más rápido ni el más brillante — pero llega. Es la confiabilidad, la persistencia y el trabajo honesto como virtudes.',
+      invertida:'Estancamiento, terquedad, trabajo sin progreso real.' },
+    { palo:'oros', num:'Reina', nombre:'Reina de Oros', sym:'🌹', kw:'Abundancia práctica, cuidado del hogar, generosidad, conexión a tierra',
+      desc:'La Reina de Oros cultiva la abundancia con amor: su jardín florece, su hogar nutre. Es práctica y generosa, conectada a la tierra y a su cuerpo. Prospera sin perder la calidez.',
+      invertida:'Negligencia del hogar, desequilibrio trabajo/vida, dependencia material.' },
+    { palo:'oros', num:'Rey',  nombre:'Rey de Oros',   sym:'👑', kw:'Éxito material, liderazgo emprendedor, generosidad del que tiene',
+      desc:'El Rey de Oros ha construido un imperio — y lo gestiona con sabiduría. Es el emprendedor exitoso, el mentor generoso, el que sabe que la abundancia real se comparte. La tierra fértil en su punto cúlmine.',
+      invertida:'Codicia, corrupción, éxito obtenido sin ética.' },
+  ];
+
   // ── RUNAS: 24 Elder Futhark ───────────────────────────────
   const RUNAS = [
     { nombre:'Fehu',    sym:'ᚠ', kw:'Riqueza, prosperidad fluida, éxito inicial',
@@ -6704,7 +6935,15 @@ const AdivinacionModule = (() => {
       invertida:'Herencia tóxica, falta de raíces, conflicto familiar no resuelto.' },
   ];
 
+  const PALO_INFO = {
+    bastos:  { label:'Bastos',   emoji:'🔥', elemento:'Fuego',  tema:'Acción, voluntad, creatividad' },
+    copas:   { label:'Copas',    emoji:'💧', elemento:'Agua',   tema:'Emociones, intuición, relaciones' },
+    espadas: { label:'Espadas',  emoji:'🗡️', elemento:'Aire',   tema:'Mente, verdad, conflicto' },
+    oros:    { label:'Oros',     emoji:'🌿', elemento:'Tierra', tema:'Materia, trabajo, abundancia' },
+  };
+
   let modo = 'runas';
+  let tarotFiltro = 'mayores'; // 'mayores' | 'bastos' | 'copas' | 'espadas' | 'oros'
 
   // ── Oráculo de Runas ──────────────────────────────────────
   function tirarRuna() {
@@ -6732,13 +6971,45 @@ const AdivinacionModule = (() => {
   function renderTarot() {
     const grid = document.getElementById('adiv-tarot-grid');
     if (!grid) return;
-    grid.innerHTML = TAROT.map(c => `
-      <div class="adiv-ref-card" onclick="AdivinacionModule.openModal('tarot','${c.num}')">
-        <div class="adiv-ref-sym">${c.sym}</div>
-        <div class="adiv-ref-num">${c.num}</div>
-        <div class="adiv-ref-nombre">${c.nombre}</div>
-        <div class="adiv-ref-kw">${c.kw.split(',')[0].trim()}</div>
-      </div>`).join('');
+
+    // Tabs de filtro
+    const tabsHtml = `
+      <div class="adiv-tarot-tabs">
+        <button class="adiv-tab-btn${tarotFiltro==='mayores'?' active':''}" onclick="AdivinacionModule.setTarotFiltro('mayores')">🌟 Mayores</button>
+        <button class="adiv-tab-btn${tarotFiltro==='bastos'?' active':''}" onclick="AdivinacionModule.setTarotFiltro('bastos')">🔥 Bastos</button>
+        <button class="adiv-tab-btn${tarotFiltro==='copas'?' active':''}" onclick="AdivinacionModule.setTarotFiltro('copas')">💧 Copas</button>
+        <button class="adiv-tab-btn${tarotFiltro==='espadas'?' active':''}" onclick="AdivinacionModule.setTarotFiltro('espadas')">🗡️ Espadas</button>
+        <button class="adiv-tab-btn${tarotFiltro==='oros'?' active':''}" onclick="AdivinacionModule.setTarotFiltro('oros')">🌿 Oros</button>
+      </div>`;
+
+    let cards;
+    if (tarotFiltro === 'mayores') {
+      cards = TAROT.map(c => `
+        <div class="adiv-ref-card" onclick="AdivinacionModule.openModal('tarot','${c.num}')">
+          <div class="adiv-ref-sym">${c.sym}</div>
+          <div class="adiv-ref-num">${c.num}</div>
+          <div class="adiv-ref-nombre">${c.nombre}</div>
+          <div class="adiv-ref-kw">${c.kw.split(',')[0].trim()}</div>
+        </div>`).join('');
+    } else {
+      const palo = PALO_INFO[tarotFiltro];
+      const menores = ARCANOS_MENORES.filter(c => c.palo === tarotFiltro);
+      const header = `<div class="adiv-palo-header"><span>${palo.emoji}</span><div><strong>${palo.label}</strong><span class="text-muted"> · ${palo.elemento} · ${palo.tema}</span></div></div>`;
+      cards = header + menores.map(c => `
+        <div class="adiv-ref-card" onclick="AdivinacionModule.openModal('menor','${c.palo}|${c.num}')">
+          <div class="adiv-ref-sym">${c.sym}</div>
+          <div class="adiv-ref-num">${c.num}</div>
+          <div class="adiv-ref-nombre">${c.nombre}</div>
+          <div class="adiv-ref-kw">${c.kw.split(',')[0].trim()}</div>
+        </div>`).join('');
+    }
+
+    grid.innerHTML = tabsHtml + `<div class="adiv-tarot-cards">${cards}</div>`;
+  }
+
+  function setTarotFiltro(filtro) {
+    tarotFiltro = filtro;
+    renderTarot();
   }
 
   function renderRunas() {
@@ -6768,9 +7039,24 @@ const AdivinacionModule = (() => {
 
   // ── Modal detalle ─────────────────────────────────────────
   function openModal(tipo, id) {
-    let item;
-    if (tipo === 'tarot') item = TAROT.find(c => c.num === id);
-    else item = RUNAS.find(r => r.nombre === id);
+    let item, tag, numLabel;
+
+    if (tipo === 'tarot') {
+      item = TAROT.find(c => c.num === id);
+      tag = 'Arcano Mayor';
+      numLabel = item ? item.num + ' · ' : '';
+    } else if (tipo === 'menor') {
+      const [palo, num] = id.split('|');
+      item = ARCANOS_MENORES.find(c => c.palo === palo && c.num === num);
+      const info = PALO_INFO[palo] || {};
+      tag = `${info.emoji || ''} Arcano Menor · ${info.label || palo}`;
+      numLabel = item ? item.num + ' · ' : '';
+    } else {
+      item = RUNAS.find(r => r.nombre === id);
+      tag = 'Runa';
+      numLabel = '';
+    }
+
     if (!item) return;
 
     const overlay = document.getElementById('adiv-modal');
@@ -6782,8 +7068,8 @@ const AdivinacionModule = (() => {
       <div class="modal-header">
         <div style="font-size:2.5rem;line-height:1">${item.sym}</div>
         <div>
-          <div class="modal-title">${isRuna ? item.nombre : item.num + ' · ' + item.nombre}</div>
-          <div class="modal-tags"><span class="tag">${isRuna ? 'Runa' : 'Arcano Mayor'}</span></div>
+          <div class="modal-title">${isRuna ? item.nombre : numLabel + item.nombre}</div>
+          <div class="modal-tags"><span class="tag">${tag}</span></div>
         </div>
         <button class="modal-close" onclick="AdivinacionModule.closeModal()">✕</button>
       </div>
@@ -6808,7 +7094,7 @@ const AdivinacionModule = (() => {
     setModo('runas');
   }
 
-  return { init, setModo, tirar: tirarRuna, openModal, closeModal };
+  return { init, setModo, setTarotFiltro, tirar: tirarRuna, openModal, closeModal };
 })();
 
 </script>
