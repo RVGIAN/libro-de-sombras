@@ -1396,178 +1396,213 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
 }
 
 /* ════════════════════════════════════════════
-   ADIVINACIÓN — nueva UI
+   ADIVINACIÓN — UI rediseñada
 ════════════════════════════════════════════ */
 .adiv-modo-selector {
   display: flex;
-  gap: .5rem;
-  margin-bottom: 1.2rem;
+  gap: .3rem;
+  margin-bottom: 1.5rem;
   flex-wrap: wrap;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(180,120,255,.14);
+  border-radius: 14px;
+  padding: .35rem;
 }
 .adiv-modo-btn {
   flex: 1;
-  min-width: 100px;
-  padding: .6rem .8rem;
-  border: 1px solid rgba(180,120,255,.3);
-  border-radius: 8px;
-  background: rgba(255,255,255,.04);
-  color: var(--text-secondary);
+  min-width: 90px;
+  padding: .58rem .9rem;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
   font-family: var(--font-heading);
-  font-size: .88rem;
+  font-size: .84rem;
   cursor: pointer;
   transition: all .2s;
+  letter-spacing: .02em;
 }
-.adiv-modo-btn.active,
-.adiv-modo-btn:hover {
-  background: rgba(180,120,255,.18);
-  border-color: var(--gold);
-  color: var(--gold);
+.adiv-modo-btn:hover { color: var(--lavender); background: rgba(180,120,255,.1); }
+.adiv-modo-btn.active {
+  background: rgba(74,26,122,.55);
+  color: var(--gold-l);
+  box-shadow: 0 2px 10px rgba(0,0,0,.35);
 }
 
-/* Oráculo */
+/* ── Oráculo ─────────────────────────────── */
 .adiv-oraculo-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .6rem;
-  padding: 1.5rem;
-  background: rgba(255,255,255,.04);
-  border-radius: 12px;
-  border: 1px solid rgba(180,120,255,.2);
+  gap: .7rem;
+  padding: 1.8rem 1.5rem;
+  background: linear-gradient(160deg, rgba(74,26,122,.14) 0%, rgba(255,255,255,.03) 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(180,120,255,.22);
+  margin-top: .5rem;
+  animation: fadeIn .4s ease;
 }
 .adiv-oraculo-sym {
-  font-size: 3.5rem;
+  font-size: 3.8rem;
   line-height: 1;
   transition: transform .4s;
+  filter: drop-shadow(0 0 12px rgba(196,151,42,.35));
 }
 .adiv-oraculo-sym.invertida {
   transform: rotate(180deg);
-  opacity: .75;
+  opacity: .7;
 }
 .adiv-oraculo-nombre {
   font-family: var(--font-heading);
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   color: var(--gold);
+  letter-spacing: .04em;
 }
 .adiv-oraculo-kw {
-  font-size: .85rem;
-  color: var(--text-secondary);
+  font-size: .84rem;
+  color: var(--muted);
   text-align: center;
   font-style: italic;
+  max-width: 30ch;
 }
 .adiv-oraculo-desc {
   font-size: .95rem;
-  line-height: 1.65;
+  line-height: 1.7;
   text-align: center;
-  max-width: 36ch;
-  color: var(--text-primary);
+  max-width: 38ch;
+  color: var(--lavender);
+  font-family: var(--font-body);
 }
 .adiv-tirar-btn {
-  background: linear-gradient(135deg, var(--gold), #b8860b);
+  background: linear-gradient(135deg, var(--gold) 0%, #9a6a0a 100%);
   color: #0a0510;
   border: none;
-  border-radius: 8px;
-  padding: .7rem 1.6rem;
+  border-radius: 10px;
+  padding: .75rem 1.8rem;
   font-family: var(--font-heading);
   font-size: .95rem;
   cursor: pointer;
-  transition: opacity .2s, transform .15s;
+  transition: opacity .2s, transform .15s, box-shadow .2s;
+  letter-spacing: .04em;
+  box-shadow: 0 4px 16px rgba(196,151,42,.3);
 }
-.adiv-tirar-btn:hover { opacity: .88; transform: translateY(-1px); }
+.adiv-tirar-btn:hover {
+  opacity: .9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(196,151,42,.45);
+}
 
-/* Grids de referencia */
+/* ── Grids de referencia ─────────────────── */
+/* Runas: grid directo */
 .adiv-ref-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: .6rem;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: .65rem;
 }
+/* Tarot: bloque para que tabs + cards-grid se apilen */
+#adiv-tarot-grid {
+  display: block;
+}
+
 .adiv-ref-card {
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(180,120,255,.18);
-  border-radius: 10px;
-  padding: .8rem .5rem;
+  background: linear-gradient(155deg, rgba(255,255,255,.07) 0%, rgba(74,26,122,.1) 100%);
+  border: 1px solid rgba(180,120,255,.2);
+  border-radius: 12px;
+  padding: 1rem .6rem .85rem;
   text-align: center;
   cursor: pointer;
-  transition: all .2s;
+  transition: all .22s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .15rem;
 }
 .adiv-ref-card:hover {
-  background: rgba(180,120,255,.14);
-  border-color: var(--gold);
-  transform: translateY(-2px);
+  background: linear-gradient(155deg, rgba(180,120,255,.18) 0%, rgba(74,26,122,.28) 100%);
+  border-color: var(--gold-l);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(196,151,42,.18);
 }
 .adiv-ref-sym {
-  font-size: 1.8rem;
-  margin-bottom: .2rem;
+  font-size: 2.1rem;
+  line-height: 1;
+  margin-bottom: .18rem;
 }
 .adiv-ref-num {
-  font-size: .68rem;
+  font-size: .67rem;
   color: var(--gold);
   font-family: var(--font-heading);
-  opacity: .8;
+  letter-spacing: .06em;
+  opacity: .9;
 }
 .adiv-ref-nombre {
   font-size: .78rem;
   font-family: var(--font-heading);
-  color: var(--text-primary);
-  margin: .15rem 0;
-  line-height: 1.2;
+  color: var(--lavender);
+  margin: .12rem 0;
+  line-height: 1.25;
 }
 .adiv-ref-kw {
-  font-size: .68rem;
-  color: var(--text-secondary);
+  font-size: .66rem;
+  color: var(--muted);
   font-style: italic;
+  line-height: 1.3;
 }
 
-/* ══════════════════════════════════════════════════════════
-   TAROT — Tabs de Arcanos Mayores / Menores
-══════════════════════════════════════════════════════════ */
+/* ── Tarot — Tabs de filtro ──────────────── */
 .adiv-tarot-tabs {
   display: flex;
-  gap: .4rem;
+  gap: .35rem;
   flex-wrap: wrap;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.1rem;
 }
 .adiv-tab-btn {
-  padding: .4rem .9rem;
-  border: 1px solid rgba(180,120,255,.3);
+  padding: .38rem .95rem;
+  border: 1px solid rgba(180,120,255,.22);
   border-radius: 20px;
-  background: transparent;
-  color: var(--text-secondary);
+  background: rgba(255,255,255,.03);
+  color: var(--muted);
   font-size: .8rem;
   cursor: pointer;
   transition: all .2s;
   font-family: var(--font-body);
+  letter-spacing: .02em;
 }
-.adiv-tab-btn:hover {
-  border-color: var(--gold);
-  color: var(--gold);
-}
+.adiv-tab-btn:hover { border-color: var(--gold); color: var(--gold-l); }
 .adiv-tab-btn.active {
   background: var(--gold);
   border-color: var(--gold);
   color: #1a0a2e;
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(196,151,42,.35);
 }
 .adiv-tarot-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
+  grid-template-columns: repeat(auto-fill, minmax(110px,1fr));
   gap: .8rem;
 }
 .adiv-palo-header {
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
-  gap: .7rem;
-  padding: .6rem .8rem;
-  background: rgba(180,120,255,.08);
-  border-radius: 10px;
-  font-size: 1.3rem;
-  margin-bottom: .2rem;
+  gap: .8rem;
+  padding: .7rem 1rem;
+  background: linear-gradient(90deg, rgba(74,26,122,.25) 0%, transparent 100%);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 10px 10px 0;
+  font-size: 1.5rem;
+  margin-bottom: .4rem;
 }
 .adiv-palo-header strong {
   font-family: var(--font-heading);
   color: var(--gold);
-  font-size: .95rem;
+  font-size: 1rem;
+  letter-spacing: .04em;
+}
+.adiv-palo-header .text-muted {
+  font-size: .78rem;
+  font-family: var(--font-body);
+  font-style: italic;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1881,7 +1916,10 @@ kbd { font-size: .65rem; background: rgba(255,255,255,.08); border: 1px solid rg
             </div>
             <div class="form-group">
               <label class="form-label">&nbsp;</label>
-              <button type="submit" class="btn-gold">✦ Calcular Carta</button>
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+                <button type="submit" class="btn-gold">✦ Calcular Carta</button>
+                <button type="button" id="btn-mi-carta" class="btn-gold" style="background:linear-gradient(135deg,#4A1A7A,#6B3AAF);border:1px solid rgba(180,120,255,.5)">⭐ Mi Carta</button>
+              </div>
             </div>
           </div>
         </form>
@@ -3861,6 +3899,36 @@ const CartaModule = (() => {
     wrap.innerHTML=html;
   }
 
+  // ── Carta natal de Gianfranco (posiciones exactas) ───────
+  // Fuente: carta natal calculada con efemérides reales
+  const GIANFRANCO = {
+    pos: {
+      SUN:159.27, MOON:61.52, MERCURY:170.85, VENUS:173.38,
+      MARS:60.73, JUPITER:33.02, SATURN:289.0,
+      URANUS:275.0, NEPTUNE:281.0, PLUTO:225.0,
+      LILITH:76.0, NNODE:338.5,
+    },
+    asc:28.95, MC:119.18,
+  };
+
+  function buildPresetChart(preset) {
+    const { pos, asc, MC } = preset;
+    const ZOD = Astro.ZODIAC;
+    const PLAN = Astro.PLANETS;
+    // Casas aproximadas (Equal House desde ASC)
+    const houses = Array.from({length:12},(_,i)=>((asc + i*30)%360+360)%360);
+    const signs={};
+    for(const [k,v] of Object.entries(pos)){
+      const idx=Math.floor(((v%360)+360)%360/30);
+      const lon=((v%360)+360)%360;
+      const deg=lon%30;
+      signs[k]={lon,sign:ZOD[idx],deg:Math.floor(deg),min:Math.floor((deg%1)*60),info:PLAN[k]||{sym:'?',color:'#999',name:k}};
+    }
+    return {pos,signs,asc,MC,houses,
+      ascSign:ZOD[Math.floor(((asc%360)+360)%360/30)],
+      mcSign:ZOD[Math.floor(((MC%360)+360)%360/30)]};
+  }
+
   // ── Inicializar sección ───────────────────────────────────
   function init() {
     const form = document.getElementById('carta-form');
@@ -3874,6 +3942,31 @@ const CartaModule = (() => {
         opt.value=c; opt.textContent=c;
         if(c.includes('Quito')) opt.selected=true;
         citySelect.appendChild(opt);
+      });
+    }
+
+    // Botón "Mi Carta" (preset exacto)
+    const presetBtn = document.getElementById('btn-mi-carta');
+    if(presetBtn){
+      presetBtn.addEventListener('click', ()=>{
+        const result = document.getElementById('carta-result');
+        if(result) result.classList.remove('hidden');
+        const summ = document.getElementById('carta-summary');
+        if(summ){
+          summ.innerHTML = `
+            <span class="text-gold">☉</span> Sol en <strong>Virgo</strong>
+            &nbsp;·&nbsp;
+            <span class="text-gold">☽</span> Luna en <strong>Géminis</strong>
+            &nbsp;·&nbsp;
+            <span class="text-gold">↑</span> Ascendente <strong>Aries</strong>
+            <br><small class="text-muted">Gianfranco · Carta natal (efemérides exactas)</small>`;
+        }
+        currentChart = buildPresetChart(GIANFRANCO);
+        renderChart(currentChart);
+        renderPlanetTable(currentChart);
+        renderAspects(currentChart);
+        renderInterpretaciones(currentChart);
+        document.getElementById('carta-result')?.scrollIntoView({behavior:'smooth'});
       });
     }
 
