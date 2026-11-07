@@ -1099,6 +1099,9 @@ strong { color: var(--gold-l); }
 
     <section id="sec-rueda" class="section"></section>
 
+    <!-- RITUALES -->
+    <section id="sec-rituales" class="section"></section>
+
     <!-- DIARIO -->
     <section id="sec-diario" class="section"></section>
 
@@ -1353,6 +1356,7 @@ const App = (() => {
     { id: 'ancestros',  label: 'Ancestros',    emoji: '👁️' },
     { id: 'dia',        label: 'Horas',        emoji: '🌅' },
     { id: 'rueda',      label: 'Rueda del Año',emoji: '☀️' },
+    { id: 'rituales',   label: 'Rituales',     emoji: '🕯️' },
     { id: 'diario',     label: 'Diario',       emoji: '📖' },
     { id: 'tarot',      label: 'Tarot',        emoji: '🃏' },
     { id: 'libro',      label: 'El Libro',     emoji: '📚' },
@@ -1437,6 +1441,7 @@ const App = (() => {
       ancestros:  typeof Ancestros  !== 'undefined' ? Ancestros  : null,
       dia:        typeof Dia        !== 'undefined' ? Dia        : null,
       rueda:      typeof Rueda      !== 'undefined' ? Rueda      : null,
+      rituales:   typeof Rituales   !== 'undefined' ? Rituales   : null,
       diario:     typeof Diario     !== 'undefined' ? Diario     : null,
       tarot:      typeof Tarot      !== 'undefined' ? Tarot      : null,
       libro:      typeof Libro      !== 'undefined' ? Libro      : null,
@@ -1909,6 +1914,7 @@ const Admin = (() => {
       <div class="admin-menu">
         ${menuBtn('biblioteca',  '🌿', 'Biblioteca')}
         ${menuBtn('taller',      '🕯️', 'Taller de Brujas')}
+        ${menuBtn('rituales',    '🕯️', 'Rituales')}
         ${menuBtn('hechizos',    '✨', 'Hechizos')}
         ${menuBtn('altar',       '🔥', 'Altar & Panteones')}
         ${menuBtn('ancestros',   '👁️', 'Ancestros & Seres')}
@@ -1929,6 +1935,7 @@ const Admin = (() => {
       <div id="admin-panels">
         <div id="adm-biblioteca" class="admin-panel"></div>
         <div id="adm-taller"     class="admin-panel"></div>
+        <div id="adm-rituales"   class="admin-panel"></div>
         <div id="adm-hechizos"   class="admin-panel"></div>
         <div id="adm-altar"      class="admin-panel"></div>
         <div id="adm-ancestros"  class="admin-panel"></div>
@@ -1979,6 +1986,7 @@ const Admin = (() => {
     const renders = {
       biblioteca:  renderAdmBiblioteca,
       taller:      renderAdmTaller,
+      rituales:    renderAdmRituales,
       hechizos:    renderAdmHechizos,
       altar:       renderAdmAltar,
       ancestros:   renderAdmAncestros,
@@ -2174,6 +2182,106 @@ const Admin = (() => {
         }
       }
     );
+  }
+
+  /* ══════════════════════════════════════════════
+     RITUALES ADMIN
+     ══════════════════════════════════════════════ */
+  const RITUALES_CATS = [
+    { key: 'proteccion',  label: 'Protección',       emoji: '🛡️' },
+    { key: 'amor',        label: 'Amor',              emoji: '💗' },
+    { key: 'prosperidad', label: 'Prosperidad',       emoji: '🌿' },
+    { key: 'sanacion',    label: 'Sanación',           emoji: '💚' },
+    { key: 'claridad',    label: 'Claridad',           emoji: '🔮' },
+    { key: 'ancestros',   label: 'Ancestros',          emoji: '🕯️' },
+    { key: 'sombra',      label: 'Trabajo de Sombra',  emoji: '🌑' },
+  ];
+
+  function renderAdmRituales(panel) {
+    panel.innerHTML = `
+      <h2 style="margin-bottom:1rem">🕯️ Rituales</h2>
+      <div class="tabs" id="adm-rituales-tabs" style="flex-wrap:wrap">
+        ${RITUALES_CATS.map((c, i) =>
+          `<button class="tab-btn ${i===0?'active':''}" onclick="Admin._ritualesTab('${c.key}', this)">${c.emoji} ${c.label}</button>`
+        ).join('')}
+      </div>
+      <div id="adm-rituales-content"></div>`;
+    _ritualesCatRender('proteccion', App.lsGet('bruja_rituales_proteccion', []));
+  }
+
+  function _ritualesTab(key, btn) {
+    document.querySelectorAll('#adm-rituales-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    _ritualesCatRender(key, App.lsGet('bruja_rituales_' + key, []));
+  }
+
+  function _ritualesCatRender(key, items) {
+    const content = document.getElementById('adm-rituales-content');
+    if (!content) return;
+    content.innerHTML = `
+      <button class="btn btn-primary mb-2" onclick="Admin._ritualNuevo('${key}')">+ Agregar ritual</button>
+      ${items.length === 0
+        ? `<p class="text-muted">Sin rituales en esta categoría.</p>`
+        : items.map(it => admItemRow(it, 'rituales-' + key)).join('')}`;
+  }
+
+  function _ritualNuevo(key, id = null) {
+    const items = App.lsGet('bruja_rituales_' + key, []);
+    const existing = id ? items.find(x => x.id === id) : null;
+    const f = existing || {};
+
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+      <div class="modal-box" style="max-width:520px">
+        <h3>${existing ? 'Editar' : 'Nuevo'} Ritual</h3>
+        <label class="form-label">Nombre *</label>
+        <input id="rt-name" class="form-input mb-1" value="${f.name||''}">
+        <label class="form-label">Intención</label>
+        <input id="rt-intencion" class="form-input mb-1" value="${f.intencion||''}">
+        <label class="form-label">Momento óptimo</label>
+        <input id="rt-momento" class="form-input mb-1" value="${f.momento||''}">
+        <label class="form-label">Materiales</label>
+        <textarea id="rt-materiales" class="form-input mb-1" rows="2">${f.materiales||''}</textarea>
+        <label class="form-label">Preparación</label>
+        <textarea id="rt-preparacion" class="form-input mb-1" rows="2">${f.preparacion||''}</textarea>
+        <label class="form-label">El Ritual (pasos)</label>
+        <textarea id="rt-pasos" class="form-input mb-1" rows="4">${f.pasos||''}</textarea>
+        <label class="form-label">Cierre</label>
+        <textarea id="rt-cierre" class="form-input mb-1" rows="2">${f.cierre||''}</textarea>
+        <label class="form-label">Notas</label>
+        <textarea id="rt-notas" class="form-input mb-2" rows="2">${f.notas||''}</textarea>
+        <div style="display:flex;gap:.5rem">
+          <button class="btn btn-primary" onclick="Admin._ritualGuardar('${key}','${id||''}')">💾 Guardar</button>
+          <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancelar</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+
+  function _ritualGuardar(key, id) {
+    const nombre = document.getElementById('rt-name')?.value.trim();
+    if (!nombre) { App.toast('El nombre es obligatorio', 2000); return; }
+    const list = App.lsGet('bruja_rituales_' + key, []);
+    const item = {
+      id:          id || 'rt-' + Date.now(),
+      name:        nombre,
+      intencion:   document.getElementById('rt-intencion')?.value.trim() || '',
+      momento:     document.getElementById('rt-momento')?.value.trim() || '',
+      materiales:  document.getElementById('rt-materiales')?.value.trim() || '',
+      preparacion: document.getElementById('rt-preparacion')?.value.trim() || '',
+      pasos:       document.getElementById('rt-pasos')?.value.trim() || '',
+      cierre:      document.getElementById('rt-cierre')?.value.trim() || '',
+      notas:       document.getElementById('rt-notas')?.value.trim() || '',
+    };
+    if (id) {
+      const idx = list.findIndex(x => x.id === id);
+      if (idx >= 0) list[idx] = item; else list.push(item);
+    } else { list.push(item); }
+    App.lsSet('bruja_rituales_' + key, list);
+    document.querySelector('.modal-overlay')?.remove();
+    App.toast('Ritual guardado ✓');
+    _ritualesCatRender(key, App.lsGet('bruja_rituales_' + key, []));
   }
 
   /* ══════════════════════════════════════════════
@@ -3699,6 +3807,20 @@ const Admin = (() => {
       sabat:    `Admin._sabatEliminar('${item.id}')`,
     }[type] || '';
 
+    // Detectar tipo rituales
+    if (type.startsWith('rituales-')) {
+      const key = type.replace('rituales-', '');
+      return `<div class="admin-item">
+        <div class="admin-item-info">
+          <div class="admin-item-name">${item.name}</div>
+          <div class="admin-item-meta">${item.intencion || ''}</div>
+        </div>
+        <div class="admin-item-actions">
+          <button class="btn-icon" onclick="Admin._ritualNuevo('${key}','${item.id}')">✏️</button>
+          <button class="btn-icon" onclick="Admin._admEliminar('bruja_rituales_${key}','${item.id}',null,()=>Admin._ritualesTab('${key}',document.querySelector('#adm-rituales-tabs .tab-btn.active')))">🗑️</button>
+        </div></div>`;
+    }
+
     // Detectar tipo taller
     if (type.startsWith('taller-')) {
       const key = type.replace('taller-', '');
@@ -3755,6 +3877,7 @@ const Admin = (() => {
   return {
     render, _tryPin, _showPanel,
     _bibNuevo, _tallerNuevo, _tallerTab,
+    _ritualesTab, _ritualNuevo, _ritualGuardar,
     _hechizoNuevo, _panteonNuevo, _herramientaNueva, _ancestroNuevo,
     renderAdmAltar,
     _sabatNuevo, _sabatEliminar,
@@ -3931,7 +4054,7 @@ const Biblioteca = (() => {
     const sec = document.getElementById('sec-biblioteca');
     if (!sec) return;
 
-    const items = App.lsGet('bruja_biblioteca', typeof BibliotecaDefaults !== 'undefined' ? BibliotecaDefaults : []);
+    const items = (()=>{ const _s=App.lsGet('bruja_biblioteca',[]); return (_s&&_s.length>0)?_s:(typeof BibliotecaDefaults!=='undefined'?BibliotecaDefaults:[]); })();
 
     sec.innerHTML = `
       <h1 class="section-title">🌿 Biblioteca Mágica</h1>
@@ -3989,14 +4112,14 @@ const Biblioteca = (() => {
   function _filtrar(tipo, btn) {
     document.querySelectorAll('#bib-filtro-tabs .tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const items = App.lsGet('bruja_biblioteca', typeof BibliotecaDefaults !== 'undefined' ? BibliotecaDefaults : []);
+    const items = (()=>{ const _s=App.lsGet('bruja_biblioteca',[]); return (_s&&_s.length>0)?_s:(typeof BibliotecaDefaults!=='undefined'?BibliotecaDefaults:[]); })();
     renderGrid(tipo ? items.filter(i => i.tipo === tipo) : items);
     _cerrarDetalle();
   }
 
   function _buscar(query) {
     const q = query.toLowerCase().trim();
-    const items = App.lsGet('bruja_biblioteca', typeof BibliotecaDefaults !== 'undefined' ? BibliotecaDefaults : []);
+    const items = (()=>{ const _s=App.lsGet('bruja_biblioteca',[]); return (_s&&_s.length>0)?_s:(typeof BibliotecaDefaults!=='undefined'?BibliotecaDefaults:[]); })();
     renderGrid(q ? items.filter(i =>
       i.name.toLowerCase().includes(q) ||
       (i.medicinal || '').toLowerCase().includes(q) ||
@@ -4005,7 +4128,7 @@ const Biblioteca = (() => {
   }
 
   function _ver(id) {
-    const items = App.lsGet('bruja_biblioteca', typeof BibliotecaDefaults !== 'undefined' ? BibliotecaDefaults : []);
+    const items = (()=>{ const _s=App.lsGet('bruja_biblioteca',[]); return (_s&&_s.length>0)?_s:(typeof BibliotecaDefaults!=='undefined'?BibliotecaDefaults:[]); })();
     const it = items.find(x => x.id === id);
     if (!it) return;
     activeItem = id;
@@ -4323,6 +4446,52 @@ const TallerData = {
       preparacion: '1. Calienta el aceite de oliva a fuego BAJO. No debe humear — solo tibio.\n2. Añade todos los ingredientes al aceite tibio.\n3. Cocina a fuego muy bajo 20 minutos (el ajo no debe dorarse).\n4. Retira del fuego y deja enfriar completamente con los ingredientes dentro.\n5. Transfiere al frasco de vidrio con todo el ajo y las ramas.\n6. CONSAGRAR: Sostén el frasco con ambas manos, cierra los ojos y di: "Que todo lo que cocine con este aceite lleve salud, protección y amor a quienes lo consuman."\n7. Coloca en el altar una noche antes de usar.\n\nUsa como sustituto del aceite regular. Dura 2-3 semanas a temperatura ambiente, más en nevera. El ajo confitado que queda se puede comer — lleva la intención.'
     },
   ],
+
+  bolsas: [
+    {
+      id: 'b_proteccion',
+      name: 'Bolsa de Protección Personal',
+      proposito: 'Escudo energético portátil, mal de ojo, energías negativas',
+      desc: 'Una bolsa de protección es un amuleto vivo: mientras lleva tus intenciones programadas, trabaja para ti. Esta es la bolsa base que todo practicante debería tener. Se lleva encima o se coloca en la entrada del hogar.',
+      ingredientes: 'Bolsita de tela negra o morada (pequeña, que quepa en el bolsillo)\n1 pizca de ruda seca\n1 pizca de romero seco\n1 pizca de sal negra o sal marina\n1 piedra pequeña de turmalina negra u obsidiana\n1 clavo de olor\nAceite de protección (opcional, para ungir)',
+      preparacion: '1. LUNA: Prepara en luna menguante (para alejar) o luna nueva (para sellar).\n2. Extiende los ingredientes sobre una superficie limpia. Toca cada uno con la mano izquierda y nombra su propósito: "ruda para limpiar, romero para proteger, sal para sellar, piedra como escudo."\n3. Coloca todos dentro de la bolsita en ese orden.\n4. Si tienes aceite de protección, unge el exterior de la bolsa.\n5. Cierra sosteniendo con ambas manos, ojos cerrados. Visualiza una luz oscura pero protectora sellando la bolsa. Di tu intención en voz alta o mentalmente.\n6. Ata con un nudo firme (impares: 3, 7 o 9 nudos).\n7. RECARGA: Ponla en la luna nueva o pásala por humo de ruda mensualmente.'
+    },
+    {
+      id: 'b_prosperidad',
+      name: 'Bolsa de Prosperidad y Abundancia',
+      proposito: 'Atraer dinero, trabajo, oportunidades económicas',
+      desc: 'La bolsa de prosperidad no reemplaza la acción — la potencia. Se carga en luna creciente y se lleva en el bolsillo o en la cartera. Funciona mejor cuando la acompañas de actos concretos hacia lo que quieres atraer.',
+      ingredientes: 'Bolsita de tela verde o dorada\n1 pizca de canela en polvo\n1 pizca de albahaca seca\n1 moneda pequeña (puede ser una que hayas encontrado)\n1 piedra de citrino (pequeña)\n1 hoja de laurel con tu deseo escrito\nAceite de canela o de éxito (1 gota)',
+      preparacion: '1. LUNA: Prepara en luna creciente, idealmente un jueves (día de Júpiter).\n2. Escribe tu deseo específico en la hoja de laurel (no en genérico — sé concreto: cantidad, trabajo, proyecto).\n3. Dobla la hoja hacia ti (siempre hacia ti para atraer).\n4. Coloca dentro: la hoja doblada, la canela, la albahaca, la moneda y el citrino.\n5. Añade una gota de aceite al interior.\n6. Cierra con 3 nudos diciendo: "Lo que necesito llega a mí con facilidad y en abundancia."\n7. Lleva en el bolsillo derecho o en tu cartera junto al dinero.\n8. Cuando el deseo se cumpla, entierra la bolsa con gratitud o quémala.'
+    },
+    {
+      id: 'b_amor_propio',
+      name: 'Bolsa de Amor Propio y Confianza',
+      proposito: 'Fortalecer la autoestima, sanación emocional, claridad sobre uno mismo',
+      desc: 'Esta bolsa no es para atraer amor romántico — es para trabajar la relación contigo mismo. Especialmente útil en períodos de duda, después de rupturas o cuando sientes que te has perdido. Se trabaja en luna creciente bajo Venus.',
+      ingredientes: 'Bolsita de tela rosa o blanca\n1 pizca de lavanda seca\nPétalos de rosa secos (rosas rosadas o blancas)\n1 piedra de cuarzo rosa\n1 trozo pequeño de espejo (o una canica plateada)\n1 cinta rosa (para atar)',
+      preparacion: '1. LUNA: Viernes en luna creciente (Venus + creciente = amor que crece).\n2. Sostén el cuarzo rosa antes de comenzar. Piensa en una cualidad tuya que genuinamente admiras — una sola es suficiente.\n3. Coloca dentro la lavanda, los pétalos, el cuarzo y el espejo.\n4. El espejo es simbólico: te recuerda que el amor que buscas ya existe en ti.\n5. Cierra con la cinta rosa, 7 nudos.\n6. Duerme con la bolsa bajo la almohada las primeras 3 noches.\n7. Después llévala en el bolsillo o guárdala en tu ropa interior.'
+    },
+  ],
+
+  piromancia: [
+    {
+      id: 'p_guia_llama',
+      name: 'Guía de Lectura de Llama',
+      proposito: 'Referencia para interpretar cómo arde la vela durante un ritual',
+      desc: 'La piromancia es el arte de leer el fuego. Cuando enciendes una vela con intención, la forma en que arde te da información sobre la energía del ritual y su probable resultado. Esta guía es un punto de partida — con práctica, desarrollas tu propio lenguaje con el fuego.',
+      ingredientes: 'Esta entrada es una guía de referencia, no una receta. Úsala mientras realizas rituales con vela.',
+      preparacion: 'LA LLAMA:\n• Alta y estable: energía fuerte, el ritual tiene apoyo, la intención es clara.\n• Baja y tenue: poca energía disponible o resistencia — recarga antes de continuar.\n• Que salta y danza: hay actividad espiritual, la intención está siendo "escuchada".\n• Se apaga sola: señal de STOP. Revisa la intención, el momento lunar o si hay bloqueos.\n• Chisporrotea: hay conflicto o interferencia energética cerca.\n• Llama doble: dos fuerzas involucradas — puede ser una persona más, una dualidad interna.\n\nEL HUMO:\n• Sube recto: camino claro, buena señal.\n• Se inclina hacia ti: la energía vuelve a ti; lo que pediste ya está en movimiento.\n• Se aleja de ti: algo se libera o se va — puede ser intencional (en rituales de soltar) o señal de resistencia.\n• Humo negro excesivo: la vela está limpiando algo pesado; déjala trabajar.\n\nLA CERA:\n• Escurre limpiamente: fluidez, la intención fluye sin obstáculos.\n• Forma figuras: lee lo que ves con tu intuición — no hay un catálogo universal.\n• Se acumula sin escurrir: bloqueo energético; algo retiene el movimiento.\n• Llora (escurre mucho): emoción intensa asociada al ritual.'
+    },
+    {
+      id: 'p_registro_lectura',
+      name: 'Registro de Lectura de Vela',
+      proposito: 'Plantilla para documentar lecturas de piromancia',
+      desc: 'Registrar tus lecturas de vela te permite construir tu propio lenguaje con el fuego con el tiempo. Los patrones se vuelven visibles cuando los documentas: notarás que ciertas señales siempre preceden ciertos resultados en tu práctica personal.',
+      ingredientes: 'Esta es una plantilla de registro. Crea entradas nuevas desde Admin → Taller → Lecturas de Vela para documentar cada ritual.',
+      preparacion: 'CAMPOS SUGERIDOS AL REGISTRAR UNA LECTURA:\n• Fecha y fase lunar\n• Color de vela usada\n• Intención del ritual\n• Cómo ardió la llama (alta, baja, saltarina, etc.)\n• Comportamiento del humo\n• Cómo quedó la cera\n• Sensaciones durante el ritual\n• Tu interpretación\n• Resultado observado (llenar días después)\n\nRECOMENDACIÓN: No interpretes en caliente — espera hasta que la vela termine de arder, luego siéntate 5 minutos en silencio antes de escribir tu lectura. La mente caliente sobre-interpreta; la mente quieta ve con claridad.'
+    },
+  ],
 };
 
 </script>
@@ -4334,11 +4503,13 @@ const TallerData = {
 
 const Taller = (() => {
   const CATEGORIAS = [
-    { key: 'velas',    label: 'Velas',         emoji: '🕯️', desc: 'Creación y carga de velas mágicas' },
-    { key: 'aceites',  label: 'Aceites',        emoji: '🫙', desc: 'Aceites esenciales y mezclas' },
-    { key: 'tinturas', label: 'Tinturas',       emoji: '🧪', desc: 'Infusiones y tinturas herbales' },
-    { key: 'incienso', label: 'Incienso',       emoji: '💨', desc: 'Mezclas de incienso y sahumerio' },
-    { key: 'cocina',   label: 'Cocina Mágica',  emoji: '🍵', desc: 'Recetas con intención' },
+    { key: 'velas',    label: 'Velas',          emoji: '🕯️', desc: 'Creación y carga de velas mágicas' },
+    { key: 'aceites',  label: 'Aceites',         emoji: '🫙', desc: 'Aceites esenciales y mezclas' },
+    { key: 'tinturas', label: 'Tinturas',        emoji: '🧪', desc: 'Infusiones y tinturas herbales' },
+    { key: 'incienso', label: 'Incienso',        emoji: '💨', desc: 'Mezclas de incienso y sahumerio' },
+    { key: 'cocina',   label: 'Cocina Mágica',   emoji: '🍵', desc: 'Recetas con intención' },
+    { key: 'bolsas',   label: 'Bolsas de Poder', emoji: '🌿', desc: 'Sachets, amuletos y bolsas mágicas' },
+    { key: 'piromancia', label: 'Lecturas de Vela', emoji: '🔥', desc: 'Piromancia: registro de lo que la vela muestra' },
   ];
 
   let catActiva = 'velas';
@@ -4375,7 +4546,8 @@ const Taller = (() => {
     if (!content) return;
 
     const cat = CATEGORIAS.find(c => c.key === key);
-    const items = App.lsGet('bruja_taller_' + key, TallerData[key] || []);
+    const _ts = App.lsGet('bruja_taller_' + key, []);
+    const items = (_ts && _ts.length > 0) ? _ts : (typeof TallerData !== 'undefined' ? (TallerData[key] || []) : []);
 
     content.innerHTML = `
       <p class="text-muted mb-2" style="font-size:.88rem">${cat?.desc || ''}</p>
@@ -4419,6 +4591,103 @@ const Taller = (() => {
 
   function _toggle(id) {
     const det = document.getElementById('taller-det-' + id);
+    if (det) det.style.display = det.style.display === 'none' ? 'block' : 'none';
+  }
+
+  return { render, _tab, _toggle };
+})();
+
+</script>
+  <script>
+/* ============================================================
+   RITUALES.JS — Biblioteca de Rituales
+   Estructuras completas de rituales por intención
+   Todo el contenido es editable desde Admin
+   ============================================================ */
+
+const Rituales = (() => {
+  const CATEGORIAS = [
+    { key: 'proteccion',  label: 'Protección',   emoji: '🛡️', desc: 'Rituales de escudo, limpias y destierro' },
+    { key: 'amor',        label: 'Amor',          emoji: '💗', desc: 'Amor propio, atracción, vínculos y corte de lazos' },
+    { key: 'prosperidad', label: 'Prosperidad',   emoji: '🌿', desc: 'Abundancia, dinero, trabajo y oportunidades' },
+    { key: 'sanacion',    label: 'Sanación',       emoji: '🌿', desc: 'Rituales de cuerpo, mente y espíritu' },
+    { key: 'claridad',    label: 'Claridad',       emoji: '🔮', desc: 'Decisiones, bloqueos, visión y sueños' },
+    { key: 'ancestros',   label: 'Ancestros',      emoji: '🕯️', desc: 'Conexión con guías, espíritus y legado' },
+    { key: 'sombra',      label: 'Trabajo de Sombra', emoji: '🌑', desc: 'Corte de lazos, integración, transformación' },
+  ];
+
+  let catActiva = 'proteccion';
+
+  function render() {
+    const sec = document.getElementById('sec-rituales');
+    if (!sec) return;
+
+    sec.innerHTML = `
+      <h1 class="section-title">🕯️ Rituales</h1>
+      <p class="section-sub">Estructuras completas de rituales por intención. Todo lo que necesitas para actuar con intención clara.</p>
+
+      <div class="tabs" id="ritual-tabs" style="flex-wrap:wrap">
+        ${CATEGORIAS.map(c =>
+          `<button class="tab-btn ${c.key === catActiva ? 'active' : ''}"
+            onclick="Rituales._tab('${c.key}', this)">${c.emoji} ${c.label}</button>`
+        ).join('')}
+      </div>
+
+      <div id="ritual-content"></div>`;
+
+    renderCat(catActiva);
+  }
+
+  function _tab(key, btn) {
+    catActiva = key;
+    document.querySelectorAll('#ritual-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCat(key);
+  }
+
+  function renderCat(key) {
+    const content = document.getElementById('ritual-content');
+    if (!content) return;
+
+    const cat = CATEGORIAS.find(c => c.key === key);
+    const items = (() => {
+      const _s = App.lsGet('bruja_rituales_' + key, []);
+      return (_s && _s.length > 0) ? _s : (typeof RitualesData !== 'undefined' ? (RitualesData[key] || []) : []);
+    })();
+
+    content.innerHTML = `
+      <p class="text-muted mb-2" style="font-size:.88rem">${cat?.desc || ''}</p>
+      ${items.length === 0
+        ? `<div class="empty-state">
+            <span class="es-emoji">${cat?.emoji || '🕯️'}</span>
+            <p>Aún no hay rituales de ${cat?.label || key}.<br>Agrégalos desde Admin → Rituales.</p>
+            ${Admin.isUnlocked() ? `<button class="btn btn-ghost btn-sm" onclick="App.navigate('admin');Admin._showPanel('rituales')">Ir a Admin</button>` : ''}
+          </div>`
+        : items.map(it => ritualCard(it)).join('')}`;
+  }
+
+  function ritualCard(it) {
+    return `
+      <div class="card" style="cursor:pointer" onclick="Rituales._toggle('${it.id}')">
+        <div class="flex-between">
+          <div class="card-title">${it.name || it.nombre || ''}</div>
+          <span style="color:var(--muted);font-size:.8rem">▼</span>
+        </div>
+        ${it.intencion ? `<div style="font-size:.8rem;color:var(--muted)">✨ ${it.intencion}</div>` : ''}
+        <div id="ritual-det-${it.id}" style="display:none">
+          <hr class="section-divider">
+          ${it.momento ? `<div class="bib-prop"><div class="bib-prop-label">🌙 Momento óptimo</div><div class="bib-prop-value">${it.momento}</div></div>` : ''}
+          ${it.materiales ? `<div class="bib-prop"><div class="bib-prop-label">🌿 Materiales</div><div class="bib-prop-value">${it.materiales.replace(/\n/g,'<br>')}</div></div>` : ''}
+          ${it.preparacion ? `<div class="bib-prop"><div class="bib-prop-label">📋 Preparación</div><div class="bib-prop-value">${it.preparacion.replace(/\n/g,'<br>')}</div></div>` : ''}
+          ${it.pasos ? `<div class="bib-prop"><div class="bib-prop-label">🔮 El Ritual</div><div class="bib-prop-value">${it.pasos.replace(/\n/g,'<br>')}</div></div>` : ''}
+          ${it.cierre ? `<div class="bib-prop"><div class="bib-prop-label">🌟 Cierre</div><div class="bib-prop-value">${it.cierre.replace(/\n/g,'<br>')}</div></div>` : ''}
+          ${it.notas ? `<div class="bib-prop"><div class="bib-prop-label">📝 Notas</div><div class="bib-prop-value">${it.notas.replace(/\n/g,'<br>')}</div></div>` : ''}
+        </div>
+      </div>`;
+  }
+
+  function _toggle(id) {
+    const det = document.getElementById('ritual-det-' + id);
     if (det) det.style.display = det.style.display === 'none' ? 'block' : 'none';
   }
 
@@ -5478,10 +5747,17 @@ const Rueda = (() => {
         <p style="font-size:.82rem;color:var(--muted)">Las trece lunaciones del año mágico.</p>
       </div>
       <div id="rueda-lunar-wrap" style="width:100%;max-width:320px;margin:0 auto 1rem"></div>
-      <div id="rueda-luna-detalle"></div>`;
+      <div id="rueda-luna-detalle"></div>
+
+      <div style="margin:2rem 0 .5rem;text-align:center">
+        <h2 style="font-size:1.1rem;color:var(--gold-l)">⏰ Horas Planetarias</h2>
+        <p style="font-size:.82rem;color:var(--muted)">El planeta que rige cada hora del día y la noche. Úsalas para elegir el mejor momento de tus rituales.</p>
+      </div>
+      <div id="horas-planetarias-wrap"></div>`;
 
     renderSolarWheel();
     renderLunarWheel();
+    renderHorasPlanetarias();
   }
 
   /* ══════════════════════════════════════════════
@@ -5730,6 +6006,72 @@ const Rueda = (() => {
     document.querySelectorAll('.hemi-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     renderSolarWheel();
+  }
+
+  /* ══════════════════════════════════════════════
+     HORAS PLANETARIAS
+     ══════════════════════════════════════════════ */
+  function renderHorasPlanetarias() {
+    const wrap = document.getElementById('horas-planetarias-wrap');
+    if (!wrap) return;
+
+    // Orden caldeo de planetas (empezando por Saturno)
+    const PLANETAS = [
+      { nombre: 'Saturno',  emoji: '🪐', color: '#6B6B9A', magic: 'karma, límites, tiempo, ancestros, magia oscura' },
+      { nombre: 'Júpiter',  emoji: '⚡', color: '#8B6914', magic: 'expansión, abundancia, suerte, viajes, crecimiento' },
+      { nombre: 'Marte',    emoji: '🔴', color: '#8B2222', magic: 'acción, fuerza, conflicto, coraje, destierro, sexo' },
+      { nombre: 'Sol',      emoji: '☀️', color: '#B8860B', magic: 'éxito, visibilidad, liderazgo, salud, autoconfianza' },
+      { nombre: 'Venus',    emoji: '💚', color: '#2D7A2D', magic: 'amor, belleza, armonía, arte, relaciones, placer' },
+      { nombre: 'Mercurio', emoji: '🌊', color: '#2D6B8B', magic: 'comunicación, viajes, contratos, inteligencia, magia' },
+      { nombre: 'Luna',     emoji: '🌙', color: '#6B6B6B', magic: 'intuición, emociones, sueños, fertilidad, misterio' },
+    ];
+
+    // Días de la semana → planeta regente (Dom=Sol, Lun=Luna, Mar=Marte, Mie=Mercurio, Jue=Jupiter, Vie=Venus, Sab=Saturno)
+    const PLANETA_DIA = [3, 6, 2, 5, 1, 4, 0]; // índice en PLANETAS por getDay() (0=dom)
+
+    const ahora = new Date();
+    const diaSem = ahora.getDay(); // 0=domingo
+    const hora = ahora.getHours();
+    const minutos = ahora.getMinutes();
+
+    // Calcular qué hora planetaria es ahora (aproximación simple: 24h / 24 horas = 1h cada una)
+    // Horas del día: 1-12 (amanecer a atardecer), Horas de la noche: 1-12 (atardecer a amanecer)
+    // Simplificación: horas 6am-6pm = diurnas, 6pm-6am = nocturnas
+    const esDiurna = hora >= 6 && hora < 18;
+    const horaNumero = esDiurna ? (hora - 6) : (hora >= 18 ? hora - 18 : hora + 6);
+
+    // Secuencia desde el planeta del día
+    const inicioPlanetaDia = PLANETA_DIA[diaSem];
+    const secuencia = [];
+    for (let i = 0; i < 24; i++) {
+      secuencia.push(PLANETAS[(inicioPlanetaDia + i) % 7]);
+    }
+
+    const horaActual = esDiurna ? horaNumero : (horaNumero + 12);
+    const planetaAhora = secuencia[Math.min(horaActual, 23)];
+
+    const diasNombres = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    const diaActual = diasNombres[diaSem];
+
+    wrap.innerHTML = `
+      <div class="card" style="text-align:center;margin-bottom:.75rem">
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:.3rem">${diaActual} · ${hora}:${minutos.toString().padStart(2,'0')} · ${esDiurna ? 'Hora diurna' : 'Hora nocturna'} ${horaNumero + 1}</div>
+        <div style="font-size:2rem">${planetaAhora.emoji}</div>
+        <div style="font-size:1.1rem;color:var(--gold-l);font-weight:600">Hora de ${planetaAhora.nombre}</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:.3rem">✨ ${planetaAhora.magic}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin-bottom:1rem">
+        ${PLANETAS.map(p => `
+          <div class="card" style="padding:.6rem;background:${p === planetaAhora ? 'rgba(212,175,55,.12)' : ''}">
+            <span style="font-size:1rem">${p.emoji}</span>
+            <span style="font-size:.85rem;color:var(--gold-l);font-weight:600;margin-left:.3rem">${p.nombre}</span>
+            <div style="font-size:.72rem;color:var(--muted);margin-top:.2rem">${p.magic}</div>
+          </div>`).join('')}
+      </div>
+      <div class="card" style="font-size:.8rem;color:var(--muted)">
+        <strong style="color:var(--lavender)">Cómo usar las horas planetarias:</strong><br>
+        Realiza rituales o toma decisiones importantes durante la hora del planeta que rige tu intención. Por ejemplo: hechizos de amor en hora de Venus, rituales de prosperidad en hora de Júpiter, trabajo de protección en hora de Saturno o Marte. La hora exacta varía según latitud — esta es una aproximación de horas iguales desde el amanecer.
+      </div>`;
   }
 
   return { render, _setHemi, _selSabat, _selLuna };
@@ -6066,71 +6408,71 @@ const Libro = (() => {
 const Tarot = (() => {
   const ARCANOS_MAYORES = [
     { num: 0,  nombre: 'El Loco',           emoji: '🃏', clave: 'viaje, inicio, inocencia',
-      normal: 'Nuevos comienzos, espontaneidad, aventura. Es momento de dar el salto con fe y sin miedo al futuro.',
-      inv:    'Imprudencia, decisiones apresuradas, ingenuidad excesiva. Mira antes de saltar.' },
-    { num: 1,  nombre: 'El Mago',           emoji: '✨', clave: 'voluntad, habilidad, poder',
-      normal: 'Tienes todas las herramientas para crear lo que deseas. Actúa con intención y confianza.',
-      inv:    'Manipulación, habilidades mal usadas o bloqueo creativo. Revisa tus verdaderas intenciones.' },
-    { num: 2,  nombre: 'La Sacerdotisa',    emoji: '🌙', clave: 'intuición, misterio, interior',
-      normal: 'Confía en tu intuición. Hay conocimiento oculto esperando ser revelado desde adentro.',
-      inv:    'Secretos bloqueados, desconexión de la intuición. Algo permanece oculto por ahora.' },
-    { num: 3,  nombre: 'La Emperatriz',     emoji: '🌸', clave: 'fertilidad, abundancia, naturaleza',
-      normal: 'Abundancia, creatividad y conexión con la naturaleza. Tiempo de nutrir y hacer florecer.',
-      inv:    'Bloqueo creativo, dependencia o descuido del cuerpo. Vuelve a conectar con la tierra.' },
-    { num: 4,  nombre: 'El Emperador',      emoji: '👑', clave: 'autoridad, estructura, liderazgo',
-      normal: 'Estabilidad, liderazgo y estructura sólida. Es momento de tomar el control con responsabilidad.',
-      inv:    'Rigidez, abuso de poder o falta de disciplina. Equilibra la autoridad con la flexibilidad.' },
-    { num: 5,  nombre: 'El Hierofante',     emoji: '🏛️', clave: 'tradición, guía espiritual, rituales',
-      normal: 'Guía espiritual, tradición y enseñanza. Busca un maestro o honra las prácticas sagradas.',
-      inv:    'Dogmatismo, ruptura con tradiciones o rebeldía espiritual. Cuestiona lo que ya no te sirve.' },
-    { num: 6,  nombre: 'Los Amantes',       emoji: '❤️', clave: 'amor, unión, decisión',
-      normal: 'Amor, unión y una elección importante de corazón. Confía en tus valores al decidir.',
-      inv:    'Desequilibrio en relaciones, elección difícil o conflicto interno entre razón y corazón.' },
-    { num: 7,  nombre: 'El Carro',          emoji: '🏆', clave: 'movimiento, determinación, victoria',
-      normal: 'Victoria a través de la determinación. Avanza con enfoque y voluntad hacia tu meta.',
-      inv:    'Falta de dirección, control perdido o agresividad. Pausa y encuentra tu centro antes de seguir.' },
-    { num: 8,  nombre: 'La Fuerza',         emoji: '🦁', clave: 'valor, dominio, compasión',
-      normal: 'Fuerza interior, valentía y compasión. Dominas las situaciones con gracia y amor.',
-      inv:    'Inseguridad, duda o impulso sin control. Reconecta con tu poder interior de forma suave.' },
-    { num: 9,  nombre: 'El Ermitaño',       emoji: '🕯️', clave: 'soledad, búsqueda, iluminación',
-      normal: 'Tiempo de retiro, reflexión y búsqueda interior. La sabiduría viene del silencio.',
-      inv:    'Aislamiento excesivo, rechazo a guía o perderte en el interior. Sal a compartir tu luz.' },
-    { num: 10, nombre: 'La Rueda',          emoji: '☸️', clave: 'ciclos, destino, cambio',
-      normal: 'Los ciclos giran a tu favor. Un cambio positivo se acerca; fluye con el destino.',
-      inv:    'Resistencia al cambio, mala racha o sensación de que el destino está en tu contra. Paciencia.' },
-    { num: 11, nombre: 'La Justicia',       emoji: '⚖️', clave: 'equilibrio, verdad, causa-efecto',
-      normal: 'Verdad, equidad y consecuencias justas. Lo que siembras, cosecharás. Actúa con integridad.',
-      inv:    'Injusticia, desequilibrio o evasión de responsabilidades. Es momento de rendir cuentas.' },
-    { num: 12, nombre: 'El Colgado',        emoji: '🌊', clave: 'pausa, sacrificio, nueva perspectiva',
-      normal: 'Pausa necesaria y cambio de perspectiva. Al soltar el control, encuentras una nueva visión.',
-      inv:    'Martirio inútil, estancamiento o resistencia a soltar. El sacrificio no siempre es necesario.' },
-    { num: 13, nombre: 'La Muerte',         emoji: '🌑', clave: 'transformación, fin, renovación',
-      normal: 'Un ciclo termina para que otro comience. Transformación profunda y necesaria. No temas el cambio.',
-      inv:    'Resistencia al cambio, aferrarse a lo que ya murió. La transformación llega de todas formas.' },
-    { num: 14, nombre: 'La Templanza',      emoji: '🌈', clave: 'moderación, paciencia, integración',
-      normal: 'Equilibrio, paciencia y moderación. Integras opuestos con gracia. El camino del medio triunfa.',
-      inv:    'Excesos, desequilibrio o impaciencia. Necesitas más moderación y esperar el momento correcto.' },
-    { num: 15, nombre: 'El Diablo',         emoji: '🖤', clave: 'atadura, materialismo, sombra',
-      normal: 'Muestra ataduras, adicciones o patrones de sombra. Puedes liberarte: las cadenas son ilusorias.',
-      inv:    'Inicio de liberación, ruptura de cadenas. Te estás liberando de lo que te tenía atrapado.' },
-    { num: 16, nombre: 'La Torre',          emoji: '⚡', clave: 'ruptura, revelación, liberación',
-      normal: 'Cambio súbito y revelador. Lo que se derrumba ya no servía. Detrás hay liberación.',
-      inv:    'Evitar el cambio necesario o caos interno. La torre caerá de todas formas; mejor aceptarlo.' },
-    { num: 17, nombre: 'La Estrella',       emoji: '⭐', clave: 'esperanza, fe, sanación',
-      normal: 'Esperanza renovada, fe y sanación. Después de la tormenta, la guía estelar ilumina tu camino.',
-      inv:    'Desesperanza, desconexión espiritual o fe perdida. Busca la luz pequeña en la oscuridad.' },
-    { num: 18, nombre: 'La Luna',           emoji: '🌕', clave: 'ilusión, sueños, subconsciente',
-      normal: 'El subconsciente habla. Presta atención a sueños e intuiciones. No todo es lo que parece.',
-      inv:    'Confusión, ilusiones que se disipan. La verdad emerge desde las sombras hacia la luz.' },
-    { num: 19, nombre: 'El Sol',            emoji: '☀️', clave: 'alegría, éxito, vitalidad',
-      normal: 'Alegría, éxito y vitalidad. Claridad total. Es uno de los mejores augurios del mazo.',
-      inv:    'Optimismo excesivo, bloqueo temporal de la alegría o energía dispersa. La luz regresa pronto.' },
-    { num: 20, nombre: 'El Juicio',         emoji: '🔔', clave: 'despertar, llamado, absolución',
-      normal: 'Un despertar espiritual o llamado a tu propósito. Momento de evaluación y renacimiento.',
-      inv:    'Autojuicio severo, negación del llamado o miedo a cambiar. Escucha tu voz interior.' },
-    { num: 21, nombre: 'El Mundo',          emoji: '🌍', clave: 'culminación, totalidad, logro',
-      normal: 'Completitud, logro y totalidad. Un ciclo se cierra con éxito. Celebra lo recorrido.',
-      inv:    'Ciclo incompleto, bloqueos de cierre o buscar atajos. Termina lo que empezaste.' },
+      normal: 'El Loco no es tonto — es el único que se atreve a saltar sin mapa. Representa el inicio de un ciclo completamente nuevo, donde la confianza ciega en el proceso es la única brújula. Esta carta te dice que el universo ya preparó el terreno; lo que falta eres tú dando el primer paso. No esperes tener todo resuelto para comenzar.',
+      inv:    'Estás actuando por impulso sin escuchar las señales. Hay una diferencia entre valentía y temeridad. Revisa si lo que llamas "seguir tu corazón" es realmente intuición o simplemente escapar de algo que da miedo enfrentar.' },
+    { num: 1,  nombre: 'El Mago',           emoji: '✨', clave: 'voluntad, habilidad, manifestación',
+      normal: 'El Mago tiene sobre su mesa los cuatro elementos: fuego, agua, tierra y aire. No le falta nada. Esta carta te dice que tú también tienes ya todo lo que necesitas para crear lo que deseas — el problema no es de recursos sino de enfoque y voluntad. Es momento de actuar con intención clara, no de seguir esperando condiciones perfectas.',
+      inv:    'El talento está, pero la intención está torcida. Puede ser que estés usando tus habilidades para manipular, engañar o tomar atajos. También puede ser bloqueo creativo: sabes que puedes pero algo interior sabotea la acción. Pregúntate desde dónde estás actuando.' },
+    { num: 2,  nombre: 'La Sacerdotisa',    emoji: '🌙', clave: 'intuición, silencio, conocimiento oculto',
+      normal: 'La Sacerdotisa guarda conocimiento que no se enseña en libros — se recibe en silencio, en sueños, en esa voz que sabes que es verdadera aunque no puedas explicarla. Cuando aparece, el mensaje es claro: deja de buscar respuestas afuera. La información que necesitas ya está dentro de ti. Escúchate más.',
+      inv:    'Estás ignorando tu intuición a propósito, quizás porque te da miedo lo que ya sabes. Hay secretos que se ocultan — los tuyos o los de otros. También puede indicar desconexión espiritual: llevas tiempo sin escucharte, sin meditar, sin parar.' },
+    { num: 3,  nombre: 'La Emperatriz',     emoji: '🌸', clave: 'fertilidad, abundancia, cuerpo, creación',
+      normal: 'La Emperatriz es la fuerza creativa en su forma más pura: da vida, nutre y hace florecer. Puede hablar de fertilidad literal o de proyectos, relaciones y etapas que están listos para crecer. Esta es una carta de abundancia real, no prometida — lo que has sembrado con cuidado empieza a dar frutos. Cuida tu cuerpo y tu entorno; son parte del ritual.',
+      inv:    'Descuido del cuerpo, bloqueo creativo sostenido o dependencia emocional que drena. También puede señalar sobreprotección — nutrir a otros hasta asfixiarlos o perderte en el proceso de cuidar a alguien más. Vuelve a ti primero.' },
+    { num: 4,  nombre: 'El Emperador',      emoji: '👑', clave: 'estructura, autoridad, padre, límites',
+      normal: 'El Emperador construye sobre roca. Representa la necesidad de estructura, límites claros y responsabilidad real sobre lo que llevas. No es una carta suave, pero sí es necesaria: hay momentos donde el caos solo se detiene con orden consciente. Si hay proyectos sin terminar, decisiones postergadas o límites que no has puesto — esta carta te llama a actuar.',
+      inv:    'Rigidez que aplasta en vez de sostener. Puede ser una figura de autoridad que abusa, o tu propio control excesivo sobre situaciones o personas. También aparece cuando hay falta total de estructura: dispersión, indisciplina, proyectos que nunca arrancan. Encuentra el punto medio.' },
+    { num: 5,  nombre: 'El Hierofante',     emoji: '🏛️', clave: 'tradición, enseñanza, ritual, pertenencia',
+      normal: 'El Hierofante habla de sistemas de conocimiento: maestros, tradiciones, rituales, comunidades espirituales. No todo lo establecido está mal — hay sabiduría real en lo que fue probado por generaciones. Esta carta puede señalar que necesitas guía formal, que hay una enseñanza o práctica a la que deberías volver, o que tus propios rituales merecen más consistencia.',
+      inv:    'Dogmatismo, seguir reglas que ya no tienen sentido para ti, o presión de un grupo para conformarte. También puede señalar el momento de romper con una tradición que te limita. Pregúntate qué reglas sigues por miedo y cuáles por convicción real.' },
+    { num: 6,  nombre: 'Los Amantes',       emoji: '❤️', clave: 'elección, valores, unión, alineación',
+      normal: 'Los Amantes no es solo una carta de amor romántico — es una carta de elecciones que definen quién eres. Cuando aparece, hay una decisión importante frente a ti que involucra tus valores más profundos. Puede ser una relación, un camino de vida o una parte de ti que decides honrar o abandonar. La elección correcta es la que te hace más tú.',
+      inv:    'Desalineación entre lo que haces y lo que realmente valoras. Puede ser una relación desequilibrada, una elección tomada por miedo o presión, o conflicto interno entre lo que quieres y lo que crees que "deberías" querer. No puedes agradarle a todos y vivir con integridad al mismo tiempo.' },
+    { num: 7,  nombre: 'El Carro',          emoji: '🏆', clave: 'movimiento, voluntad, victoria, control',
+      normal: 'El Carro avanza porque quien lo conduce tiene claros el origen y el destino — y no deja que las fuerzas internas en conflicto lo desvíen. Carta de victoria ganada con esfuerzo real, no de suerte. Hay movimiento, hay avance, pero requiere que tú tomes el control activo de tu situación. No esperes que las cosas se muevan solas.',
+      inv:    'Dispersión de energía, avanzar sin dirección real o agresividad disfrazada de ambición. También puede señalar un vehículo fuera de control — proyectos, relaciones o situaciones que llevan demasiada inercia y ya no puedes detener. Para antes de que el choque sea peor.' },
+    { num: 8,  nombre: 'La Fuerza',         emoji: '🦁', clave: 'valor interior, dominio suave, compasión',
+      normal: 'La Fuerza no doma al león con violencia — lo hace con calma y presencia. Es la carta de la fortaleza que no grita, que no necesita demostrar nada. Señala que tienes más poder del que crees sobre tus miedos, impulsos e instintos. La situación pide que actúes con serenidad donde otros reaccionarían con pánico o rabia.',
+      inv:    'Inseguridad profunda, duda de tu propio poder o impulsos que toman el control. También puede señalar que estás usando la fuerza de forma equivocada: forzando situaciones, personas o resultados en lugar de fluir con ellos. La verdadera fuerza no empuja — sostiene.' },
+    { num: 9,  nombre: 'El Ermitaño',       emoji: '🕯️', clave: 'retiro, sabiduría, búsqueda interior',
+      normal: 'El Ermitaño sube a la montaña no para huir sino para ver con claridad. Es la carta del retiro necesario: hay una sabiduría que solo llega cuando apagas el ruido exterior y te sientas contigo mismo. Puede señalar que necesitas tiempo a solas para procesar lo vivido, o que llevas demasiado tiempo buscando respuestas afuera cuando el oráculo está adentro.',
+      inv:    'Aislamiento que ya no es sagrado sino miedo disfrazado de soledad espiritual. También puede indicar que llevas demasiado tiempo en el retiro y ya es hora de compartir lo que has aprendido. La luz de la linterna existe para iluminar el camino de otros, no solo el tuyo.' },
+    { num: 10, nombre: 'La Rueda',          emoji: '☸️', clave: 'ciclos, cambio, destino, oportunidad',
+      normal: 'La Rueda gira siempre. Lo que sube baja y lo que baja vuelve a subir — esa es la única certeza. Cuando aparece, hay un cambio de ciclo en puerta, generalmente a tu favor. También es un recordatorio de que nada dura para siempre: ni el dolor ni la alegría. Fluye con el movimiento en lugar de resistirlo.',
+      inv:    'Resistencia al cambio inevitable, sentir que el destino está en tu contra o mala racha que parece no terminar. Esta carta invertida no es una condena — es un aviso de que el ciclo va a cambiar de todas formas; la pregunta es si lo vivirás como víctima o como quien se preparó.' },
+    { num: 11, nombre: 'La Justicia',       emoji: '⚖️', clave: 'verdad, causa y efecto, integridad',
+      normal: 'La Justicia no promete venganza — promete equilibrio. Todo tiene consecuencias, y esta carta aparece cuando estás en un punto donde tus acciones pasadas empiezan a mostrar sus resultados. Es también una carta de verdad: algo oculto saldrá a la luz y el balance final será justo. Actúa con integridad ahora, aunque nadie esté mirando.',
+      inv:    'Injusticia que sientes pero no puedes cambiar todavía, o evasión de responsabilidades propias. También puede indicar deshonestidad contigo mismo — saber que algo está mal y seguir haciéndolo. Las cuentas siempre se cobran; mejor saldarlas voluntariamente.' },
+    { num: 12, nombre: 'El Colgado',        emoji: '🌊', clave: 'pausa, entrega, perspectiva nueva',
+      normal: 'El Colgado eligió colgar — nadie lo ató. Es la carta de la pausa voluntaria, del sacrificio consciente que abre una percepción completamente diferente. Cuando el mundo no tiene sentido desde donde estás parado, esta carta te invita a verlo al revés. Suelta el control. Entrégate al proceso aunque no entiendas hacia dónde va. La respuesta llegará cuando dejes de forzarla.',
+      inv:    'Martirio sin propósito, sacrificarte por costumbre sin que eso te lleve a ningún lado, o bloqueo total por no querer soltar algo. Pregúntate qué estás esperando que pase si sigues en la misma posición. Algunas veces la pausa ya cumplió su función y la lección es moverse.' },
+    { num: 13, nombre: 'La Muerte',         emoji: '🌑', clave: 'fin de ciclo, transformación, soltar',
+      normal: 'La Muerte en el tarot no mata a nadie. Termina lo que ya no sirve para hacer espacio a lo que viene. Es la carta más transformadora del mazo — y también la más honesta: hay algo en tu vida que ya terminó aunque no quieras verlo. Una relación, una etapa, una versión de ti. Soltar duele, pero aferrarse a lo muerto duele más.',
+      inv:    'Resistencia a un fin que ya ocurrió. Estar atado a lo que ya fue — una relación, un trabajo, una identidad que ya no te corresponde. También puede aparecer cuando la transformación está bloqueada desde adentro: el miedo al cambio es más grande que el dolor de quedarse.' },
+    { num: 14, nombre: 'La Templanza',      emoji: '🌈', clave: 'integración, paciencia, alquimia interior',
+      normal: 'La Templanza mezcla opuestos — agua caliente y fría, día y noche, acción y descanso — y encuentra el punto donde ambos se vuelven algo nuevo. Es la carta de la alquimia personal: estás en un proceso de integrar partes tuyas que creías incompatibles. Pide paciencia real, no pasividad. El trabajo está pasando aunque no lo veas.',
+      inv:    'Desequilibrio en algún área clave de tu vida: excesos o abstinencia extrema, todo o nada. También puede indicar impaciencia que arruina un proceso que necesita su tiempo. Estás queriendo ver resultados de algo que todavía está cocinándose.' },
+    { num: 15, nombre: 'El Diablo',         emoji: '🖤', clave: 'atadura, sombra, adicción, poder mal usado',
+      normal: 'El Diablo muestra las cadenas que tú mismo elegiste o que dejaste que se pusieran. No es una carta del mal externo — es un espejo del poder de tu propia sombra: adicciones, obsesiones, dependencias, el patrón que repites aunque sabes que te daña. Lo incómodo de esta carta es que las cadenas están flojas. Puedes quitártelas. La pregunta es por qué no lo haces.',
+      inv:    'Inicio de un proceso de liberación. Estás empezando a ver las cadenas con claridad y eso es el primer paso para soltarlas. También puede indicar que alguien o algo que tenía poder sobre ti está perdiendo ese poder. La sombra se integra, no se mata.' },
+    { num: 16, nombre: 'La Torre',          emoji: '⚡', clave: 'ruptura súbita, revelación, colapso necesario',
+      normal: 'La Torre cae porque estaba construida sobre una mentira o una base inestable. Es la carta del cambio que nadie pidió pero que era inevitable. Lo que se derrumba — una relación, una creencia, una situación — no podía durar porque no era real o ya no era tuyo. Duele, pero detrás de cada torre que cae hay terreno limpio para construir algo verdadero.',
+      inv:    'Resistir un colapso que ya comenzó, o vivir en la constante anticipación de un desastre que no termina de llegar. También puede indicar que el cambio necesario está siendo bloqueado y se acumula presión. La torre invertida eventualmente también cae — solo que con más caos.' },
+    { num: 17, nombre: 'La Estrella',       emoji: '⭐', clave: 'esperanza, sanación, fe renovada',
+      normal: 'La Estrella aparece después de la tormenta. Es la primera respiración profunda después del caos — la señal de que el camino sigue y de que hay guía. Carta de sanación genuina, de fe que no depende de que todo esté bien sino de creer en el proceso. Si llevas tiempo en oscuridad, esta carta dice que lo que buscabas no desapareció. Solo estaba esperando que calmaras el ruido para mostrarse.',
+      inv:    'Desesperanza, desconexión de tu propósito o fe que se agotó. Puede ser que hayas sufrido demasiado y necesites ayuda real — no solo espiritual. Esta carta invertida no es un juicio sino un recordatorio de que la luz sigue ahí aunque no puedas verla ahora.' },
+    { num: 18, nombre: 'La Luna',           emoji: '🌕', clave: 'ilusión, sueños, subconsciente, miedo',
+      normal: 'La Luna ilumina sin claridad — transforma las formas, crea sombras donde no las hay y oculta lo que está a plena vista. Es la carta del subconsciente hablando a través de sueños, presentimientos y emociones que no entiendes del todo. Hay algo que no ves con claridad todavía. Presta atención a lo que sientes antes de decidir. No todo lo que parece una amenaza lo es — y no todo lo que parece seguro lo es.',
+      inv:    'Las ilusiones empiezan a disiparse y la verdad emerge, aunque sea incómoda. También puede indicar confusión que toca fondo: ya no sabes qué es real. En ese caso, ancla: vuelve al cuerpo, a lo concreto, a las personas en las que confías.' },
+    { num: 19, nombre: 'El Sol',            emoji: '☀️', clave: 'alegría, claridad, éxito, vitalidad',
+      normal: 'El Sol es la carta de la claridad total y la alegría que no necesita justificación. Cuando aparece, hay una fase de éxito, visibilidad y bienestar genuino. No hay ambigüedad aquí: las cosas funcionan, la energía está alta, lo que haces tiene frutos. Es uno de los mejores augurios del mazo. Recíbelo sin culpa y sin reducirlo.',
+      inv:    'Alegría bloqueada o que no llega aunque "debería". Puede ser optimismo excesivo que ignora señales reales, o energía dispersa que no se consolida en resultados concretos. También aparece cuando hay vergüenza de brillar, de ser visto, de ocupar espacio. La luz del sol no pide permiso.' },
+    { num: 20, nombre: 'El Juicio',         emoji: '🔔', clave: 'llamado, despertar, renacimiento, absolución',
+      normal: 'El Juicio no es un tribunal — es una llamada. Una voz que dice tu nombre y te recuerda quién eres más allá de tus errores y tus miedos. Señala un momento de despertar espiritual real: algo cambia en tu forma de verte a ti mismo y de entender tu propósito. También puede indicar una segunda oportunidad genuina — no como escapatoria, sino como resultado de haber hecho el trabajo interior.',
+      inv:    'Autojuicio severo que te paraliza, negación del llamado por miedo a lo que implica cambiar, o repetir los mismos errores sin aprender de ellos. Pregúntate cuántas veces has recibido la misma señal y la has ignorado. El llamado no desaparece — solo se vuelve más difícil de ignorar.' },
+    { num: 21, nombre: 'El Mundo',          emoji: '🌍', clave: 'culminación, integración, plenitud, totalidad',
+      normal: 'El Mundo es la carta de la llegada. No de un destino externo sino de la integración completa de un ciclo: has aprendido lo que tenías que aprender, has integrado lo que tenías que integrar, y ese capítulo se cierra con gracia. Es una de las cartas más poderosas del mazo porque representa plenitud real — no perfecta, sino completa. Celebra. Y prepárate para el próximo ciclo, que comenzará pronto con un Loco.',
+      inv:    'Un ciclo que no termina porque algo quedó sin resolver, o buscar atajos para llegar a la culminación sin haber hecho el recorrido. También puede indicar sensación de estancamiento cerca del final — falta poco, pero algo interno bloquea ese último paso.' },
   ];
 
   // ── Arcanos Menores ─────────────────────────────────────────
