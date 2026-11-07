@@ -5429,6 +5429,10 @@ const Hechizos = (() => {
 
     // Guardar temporalmente para poder guardar después
     res._ritualData = { intencion, pasos, dia: selecciones.dia, luna: selecciones.luna, vela, hierba, panteon: selecciones.panteon };
+
+    // Scroll al resultado para que el usuario lo vea
+    setTimeout(() => res.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+    App.toast('✨ Ritual generado');
   }
 
   function _guardarRitual() {
