@@ -371,6 +371,13 @@ strong { color: var(--gold-l); }
   color: var(--gold-l);
 }
 .btn-ghost:hover { background: rgba(196,151,42,.18); border-color: var(--gold); }
+.btn-ghost.active, .gen-selector.active {
+  background: rgba(196,151,42,.28);
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold);
+  font-weight: 600;
+}
 .btn-danger {
   background: rgba(180,30,30,.15);
   border: 1px solid rgba(180,30,30,.3);
@@ -5379,10 +5386,13 @@ const Hechizos = (() => {
     }
 
     // Buscar hechizos de la biblioteca que coincidan
-    const hechizos = App.lsGet('bruja_hechizos', []);
+    const _stored = App.lsGet('bruja_hechizos', []);
+    const _defs = typeof HechizosDefaults !== 'undefined' ? HechizosDefaults : [];
+    const hechizos = _stored.length > 0 ? _stored : _defs;
     const relacionados = hechizos.filter(h =>
       (h.intencion || '').toLowerCase().includes(intencion.toLowerCase()) ||
-      intencion.toLowerCase().includes((h.intencion || '').toLowerCase().split(' ')[0])
+      intencion.toLowerCase().includes((h.intencion || '').toLowerCase().split(' ')[0]) ||
+      (h.tags || []).some(t => intencion.toLowerCase().includes(t.toLowerCase()))
     ).slice(0, 2);
 
     const res = document.getElementById('gen-ritual-resultado');
@@ -5551,11 +5561,14 @@ const Hechizos = (() => {
     const q = intencionInput.value.toLowerCase().trim();
     if (!q) { App.toast('Escribe una intención primero'); return; }
 
-    const items = App.lsGet('bruja_hechizos', []);
+    const stored = App.lsGet('bruja_hechizos', []);
+    const defs = typeof HechizosDefaults !== 'undefined' ? HechizosDefaults : [];
+    const items = stored.length > 0 ? stored : defs;
     const matches = items.filter(i =>
       (i.intencion || '').toLowerCase().includes(q) ||
       i.name.toLowerCase().includes(q) ||
-      (i.notas || '').toLowerCase().includes(q)
+      (i.notas || '').toLowerCase().includes(q) ||
+      (i.tags || []).some(t => t.toLowerCase().includes(q))
     );
 
     const velas = App.lsGet('bruja_gen_velas', Admin.getDefaultVelas());
@@ -7991,7 +8004,7 @@ const Tarot = (() => {
     detalle.innerHTML = `
       <div class="card" style="margin-top:1.25rem;border-color:var(--gold)">
         <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem">
-          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('carta-estudio-detalle').innerHTML='';document.getElementById('carta-estudio-detalle').scrollIntoView({behavior:'smooth',block:'nearest'})">← Volver</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('carta-estudio-detalle').innerHTML='';document.getElementById('estudio-tabs')?.scrollIntoView({behavior:'smooth',block:'start'})">← Volver</button>
           <div style="font-size:2.5rem;margin-left:.5rem">${imgs[c.num] ? `<img src="${imgs[c.num]}" style="width:50px;border-radius:6px" onerror="this.outerHTML='${c.emoji}'">` : c.emoji}</div>
           <div style="flex:1">
             <div style="font-family:var(--font-heading);font-size:1.1rem;color:var(--gold-l)">${c.nombre}</div>
@@ -8107,15 +8120,26 @@ const Tarot = (() => {
   function renderPendulo() {
     const registros = App.lsGet('bruja_pendulo_reg', []);
     return `
+      <!-- Qué es el péndulo -->
+      <div class="card" style="margin-bottom:1rem;border-color:rgba(196,151,42,.3)">
+        <div style="font-size:.88rem;color:var(--lavender);line-height:1.6">
+          <p style="margin-bottom:.5rem">⚖️ <strong style="color:var(--gold-l)">¿Cómo usar el péndulo?</strong></p>
+          <p style="margin-bottom:.4rem">1. Sostén el péndulo entre el pulgar y el índice, codo apoyado.</p>
+          <p style="margin-bottom:.4rem">2. Calma tu mente. Pregunta internamente: <em>"¿Cuál es mi sí?"</em> y observa hacia dónde oscila.</p>
+          <p style="margin-bottom:.4rem">3. Elige una tabla abajo, formula tu pregunta y observa la respuesta.</p>
+          <p style="margin-bottom:0">4. Registra tu lectura para ver patrones con el tiempo.</p>
+        </div>
+      </div>
+
       <div class="tabs mb-2" id="pend-tabs">
-        <button class="tab-btn active" onclick="Tarot._pendTab('tabla', this)">📋 Tablas</button>
-        <button class="tab-btn" onclick="Tarot._pendTab('reg', this)">📖 Registros</button>
+        <button class="tab-btn active" onclick="Tarot._pendTab('tabla', this)">⚖️ Tablas de consulta</button>
+        <button class="tab-btn" onclick="Tarot._pendTab('reg', this)">📖 Mis registros</button>
       </div>
 
       <!-- TABLAS -->
       <div id="pend-tabla" class="tab-panel active">
-        <p style="font-size:.82rem;color:var(--muted);margin-bottom:.75rem;line-height:1.5">
-          El péndulo responde por resonancia — úsalo cuando tu mente está quieta. Sostén, centra, pregunta una sola cosa a la vez.
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem">
+          Elige el tipo de pregunta que quieres hacer, luego sostén el péndulo sobre la tabla y observa hacia dónde apunta.
         </p>
         <div class="tabs mb-2" style="flex-wrap:wrap" id="pend-cat-tabs">
           ${PENDULO_TABLAS.map((t, i) =>
@@ -8124,22 +8148,24 @@ const Tarot = (() => {
         </div>
         ${PENDULO_TABLAS.map((t, i) => `
           <div id="pendcat-${t.id}" class="${i===0?'':'hidden'}">
-            <div style="margin-bottom:.75rem">
-              <div style="font-size:.75rem;color:var(--gold);font-weight:600;margin-bottom:.4rem">💬 Preguntas sugeridas</div>
-              ${t.preguntas.map(p => `<div style="font-size:.82rem;color:var(--lavender);padding:.25rem 0;border-bottom:1px solid var(--border)">${p}</div>`).join('')}
-            </div>
-            <div style="margin-top:1rem">
-              <div style="font-size:.75rem;color:var(--gold);font-weight:600;margin-bottom:.5rem">🎯 Tabla de respuestas</div>
-              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.4rem">
-                ${t.opciones.map((o, idx) => `
-                  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-s);padding:.6rem;text-align:center;font-size:.82rem;color:var(--lavender)">
-                    <div style="font-size:1.1rem;font-weight:600;color:var(--gold-l);margin-bottom:.2rem">${idx+1}</div>
-                    ${o}
-                  </div>`).join('')}
+            <details style="margin-bottom:.75rem">
+              <summary style="cursor:pointer;font-size:.82rem;color:var(--gold-l);padding:.3rem 0">
+                💬 Ver preguntas sugeridas para esta tabla
+              </summary>
+              <div style="margin-top:.4rem">
+                ${t.preguntas.map(p => `<div style="font-size:.82rem;color:var(--lavender);padding:.3rem .5rem;border-left:2px solid var(--gold);margin-bottom:.3rem">${p}</div>`).join('')}
               </div>
+            </details>
+            <div style="font-size:.75rem;color:var(--gold);font-weight:600;margin-bottom:.5rem">🎯 Tabla — el péndulo apunta a una de estas respuestas:</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.4rem;margin-bottom:1rem">
+              ${t.opciones.map((o, idx) => `
+                <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-s);padding:.6rem;text-align:center;font-size:.82rem;color:var(--lavender)">
+                  <div style="font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:.2rem">${idx+1}</div>
+                  ${o}
+                </div>`).join('')}
             </div>
-            <div style="margin-top:1rem;text-align:center">
-              <button class="btn btn-primary btn-sm" onclick="Tarot._pendNuevoReg('${t.id}')">📝 Registrar lectura</button>
+            <div style="text-align:center">
+              <button class="btn btn-primary" onclick="Tarot._pendNuevoReg('${t.id}')">📝 Registrar esta lectura</button>
             </div>
           </div>`).join('')}
       </div>
