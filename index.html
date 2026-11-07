@@ -1208,8 +1208,10 @@ const Sync = (() => {
         const data = json.data;
         // Sobrescribir localStorage con datos del Sheet
         // (el Sheet es la fuente de verdad)
+        // Excluir claves con imágenes grandes — no caben bien en Sheets
+        const SKIP_KEYS = ['bruja_portada_url', 'bruja_tarot_imgs', 'bruja_altar_img'];
         Object.keys(data).forEach(key => {
-          if (key.startsWith('bruja_')) {
+          if (key.startsWith('bruja_') && !SKIP_KEYS.includes(key)) {
             try { localStorage.setItem(key, data[key]); } catch {}
           }
         });
@@ -1252,8 +1254,9 @@ const Sync = (() => {
     // 1. Siempre guardar en localStorage (rápido, local)
     try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
 
-    // 2. Enviar al Sheet si es clave de la app
-    if (key.startsWith('bruja_')) {
+    // 2. Enviar al Sheet si es clave de la app (excluir imágenes grandes)
+    const SKIP_KEYS = ['bruja_portada_url', 'bruja_tarot_imgs', 'bruja_altar_img'];
+    if (key.startsWith('bruja_') && !SKIP_KEYS.includes(key)) {
       const serialized = JSON.stringify(val);
       if (_ready) {
         _showIndicator('☁️ Guardando...', 'var(--gold,#C4972A)');
@@ -1288,10 +1291,11 @@ const Sync = (() => {
   async function pushAll() {
     if (!API_URL && !getApiUrl()) return;
     const url = API_URL || getApiUrl();
+    const SKIP_KEYS = ['bruja_portada_url', 'bruja_tarot_imgs', 'bruja_altar_img', 'bruja_sync_url'];
     const data = {};
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i);
-      if (k && k.startsWith('bruja_') && k !== 'bruja_sync_url') {
+      if (k && k.startsWith('bruja_') && !SKIP_KEYS.includes(k)) {
         data[k] = localStorage.getItem(k);
       }
     }
