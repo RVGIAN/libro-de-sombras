@@ -1095,6 +1095,8 @@ strong { color: var(--gold-l); }
     <section id="sec-ancestros" class="section"></section>
 
     <!-- RUEDA DEL AÑO -->
+    <section id="sec-dia" class="section"></section>
+
     <section id="sec-rueda" class="section"></section>
 
     <!-- DIARIO -->
@@ -1171,6 +1173,7 @@ const App = (() => {
     { id: 'hechizos',   label: 'Hechizos',     emoji: '✨' },
     { id: 'altar',      label: 'Altar',        emoji: '🔥' },
     { id: 'ancestros',  label: 'Ancestros',    emoji: '👁️' },
+    { id: 'dia',        label: 'Horas',        emoji: '🌅' },
     { id: 'rueda',      label: 'Rueda del Año',emoji: '☀️' },
     { id: 'diario',     label: 'Diario',       emoji: '📖' },
     { id: 'tarot',      label: 'Tarot',        emoji: '🃏' },
@@ -1254,6 +1257,7 @@ const App = (() => {
       hechizos:   typeof Hechizos   !== 'undefined' ? Hechizos   : null,
       altar:      typeof Altar      !== 'undefined' ? Altar      : null,
       ancestros:  typeof Ancestros  !== 'undefined' ? Ancestros  : null,
+      dia:        typeof Dia        !== 'undefined' ? Dia        : null,
       rueda:      typeof Rueda      !== 'undefined' ? Rueda      : null,
       diario:     typeof Diario     !== 'undefined' ? Diario     : null,
       tarot:      typeof Tarot      !== 'undefined' ? Tarot      : null,
@@ -2390,14 +2394,30 @@ const Admin = (() => {
 
   function getDefaultSabats() {
     return [
-      { id: 'samhain',    name: 'Samhain',       fecha_n: '10-31', fecha_s: '04-30', emoji: '🎃' },
-      { id: 'yule',       name: 'Yule',          fecha_n: '12-21', fecha_s: '06-21', emoji: '❄️' },
-      { id: 'imbolc',     name: 'Imbolc',        fecha_n: '02-01', fecha_s: '08-01', emoji: '🕯️' },
-      { id: 'ostara',     name: 'Ostara',        fecha_n: '03-21', fecha_s: '09-21', emoji: '🌸' },
-      { id: 'beltane',    name: 'Beltane',       fecha_n: '05-01', fecha_s: '11-01', emoji: '🌺' },
-      { id: 'litha',      name: 'Litha',         fecha_n: '06-21', fecha_s: '12-21', emoji: '☀️' },
-      { id: 'lughnasadh', name: 'Lughnasadh',    fecha_n: '08-01', fecha_s: '02-01', emoji: '🌾' },
-      { id: 'mabon',      name: 'Mabon',         fecha_n: '09-21', fecha_s: '03-21', emoji: '🍂' },
+      { id: 'samhain',    name: 'Samhain',    fecha_n: '10-31', fecha_s: '04-30', emoji: '🎃',
+        desc: 'La gran puerta entre los mundos. El velo se adelgaza y los ancestros pueden comunicarse con los vivos. Noche de máxima potencia para la magia, la adivinación y el recuerdo sagrado.',
+        rituales: 'Enciende una vela negra por cada ancestro que desees honrar.\nColoca ofrendas con sus comidas favoritas en tu altar.\nEscribe en papel lo que deseas dejar ir y quémalo en la llama.\nMedita con una piedra de obsidiana para recibir mensajes del otro lado.\nRealiza una tirada de tarot para el año que comienza.' },
+      { id: 'yule',       name: 'Yule',       fecha_n: '12-21', fecha_s: '06-21', emoji: '❄️',
+        desc: 'El solsticio de invierno. La noche más larga del año da paso al renacimiento de la luz. Celebración del sol que vuelve, del fuego interior y de la esperanza que nunca muere.',
+        rituales: 'Enciende una vela dorada al amanecer para dar la bienvenida al sol renaciente.\nDecora tu altar con ramas de acebo, pino y muérdago.\nMedita sobre lo que deseas cultivar en el nuevo ciclo solar.\nComparte una comida sagrada con seres queridos.\nCrea un tronco de Yule con hierbas de protección y quémalo pidiendo abundancia.' },
+      { id: 'imbolc',     name: 'Imbolc',     fecha_n: '02-01', fecha_s: '08-01', emoji: '🕯️',
+        desc: 'El primer soplo de la primavera. La tierra despierta bajo la nieve y la llama de Brigid purifica todo lo que ha dormido. Tiempo de limpieza, creatividad y nuevos comienzos.',
+        rituales: 'Realiza una limpieza energética profunda de tu hogar con sal y romero.\nEnciende una vela blanca por cada proyecto nuevo que deseas comenzar.\nPrepara un baño ritual con leche, miel y flores blancas.\nActualiza tu Libro de Sombras con intenciones del año.\nCrea muñecas de maíz (Brigid\'s Cross) para proteger el hogar.' },
+      { id: 'ostara',     name: 'Ostara',     fecha_n: '03-21', fecha_s: '09-21', emoji: '🌸',
+        desc: 'El equinoccio de primavera. Día y noche en equilibrio perfecto. La tierra florece y cada semilla plantada en este día recibe una bendición especial. Magia de fertilidad, amor y renacimiento.',
+        rituales: 'Planta semillas con intenciones escritas en la tierra.\nDecora huevos con símbolos mágicos para atraer prosperidad.\nRealiza un ritual al amanecer en un espacio al aire libre.\nMedita sobre el equilibrio entre luz y sombra en tu vida.\nPrepara un altar con flores frescas, cristales de cuarzo rosa y velas amarillas.' },
+      { id: 'beltane',    name: 'Beltane',    fecha_n: '05-01', fecha_s: '11-01', emoji: '🌺',
+        desc: 'La gran fiesta del fuego y la fertilidad. El mundo está en plena floración y la magia del amor alcanza su punto más alto. Celebración de la unión, la pasión y la vida en abundancia.',
+        rituales: 'Enciende una hoguera o velas rojas y rosadas al atardecer.\nTeje flores en tu cabello o colócalas en tu altar.\nEscribe deseos de amor, pasión o creatividad y pásalos por el fuego.\nBaña tu rostro con el rocío de la mañana para atraer belleza y vitalidad.\nDanza en círculo alrededor del fuego pidiendo abundancia y alegría.' },
+      { id: 'litha',      name: 'Litha',      fecha_n: '06-21', fecha_s: '12-21', emoji: '☀️',
+        desc: 'El solsticio de verano, el día más largo del año. El sol alcanza su máximo poder. Momento ideal para rituales de fuerza, protección y manifestación de todo lo que has sembrado.',
+        rituales: 'Sal al exterior al mediodía para absorber la energía solar máxima.\nCrea un amuleto solar con hierbas de San Juan, lavanda y girasol.\nEnciende una hoguera y salta sobre ella pidiendo purificación y fuerza.\nPrepara agua solar dejando un recipiente bajo el sol todo el día.\nMedita sobre tus logros y agradece lo que has cosechado hasta ahora.' },
+      { id: 'lughnasadh', name: 'Lughnasadh', fecha_n: '08-01', fecha_s: '02-01', emoji: '🌾',
+        desc: 'La primera cosecha. Lugh, el dios solar, ofrece su fuerza a la tierra para que fructifique. Tiempo de agradecimiento, sacrificio sagrado y celebración de los frutos del trabajo.',
+        rituales: 'Hornea pan con intenciones de abundancia y compártelo.\nOfrendas de los primeros frutos de la temporada en tu altar.\nMedita sobre los sacrificios necesarios para crecer.\nTeje una corona de espigas y cereales para el altar.\nRealiza un ritual de agradecimiento por las bendiciones recibidas este año.' },
+      { id: 'mabon',      name: 'Mabon',      fecha_n: '09-21', fecha_s: '03-21', emoji: '🍂',
+        desc: 'El equinoccio de otoño. La segunda cosecha y el tiempo de equilibrio antes del descanso. La tierra comienza a prepararse para el sueño sagrado. Gratitud, introspección y liberación.',
+        rituales: 'Crea un altar con manzanas, granadas, hojas otoñales y velas anaranjadas.\nEscribe una lista de todo lo que agradeces y quema las páginas como ofrenda.\nPrepara vino de manzana o sidra con especias para beber en ritual.\nMedita sobre lo que necesitas soltar antes del invierno.\nRealiza una caminata consciente en la naturaleza recogiendo hojas caídas como mensajes.' },
     ];
   }
 
@@ -4367,6 +4387,89 @@ const Ancestros = (() => {
 </script>
   <script>
 /* ============================================================
+   DIA.JS — Horas Sagradas del Día (horas planetarias)
+   ============================================================ */
+
+const Dia = (() => {
+
+  function render() {
+    const sec = document.getElementById('sec-dia');
+    if (!sec) return;
+
+    const now    = new Date();
+    const lat    = App.lsGet('bruja_lat', -0.23); // usa lat guardada o Quito
+    const data   = Astro.planetaryHours(now, lat);
+    const nowH   = now.getHours() + now.getMinutes() / 60;
+    const actual = Astro.currentHP(data.hours, nowH);
+
+    const diasNombre = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    const diaNombre  = diasNombre[now.getDay()];
+    const fechaStr   = now.toLocaleDateString('es-ES', { day:'numeric', month:'long', year:'numeric' });
+
+    sec.innerHTML = `
+      <h1 class="section-title">🌅 Horas Sagradas</h1>
+      <p class="section-sub">${diaNombre} · ${fechaStr}</p>
+
+      <!-- Hora actual destacada -->
+      <div class="card" style="border:2px solid ${actual.color};background:${actual.color}18;text-align:center;margin-bottom:1.5rem;padding:1.25rem">
+        <div style="font-size:2rem;margin-bottom:.25rem">${actual.sym}</div>
+        <div style="font-size:1.3rem;font-family:'Cinzel Decorative',serif;color:${actual.color}">
+          Hora de ${actual.planet}
+        </div>
+        <div style="font-size:.82rem;color:var(--muted);margin:.4rem 0">
+          Hora ${actual.h} · ${_fmt(actual.st)} – ${_fmt(actual.en)}
+        </div>
+        <div style="font-size:.85rem;color:var(--lavender)">
+          ✨ ${actual.magic.join(' · ')}
+        </div>
+      </div>
+
+      <!-- Tabla de las 24 horas -->
+      <div style="display:flex;flex-direction:column;gap:.35rem" id="horas-lista">
+        ${data.hours.map(h => _rowHora(h, actual.h, nowH)).join('')}
+      </div>
+
+      <p style="font-size:.75rem;color:var(--muted);text-align:center;margin-top:1rem">
+        Calculado para lat ${lat.toFixed(2)}° · amanecer ~${_fmt(data.sunrise)} · atardecer ~${_fmt(data.sunset)}
+      </p>`;
+  }
+
+  function _rowHora(h, actualH, nowH) {
+    const isNow = h.h === actualH;
+    const past  = nowH > h.en;
+    return `
+      <div style="display:flex;align-items:center;gap:.6rem;padding:.5rem .75rem;
+        border-radius:8px;
+        background:${isNow ? h.color+'22' : past ? 'transparent' : '#ffffff08'};
+        border:1px solid ${isNow ? h.color : '#221A42'};
+        opacity:${past && !isNow ? '.5' : '1'}">
+        <div style="font-size:1.2rem;min-width:1.5rem;text-align:center">${h.sym}</div>
+        <div style="flex:1">
+          <div style="font-size:.88rem;color:${isNow ? h.color : 'var(--lavender)'};font-family:'Cinzel',serif">
+            ${isNow ? '▶ ' : ''}Hora ${h.h} · ${h.planet}
+          </div>
+          <div style="font-size:.75rem;color:var(--muted)">${_fmt(h.st)} – ${_fmt(h.en)}</div>
+        </div>
+        <div style="font-size:.72rem;color:var(--muted);text-align:right;max-width:7rem">
+          ${h.magic.join(', ')}
+        </div>
+      </div>`;
+  }
+
+  function _fmt(decH) {
+    // decimal hours → "HH:MM"
+    const total = Math.round(decH * 60);
+    const h = Math.floor(total / 60) % 24;
+    const m = total % 60;
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  }
+
+  return { render };
+})();
+
+</script>
+  <script>
+/* ============================================================
    RUEDA.JS — Rueda del Año (SVG visual) + 13 Lunas
    ============================================================ */
 
@@ -4375,37 +4478,42 @@ const Rueda = (() => {
   let sabatActivo = null;
   let lunaActiva  = null;
 
-  /* ── Colores por sabat (por ID) ── */
+  /* ── Colores por sabat — paleta oscura mística ── */
   const SABAT_COLORS = {
-    imbolc:      '#5a9e6e',
-    ostara:      '#7ec86a',
-    beltane:     '#c45a7a',
-    litha:       '#d4a010',
-    lughnasadh:  '#c47235',
-    mabon:       '#b04020',
-    samhain:     '#6a3a8e',
-    yule:        '#3a6b9e',
+    samhain:     '#5c2d7a',   // púrpura profundo
+    yule:        '#1e3a6e',   // azul noche
+    imbolc:      '#2a4a6a',   // azul hielo oscuro
+    ostara:      '#2d5a3a',   // verde bosque
+    beltane:     '#7a2a4a',   // rojo oscuro pasión
+    litha:       '#7a5a10',   // dorado oscuro
+    lughnasadh:  '#6a3a10',   // ámbar tierra
+    mabon:       '#5a2a10',   // marrón otoño
   };
-  const SABAT_COLOR_DARK = {
-    imbolc:      '#3a7e4e',
-    ostara:      '#5ea84a',
-    beltane:     '#a43a5a',
-    litha:       '#a48000',
-    lughnasadh:  '#a45215',
-    mabon:       '#903000',
-    samhain:     '#4a1a6e',
-    yule:        '#1a4b7e',
+  const SABAT_COLORS_ACTIVE = {
+    samhain:     '#8b4db8',   // púrpura brillante
+    yule:        '#3a6ab0',   // azul cielo
+    imbolc:      '#4a7aaa',   // azul cristal
+    ostara:      '#4a8a5a',   // verde primavera
+    beltane:     '#b84a7a',   // rosa fuego
+    litha:       '#c4972a',   // dorado solar
+    lughnasadh:  '#b06a2a',   // ámbar cálido
+    mabon:       '#8a4a2a',   // rojo otoño
   };
 
-  /* ── Color de luna por índice ── */
-  function lunaColor(i) {
-    const h = Math.round((i * 360) / 13);
-    return `hsl(${h},45%,30%)`;
-  }
-  function lunaColorDark(i) {
-    const h = Math.round((i * 360) / 13);
-    return `hsl(${h},45%,18%)`;
-  }
+  /* ── Colores rueda lunar — variaciones de púrpura/lavanda ── */
+  const LUNA_COLORS_DARK = [
+    '#1e1040','#231248','#1a1545','#141a4a','#101e4e',
+    '#102040','#0e2038','#101c30','#141830','#1a1535',
+    '#201040','#28104a','#241242',
+  ];
+  const LUNA_COLORS_ACTIVE = [
+    '#6a3ab0','#7a40b8','#5a3aaa','#4a40b0','#3a4ab8',
+    '#3a5aaa','#3a5898','#3a5080','#4a4878','#5a3a80',
+    '#6a3090','#7a30a0','#6a30a8',
+  ];
+
+  function lunaColor(i)     { return LUNA_COLORS_ACTIVE[i % LUNA_COLORS_ACTIVE.length]; }
+  function lunaColorDark(i) { return LUNA_COLORS_DARK[i  % LUNA_COLORS_DARK.length];   }
 
   /* ── Helper SVG: segmento de rueda ── */
   function wedgePath(cx, cy, r1, r2, a1, a2) {
@@ -4481,9 +4589,9 @@ const Rueda = (() => {
       const fecha = hemisferio === 'norte' ? (s.fecha_n || '') : (s.fecha_s || '');
       const esPasado = fecha && fecha < mmdd;
 
-      const fillBase  = SABAT_COLORS[s.id]  || '#5a3a7e';
-      const fillDark  = SABAT_COLOR_DARK[s.id] || '#3a1a5e';
-      const fill = isActive ? fillBase : (esPasado ? fillDark + 'aa' : fillDark);
+      const fillBase  = SABAT_COLORS_ACTIVE[s.id] || '#6a3ab0';
+      const fillDark  = SABAT_COLORS[s.id]        || '#3a1a5e';
+      const fill = isActive ? fillBase : (esPasado ? fillDark + 'bb' : fillDark);
       const stroke = isActive ? '#FFD966' : '#221A42';
 
       const d = wedgePath(cx, cy, r1, r2, a1, a2);
@@ -4565,13 +4673,12 @@ const Rueda = (() => {
             <div class="bib-prop-label">🕯️ Rituales & Prácticas</div>
             <div class="bib-prop-value">${s.rituales.replace(/\n/g,'<br>')}</div>
           </div>` : ''}
-        ${Admin.isUnlocked() ? `
-          <div style="margin-top:.75rem">
-            <button class="btn btn-ghost btn-sm"
-              onclick="Admin._sabatNuevo('${s.id}');App.navigate('admin');Admin._showPanel('rueda')">
-              ✏️ Editar
-            </button>
-          </div>` : ''}
+        <div style="margin-top:.75rem">
+          <button class="btn btn-ghost btn-sm"
+            onclick="Admin._sabatNuevo('${s.id}');App.navigate('admin');Admin._showPanel('rueda')">
+            ✏️ Editar
+          </button>
+        </div>
       </div>`;
     det.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
@@ -4670,13 +4777,12 @@ const Rueda = (() => {
             <div class="bib-prop-label">✨ Usos mágicos</div>
             <div class="bib-prop-value">${l.usos.replace(/\n/g,'<br>')}</div>
           </div>` : ''}
-        ${Admin.isUnlocked() ? `
-          <div style="margin-top:.75rem">
-            <button class="btn btn-ghost btn-sm"
-              onclick="Admin._lunaNueva('${l.id}');App.navigate('admin');Admin._showPanel('lunas')">
-              ✏️ Editar
-            </button>
-          </div>` : ''}
+        <div style="margin-top:.75rem">
+          <button class="btn btn-ghost btn-sm"
+            onclick="Admin._lunaNueva('${l.id}');App.navigate('admin');Admin._showPanel('lunas')">
+            ✏️ Editar
+          </button>
+        </div>
       </div>`;
     det.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
@@ -4932,7 +5038,12 @@ const Libro = (() => {
       </div>
 
       <div id="libro-pdf" class="tab-panel active">
-        <div class="pdf-viewer-wrap">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:.5rem">
+          <button class="btn btn-sm" onclick="Libro._fullscreen()" style="font-size:.8rem;padding:.3rem .8rem;background:var(--border);border:1px solid var(--gold);color:var(--gold-l);border-radius:var(--radius)">
+            ⛶ Pantalla completa
+          </button>
+        </div>
+        <div class="pdf-viewer-wrap" id="pdf-wrap">
           <iframe id="pdf-frame"
             src="${VIEWER_URL}"
             title="El Año de la Bruja — Libro completo">
@@ -4991,6 +5102,22 @@ const Libro = (() => {
         </div>`).join('')}`;
   }
 
+  function _fullscreen() {
+    const wrap = document.getElementById('pdf-wrap');
+    const frame = document.getElementById('pdf-frame');
+    if (!wrap || !frame) return;
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      (wrap.requestFullscreen || wrap.webkitRequestFullscreen || wrap.mozRequestFullScreen).call(wrap);
+      // en fullscreen, dar altura 100%
+      frame.style.height = '100vh';
+    }
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) frame.style.height = '';
+    }, { once: true });
+  }
+
   function _tab(key, btn) {
     document.querySelectorAll('#libro-tabs .tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -4998,7 +5125,7 @@ const Libro = (() => {
     document.getElementById('libro-' + key)?.classList.add('active');
   }
 
-  return { render, _tab };
+  return { render, _tab, _fullscreen };
 })();
 
 </script>
@@ -5751,6 +5878,11 @@ const CartaModule = (() => {
     'Santiago, Chile':         [-33.45, -70.67],
     'Ciudad de México':        [ 19.43, -99.13],
     'Caracas, Venezuela':      [ 10.49, -66.88],
+    'Valencia, Venezuela':     [ 10.16, -68.00],
+    'Maracaibo, Venezuela':    [ 10.63, -71.64],
+    'Barquisimeto, Venezuela': [ 10.07, -69.32],
+    'Maracay, Venezuela':      [ 10.25, -67.60],
+    'Mérida, Venezuela':       [  8.60, -71.14],
     'Medellín, Colombia':      [  6.25, -75.56],
     'Madrid, España':          [ 40.42,  -3.70],
     'Nueva York, USA':         [ 40.71, -74.01],
@@ -5776,7 +5908,8 @@ const CartaModule = (() => {
     'Ciudad de Panamá': -5, 'San José, Costa Rica': -6,
     'Buenos Aires, Argentina': -3, 'Montevideo, Uruguay': -3,
     'Santiago, Chile': -4, 'La Paz, Bolivia': -4, 'Asunción, Paraguay': -4,
-    'Ciudad de México': -6, 'Caracas, Venezuela': -4,
+    'Ciudad de México': -6, 'Caracas, Venezuela': -4, 'Valencia, Venezuela': -4,
+    'Maracaibo, Venezuela': -4, 'Barquisimeto, Venezuela': -4, 'Maracay, Venezuela': -4, 'Mérida, Venezuela': -4,
     'São Paulo, Brasil': -3, 'Río de Janeiro, Brasil': -3,
     'Madrid, España': 1, 'Nueva York, USA': -5, 'Miami, USA': -5,
     'Tokio, Japón': 9, 'Pekín, China': 8, 'Mumbai, India': 5.5,
