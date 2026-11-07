@@ -8017,7 +8017,7 @@ const Tarot = (() => {
         <div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:1rem;padding:.5rem;background:var(--bg3);border-radius:var(--radius-s)">
           <span style="font-size:.72rem;color:var(--muted);align-self:center;margin-right:.2rem">Ver:</span>
           <button class="btn btn-ghost btn-sm" style="font-size:.72rem;padding:.2rem .5rem" onclick="Tarot._tabEstudio('mayores',document.querySelector('#estudio-tabs .tab-btn'))">✨ Mayores</button>
-          ${PALOS.map(p=>`<button class="btn btn-ghost btn-sm" style="font-size:.72rem;padding:.2rem .5rem" onclick="Tarot._tabEstudio('${p.id}',document.querySelectorAll('#estudio-tabs .tab-btn')[${PALOS.indexOf(p)+1}])">${p.emoji} ${p.nombre}</button>`).join('')}
+          ${PALOS.map((p,i)=>`<button class="btn btn-ghost btn-sm" style="font-size:.72rem;padding:.2rem .5rem" onclick="Tarot._tabEstudio('${p.id}',document.querySelectorAll('#estudio-tabs .tab-btn')[${i+1}])">${p.emoji} ${p.nombre}</button>`).join('')}
         </div>
         <div style="margin-bottom:.75rem">
           <div style="font-size:.75rem;font-weight:600;color:var(--gold);margin-bottom:.3rem">⬆ NORMAL</div>
