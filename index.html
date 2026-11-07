@@ -1159,6 +1159,180 @@ const PORTADA_DEFAULT = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAv0AAAQAC
 </script>
   <script>
 /* ============================================================
+   SYNC.JS — Sincronización Google Sheets ↔ localStorage
+   Intercepta App.lsGet / App.lsSet para guardar en la nube.
+   ============================================================ */
+
+const Sync = (() => {
+
+  // ⚠️ Reemplaza esta URL con la que obtienes al hacer Deploy
+  let API_URL = '';
+
+  let _ready   = false;   // true cuando terminó la carga inicial
+  let _queue   = [];      // escrituras pendientes mientras carga
+  let _syncing = false;   // animación del indicador
+
+  // ── Indicador visual (esquina inferior derecha) ─────────────
+  function _showIndicator(msg, color) {
+    let el = document.getElementById('sync-indicator');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'sync-indicator';
+      el.style.cssText = [
+        'position:fixed', 'bottom:1rem', 'right:1rem', 'z-index:9999',
+        'background:rgba(7,5,15,.85)', 'border:1px solid var(--border,#221A42)',
+        'color:var(--text,#F0E8FF)', 'font-size:.72rem', 'padding:.3rem .7rem',
+        'border-radius:999px', 'pointer-events:none', 'transition:opacity .4s',
+        'backdrop-filter:blur(6px)'
+      ].join(';');
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.style.opacity = '1';
+    el.style.borderColor = color || 'var(--border,#221A42)';
+    clearTimeout(el._hide);
+    if (color !== 'var(--gold,#C4972A)') {
+      // Auto-ocultar si no es "sincronizando..."
+      el._hide = setTimeout(() => { el.style.opacity = '0'; }, 2500);
+    }
+  }
+
+  // ── Cargar todos los datos del Sheet al inicio ───────────────
+  async function _loadFromSheet() {
+    if (!API_URL) { _ready = true; _flushQueue(); return; }
+    _showIndicator('☁️ Conectando...', 'var(--gold,#C4972A)');
+    try {
+      const r    = await fetch(API_URL, { cache: 'no-store' });
+      const json = await r.json();
+      if (json.ok && json.data) {
+        const data = json.data;
+        // Sobrescribir localStorage con datos del Sheet
+        // (el Sheet es la fuente de verdad)
+        Object.keys(data).forEach(key => {
+          if (key.startsWith('bruja_')) {
+            try { localStorage.setItem(key, data[key]); } catch {}
+          }
+        });
+        _showIndicator('✅ Datos cargados', '#4ade80');
+      } else {
+        _showIndicator('⚠️ Sin datos en nube', '#fbbf24');
+      }
+    } catch (err) {
+      console.warn('[Sync] No se pudo cargar desde Sheet:', err);
+      _showIndicator('📴 Modo sin conexión', '#94a3b8');
+    }
+    _ready = true;
+    _flushQueue();
+  }
+
+  // ── Enviar una clave al Sheet (en segundo plano) ─────────────
+  async function _pushKey(key, val) {
+    if (!API_URL) return;
+    try {
+      await fetch(API_URL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'text/plain' }, // Apps Script requiere text/plain
+        body:    JSON.stringify({ key, value: val })
+      });
+    } catch (err) {
+      console.warn('[Sync] Error al guardar:', key, err);
+    }
+  }
+
+  // ── Cola de escrituras pendientes ────────────────────────────
+  function _flushQueue() {
+    while (_queue.length) {
+      const { key, val } = _queue.shift();
+      _pushKey(key, val);
+    }
+  }
+
+  // ── lsSet con sync ───────────────────────────────────────────
+  function set(key, val) {
+    // 1. Siempre guardar en localStorage (rápido, local)
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+
+    // 2. Enviar al Sheet si es clave de la app
+    if (key.startsWith('bruja_')) {
+      const serialized = JSON.stringify(val);
+      if (_ready) {
+        _showIndicator('☁️ Guardando...', 'var(--gold,#C4972A)');
+        _pushKey(key, serialized).then(() => {
+          _showIndicator('✅ Guardado', '#4ade80');
+        });
+      } else {
+        _queue.push({ key, val: serialized });
+      }
+    }
+  }
+
+  // ── lsGet (igual que antes, solo lee localStorage) ───────────
+  function get(key, def = null) {
+    try {
+      const v = localStorage.getItem(key);
+      return v ? JSON.parse(v) : def;
+    } catch { return def; }
+  }
+
+  // ── Configurar URL del API ────────────────────────────────────
+  function setApiUrl(url) {
+    API_URL = url;
+    try { localStorage.setItem('bruja_sync_url', url); } catch {}
+  }
+
+  function getApiUrl() {
+    return API_URL || localStorage.getItem('bruja_sync_url') || '';
+  }
+
+  // ── Forzar subir TODO el localStorage al Sheet ───────────────
+  async function pushAll() {
+    if (!API_URL && !getApiUrl()) return;
+    const url = API_URL || getApiUrl();
+    const data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('bruja_') && k !== 'bruja_sync_url') {
+        data[k] = localStorage.getItem(k);
+      }
+    }
+    _showIndicator('☁️ Subiendo todo...', 'var(--gold,#C4972A)');
+    try {
+      await fetch(url, {
+        method:  'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body:    JSON.stringify({ action: 'setBulk', data })
+      });
+      _showIndicator('✅ Todo subido', '#4ade80');
+      App.toast('✅ Todos los datos subidos a la nube');
+    } catch (err) {
+      _showIndicator('❌ Error al subir', '#f87171');
+      App.toast('❌ Error al subir datos');
+    }
+  }
+
+  // ── Inicializar ──────────────────────────────────────────────
+  function init() {
+    // Recuperar URL guardada
+    const savedUrl = localStorage.getItem('bruja_sync_url');
+    if (savedUrl) API_URL = savedUrl;
+
+    // Reemplazar App.lsSet con la versión sincronizada
+    if (typeof App !== 'undefined') {
+      App.lsSet = set;
+      App.lsGet = get;
+    }
+
+    // Cargar datos del Sheet
+    _loadFromSheet();
+  }
+
+  return { init, set, get, setApiUrl, getApiUrl, pushAll };
+
+})();
+
+</script>
+  <script>
+/* ============================================================
    APP.JS — El Año de la Bruja v3
    Núcleo: navegación, utilidades, estado global
    ============================================================ */
@@ -1596,6 +1770,10 @@ const App = (() => {
   /* ── Inicialización ── */
   function init() {
     applyTypography();
+
+    // Iniciar sincronización con Google Sheets (si está configurado)
+    if (typeof Sync !== 'undefined') Sync.init();
+
     seedDefaults();
 
     if (!isLoggedIn()) {
@@ -1724,6 +1902,9 @@ const Admin = (() => {
         ${menuBtn('portada',     '📷', 'Portada / Logo')}
         ${menuBtn('pin',         '🔐', 'Cambiar PIN')}
         ${menuBtn('usuarios',    '👥', 'Usuarios')}
+        ${menuBtn('horas',       '🌅', 'Horas Sagradas')}
+        ${menuBtn('ciudades',    '🗺️', 'Ciudades Carta')}
+        ${menuBtn('respaldo',    '💾', 'Respaldo')}
       </div>
 
       <div id="admin-panels">
@@ -1741,6 +1922,9 @@ const Admin = (() => {
         <div id="adm-portada"    class="admin-panel"></div>
         <div id="adm-pin"        class="admin-panel"></div>
         <div id="adm-usuarios"   class="admin-panel"></div>
+        <div id="adm-horas"      class="admin-panel"></div>
+        <div id="adm-ciudades"   class="admin-panel"></div>
+        <div id="adm-respaldo"   class="admin-panel"></div>
       </div>
 
       <div style="margin-top:2rem;text-align:center">
@@ -1788,6 +1972,9 @@ const Admin = (() => {
       portada:     renderAdmPortada,
       pin:         renderAdmPin,
       usuarios:    renderAdmUsuarios,
+      horas:       renderAdmHoras,
+      ciudades:    renderAdmCiudades,
+      respaldo:    renderAdmRespaldo,
     };
     if (renders[id]) renders[id](panel);
     panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -3071,6 +3258,7 @@ const Admin = (() => {
             <div class="admin-item-meta">${u.rol === 'admin' ? '⚙️ Administrador' : '👁️ Lector'}</div>
           </div>
           <div class="admin-item-actions">
+            <button class="btn-icon" title="Cambiar rol" onclick="Admin._usuarioCambiarRol('${u.id}')">👑</button>
             <button class="btn-icon" title="Resetear contraseña" onclick="Admin._usuarioResetPassword('${u.id}')">🔑</button>
             <button class="btn-icon" title="Eliminar usuario" onclick="Admin._usuarioEliminar('${u.id}')">🗑️</button>
           </div>
@@ -3153,6 +3341,317 @@ const Admin = (() => {
     App.lsSet('bruja_usuarios', usuarios.filter(x => x.id !== id));
     App.toast('Usuario eliminado');
     renderAdmUsuarios(document.getElementById('adm-usuarios'));
+  }
+
+  function _usuarioCambiarRol(id) {
+    const usuarios = App.lsGet('bruja_usuarios', []);
+    const u = usuarios.find(x => x.id === id);
+    if (!u) return;
+    App.openModal(`Cambiar rol — ${u.nombre}`, `
+      <div class="form-group">
+        <label class="form-label">Rol actual: <strong>${u.rol === 'admin' ? '⚙️ Administrador' : '👁️ Lector'}</strong></label>
+        <select id="ur-rol" class="form-select" style="margin-top:.5rem">
+          <option value="lector" ${u.rol !== 'admin' ? 'selected' : ''}>👁️ Lector (solo lectura)</option>
+          <option value="admin" ${u.rol === 'admin' ? 'selected' : ''}>⚙️ Administrador</option>
+        </select>
+      </div>`,
+      {
+        confirmLabel: 'Guardar rol',
+        onConfirm: () => {
+          const list = App.lsGet('bruja_usuarios', []);
+          const i = list.findIndex(x => x.id === id);
+          if (i >= 0) list[i].rol = document.getElementById('ur-rol')?.value;
+          App.lsSet('bruja_usuarios', list);
+          App.toast('Rol actualizado ✓');
+          renderAdmUsuarios(document.getElementById('adm-usuarios'));
+        }
+      }
+    );
+  }
+
+  /* ══════════════════════════════════════════════
+     HORAS SAGRADAS ADMIN — editar magia planetaria
+     ══════════════════════════════════════════════ */
+  function renderAdmHoras(panel) {
+    const defaults = Astro.HP_MAGIC;
+    const overrides = App.lsGet('bruja_hp_magic', {});
+    const HP_MAGIC = { ...defaults, ...overrides };
+
+    const rows = Object.entries(HP_MAGIC).map(([planet, data]) => `
+      <div class="admin-item" style="align-items:flex-start">
+        <div class="admin-item-img" style="font-size:1.5rem;color:${data.color}">${data.sym}</div>
+        <div class="admin-item-info" style="flex:1">
+          <div class="admin-item-name">${planet}</div>
+          <div class="admin-item-meta" style="color:${data.color}">${data.magic.join(' · ')}</div>
+        </div>
+        <div class="admin-item-actions">
+          <button class="btn-icon" onclick="Admin._horaNueva('${planet}')">✏️</button>
+        </div>
+      </div>`).join('');
+
+    panel.innerHTML = `
+      <h2 style="margin-bottom:.5rem">🌅 Horas Sagradas — Magia Planetaria</h2>
+      <p class="text-muted" style="font-size:.85rem;margin-bottom:1rem">
+        Personaliza qué tipo de magia corresponde a cada planeta.<br>
+        Los cambios se guardan automáticamente.
+      </p>
+      ${rows}
+      <button class="btn btn-ghost btn-sm mt-2" onclick="Admin._horasReset()">↩️ Restaurar por defecto</button>`;
+  }
+
+  function _horaNueva(planet) {
+    const defaults = Astro.HP_MAGIC;
+    const overrides = App.lsGet('bruja_hp_magic', {});
+    const data = overrides[planet] || defaults[planet];
+    if (!data) return;
+
+    App.openModal(`✏️ Editar ${planet}`, `
+      <div class="form-group">
+        <label class="form-label">Palabras de magia <small style="color:var(--muted)">(separadas por coma)</small></label>
+        <input id="hp-magic" class="form-input" value="${data.magic.join(', ')}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Color (hex)</label>
+        <div style="display:flex;gap:.5rem;align-items:center">
+          <input id="hp-color" class="form-input" value="${data.color}" style="flex:1">
+          <input type="color" value="${data.color}" oninput="document.getElementById('hp-color').value=this.value" style="width:3rem;height:2.5rem;border:none;background:none;cursor:pointer">
+        </div>
+      </div>`,
+      {
+        confirmLabel: 'Guardar',
+        onConfirm: () => {
+          const magicRaw = document.getElementById('hp-magic')?.value || '';
+          const color    = document.getElementById('hp-color')?.value.trim() || data.color;
+          const magic    = magicRaw.split(',').map(s => s.trim()).filter(Boolean);
+          if (!magic.length) { App.toast('Escribe al menos una palabra mágica'); return; }
+          const store = App.lsGet('bruja_hp_magic', {});
+          store[planet] = { ...data, magic, color };
+          App.lsSet('bruja_hp_magic', store);
+          App.toast(`${planet} actualizado ✓`);
+          renderAdmHoras(document.getElementById('adm-horas'));
+        }
+      }
+    );
+  }
+
+  function _horasReset() {
+    if (!confirm('¿Restaurar las correspondencias planetarias al valor original?')) return;
+    App.lsSet('bruja_hp_magic', {});
+    App.toast('Correspondencias restauradas ✓');
+    renderAdmHoras(document.getElementById('adm-horas'));
+  }
+
+  /* ══════════════════════════════════════════════
+     CIUDADES CARTA ASTRAL ADMIN
+     ══════════════════════════════════════════════ */
+  function renderAdmCiudades(panel) {
+    const extra = App.lsGet('bruja_ciudades_extra', []);
+
+    const extraRows = extra.length === 0
+      ? `<div class="empty-state" style="padding:1rem"><span class="es-emoji">🗺️</span><p>No hay ciudades personalizadas aún</p></div>`
+      : extra.map(c => `
+        <div class="admin-item">
+          <div class="admin-item-img">🗺️</div>
+          <div class="admin-item-info">
+            <div class="admin-item-name">${c.name}</div>
+            <div class="admin-item-meta">Lat: ${c.lat} · Lon: ${c.lon} · UTC ${c.utc >= 0 ? '+' : ''}${c.utc}</div>
+          </div>
+          <div class="admin-item-actions">
+            <button class="btn-icon" onclick="Admin._ciudadEliminar('${c.id}')">🗑️</button>
+          </div>
+        </div>`).join('');
+
+    panel.innerHTML = `
+      <h2 style="margin-bottom:.5rem">🗺️ Ciudades — Carta Astral</h2>
+      <p class="text-muted" style="font-size:.85rem;margin-bottom:1rem">
+        Agrega ciudades que no están en la lista estándar.<br>
+        Las ciudades personalizadas aparecen al principio del selector.
+      </p>
+      <button class="btn btn-primary mb-2" onclick="Admin._ciudadNueva()">+ Agregar ciudad</button>
+      ${extraRows}`;
+  }
+
+  function _ciudadNueva() {
+    App.openModal('+ Nueva ciudad', `
+      <div class="form-group">
+        <label class="form-label">Nombre de la ciudad *</label>
+        <input id="ci-name" class="form-input" placeholder="Ej: Valencia, Venezuela">
+        <p style="font-size:.75rem;color:var(--muted);margin-top:.3rem">Escríbelo exactamente como quieres que aparezca</p>
+      </div>
+      <div style="display:flex;gap:.75rem">
+        <div class="form-group" style="flex:1">
+          <label class="form-label">Latitud *</label>
+          <input id="ci-lat" class="form-input" type="number" step="0.01" placeholder="10.16">
+        </div>
+        <div class="form-group" style="flex:1">
+          <label class="form-label">Longitud *</label>
+          <input id="ci-lon" class="form-input" type="number" step="0.01" placeholder="-68.00">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Zona horaria UTC *</label>
+        <select id="ci-utc" class="form-select">
+          ${[-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,5.5,6,7,8,9,10,11,12]
+            .map(v=>`<option value="${v}" ${v===-5?'selected':''}>UTC ${v>=0?'+':''}${v}</option>`).join('')}
+        </select>
+      </div>
+      <p style="font-size:.78rem;color:var(--muted)">
+        💡 Busca "latitud longitud [nombre ciudad]" en Google para obtener las coordenadas.
+      </p>`,
+      {
+        confirmLabel: 'Agregar ciudad',
+        onConfirm: () => {
+          const name = document.getElementById('ci-name')?.value.trim();
+          const lat  = parseFloat(document.getElementById('ci-lat')?.value);
+          const lon  = parseFloat(document.getElementById('ci-lon')?.value);
+          const utc  = parseFloat(document.getElementById('ci-utc')?.value);
+          if (!name) { App.toast('El nombre es obligatorio'); return; }
+          if (isNaN(lat) || isNaN(lon)) { App.toast('Latitud y longitud son obligatorios'); return; }
+          const list = App.lsGet('bruja_ciudades_extra', []);
+          if (list.find(c => c.name.toLowerCase() === name.toLowerCase())) {
+            App.toast('Ya existe esa ciudad'); return;
+          }
+          list.push({ id: App.uid(), name, lat, lon, utc });
+          App.lsSet('bruja_ciudades_extra', list);
+          App.toast('Ciudad agregada ✓');
+          renderAdmCiudades(document.getElementById('adm-ciudades'));
+        }
+      }
+    );
+  }
+
+  function _ciudadEliminar(id) {
+    if (!confirm('¿Eliminar esta ciudad?')) return;
+    const list = App.lsGet('bruja_ciudades_extra', []).filter(c => c.id !== id);
+    App.lsSet('bruja_ciudades_extra', list);
+    App.toast('Ciudad eliminada');
+    renderAdmCiudades(document.getElementById('adm-ciudades'));
+  }
+
+  /* ══════════════════════════════════════════════
+     RESPALDO — Exportar / Importar todos los datos
+     ══════════════════════════════════════════════ */
+  function renderAdmRespaldo(panel) {
+    const currentUrl = typeof Sync !== 'undefined' ? Sync.getApiUrl() : '';
+    panel.innerHTML = `
+      <h2 style="margin-bottom:.5rem">💾 Respaldo y Nube</h2>
+      <p class="text-muted" style="font-size:.85rem;margin-bottom:1.5rem">
+        Conecta Google Sheets para guardar datos en la nube y acceder desde cualquier dispositivo.
+      </p>
+
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="color:var(--gold-l);margin-bottom:.5rem">☁️ Google Sheets (nube)</h3>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:.75rem">
+          Pega aquí la URL del Web App de Google Apps Script después de hacer el deploy.
+        </p>
+        <div style="display:flex;gap:.5rem;margin-bottom:.75rem">
+          <input id="sync-url-input" class="form-input" style="flex:1;font-size:.8rem"
+            placeholder="https://script.google.com/macros/s/..." value="${currentUrl}">
+          <button class="btn btn-primary btn-sm" onclick="Admin._guardarSyncUrl()">Guardar URL</button>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="Admin._subirTodoNube()"
+            ${currentUrl ? '' : 'disabled title="Primero guarda la URL"'}>
+            ☁️ Subir todo a la nube
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="Admin._bajarDeNube()"
+            ${currentUrl ? '' : 'disabled title="Primero guarda la URL"'}>
+            ⬇️ Descargar desde la nube
+          </button>
+        </div>
+        ${currentUrl
+          ? `<p style="font-size:.78rem;color:#4ade80;margin-top:.5rem">✅ Conectado — datos se sincronizan automáticamente</p>`
+          : `<p style="font-size:.78rem;color:var(--muted);margin-top:.5rem">🔴 Sin conexión a nube — datos solo en este navegador</p>`}
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="color:var(--gold-l);margin-bottom:.5rem">📤 Exportar (archivo)</h3>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:.75rem">
+          Descarga una copia local como archivo JSON.
+        </p>
+        <button class="btn btn-primary" onclick="Admin._exportarDatos()">⬇️ Descargar respaldo</button>
+      </div>
+
+      <div class="card">
+        <h3 style="color:var(--gold-l);margin-bottom:.5rem">📥 Importar (archivo)</h3>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:.75rem">
+          Restaura datos desde un archivo de respaldo anterior.<br>
+          <strong style="color:#ff9980">⚠️ Esto reemplaza los datos actuales.</strong>
+        </p>
+        <label class="btn btn-ghost" style="cursor:pointer">
+          ⬆️ Seleccionar archivo
+          <input type="file" accept=".json" style="display:none" onchange="Admin._importarDatos(this)">
+        </label>
+      </div>`;
+  }
+
+  function _guardarSyncUrl() {
+    const url = document.getElementById('sync-url-input')?.value?.trim();
+    if (!url || !url.startsWith('https://script.google.com')) {
+      App.toast('URL inválida. Debe empezar con https://script.google.com');
+      return;
+    }
+    if (typeof Sync !== 'undefined') {
+      Sync.setApiUrl(url);
+      App.toast('✅ URL guardada. Los datos ahora se sincronizan con Google Sheets.');
+      renderAdmRespaldo(document.getElementById('adm-respaldo'));
+    }
+  }
+
+  function _subirTodoNube() {
+    if (typeof Sync !== 'undefined') Sync.pushAll();
+  }
+
+  function _bajarDeNube() {
+    if (typeof Sync !== 'undefined') {
+      App.toast('⬇️ Descargando datos de la nube...');
+      location.reload();
+    }
+  }
+
+  function _exportarDatos() {
+    const PREFIX = 'bruja_';
+    const datos = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(PREFIX)) {
+        try { datos[key] = JSON.parse(localStorage.getItem(key)); }
+        catch { datos[key] = localStorage.getItem(key); }
+      }
+    }
+    const json = JSON.stringify(datos, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    const fecha = new Date().toISOString().split('T')[0];
+    a.href = url;
+    a.download = `grimorio-respaldo-${fecha}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    App.toast('Respaldo descargado ✓');
+  }
+
+  function _importarDatos(input) {
+    const file = input.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const datos = JSON.parse(e.target.result);
+        const keys = Object.keys(datos).filter(k => k.startsWith('bruja_'));
+        if (!keys.length) { App.toast('Archivo inválido: no contiene datos del grimorio'); return; }
+        if (!confirm(`¿Importar ${keys.length} registros? Esto reemplazará los datos actuales.`)) return;
+        keys.forEach(k => {
+          try { localStorage.setItem(k, JSON.stringify(datos[k])); } catch {}
+        });
+        App.toast(`Importado: ${keys.length} registros restaurados ✓`);
+        renderAdmRespaldo(document.getElementById('adm-respaldo'));
+      } catch {
+        App.toast('Error al leer el archivo. Verifica que sea un respaldo válido.');
+      }
+    };
+    reader.readAsText(file);
+    input.value = '';
   }
 
   /* ══════════════════════════════════════════════
@@ -3250,7 +3749,11 @@ const Admin = (() => {
     renderAdmLunas13,
     _typoPreview, _typoGuardar, _typoReset,
     _portadaGuardar, _cambiarPin,
-    _usuarioNuevo, _usuarioResetPassword, _usuarioEliminar,
+    _usuarioNuevo, _usuarioResetPassword, _usuarioEliminar, _usuarioCambiarRol,
+    renderAdmHoras, _horaNueva, _horasReset,
+    renderAdmCiudades, _ciudadNueva, _ciudadEliminar,
+    renderAdmRespaldo, _exportarDatos, _importarDatos,
+    _guardarSyncUrl, _subirTodoNube, _bajarDeNube,
     _admEliminar,
     _logout,
     renderAdmBiblioteca, renderAdmHechizos, renderAdmAltar, renderAdmAncestros,
@@ -5812,7 +6315,7 @@ const Astro = (() => {
   // Horas planetarias
   const HP_ORDER=['Saturno','Júpiter','Marte','Sol','Venus','Mercurio','Luna'];
   const HP_DOW={0:6,1:3,2:4,3:1,4:5,5:2,6:0}; // dom=0
-  const HP_MAGIC={
+  const HP_MAGIC_DEFAULT={
     'Sol':      {color:'#FFD700',magic:['éxito','prosperidad','liderazgo'],    sym:'☉'},
     'Luna':     {color:'#C0C0C0',magic:['intuición','sueños','emociones'],     sym:'☽'},
     'Marte':    {color:'#FF4500',magic:['coraje','fuerza','protección'],       sym:'♂'},
@@ -5821,6 +6324,14 @@ const Astro = (() => {
     'Venus':    {color:'#FF69B4',magic:['amor','belleza','armonía'],           sym:'♀'},
     'Saturno':  {color:'#708090',magic:['karma','límites','disciplina'],       sym:'♄'},
   };
+  // Merge con personalizaciones guardadas en admin
+  let HP_MAGIC = { ...HP_MAGIC_DEFAULT };
+  try {
+    const ov = JSON.parse(localStorage.getItem('bruja_hp_magic') || '{}');
+    if (ov && typeof ov === 'object') {
+      Object.keys(ov).forEach(k => { if (HP_MAGIC[k]) HP_MAGIC[k] = { ...HP_MAGIC[k], ...ov[k] }; });
+    }
+  } catch {};
 
   function planetaryHours(date,lat){
     const latR=lat*DEG;
@@ -5848,7 +6359,7 @@ const Astro = (() => {
   }
 
   return {
-    ZODIAC,EL_COLORS,EL_EMOJI,PLANETS,ASPECTS,SABBATS,HP_MAGIC,
+    ZODIAC,EL_COLORS,EL_EMOJI,PLANETS,ASPECTS,SABBATS,HP_MAGIC,HP_MAGIC_DEFAULT,
     jd,T,norm,sunLon,moonLon,planetLon,moonPhase,lilithLon,
     chartData,calcAspects,nextSabbat,daysUntil,
     planetaryHours,currentHP,
@@ -6231,13 +6742,24 @@ const CartaModule = (() => {
     const form = document.getElementById('carta-form');
     if (!form) return;
 
-    // Llenar selector de ciudades
+    // Llenar selector de ciudades (estándar + personalizadas del admin)
     const citySelect = document.getElementById('city-select');
     if(citySelect){
+      // Ciudades personalizadas primero
+      try {
+        const extras = JSON.parse(localStorage.getItem('bruja_ciudades_extra') || '[]');
+        extras.forEach(c => {
+          CITIES[c.name] = [c.lat, c.lon];
+          UTC_OFFSETS[c.name] = c.utc;
+          const opt = document.createElement('option');
+          opt.value = c.name; opt.textContent = '⭐ ' + c.name;
+          citySelect.appendChild(opt);
+        });
+      } catch {}
       Object.keys(CITIES).forEach(c=>{
         const opt=document.createElement('option');
         opt.value=c; opt.textContent=c;
-        if(c.includes('Quito')) opt.selected=true;
+        if(c.includes('Valencia, Venezuela')) opt.selected=true;
         citySelect.appendChild(opt);
       });
     }
