@@ -1372,34 +1372,75 @@ const App = (() => {
       <div class="home-info">
         <div class="home-fase">${luna.emoji} ${luna.name}</div>
         <p class="text-muted" style="font-size:.88rem">${today()}</p>
-        <div class="home-dash">
-          <div class="dash-card" onclick="App.navigate('biblioteca')">
-            <span class="dc-emoji">🌿</span>
-            <span class="dc-label">Biblioteca</span>
-            <span class="dc-value">Hierbas & cristales</span>
-          </div>
-          <div class="dash-card" onclick="App.navigate('hechizos')">
-            <span class="dc-emoji">✨</span>
-            <span class="dc-label">Hechizos</span>
-            <span class="dc-value">Tu colección</span>
-          </div>
-          <div class="dash-card" onclick="App.navigate('altar')">
-            <span class="dc-emoji">🔥</span>
-            <span class="dc-label">Altar</span>
-            <span class="dc-value">Por panteón</span>
-          </div>
-          <div class="dash-card" onclick="App.navigate('diario')">
-            <span class="dc-emoji">📖</span>
-            <span class="dc-label">Diario</span>
-            <span class="dc-value">Grimorio visual</span>
-          </div>
-        </div>
       </div>`;
+  }
+
+  /* ── Semilla de datos por defecto ── */
+  function seedDefaults() {
+    // Panteones por defecto (sólo si aún no existen)
+    if (!localStorage.getItem('bruja_panteones')) {
+      const panteones = [
+        {
+          id: 'panteon-wicca',
+          name: 'Wicca / Ecléctica',
+          desc: 'Tradición que honra la dualidad del Dios y la Diosa, los ciclos lunares y el sabbat de las estaciones. Flexible y personal.',
+          elementos: '🌙|Cáliz lunar|Centro del altar — representa a la Diosa\n☀️|Varita solar|Derecha del altar — representa al Dios\n⭐|Pentáculo|Base del altar — protección y manifestación\n🕯️|Velas de los cuartos|Norte, Sur, Este, Oeste — representan tierra, fuego, aire, agua\n📖|Libro de sombras|Siempre presente en el altar de trabajo',
+          img: ''
+        },
+        {
+          id: 'panteon-egipcio',
+          name: 'Egipcio',
+          desc: 'Panteón de la antigua Kemet. Los dioses representan fuerzas cósmicas y principios universales: Isis, Osiris, Thoth, Anubis, Bastet, Ra.',
+          elementos: '👁️|Ojo de Ra u Ojo de Horus|Centro del altar — protección divina\n🪶|Pluma de Maat|Izquierda — justicia, verdad y equilibrio\n🐱|Estatuilla de Bastet|Derecha — protección del hogar\n🌊|Agua del Nilo (o agua bendecida)|Frente del altar — purificación\n🕯️|Velas doradas y negras|Oro para Ra/luz; negro para Anubis/transición',
+          img: ''
+        },
+        {
+          id: 'panteon-nordico',
+          name: 'Nórdico',
+          desc: 'Tradición germánica de los pueblos del norte. Honra a los Aesir y Vanir: Odín, Freya, Thor, Loki, Frigg, entre otros.',
+          elementos: '⚡|Mjölnir (amuleto de Thor)|Centro del altar — protección y poder\n🌿|Ramas de fresno o roble|Conexión con Yggdrasil, el árbol del mundo\n🍺|Cuerno o copa para las ofrendas|Blot — ofrenda de hidromiel o cerveza a los dioses\n📜|Set de runas|Adivinación y magia rúnica\n🐦|Plumas de cuervo|Conexión con Odín y los mensajeros',
+          img: ''
+        },
+        {
+          id: 'panteon-celta',
+          name: 'Celta',
+          desc: 'Tradición de los pueblos celtas de Irlanda, Escocia, Gales y Bretaña. Profunda conexión con la tierra, el agua y los ciclos naturales.',
+          elementos: '🌳|Rama de roble|Conexión con el Dios del bosque y los druidas\n💧|Cuenco de agua de manantial|Los celtas veneraban fuentes y ríos sagrados\n🔥|Vela triple (blanca, roja, negra)|Representa a la Triple Diosa: doncella, madre, anciana\n🌀|Triskel o espiral triple|Símbolo sagrado de los tres mundos\n🌾|Ofrendas de la cosecha|Granos, frutas o flores según la estación',
+          img: ''
+        },
+        {
+          id: 'panteon-greco',
+          name: 'Greco-Romano',
+          desc: 'Panteón de Grecia y Roma clásicas. Doce dioses del Olimpo más dioses ctónicos y misterios. Hécate, Deméter, Hermes, Afrodita.',
+          elementos: '🌙|Estatua o imagen de Hécate|Cruces de caminos, luna, magia; velas en tríada\n🌿|Corona de laurel|Consagración y victoria; conexión con Apolo\n🍷|Copa de vino o agua|Libación para los dioses — ofrenda líquida\n🕯️|Velas blancas|Pureza y comunicación con lo divino\n🌸|Flores frescas|Ofrenda a Afrodita/Venus y Deméter/Ceres',
+          img: ''
+        }
+      ];
+      lsSet('bruja_panteones', panteones);
+    }
+
+    // Herramientas por defecto (sólo si aún no existen)
+    if (!localStorage.getItem('bruja_herramientas')) {
+      const herramientas = [
+        { id: 'h1', emoji: '🗡️', nombre: 'Athame', simbolismo: 'Voluntad, fuego o aire, corte de energías no deseadas, trazar círculos mágicos. Representa la acción masculina y el elemento fuego en tradición wicca.', sustituto: 'Cuchillo de madera, varita, o simplemente el dedo índice visualizando llama.' },
+        { id: 'h2', emoji: '🪄', nombre: 'Varita', simbolismo: 'Dirección de energía, invocación de deidades y espíritus, proyección de intención. Elemento aire o fuego según la tradición.', sustituto: 'El dedo índice extendido, una ramita de árbol sagrado (fresno, sauce, roble).' },
+        { id: 'h3', emoji: '🏺', nombre: 'Cáliz', simbolismo: 'Agua, receptividad, el útero cósmico, la Diosa, emociones y el subconsciente. Contiene las ofrendas líquidas y el vino del sabbat.', sustituto: 'Cualquier copa, vaso o cuenco; una flor de nenúfar o cuenco de barro.' },
+        { id: 'h4', emoji: '⭐', nombre: 'Pentáculo (disco)', simbolismo: 'Tierra, manifestación, protección y unión de los cinco elementos (tierra, agua, fuego, aire, espíritu). Plato de consagración.', sustituto: 'Papel o madera con estrella de cinco puntas dibujada; piedra plana grabada.' },
+        { id: 'h5', emoji: '🫕', nombre: 'Caldero', simbolismo: 'Transformación, renacimiento, el vientre de la Diosa, contiene el fuego sagrado o pociones. Puerta entre mundos.', sustituto: 'Cualquier olla o cuenco ignífugo; un recipiente de barro o metal.' },
+        { id: 'h6', emoji: '🕯️', nombre: 'Velas', simbolismo: 'Fuego, intención concentrada, luz en la oscuridad, comunicación con lo divino. El color determina su propósito mágico.', sustituto: 'Linterna pequeña, cristal claro (cuarzo transparente) que concentre luz; fuego de chimenea.' },
+        { id: 'h7', emoji: '🌿', nombre: 'Incensario / Sahumerio', simbolismo: 'Aire, purificación del espacio, comunicación con espíritus y deidades, transporte de plegarias al cielo.', sustituto: 'Hierbas sueltas sobre papel aluminio al fuego; espray de agua con aceites esenciales.' },
+        { id: 'h8', emoji: '🧹', nombre: 'Escoba (Besom)', simbolismo: 'Limpieza energética del espacio sagrado antes del ritual. No toca el suelo — barre el aire para purificar.', sustituto: 'Ramas de árbol atadas (romero, abedul, álamo), abanico de plumas, o visualización.' },
+        { id: 'h9', emoji: '🔔', nombre: 'Campana / Tingsha', simbolismo: 'Limpieza vibratoria, señala el inicio y el fin del ritual, ahuyenta energías estancadas, invoca presencias.', sustituto: 'Cuenco tibetano, chimes, palmadas rítmicas, o cualquier sonido cristalino.' },
+        { id: 'h10', emoji: '📖', nombre: 'Libro de Sombras', simbolismo: 'Registro de rituales, hechizos, visiones y aprendizajes. Es el grimorio personal, testigo de tu camino espiritual.', sustituto: 'Cualquier libreta o cuaderno dedicado; también puede ser digital.' },
+      ];
+      lsSet('bruja_herramientas', herramientas);
+    }
   }
 
   /* ── Inicialización ── */
   function init() {
     applyTypography();
+    seedDefaults();
     renderTopbar();
     renderHome();
     navigate('home');
@@ -1850,11 +1891,66 @@ const Admin = (() => {
      ══════════════════════════════════════════════ */
   function renderAdmAltar(panel) {
     const panteones = App.lsGet('bruja_panteones', []);
+    const herramientas = App.lsGet('bruja_herramientas', []);
     panel.innerHTML = `
-      <h2 style="margin-bottom:1rem">🔥 Altar & Panteones</h2>
-      <button class="btn btn-primary mb-2" onclick="Admin._panteonNuevo()">+ Agregar panteón</button>
-      ${panteones.length === 0 ? `<div class="empty-state"><span class="es-emoji">🔥</span><p>Agrega tus panteones para comenzar</p></div>` : ''}
+      <h2 style="margin-bottom:1rem">🔥 Altar</h2>
+
+      <h3 style="margin-bottom:.5rem;font-size:.95rem;color:var(--gold-l)">🕯️ Herramientas rituales</h3>
+      <button class="btn btn-primary btn-sm mb-2" onclick="Admin._herramientaNueva()">+ Agregar herramienta</button>
+      ${herramientas.length === 0 ? `<p class="text-muted" style="font-size:.82rem">Sin herramientas definidas.</p>` : ''}
+      ${herramientas.map(h => admItemRow(h, 'herramienta')).join('')}
+
+      <hr class="section-divider" style="margin:1.25rem 0">
+
+      <h3 style="margin-bottom:.5rem;font-size:.95rem;color:var(--gold-l)">🔥 Panteones</h3>
+      <button class="btn btn-primary btn-sm mb-2" onclick="Admin._panteonNuevo()">+ Agregar panteón</button>
+      ${panteones.length === 0 ? `<p class="text-muted" style="font-size:.82rem">Sin panteones definidos.</p>` : ''}
       ${panteones.map(p => admItemRow(p, 'panteon')).join('')}`;
+  }
+
+  function _herramientaNueva(id = null) {
+    const items = App.lsGet('bruja_herramientas', []);
+    const item = id ? items.find(x => x.id === id) : {};
+    const isEdit = !!id;
+
+    App.openModal(isEdit ? 'Editar herramienta' : 'Nueva herramienta', `
+      <div class="form-group">
+        <label class="form-label">Emoji</label>
+        <input id="hf-emoji" class="form-input" value="${item.emoji || '🕯️'}" style="max-width:80px">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nombre *</label>
+        <input id="hf-nombre" class="form-input" value="${item.nombre || ''}" placeholder="Ej: Athame, Varita, Cáliz…">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Simbolismo</label>
+        <textarea id="hf-simbolismo" class="form-textarea">${item.simbolismo || ''}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Sustituto (si no tienes la herramienta)</label>
+        <textarea id="hf-sustituto" class="form-textarea">${item.sustituto || ''}</textarea>
+      </div>`,
+      {
+        confirmLabel: isEdit ? 'Guardar' : 'Agregar',
+        onConfirm: () => {
+          const nombre = document.getElementById('hf-nombre')?.value.trim();
+          if (!nombre) { App.toast('El nombre es obligatorio'); return; }
+          const nuevo = {
+            id: id || App.uid(),
+            emoji: document.getElementById('hf-emoji')?.value.trim() || '✨',
+            nombre,
+            simbolismo: document.getElementById('hf-simbolismo')?.value.trim(),
+            sustituto:  document.getElementById('hf-sustituto')?.value.trim(),
+          };
+          const list = App.lsGet('bruja_herramientas', []);
+          if (isEdit) { const i = list.findIndex(x=>x.id===id); if(i>=0) list[i]=nuevo; else list.push(nuevo); }
+          else list.push(nuevo);
+          App.lsSet('bruja_herramientas', list);
+          App.toast('Herramienta guardada ✓');
+          renderAdmAltar(document.getElementById('adm-altar'));
+        }
+      }
+    );
   }
 
   function _panteonNuevo(id = null) {
@@ -2587,6 +2683,7 @@ const Admin = (() => {
       bib:         `Admin._bibNuevo('${item.id}')`,
       hechizo:     `Admin._hechizoNuevo('${item.id}')`,
       panteon:     `Admin._panteonNuevo('${item.id}')`,
+      herramienta: `Admin._herramientaNueva('${item.id}')`,
       ancestro:    `Admin._ancestroNuevo('${item.id}')`,
       sabat:       `Admin._sabatNuevo('${item.id}')`,
     }[type] || '';
@@ -2594,7 +2691,8 @@ const Admin = (() => {
     const deleteFn = {
       bib:      `Admin._admEliminar('bruja_biblioteca', '${item.id}', 'adm-biblioteca', Admin.renderAdmBiblioteca)`,
       hechizo:  `Admin._admEliminar('bruja_hechizos', '${item.id}', 'adm-hechizos', Admin.renderAdmHechizos)`,
-      panteon:  `Admin._admEliminar('bruja_panteones', '${item.id}', 'adm-altar', Admin.renderAdmAltar)`,
+      panteon:    `Admin._admEliminar('bruja_panteones', '${item.id}', 'adm-altar', Admin.renderAdmAltar)`,
+      herramienta:`Admin._admEliminar('bruja_herramientas', '${item.id}', 'adm-altar', Admin.renderAdmAltar)`,
       ancestro: `Admin._admEliminar('bruja_ancestros', '${item.id}', 'adm-ancestros', Admin.renderAdmAncestros)`,
       sabat:    `Admin._sabatEliminar('${item.id}')`,
     }[type] || '';
@@ -2655,7 +2753,8 @@ const Admin = (() => {
   return {
     render, _tryPin, _showPanel,
     _bibNuevo, _tallerNuevo, _tallerTab,
-    _hechizoNuevo, _panteonNuevo, _ancestroNuevo,
+    _hechizoNuevo, _panteonNuevo, _herramientaNueva, _ancestroNuevo,
+    renderAdmAltar,
     _sabatNuevo, _sabatEliminar,
     _tarotGuardarImg, _tarotLimpiar,
     _diarioLimpiar,
@@ -3389,23 +3488,62 @@ const Altar = (() => {
 
     sec.innerHTML = `
       <h1 class="section-title">🔥 Altar</h1>
-      <p class="section-sub">Tu altar sagrado organizado por panteón y tradición.</p>
+      <p class="section-sub">Tu espacio sagrado: herramientas rituales y panteones de trabajo.</p>
 
-      ${panteones.length === 0
-        ? `<div class="empty-state">
-            <span class="es-emoji">🔥</span>
-            <p>Tu altar está vacío. Agrega panteones desde el panel Admin.</p>
-            ${Admin.isUnlocked() ? `<button class="btn btn-ghost" onclick="App.navigate('admin');Admin._showPanel('altar')">Ir a Admin</button>` : ''}
-           </div>`
-        : `<div class="panteones-grid" id="panteones-grid">
-            ${panteones.map(p => panteonCard(p)).join('')}
-           </div>
-           <div id="altar-detalle" class="altar-detail ${panteonActivo ? 'visible' : ''}"></div>`}`;
+      <div class="tabs mb-2" id="altar-tabs">
+        <button class="tab-btn active" onclick="Altar._tab('herramientas', this)">🕯️ Herramientas</button>
+        <button class="tab-btn" onclick="Altar._tab('panteones', this)">🔥 Panteones</button>
+      </div>
+
+      <!-- HERRAMIENTAS -->
+      <div id="altar-herramientas" class="tab-panel active">
+        ${renderHerramientas()}
+      </div>
+
+      <!-- PANTEONES -->
+      <div id="altar-panteones" class="tab-panel">
+        ${panteones.length === 0
+          ? `<div class="empty-state">
+              <span class="es-emoji">🔥</span>
+              <p>No hay panteones aún. Agrega uno desde Admin.</p>
+              ${Admin.isUnlocked() ? `<button class="btn btn-ghost" onclick="App.navigate('admin');Admin._showPanel('altar')">Ir a Admin</button>` : ''}
+             </div>`
+          : `<div class="panteones-grid" id="panteones-grid">
+              ${panteones.map(p => panteonCard(p)).join('')}
+             </div>
+             <div id="altar-detalle" class="altar-detail ${panteonActivo ? 'visible' : ''}"></div>`}
+      </div>`;
 
     if (panteonActivo) {
       const p = panteones.find(x => x.id === panteonActivo);
       if (p) renderDetalle(p);
     }
+  }
+
+  function renderHerramientas() {
+    const herramientas = App.lsGet('bruja_herramientas', []);
+    if (herramientas.length === 0) {
+      return `<div class="empty-state">
+        <span class="es-emoji">🕯️</span>
+        <p>No hay herramientas definidas. Agrégalas desde Admin.</p>
+        ${Admin.isUnlocked() ? `<button class="btn btn-ghost" onclick="App.navigate('admin');Admin._showPanel('altar')">Ir a Admin</button>` : ''}
+      </div>`;
+    }
+    return herramientas.map(h => `
+      <div class="card" style="margin-bottom:.75rem">
+        <div style="display:flex;align-items:flex-start;gap:.75rem">
+          <div style="font-size:2rem;flex-shrink:0">${h.emoji || '✨'}</div>
+          <div style="flex:1">
+            <div class="card-title" style="margin-bottom:.35rem">${h.nombre}</div>
+            <div style="font-size:.82rem;color:var(--lavender);margin-bottom:.5rem;line-height:1.5">
+              <strong style="color:var(--gold-l)">Simbolismo:</strong> ${h.simbolismo || '—'}
+            </div>
+            <div style="font-size:.82rem;color:var(--muted);line-height:1.5">
+              <strong style="color:var(--gold-l)">Sustituto:</strong> ${h.sustituto || '—'}
+            </div>
+          </div>
+        </div>
+      </div>`).join('');
   }
 
   function panteonCard(p) {
@@ -3488,7 +3626,14 @@ const Altar = (() => {
       </div>`;
   }
 
-  return { render, _seleccionar };
+  function _tab(key, btn) {
+    document.querySelectorAll('#altar-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#sec-altar .tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('altar-' + key)?.classList.add('active');
+  }
+
+  return { render, _seleccionar, _tab };
 })();
 
 </script>
@@ -4072,7 +4217,8 @@ const Diario = (() => {
    ============================================================ */
 
 const Libro = (() => {
-  const PDF_URL = 'https://rvgian.github.io/libro-de-sombras/el-ano-de-la-bruja.pdf';
+  const DOCX_URL = 'https://raw.githubusercontent.com/RVGIAN/libro-de-sombras/main/ElAno_de_la_Bruja_COMPLETO.docx';
+  const VIEWER_URL = 'https://docs.google.com/viewer?url=' + encodeURIComponent(DOCX_URL) + '&embedded=true';
 
   function render() {
     const sec = document.getElementById('sec-libro');
@@ -4090,13 +4236,13 @@ const Libro = (() => {
       <div id="libro-pdf" class="tab-panel active">
         <div class="pdf-viewer-wrap">
           <iframe id="pdf-frame"
-            src="${PDF_URL}"
-            title="El Año de la Bruja — PDF completo">
+            src="${VIEWER_URL}"
+            title="El Año de la Bruja — Libro completo">
           </iframe>
         </div>
         <p style="font-size:.78rem;color:var(--muted);margin-top:.5rem;text-align:center">
-          Si el PDF no carga,
-          <a href="${PDF_URL}" target="_blank" style="color:var(--gold-l)">ábrelo en nueva pestaña ↗</a>
+          Si el visor no carga,
+          <a href="${DOCX_URL}" target="_blank" style="color:var(--gold-l)">descarga el libro ↗</a>
         </p>
       </div>
 
@@ -4165,28 +4311,72 @@ const Libro = (() => {
 
 const Tarot = (() => {
   const ARCANOS_MAYORES = [
-    { num: 0,  nombre: 'El Loco',           emoji: '🃏', clave: 'viaje, inicio, inocencia' },
-    { num: 1,  nombre: 'El Mago',           emoji: '✨', clave: 'voluntad, habilidad, poder' },
-    { num: 2,  nombre: 'La Sacerdotisa',    emoji: '🌙', clave: 'intuición, misterio, interior' },
-    { num: 3,  nombre: 'La Emperatriz',     emoji: '🌸', clave: 'fertilidad, abundancia, naturaleza' },
-    { num: 4,  nombre: 'El Emperador',      emoji: '👑', clave: 'autoridad, estructura, liderazgo' },
-    { num: 5,  nombre: 'El Hierofante',     emoji: '🏛️', clave: 'tradición, guía espiritual, rituales' },
-    { num: 6,  nombre: 'Los Amantes',       emoji: '❤️', clave: 'amor, unión, decisión' },
-    { num: 7,  nombre: 'El Carro',          emoji: '🏆', clave: 'movimiento, determinación, victoria' },
-    { num: 8,  nombre: 'La Fuerza',         emoji: '🦁', clave: 'valor, dominio, compasión' },
-    { num: 9,  nombre: 'El Ermitaño',       emoji: '🕯️', clave: 'soledad, búsqueda, iluminación' },
-    { num: 10, nombre: 'La Rueda',          emoji: '☸️', clave: 'ciclos, destino, cambio' },
-    { num: 11, nombre: 'La Justicia',       emoji: '⚖️', clave: 'equilibrio, verdad, causa-efecto' },
-    { num: 12, nombre: 'El Colgado',        emoji: '🌊', clave: 'pausa, sacrificio, nueva perspectiva' },
-    { num: 13, nombre: 'La Muerte',         emoji: '🌑', clave: 'transformación, fin, renovación' },
-    { num: 14, nombre: 'La Templanza',      emoji: '🌈', clave: 'moderación, paciencia, integración' },
-    { num: 15, nombre: 'El Diablo',         emoji: '🖤', clave: 'atadura, materialismo, sombra' },
-    { num: 16, nombre: 'La Torre',          emoji: '⚡', clave: 'ruptura, revelación, liberación' },
-    { num: 17, nombre: 'La Estrella',       emoji: '⭐', clave: 'esperanza, fe, sanación' },
-    { num: 18, nombre: 'La Luna',           emoji: '🌕', clave: 'ilusión, sueños, subconsciente' },
-    { num: 19, nombre: 'El Sol',            emoji: '☀️', clave: 'alegría, éxito, vitalidad' },
-    { num: 20, nombre: 'El Juicio',         emoji: '🔔', clave: 'despertar, llamado, absolución' },
-    { num: 21, nombre: 'El Mundo',          emoji: '🌍', clave: 'culminación, totalidad, logro' },
+    { num: 0,  nombre: 'El Loco',           emoji: '🃏', clave: 'viaje, inicio, inocencia',
+      normal: 'Nuevos comienzos, espontaneidad, aventura. Es momento de dar el salto con fe y sin miedo al futuro.',
+      inv:    'Imprudencia, decisiones apresuradas, ingenuidad excesiva. Mira antes de saltar.' },
+    { num: 1,  nombre: 'El Mago',           emoji: '✨', clave: 'voluntad, habilidad, poder',
+      normal: 'Tienes todas las herramientas para crear lo que deseas. Actúa con intención y confianza.',
+      inv:    'Manipulación, habilidades mal usadas o bloqueo creativo. Revisa tus verdaderas intenciones.' },
+    { num: 2,  nombre: 'La Sacerdotisa',    emoji: '🌙', clave: 'intuición, misterio, interior',
+      normal: 'Confía en tu intuición. Hay conocimiento oculto esperando ser revelado desde adentro.',
+      inv:    'Secretos bloqueados, desconexión de la intuición. Algo permanece oculto por ahora.' },
+    { num: 3,  nombre: 'La Emperatriz',     emoji: '🌸', clave: 'fertilidad, abundancia, naturaleza',
+      normal: 'Abundancia, creatividad y conexión con la naturaleza. Tiempo de nutrir y hacer florecer.',
+      inv:    'Bloqueo creativo, dependencia o descuido del cuerpo. Vuelve a conectar con la tierra.' },
+    { num: 4,  nombre: 'El Emperador',      emoji: '👑', clave: 'autoridad, estructura, liderazgo',
+      normal: 'Estabilidad, liderazgo y estructura sólida. Es momento de tomar el control con responsabilidad.',
+      inv:    'Rigidez, abuso de poder o falta de disciplina. Equilibra la autoridad con la flexibilidad.' },
+    { num: 5,  nombre: 'El Hierofante',     emoji: '🏛️', clave: 'tradición, guía espiritual, rituales',
+      normal: 'Guía espiritual, tradición y enseñanza. Busca un maestro o honra las prácticas sagradas.',
+      inv:    'Dogmatismo, ruptura con tradiciones o rebeldía espiritual. Cuestiona lo que ya no te sirve.' },
+    { num: 6,  nombre: 'Los Amantes',       emoji: '❤️', clave: 'amor, unión, decisión',
+      normal: 'Amor, unión y una elección importante de corazón. Confía en tus valores al decidir.',
+      inv:    'Desequilibrio en relaciones, elección difícil o conflicto interno entre razón y corazón.' },
+    { num: 7,  nombre: 'El Carro',          emoji: '🏆', clave: 'movimiento, determinación, victoria',
+      normal: 'Victoria a través de la determinación. Avanza con enfoque y voluntad hacia tu meta.',
+      inv:    'Falta de dirección, control perdido o agresividad. Pausa y encuentra tu centro antes de seguir.' },
+    { num: 8,  nombre: 'La Fuerza',         emoji: '🦁', clave: 'valor, dominio, compasión',
+      normal: 'Fuerza interior, valentía y compasión. Dominas las situaciones con gracia y amor.',
+      inv:    'Inseguridad, duda o impulso sin control. Reconecta con tu poder interior de forma suave.' },
+    { num: 9,  nombre: 'El Ermitaño',       emoji: '🕯️', clave: 'soledad, búsqueda, iluminación',
+      normal: 'Tiempo de retiro, reflexión y búsqueda interior. La sabiduría viene del silencio.',
+      inv:    'Aislamiento excesivo, rechazo a guía o perderte en el interior. Sal a compartir tu luz.' },
+    { num: 10, nombre: 'La Rueda',          emoji: '☸️', clave: 'ciclos, destino, cambio',
+      normal: 'Los ciclos giran a tu favor. Un cambio positivo se acerca; fluye con el destino.',
+      inv:    'Resistencia al cambio, mala racha o sensación de que el destino está en tu contra. Paciencia.' },
+    { num: 11, nombre: 'La Justicia',       emoji: '⚖️', clave: 'equilibrio, verdad, causa-efecto',
+      normal: 'Verdad, equidad y consecuencias justas. Lo que siembras, cosecharás. Actúa con integridad.',
+      inv:    'Injusticia, desequilibrio o evasión de responsabilidades. Es momento de rendir cuentas.' },
+    { num: 12, nombre: 'El Colgado',        emoji: '🌊', clave: 'pausa, sacrificio, nueva perspectiva',
+      normal: 'Pausa necesaria y cambio de perspectiva. Al soltar el control, encuentras una nueva visión.',
+      inv:    'Martirio inútil, estancamiento o resistencia a soltar. El sacrificio no siempre es necesario.' },
+    { num: 13, nombre: 'La Muerte',         emoji: '🌑', clave: 'transformación, fin, renovación',
+      normal: 'Un ciclo termina para que otro comience. Transformación profunda y necesaria. No temas el cambio.',
+      inv:    'Resistencia al cambio, aferrarse a lo que ya murió. La transformación llega de todas formas.' },
+    { num: 14, nombre: 'La Templanza',      emoji: '🌈', clave: 'moderación, paciencia, integración',
+      normal: 'Equilibrio, paciencia y moderación. Integras opuestos con gracia. El camino del medio triunfa.',
+      inv:    'Excesos, desequilibrio o impaciencia. Necesitas más moderación y esperar el momento correcto.' },
+    { num: 15, nombre: 'El Diablo',         emoji: '🖤', clave: 'atadura, materialismo, sombra',
+      normal: 'Muestra ataduras, adicciones o patrones de sombra. Puedes liberarte: las cadenas son ilusorias.',
+      inv:    'Inicio de liberación, ruptura de cadenas. Te estás liberando de lo que te tenía atrapado.' },
+    { num: 16, nombre: 'La Torre',          emoji: '⚡', clave: 'ruptura, revelación, liberación',
+      normal: 'Cambio súbito y revelador. Lo que se derrumba ya no servía. Detrás hay liberación.',
+      inv:    'Evitar el cambio necesario o caos interno. La torre caerá de todas formas; mejor aceptarlo.' },
+    { num: 17, nombre: 'La Estrella',       emoji: '⭐', clave: 'esperanza, fe, sanación',
+      normal: 'Esperanza renovada, fe y sanación. Después de la tormenta, la guía estelar ilumina tu camino.',
+      inv:    'Desesperanza, desconexión espiritual o fe perdida. Busca la luz pequeña en la oscuridad.' },
+    { num: 18, nombre: 'La Luna',           emoji: '🌕', clave: 'ilusión, sueños, subconsciente',
+      normal: 'El subconsciente habla. Presta atención a sueños e intuiciones. No todo es lo que parece.',
+      inv:    'Confusión, ilusiones que se disipan. La verdad emerge desde las sombras hacia la luz.' },
+    { num: 19, nombre: 'El Sol',            emoji: '☀️', clave: 'alegría, éxito, vitalidad',
+      normal: 'Alegría, éxito y vitalidad. Claridad total. Es uno de los mejores augurios del mazo.',
+      inv:    'Optimismo excesivo, bloqueo temporal de la alegría o energía dispersa. La luz regresa pronto.' },
+    { num: 20, nombre: 'El Juicio',         emoji: '🔔', clave: 'despertar, llamado, absolución',
+      normal: 'Un despertar espiritual o llamado a tu propósito. Momento de evaluación y renacimiento.',
+      inv:    'Autojuicio severo, negación del llamado o miedo a cambiar. Escucha tu voz interior.' },
+    { num: 21, nombre: 'El Mundo',          emoji: '🌍', clave: 'culminación, totalidad, logro',
+      normal: 'Completitud, logro y totalidad. Un ciclo se cierra con éxito. Celebra lo recorrido.',
+      inv:    'Ciclo incompleto, bloqueos de cierre o buscar atajos. Termina lo que empezaste.' },
   ];
 
   const TIRADAS = [
@@ -4362,6 +4552,7 @@ const Tarot = (() => {
 
     if (t.cartas === 1) {
       const c = seleccionadas[0];
+      const significado = c.invertida ? (c.inv || '') : (c.normal || '');
       display.innerHTML = `
         <div class="tarot-card-img" style="${c.invertida?'transform:rotate(180deg)':''}">
           ${imgs[c.num]
@@ -4369,27 +4560,32 @@ const Tarot = (() => {
             : `<div class="tarot-card-emoji">${c.emoji}</div>`}
         </div>
         <h2>${c.nombre} ${c.invertida?'<span style="font-size:.7rem;color:var(--muted)">(invertida)</span>':''}</h2>
-        <p style="color:var(--gold-l);font-size:.88rem">${c.clave}</p>`;
+        <p style="color:var(--gold-l);font-size:.88rem;margin-bottom:.5rem">${c.clave}</p>
+        ${significado ? `<p style="font-size:.9rem;color:var(--lavender);line-height:1.6;max-width:420px;margin:0 auto;padding:.75rem;background:var(--bg2);border-radius:var(--radius-s);border-left:3px solid ${c.invertida?'var(--muted)':'var(--gold)'}">${significado}</p>` : ''}`;
     } else {
       const posiciones = tiradaActual === 'cruz' ? POSICIONES_CRUZ :
                          tiradaActual === 'tres' ? ['Pasado', 'Presente', 'Futuro'] :
                          seleccionadas.map((_, i) => 'Carta ' + (i+1));
 
       display.innerHTML = `
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:.75rem">
-          ${seleccionadas.map((c, i) => `
-            <div style="text-align:center">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem">
+          ${seleccionadas.map((c, i) => {
+            const significado = c.invertida ? (c.inv || '') : (c.normal || '');
+            return `
+            <div style="text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem">
               <div style="font-size:2.2rem;${c.invertida?'transform:rotate(180deg);display:inline-block':''}">
                 ${imgs[c.num]
                   ? `<img src="${imgs[c.num]}" alt="${c.nombre}"
-                      style="width:70px;height:auto;border-radius:6px;${c.invertida?'transform:rotate(180deg)':''}"
+                      style="width:60px;height:auto;border-radius:6px;${c.invertida?'transform:rotate(180deg)':''}"
                       onerror="this.outerHTML='${c.emoji}'">`
                   : c.emoji}
               </div>
               <div style="font-size:.7rem;color:var(--gold-l);margin-top:.3rem">${posiciones[i] || ''}</div>
-              <div style="font-size:.78rem;font-family:var(--font-heading)">${c.nombre}</div>
-              ${c.invertida ? '<div style="font-size:.65rem;color:var(--muted)">invertida</div>' : ''}
-            </div>`).join('')}
+              <div style="font-size:.82rem;font-family:var(--font-heading);margin:.2rem 0">${c.nombre}</div>
+              ${c.invertida ? '<div style="font-size:.65rem;color:var(--muted);margin-bottom:.3rem">invertida</div>' : '<div style="margin-bottom:.3rem"></div>'}
+              ${significado ? `<div style="font-size:.75rem;color:var(--lavender);line-height:1.4;text-align:left;border-top:1px solid var(--border);padding-top:.4rem;margin-top:.2rem">${significado}</div>` : ''}
+            </div>`;
+          }).join('')}
         </div>`;
     }
   }
