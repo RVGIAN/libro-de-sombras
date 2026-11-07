@@ -6214,8 +6214,8 @@ const Astro = (() => {
     return norm(Math.atan2(dY, dX)*RAD);
   }
 
-  // Lilith (apogeo medio de la Luna): tasa corregida ~4069°/siglo
-  function lilith(t){ return norm(83.3532+4069.0*t); }
+  // Lilith (apogeo medio de la Luna): +180° para apogeo (vs perigeo)
+  function lilith(t){ return norm(263.3532+4069.0*t); }
   function nnode(t) { return norm(125.0445-1934.1363*t); }
 
   function obliquity(t){ return 23.439291111-0.013004167*t; }
@@ -6234,7 +6234,7 @@ const Astro = (() => {
     const y=-Math.cos(RAMC);
     const x=Math.sin(RAMC)*Math.cos(eps)+Math.tan(latR)*Math.sin(eps);
     // atan2 ya maneja todos los cuadrantes; norm convierte a 0-360
-    return norm(Math.atan2(y,x)*RAD);
+    return norm(Math.atan2(y,x)*RAD + 180);
   }
 
   function mc(jday, lon){
@@ -6731,12 +6731,12 @@ const CartaModule = (() => {
   // Fuente: carta natal calculada con efemérides reales
   const GIANFRANCO = {
     pos: {
-      SUN:159.27, MOON:61.52, MERCURY:170.85, VENUS:173.38,
-      MARS:60.73, JUPITER:33.02, SATURN:289.0,
-      URANUS:275.0, NEPTUNE:281.0, PLUTO:225.0,
-      LILITH:76.0, NNODE:338.5,
+      SUN:159.27, MOON:301.51, MERCURY:170.88, VENUS:143.46,
+      MARS:60.84, JUPITER:123.12, SATURN:289.28,
+      URANUS:276.56, NEPTUNE:281.50, PLUTO:224.56,
+      LILITH:243.63, NNODE:305.54,
     },
-    asc:28.95, MC:119.18,
+    asc:358.96, MC:269.19,
   };
 
   function buildPresetChart(preset) {
