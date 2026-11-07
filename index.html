@@ -1740,12 +1740,27 @@ const App = (() => {
     const err  = document.getElementById('login-err');
     if (!user || !pass) { if (err) err.style.display = 'block'; return; }
 
-    const usuarios = lsGet('bruja_usuarios', []);
-    // Acepta campo password o pin (retrocompatibilidad)
-    const found = usuarios.find(u =>
-      u.nombre.toLowerCase() === user.toLowerCase() &&
-      (u.password === pass || u.pin === pass)
-    );
+    // Admin maestro — siempre funciona aunque el Sheet sobreescriba usuarios
+    const MASTER_USER = 'RVGIAN';
+    const MASTER_PASS = 'Gian19843*';
+
+    let found = null;
+    if (user.toUpperCase() === MASTER_USER && pass === MASTER_PASS) {
+      // Asegurar que el usuario exista en localStorage
+      const usuarios = lsGet('bruja_usuarios', []);
+      found = usuarios.find(u => u.nombre.toLowerCase() === MASTER_USER.toLowerCase());
+      if (!found) {
+        found = { id: 'user-rvgian', nombre: MASTER_USER, password: MASTER_PASS, rol: 'admin' };
+        usuarios.unshift(found);
+        lsSet('bruja_usuarios', usuarios);
+      }
+    } else {
+      const usuarios = lsGet('bruja_usuarios', []);
+      found = usuarios.find(u =>
+        u.nombre.toLowerCase() === user.toLowerCase() &&
+        (u.password === pass || u.pin === pass)
+      );
+    }
     if (found) {
       sessionStorage.setItem(SESSION_LOGIN, found.id);
       const sc = document.getElementById('login-screen');
