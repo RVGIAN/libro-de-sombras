@@ -1574,6 +1574,8 @@ const App = (() => {
       if (sc) sc.remove();
       document.getElementById('topbar').style.display = '';
       document.getElementById('main').style.display = '';
+      renderTopbar();
+      renderHome();
       navigate('home');
     } else {
       if (err) err.style.display = 'block';
