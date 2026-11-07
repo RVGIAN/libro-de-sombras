@@ -6208,7 +6208,7 @@ const CartaModule = (() => {
   // ── Cargar carta de Gianfranco (preset exacto) ────────────
   function loadMyChart() {
     const result = document.getElementById('carta-result');
-    if(result) result.classList.remove('hidden');
+    if(result){ result.classList.remove('hidden'); result.style.display='block'; }
     const summ = document.getElementById('carta-summary');
     if(summ){
       summ.innerHTML = `
@@ -6240,6 +6240,12 @@ const CartaModule = (() => {
         if(c.includes('Quito')) opt.selected=true;
         citySelect.appendChild(opt);
       });
+    }
+
+    // Botón "Calcular carta"
+    const calcBtn = document.getElementById('btn-calcular-carta');
+    if(calcBtn){
+      calcBtn.addEventListener('click', calcChart);
     }
 
     // Botón "Mi Carta" (preset exacto)
@@ -6316,7 +6322,7 @@ const CartaModule = (() => {
 
     // Mostrar resultado
     const result = document.getElementById('carta-result');
-    if(result) result.classList.remove('hidden');
+    if(result){ result.classList.remove('hidden'); result.style.display='block'; }
 
     // Resumen encabezado
     const summ = document.getElementById('carta-summary');
