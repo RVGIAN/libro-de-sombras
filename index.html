@@ -1014,6 +1014,56 @@ strong { color: var(--gold-l); }
   .bib-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ════════════════════════════════════════════
+   LOGIN SCREEN
+   ════════════════════════════════════════════ */
+.login-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+.login-box {
+  width: 100%;
+  max-width: 340px;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 40px rgba(0,0,0,.7);
+}
+.login-portada {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  margin-bottom: 1rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.login-logo {
+  font-size: 3.5rem;
+  margin-bottom: .5rem;
+}
+.login-title {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  color: var(--gold);
+  margin-bottom: .2rem;
+}
+.login-sub {
+  font-size: .82rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
 </style>
 </head>
 <body>
@@ -1158,6 +1208,17 @@ const App = (() => {
     adminPill.innerHTML = `<span class="pill-emoji">⚙️</span>Admin`;
     adminPill.addEventListener('click', () => navigate('admin'));
     inner.appendChild(adminPill);
+
+    // Botón Cerrar sesión
+    const logoutPill = document.createElement('button');
+    logoutPill.className = 'nav-pill';
+    logoutPill.style.cssText = 'opacity:.6;font-size:.75rem';
+    logoutPill.innerHTML = `<span class="pill-emoji">🔒</span>Salir`;
+    logoutPill.title = 'Cerrar sesión';
+    logoutPill.addEventListener('click', () => {
+      if (confirm('¿Cerrar sesión?')) _logoutUser();
+    });
+    inner.appendChild(logoutPill);
   }
 
   /* ── Navegación ── */
@@ -1419,6 +1480,13 @@ const App = (() => {
       lsSet('bruja_panteones', panteones);
     }
 
+    // Usuario RVGIAN siempre presente
+    const usuarios = lsGet('bruja_usuarios', []);
+    if (!usuarios.find(u => u.nombre === 'RVGIAN')) {
+      usuarios.unshift({ id: 'user-rvgian', nombre: 'RVGIAN', password: 'Gian19843*', rol: 'admin' });
+      lsSet('bruja_usuarios', usuarios);
+    }
+
     // Herramientas por defecto (sólo si aún no existen)
     if (!localStorage.getItem('bruja_herramientas')) {
       const herramientas = [
@@ -1437,10 +1505,98 @@ const App = (() => {
     }
   }
 
+  /* ══════════════════════════════════════════════
+     LOGIN
+     ══════════════════════════════════════════════ */
+  const SESSION_LOGIN = 'bruja_session';
+
+  function isLoggedIn() {
+    return !!sessionStorage.getItem(SESSION_LOGIN);
+  }
+
+  function renderLogin() {
+    document.getElementById('topbar').style.display = 'none';
+    document.getElementById('main').style.display = 'none';
+    const existing = document.getElementById('login-screen');
+    if (existing) existing.remove();
+
+    const portada = lsGet('bruja_portada_url', '') || (typeof PORTADA_DEFAULT !== 'undefined' ? PORTADA_DEFAULT : '');
+
+    const sc = document.createElement('div');
+    sc.id = 'login-screen';
+    sc.className = 'login-screen';
+    sc.innerHTML = `
+      <div class="login-box">
+        ${portada
+          ? `<img src="${portada}" alt="El Año de la Bruja" class="login-portada"
+              onerror="this.outerHTML='<div class=login-logo>🌙</div>'">`
+          : `<div class="login-logo">🌙</div>`}
+        <h1 class="login-title">El Año de la Bruja</h1>
+        <p class="login-sub">Libro de Sombras</p>
+        <div class="form-group" style="text-align:left">
+          <label class="form-label">Usuario</label>
+          <input id="login-user" class="form-input" placeholder="Tu usuario" autocomplete="off" autocapitalize="none">
+        </div>
+        <div class="form-group" style="text-align:left">
+          <label class="form-label">Contraseña</label>
+          <input id="login-pass" class="form-input" type="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:.5rem" onclick="App._tryLogin()">
+          ✨ Entrar al Grimorio
+        </button>
+        <p id="login-err" style="color:#ff7070;font-size:.82rem;margin-top:.5rem;display:none">
+          Usuario o contraseña incorrectos
+        </p>
+      </div>`;
+    document.body.appendChild(sc);
+
+    const passInp = document.getElementById('login-pass');
+    if (passInp) passInp.addEventListener('keydown', e => { if (e.key === 'Enter') App._tryLogin(); });
+    const userInp = document.getElementById('login-user');
+    if (userInp) userInp.addEventListener('keydown', e => { if (e.key === 'Enter') passInp && passInp.focus(); });
+  }
+
+  function _tryLogin() {
+    const user = document.getElementById('login-user')?.value.trim();
+    const pass = document.getElementById('login-pass')?.value;
+    const err  = document.getElementById('login-err');
+    if (!user || !pass) { if (err) err.style.display = 'block'; return; }
+
+    const usuarios = lsGet('bruja_usuarios', []);
+    // Acepta campo password o pin (retrocompatibilidad)
+    const found = usuarios.find(u =>
+      u.nombre.toLowerCase() === user.toLowerCase() &&
+      (u.password === pass || u.pin === pass)
+    );
+    if (found) {
+      sessionStorage.setItem(SESSION_LOGIN, found.id);
+      const sc = document.getElementById('login-screen');
+      if (sc) sc.remove();
+      document.getElementById('topbar').style.display = '';
+      document.getElementById('main').style.display = '';
+      navigate('home');
+    } else {
+      if (err) err.style.display = 'block';
+      const passInp = document.getElementById('login-pass');
+      if (passInp) { passInp.value = ''; passInp.focus(); }
+    }
+  }
+
+  function _logoutUser() {
+    sessionStorage.removeItem(SESSION_LOGIN);
+    location.reload();
+  }
+
   /* ── Inicialización ── */
   function init() {
     applyTypography();
     seedDefaults();
+
+    if (!isLoggedIn()) {
+      renderLogin();
+      return;
+    }
+
     renderTopbar();
     renderHome();
     navigate('home');
@@ -1460,6 +1616,9 @@ const App = (() => {
     todayISO,
     lunarPhase,
     renderHome,
+    isLoggedIn,
+    _tryLogin,
+    _logoutUser,
     SECTIONS,
   };
 
@@ -1551,6 +1710,7 @@ const Admin = (() => {
         ${menuBtn('altar',       '🔥', 'Altar & Panteones')}
         ${menuBtn('ancestros',   '👁️', 'Ancestros & Seres')}
         ${menuBtn('rueda',       '☀️', 'Rueda del Año')}
+        ${menuBtn('lunas',       '🌙', '13 Lunas')}
         ${menuBtn('tarot',       '🃏', 'Tarot')}
         ${menuBtn('diario',      '📖', 'Diario')}
         ${menuBtn('generador',   '⭐', 'Generador Hechizos')}
@@ -1567,6 +1727,7 @@ const Admin = (() => {
         <div id="adm-altar"      class="admin-panel"></div>
         <div id="adm-ancestros"  class="admin-panel"></div>
         <div id="adm-rueda"      class="admin-panel"></div>
+        <div id="adm-lunas"      class="admin-panel"></div>
         <div id="adm-tarot"      class="admin-panel"></div>
         <div id="adm-diario"     class="admin-panel"></div>
         <div id="adm-generador"  class="admin-panel"></div>
@@ -1613,6 +1774,7 @@ const Admin = (() => {
       altar:       renderAdmAltar,
       ancestros:   renderAdmAncestros,
       rueda:       renderAdmRueda,
+      lunas:       renderAdmLunas13,
       tarot:       renderAdmTarot,
       diario:      renderAdmDiario,
       generador:   renderAdmGenerador,
@@ -2122,6 +2284,88 @@ const Admin = (() => {
   }
 
   /* ══════════════════════════════════════════════
+     13 LUNAS ADMIN
+     ══════════════════════════════════════════════ */
+  function renderAdmLunas13(panel) {
+    const lunas = App.lsGet('bruja_lunas', getDefaultLunas13());
+    panel.innerHTML = `
+      <h2 style="margin-bottom:1rem">🌙 Las 13 Lunas</h2>
+      <p class="text-muted" style="font-size:.88rem;margin-bottom:1rem">Las trece lunaciones del año mágico. Edita el ritual y usos de cada luna.</p>
+      <button class="btn btn-primary mb-2" onclick="Admin._lunaNueva()">+ Agregar luna</button>
+      <div id="adm-lunas-list">
+        ${lunas.map(l => `
+          <div class="admin-item">
+            <div class="admin-item-img">${l.emoji || '🌙'}</div>
+            <div class="admin-item-info">
+              <div class="admin-item-name">${l.emoji} ${l.nombre}</div>
+              <div class="admin-item-meta">Luna ${l.mes}</div>
+            </div>
+            <div class="admin-item-actions">
+              <button class="btn-icon" onclick="Admin._lunaNueva('${l.id}')">✏️</button>
+              <button class="btn-icon" onclick="Admin._lunaEliminar('${l.id}')">🗑️</button>
+            </div>
+          </div>`).join('')}
+      </div>`;
+  }
+
+  function _lunaNueva(id = null) {
+    const lunas = App.lsGet('bruja_lunas', getDefaultLunas13());
+    const item  = id ? lunas.find(x => x.id === id) : {};
+    const isEdit = !!id;
+    App.openModal(isEdit ? 'Editar luna' : 'Nueva luna', `
+      <div class="form-group">
+        <label class="form-label">Nombre *</label>
+        <input id="lu-nombre" class="form-input" value="${item.nombre||''}" placeholder="Luna del Lobo">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Emoji</label>
+        <input id="lu-emoji" class="form-input" value="${item.emoji||'🌙'}" style="max-width:80px">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Número de luna (1–13)</label>
+        <input id="lu-mes" class="form-input" type="number" min="1" max="13" value="${item.mes||''}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ritual sugerido</label>
+        <textarea id="lu-ritual" class="form-textarea" style="min-height:80px">${item.ritual||''}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Usos mágicos</label>
+        <textarea id="lu-usos" class="form-textarea" style="min-height:60px">${item.usos||''}</textarea>
+      </div>`,
+      {
+        confirmLabel: isEdit ? 'Guardar' : 'Agregar',
+        onConfirm: () => {
+          const nombre = document.getElementById('lu-nombre')?.value.trim();
+          if (!nombre) return;
+          const nuevo = {
+            id:     id || App.uid(),
+            nombre,
+            emoji:  document.getElementById('lu-emoji')?.value.trim() || '🌙',
+            mes:    parseInt(document.getElementById('lu-mes')?.value) || 0,
+            ritual: document.getElementById('lu-ritual')?.value.trim(),
+            usos:   document.getElementById('lu-usos')?.value.trim(),
+          };
+          const list = App.lsGet('bruja_lunas', getDefaultLunas13());
+          if (isEdit) { const i = list.findIndex(x=>x.id===id); if(i>=0) list[i]=nuevo; else list.push(nuevo); }
+          else list.push(nuevo);
+          App.lsSet('bruja_lunas', list);
+          App.toast('Luna guardada ✓');
+          renderAdmLunas13(document.getElementById('adm-lunas'));
+        }
+      }
+    );
+  }
+
+  function _lunaEliminar(id) {
+    if (!confirm('¿Eliminar esta luna?')) return;
+    const list = App.lsGet('bruja_lunas', getDefaultLunas13()).filter(x => x.id !== id);
+    App.lsSet('bruja_lunas', list);
+    App.toast('Luna eliminada');
+    renderAdmLunas13(document.getElementById('adm-lunas'));
+  }
+
+  /* ══════════════════════════════════════════════
      RUEDA DEL AÑO ADMIN
      ══════════════════════════════════════════════ */
   function renderAdmRueda(panel) {
@@ -2285,18 +2529,159 @@ const Admin = (() => {
     panel.innerHTML = `
       <h2 style="margin-bottom:1rem">⭐ Generador de Hechizos</h2>
       <p class="text-muted" style="font-size:.88rem;margin-bottom:1rem">
-        El generador usa los hechizos de tu biblioteca. Administra velas, intenciones y panteones aquí.
+        Administra todas las opciones del generador de rituales.
       </p>
 
-      <div class="tabs">
+      <div class="tabs" style="flex-wrap:wrap">
         <button class="tab-btn active" onclick="genTab('velas',this)">🕯️ Velas</button>
         <button class="tab-btn" onclick="genTab('intenciones',this)">🎯 Intenciones</button>
+        <button class="tab-btn" onclick="genTab('dias',this)">📅 Días</button>
+        <button class="tab-btn" onclick="genTab('fases',this)">🌙 Fases Lunares</button>
       </div>
       <div id="gen-panel-velas" class="tab-panel active"></div>
-      <div id="gen-panel-intenciones" class="tab-panel"></div>`;
+      <div id="gen-panel-intenciones" class="tab-panel"></div>
+      <div id="gen-panel-dias" class="tab-panel"></div>
+      <div id="gen-panel-fases" class="tab-panel"></div>`;
 
     renderGenVelas();
     renderGenIntenciones();
+    renderGenDias();
+    renderGenFases();
+  }
+
+  function renderGenDias() {
+    const dias = App.lsGet('bruja_gen_dias', getDefaultDias());
+    const p = document.getElementById('gen-panel-dias');
+    if (!p) return;
+    p.innerHTML = `
+      <button class="btn btn-primary mb-2 btn-sm" onclick="Admin._genDiaNuevo()">+ Agregar día</button>
+      ${dias.map(d => `
+        <div class="admin-item">
+          <div class="admin-item-img">${d.em || '📅'}</div>
+          <div class="admin-item-info">
+            <div class="admin-item-name">${d.em} ${d.d.charAt(0).toUpperCase()+d.d.slice(1)}</div>
+            <div class="admin-item-meta">${d.ast ? d.ast+' — ' : ''}${d.para || ''}</div>
+          </div>
+          <div class="admin-item-actions">
+            <button class="btn-icon" onclick="Admin._genDiaNuevo('${d.id}')">✏️</button>
+            <button class="btn-icon" onclick="Admin._genDiaEliminar('${d.id}')">🗑️</button>
+          </div>
+        </div>`).join('')}`;
+  }
+
+  function _genDiaNuevo(id = null) {
+    const dias = App.lsGet('bruja_gen_dias', getDefaultDias());
+    const item = id ? dias.find(x => x.id === id) : {};
+    App.openModal(id ? 'Editar día' : 'Nuevo día', `
+      <div class="form-group">
+        <label class="form-label">Nombre del día *</label>
+        <input id="gd-d" class="form-input" value="${item.d||''}" placeholder="lunes">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Emoji</label>
+        <input id="gd-em" class="form-input" value="${item.em||'📅'}" style="max-width:80px">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Astro regente</label>
+        <input id="gd-ast" class="form-input" value="${item.ast||''}" placeholder="Luna, Marte, Venus…">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Para qué es poderoso</label>
+        <textarea id="gd-para" class="form-textarea">${item.para||''}</textarea>
+      </div>`,
+      {
+        confirmLabel: id ? 'Guardar' : 'Agregar',
+        onConfirm: () => {
+          const d = document.getElementById('gd-d')?.value.trim();
+          if (!d) return;
+          const nuevo = { id: id || App.uid(), d,
+            em:  document.getElementById('gd-em')?.value.trim() || '📅',
+            ast: document.getElementById('gd-ast')?.value.trim(),
+            para: document.getElementById('gd-para')?.value.trim() };
+          const list = App.lsGet('bruja_gen_dias', getDefaultDias());
+          if (id) { const i = list.findIndex(x=>x.id===id); if(i>=0) list[i]=nuevo; else list.push(nuevo); }
+          else list.push(nuevo);
+          App.lsSet('bruja_gen_dias', list);
+          App.toast('Día guardado ✓');
+          renderGenDias();
+        }
+      }
+    );
+  }
+
+  function _genDiaEliminar(id) {
+    const list = App.lsGet('bruja_gen_dias', getDefaultDias()).filter(x => x.id !== id);
+    App.lsSet('bruja_gen_dias', list);
+    App.toast('Día eliminado');
+    renderGenDias();
+  }
+
+  function renderGenFases() {
+    const fases = App.lsGet('bruja_gen_fases', getDefaultFases());
+    const p = document.getElementById('gen-panel-fases');
+    if (!p) return;
+    p.innerHTML = `
+      <button class="btn btn-primary mb-2 btn-sm" onclick="Admin._genFaseNueva()">+ Agregar fase</button>
+      ${fases.map(f => `
+        <div class="admin-item">
+          <div class="admin-item-img">${f.em || '🌙'}</div>
+          <div class="admin-item-info">
+            <div class="admin-item-name">${f.em} ${f.label}</div>
+            <div class="admin-item-meta" style="font-size:.78rem">${(f.para||'').slice(0,60)}…</div>
+          </div>
+          <div class="admin-item-actions">
+            <button class="btn-icon" onclick="Admin._genFaseNueva('${f.id}')">✏️</button>
+            <button class="btn-icon" onclick="Admin._genFaseEliminar('${f.id}')">🗑️</button>
+          </div>
+        </div>`).join('')}`;
+  }
+
+  function _genFaseNueva(id = null) {
+    const fases = App.lsGet('bruja_gen_fases', getDefaultFases());
+    const item  = id ? fases.find(x => x.id === id) : {};
+    App.openModal(id ? 'Editar fase lunar' : 'Nueva fase lunar', `
+      <div class="form-group">
+        <label class="form-label">Nombre *</label>
+        <input id="gf-label" class="form-input" value="${item.label||''}" placeholder="Luna Nueva">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Clave interna (key)</label>
+        <input id="gf-key" class="form-input" value="${item.key||''}" placeholder="nueva">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Emoji</label>
+        <input id="gf-em" class="form-input" value="${item.em||'🌙'}" style="max-width:80px">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descripción / energía</label>
+        <textarea id="gf-para" class="form-textarea" style="min-height:80px">${item.para||''}</textarea>
+      </div>`,
+      {
+        confirmLabel: id ? 'Guardar' : 'Agregar',
+        onConfirm: () => {
+          const label = document.getElementById('gf-label')?.value.trim();
+          if (!label) return;
+          const nuevo = { id: id || App.uid(),
+            label,
+            key:  document.getElementById('gf-key')?.value.trim() || label.toLowerCase(),
+            em:   document.getElementById('gf-em')?.value.trim() || '🌙',
+            para: document.getElementById('gf-para')?.value.trim() };
+          const list = App.lsGet('bruja_gen_fases', getDefaultFases());
+          if (id) { const i = list.findIndex(x=>x.id===id); if(i>=0) list[i]=nuevo; else list.push(nuevo); }
+          else list.push(nuevo);
+          App.lsSet('bruja_gen_fases', list);
+          App.toast('Fase guardada ✓');
+          renderGenFases();
+        }
+      }
+    );
+  }
+
+  function _genFaseEliminar(id) {
+    const list = App.lsGet('bruja_gen_fases', getDefaultFases()).filter(x => x.id !== id);
+    App.lsSet('bruja_gen_fases', list);
+    App.toast('Fase eliminada');
+    renderGenFases();
   }
 
   function renderGenVelas() {
@@ -2396,6 +2781,45 @@ const Admin = (() => {
       'Conexión espiritual', 'Corte de lazos', 'Atracción', 'Intuición'].map(n => ({ id: n.toLowerCase().replace(/\s/g,'-'), name: n }));
   }
 
+  function getDefaultDias() {
+    return [
+      { id: 'lunes',     d: 'lunes',     em: '🌙', ast: 'Luna',     para: 'intuición, emociones, sueños',      color: 'plateado' },
+      { id: 'martes',    d: 'martes',    em: '🔥', ast: 'Marte',    para: 'protección, coraje, fuerza',         color: 'rojo' },
+      { id: 'miercoles', d: 'miércoles', em: '💨', ast: 'Mercurio', para: 'comunicación, viajes, magia',        color: 'amarillo' },
+      { id: 'jueves',    d: 'jueves',    em: '⚡', ast: 'Júpiter',  para: 'abundancia, expansión, suerte',      color: 'verde o morado' },
+      { id: 'viernes',   d: 'viernes',   em: '💚', ast: 'Venus',    para: 'amor, belleza, armonía',             color: 'rosa o verde' },
+      { id: 'sabado',    d: 'sábado',    em: '🪐', ast: 'Saturno',  para: 'protección, límites, trabajo',       color: 'negro o morado' },
+      { id: 'domingo',   d: 'domingo',   em: '☀️', ast: 'Sol',      para: 'éxito, liderazgo, claridad',         color: 'dorado o amarillo' },
+    ];
+  }
+
+  function getDefaultFases() {
+    return [
+      { id: 'nueva',     key: 'nueva',     em: '🌑', label: 'Luna Nueva',     para: 'Esta fase es perfecta para sembrar intenciones y hacer peticiones nuevas. La energía está en su punto cero, lista para crecer.' },
+      { id: 'creciente', key: 'creciente', em: '🌒', label: 'Luna Creciente', para: 'La energía está en expansión. Ideal para atraer, crecer y manifestar. Tu intención tiene más fuerza mientras la luna crece.' },
+      { id: 'llena',     key: 'llena',     em: '🌕', label: 'Luna Llena',     para: 'La luna está en su máxima potencia. Haz este ritual durante las horas de más luz lunar para mayor efecto.' },
+      { id: 'menguante', key: 'menguante', em: '🌘', label: 'Luna Menguante', para: 'Tiempo de soltar, limpiar y liberar. Usa esta energía para desterrar lo que ya no sirve.' },
+    ];
+  }
+
+  function getDefaultLunas13() {
+    return [
+      { id: 'luna1',  mes: 1,  nombre: 'Luna del Lobo',      emoji: '🐺', ritual: 'Meditación de introspección profunda. Escribe en tu diario tus miedos y lo que deseas transformar este año.', usos: 'Conexión con ancestros, trabajo con sombras, protección del hogar en invierno.' },
+      { id: 'luna2',  mes: 2,  nombre: 'Luna de la Nieve',   emoji: '❄️', ritual: 'Ritual de purificación con vela blanca y agua de nieve o agua bendecida. Visualiza tu mente despejada.', usos: 'Limpieza energética, paz interior, claridad mental.' },
+      { id: 'luna3',  mes: 3,  nombre: 'Luna del Gusano',    emoji: '🌱', ritual: 'Siembra semillas (físicas o simbólicas). Escribe tus intenciones de primavera y entiérralas en la tierra.', usos: 'Nuevos comienzos, fertilidad, trabajo con la tierra y el hogar.' },
+      { id: 'luna4',  mes: 4,  nombre: 'Luna Rosa',          emoji: '🌸', ritual: 'Baño ritual de flores y sal de rosas. Declara lo que mereces atraer y ábrelo a tu vida.', usos: 'Amor romántico, autoestima, armonía en relaciones.' },
+      { id: 'luna5',  mes: 5,  nombre: 'Luna de las Flores', emoji: '🌺', ritual: 'Danza o movimiento consciente bajo la luna. Celebra la abundancia con una ofrenda de flores y miel.', usos: 'Abundancia, alegría, creatividad, conexión con la naturaleza.' },
+      { id: 'luna6',  mes: 6,  nombre: 'Luna de las Fresas', emoji: '🍓', ritual: 'Gratitud y celebración. Ofrece frutas frescas a la tierra. Baño solar al amanecer.', usos: 'Gratitud, plenitud, amor hacia uno mismo, fertilidad.' },
+      { id: 'luna7',  mes: 7,  nombre: 'Luna del Ciervo',    emoji: '🦌', ritual: 'Trabajo con el elemento fuego. Escribe lo que ya no sirve y quémalo en la llama de una vela.', usos: 'Liderazgo, fuerza física, coraje para los cambios.' },
+      { id: 'luna8',  mes: 8,  nombre: 'Luna del Esturión',  emoji: '🐟', ritual: 'Ritual junto al agua (río, mar, bañera). Pide claridad y deja que las aguas lleven lo que liberas.', usos: 'Intuición, profundidad emocional, conexión con los sueños.' },
+      { id: 'luna9',  mes: 9,  nombre: 'Luna del Maíz',      emoji: '🌽', ritual: 'Ritual de cosecha: agradece lo que has logrado este año. Comparte una comida sagrada con seres queridos.', usos: 'Gratitud, cosecha de proyectos, compartir, equinoccio.' },
+      { id: 'luna10', mes: 10, nombre: 'Luna del Cazador',   emoji: '🏹', ritual: 'Silencio y meditación para escuchar mensajes del Otro Mundo. Vela de negro para protección.', usos: 'Ancestros, magia de Samhain, adivinación, protección.' },
+      { id: 'luna11', mes: 11, nombre: 'Luna del Castor',    emoji: '🦫', ritual: 'Prot ección del hogar: coloca sal en los umbrales y enciende velas en cada habitación.', usos: 'Hogar y familia, preparativos para el invierno, límites.' },
+      { id: 'luna12', mes: 12, nombre: 'Luna Fría',          emoji: '🌬️', ritual: 'Yule/Solsticio: honra el regreso de la luz. Enciende muchas velas y medita sobre el renacimiento.', usos: 'Transformación, renacimiento, esperanza en la oscuridad.' },
+      { id: 'luna13', mes: 13, nombre: 'Luna Azul',          emoji: '💙', ritual: 'Ritual especial de deseo profundo: sólo se tiene esta luna extra una vez cada pocos años. Pide algo que rara vez pedirías.', usos: 'Deseos raros y preciados, magia de lo imposible, milagros.' },
+    ];
+  }
+
   function _genIntencionNueva() {
     App.openModal('Nueva intención', `
       <div class="form-group">
@@ -2423,11 +2847,11 @@ const Admin = (() => {
     renderGenIntenciones();
   }
 
-  /* helper tab generador */
+  /* helper tab generador (todos los paneles) */
   function genTab(key, btn) {
     document.querySelectorAll('#adm-generador .tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    document.querySelectorAll('#gen-panel-velas, #gen-panel-intenciones').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('#adm-generador .tab-panel').forEach(p => p.classList.remove('active'));
     document.getElementById('gen-panel-' + key)?.classList.add('active');
   }
   window.genTab = genTab;
@@ -2613,19 +3037,20 @@ const Admin = (() => {
     panel.innerHTML = `
       <h2 style="margin-bottom:1rem">👥 Usuarios</h2>
       <p class="text-muted" style="font-size:.88rem;margin-bottom:1rem">
-        Los usuarios Lectores pueden ver el grimorio pero no modificar nada.
+        Administra el acceso al grimorio. Puedes resetear contraseñas o eliminar usuarios.
       </p>
       <button class="btn btn-primary mb-2" onclick="Admin._usuarioNuevo()">+ Agregar usuario</button>
-      ${usuarios.length === 0 ? `<div class="empty-state"><span class="es-emoji">👥</span><p>No hay usuarios adicionales</p></div>` : ''}
+      ${usuarios.length === 0 ? `<div class="empty-state"><span class="es-emoji">👥</span><p>No hay usuarios</p></div>` : ''}
       ${usuarios.map(u => `
         <div class="admin-item">
           <div class="admin-item-img">👤</div>
           <div class="admin-item-info">
             <div class="admin-item-name">${u.nombre}</div>
-            <div class="admin-item-meta">${u.rol === 'admin' ? '⚙️ Administrador' : '👁️ Lector'} · PIN: ****</div>
+            <div class="admin-item-meta">${u.rol === 'admin' ? '⚙️ Administrador' : '👁️ Lector'}</div>
           </div>
           <div class="admin-item-actions">
-            <button class="btn-icon" onclick="Admin._usuarioEliminar('${u.id}')">🗑️</button>
+            <button class="btn-icon" title="Resetear contraseña" onclick="Admin._usuarioResetPassword('${u.id}')">🔑</button>
+            <button class="btn-icon" title="Eliminar usuario" onclick="Admin._usuarioEliminar('${u.id}')">🗑️</button>
           </div>
         </div>`).join('')}`;
   }
@@ -2633,8 +3058,8 @@ const Admin = (() => {
   function _usuarioNuevo() {
     App.openModal('Nuevo usuario', `
       <div class="form-group">
-        <label class="form-label">Nombre</label>
-        <input id="uf-nombre" class="form-input" placeholder="Nombre del usuario">
+        <label class="form-label">Nombre de usuario *</label>
+        <input id="uf-nombre" class="form-input" placeholder="NombreDeUsuario" autocapitalize="none">
       </div>
       <div class="form-group">
         <label class="form-label">Rol</label>
@@ -2644,17 +3069,20 @@ const Admin = (() => {
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">PIN de acceso</label>
-        <input id="uf-pin" type="password" class="form-input" placeholder="PIN para este usuario">
+        <label class="form-label">Contraseña *</label>
+        <input id="uf-password" type="password" class="form-input" placeholder="Contraseña de acceso">
       </div>`,
       {
         confirmLabel: 'Crear usuario',
         onConfirm: () => {
-          const nombre = document.getElementById('uf-nombre')?.value.trim();
-          const pin = document.getElementById('uf-pin')?.value;
-          if (!nombre || !pin) { App.toast('Nombre y PIN son obligatorios'); return; }
+          const nombre   = document.getElementById('uf-nombre')?.value.trim();
+          const password = document.getElementById('uf-password')?.value;
+          if (!nombre || !password) { App.toast('Nombre y contraseña son obligatorios'); return; }
           const list = App.lsGet('bruja_usuarios', []);
-          list.push({ id: App.uid(), nombre, rol: document.getElementById('uf-rol')?.value, pin });
+          if (list.find(u => u.nombre.toLowerCase() === nombre.toLowerCase())) {
+            App.toast('Ya existe un usuario con ese nombre'); return;
+          }
+          list.push({ id: App.uid(), nombre, rol: document.getElementById('uf-rol')?.value, password });
           App.lsSet('bruja_usuarios', list);
           App.toast('Usuario creado ✓');
           renderAdmUsuarios(document.getElementById('adm-usuarios'));
@@ -2663,10 +3091,44 @@ const Admin = (() => {
     );
   }
 
+  function _usuarioResetPassword(id) {
+    const usuarios = App.lsGet('bruja_usuarios', []);
+    const u = usuarios.find(x => x.id === id);
+    if (!u) return;
+    App.openModal(`Resetear contraseña — ${u.nombre}`, `
+      <div class="form-group">
+        <label class="form-label">Nueva contraseña *</label>
+        <input id="ur-pass1" type="password" class="form-input" placeholder="Nueva contraseña">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirmar contraseña *</label>
+        <input id="ur-pass2" type="password" class="form-input" placeholder="Repite la contraseña">
+      </div>`,
+      {
+        confirmLabel: 'Cambiar contraseña',
+        onConfirm: () => {
+          const p1 = document.getElementById('ur-pass1')?.value;
+          const p2 = document.getElementById('ur-pass2')?.value;
+          if (!p1 || p1.length < 4) { App.toast('La contraseña debe tener al menos 4 caracteres'); return; }
+          if (p1 !== p2) { App.toast('Las contraseñas no coinciden'); return; }
+          const list = App.lsGet('bruja_usuarios', []);
+          const i = list.findIndex(x => x.id === id);
+          if (i >= 0) { list[i].password = p1; delete list[i].pin; }
+          App.lsSet('bruja_usuarios', list);
+          App.toast('Contraseña actualizada ✓');
+          renderAdmUsuarios(document.getElementById('adm-usuarios'));
+        }
+      }
+    );
+  }
+
   function _usuarioEliminar(id) {
-    if (!confirm('¿Eliminar este usuario?')) return;
-    const list = App.lsGet('bruja_usuarios', []).filter(x => x.id !== id);
-    App.lsSet('bruja_usuarios', list);
+    const usuarios = App.lsGet('bruja_usuarios', []);
+    const u = usuarios.find(x => x.id === id);
+    if (!u) return;
+    if (u.nombre === 'RVGIAN') { App.toast('No se puede eliminar el usuario principal'); return; }
+    if (!confirm(`¿Eliminar al usuario ${u.nombre}?`)) return;
+    App.lsSet('bruja_usuarios', usuarios.filter(x => x.id !== id));
     App.toast('Usuario eliminado');
     renderAdmUsuarios(document.getElementById('adm-usuarios'));
   }
@@ -2760,13 +3222,18 @@ const Admin = (() => {
     _diarioLimpiar,
     _genVelaNueva, _genVelaEliminar,
     _genIntencionNueva, _genIntencionEliminar,
+    _genDiaNuevo, _genDiaEliminar,
+    _genFaseNueva, _genFaseEliminar,
+    _lunaNueva, _lunaEliminar,
+    renderAdmLunas13,
     _typoPreview, _typoGuardar, _typoReset,
     _portadaGuardar, _cambiarPin,
-    _usuarioNuevo, _usuarioEliminar,
+    _usuarioNuevo, _usuarioResetPassword, _usuarioEliminar,
     _admEliminar,
     _logout,
     renderAdmBiblioteca, renderAdmHechizos, renderAdmAltar, renderAdmAncestros,
     getDefaultSabats, getDefaultVelas, getDefaultIntenciones,
+    getDefaultDias, getDefaultFases, getDefaultLunas13,
     isUnlocked,
   };
 
@@ -3073,22 +3540,9 @@ const Hechizos = (() => {
     const velas = App.lsGet('bruja_gen_velas', Admin.getDefaultVelas());
     const hierbas = App.lsGet('bruja_biblioteca', []).filter(b => b.tipo === 'hierba' || !b.tipo || b.tipo === 'planta');
 
-    const diasSemana = [
-      { d: 'lunes',    em: '🌙', ast: 'Luna',    para: 'intuición, emociones, sueños' },
-      { d: 'martes',   em: '🔥', ast: 'Marte',   para: 'protección, coraje, fuerza' },
-      { d: 'miércoles',em: '💨', ast: 'Mercurio', para: 'comunicación, viajes, magia' },
-      { d: 'jueves',   em: '⚡', ast: 'Júpiter',  para: 'abundancia, expansión, suerte' },
-      { d: 'viernes',  em: '💚', ast: 'Venus',    para: 'amor, belleza, armonía' },
-      { d: 'sábado',   em: '🪐', ast: 'Saturno',  para: 'protección, límites, trabajo' },
-      { d: 'domingo',  em: '☀️', ast: 'Sol',      para: 'éxito, liderazgo, claridad' },
-    ];
-
-    const lunas = [
-      { key: 'nueva',     em: '🌑', label: 'Luna Nueva',     para: 'nuevos inicios, semillas, intenciones' },
-      { key: 'creciente', em: '🌒', label: 'Luna Creciente', para: 'crecimiento, atracción, manifestación' },
-      { key: 'llena',     em: '🌕', label: 'Luna Llena',     para: 'plenitud, magia de máxima potencia' },
-      { key: 'menguante', em: '🌘', label: 'Luna Menguante', para: 'liberación, destierro, soltar' },
-    ];
+    const diasSemana = App.lsGet('bruja_gen_dias', Admin.getDefaultDias());
+    const lunas      = App.lsGet('bruja_gen_fases', Admin.getDefaultFases());
+    const panteones  = App.lsGet('bruja_panteones', []);
 
     return `
       <div class="card mb-2">
@@ -3115,7 +3569,7 @@ const Hechizos = (() => {
         <div style="display:flex;gap:.4rem;flex-wrap:wrap">
           ${diasSemana.map(d => `
             <button class="btn btn-ghost btn-sm gen-selector" data-group="dia" data-val="${d.d}"
-              title="${d.para}" onclick="Hechizos._selGen(this, 'dia')">
+              title="${d.para||''}" onclick="Hechizos._selGen(this, 'dia')">
               ${d.em} ${d.d.charAt(0).toUpperCase()+d.d.slice(1)}
             </button>`).join('')}
         </div>
@@ -3127,11 +3581,24 @@ const Hechizos = (() => {
         <div style="display:flex;gap:.4rem;flex-wrap:wrap">
           ${lunas.map(l => `
             <button class="btn btn-ghost btn-sm gen-selector" data-group="luna" data-val="${l.key}"
-              title="${l.para}" onclick="Hechizos._selGen(this, 'luna')">
+              title="${l.para||''}" onclick="Hechizos._selGen(this, 'luna')">
               ${l.em} ${l.label}
             </button>`).join('')}
         </div>
       </div>
+
+      <!-- Panteón -->
+      ${panteones.length > 0 ? `
+      <div class="form-group">
+        <label class="form-label">🔥 Panteón (opcional)</label>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          ${panteones.map(p => `
+            <button class="btn btn-ghost btn-sm gen-selector" data-group="panteon" data-val="${p.name}"
+              onclick="Hechizos._selGen(this, 'panteon')">
+              🔥 ${p.name}
+            </button>`).join('')}
+        </div>
+      </div>` : ''}
 
       <!-- Vela -->
       <div class="form-group">
@@ -3174,7 +3641,7 @@ const Hechizos = (() => {
   }
 
   // Estado del generador
-  const selecciones = { intencion: null, dia: null, luna: null, vela: null, hierba: null };
+  const selecciones = { intencion: null, dia: null, luna: null, vela: null, hierba: null, panteon: null };
 
   function _selGen(btn, grupo) {
     const val = btn.dataset.val;
@@ -3210,22 +3677,19 @@ const Hechizos = (() => {
       return;
     }
 
-    const diasData = {
-      lunes: { ast: 'Luna', color: 'plateado', para: 'intuición y emociones' },
-      martes: { ast: 'Marte', color: 'rojo', para: 'protección y fuerza' },
-      miércoles: { ast: 'Mercurio', color: 'amarillo', para: 'comunicación y claridad' },
-      jueves: { ast: 'Júpiter', color: 'verde o morado', para: 'abundancia y expansión' },
-      viernes: { ast: 'Venus', color: 'rosa o verde', para: 'amor y armonía' },
-      sábado: { ast: 'Saturno', color: 'negro o morado', para: 'protección y límites' },
-      domingo: { ast: 'Sol', color: 'dorado o amarillo', para: 'éxito y claridad' },
-    };
+    // Días: usar datos guardados (con ast/para de cada día)
+    const diasGuardados = App.lsGet('bruja_gen_dias', Admin.getDefaultDias());
+    const diasData = {};
+    diasGuardados.forEach(d => {
+      diasData[d.d] = { ast: d.ast || '', color: d.color || '', para: d.para || '' };
+    });
 
-    const lunasData = {
-      nueva: 'Esta fase es perfecta para sembrar intenciones y hacer peticiones nuevas. La energía está en su punto cero, lista para crecer.',
-      creciente: 'La energía está en expansión. Ideal para atraer, crecer y manifestar. Tu intención tiene más fuerza mientras la luna crece.',
-      llena: 'La luna está en su máxima potencia. Haz este ritual durante las horas de más luz lunar para mayor efecto.',
-      menguante: 'Tiempo de soltar, limpiar y liberar. Usa esta energía para desterrar lo que ya no sirve.',
-    };
+    // Fases lunares: usar datos guardados
+    const fasesGuardadas = App.lsGet('bruja_gen_fases', Admin.getDefaultFases());
+    const lunasData = {};
+    fasesGuardadas.forEach(f => {
+      lunasData[f.key] = f.para || '';
+    });
 
     const diaInfo = selecciones.dia ? diasData[selecciones.dia] : null;
     const lunaInfo = selecciones.luna ? lunasData[selecciones.luna] : null;
@@ -3238,8 +3702,14 @@ const Hechizos = (() => {
     pasos.push(`Elige un momento de quietud. Apaga el teléfono y crea un espacio libre de interrupciones.`);
     pasos.push(`Limpia el espacio con humo de salvia, palo santo o agua con sal. Muévete en sentido de las agujas del reloj.`);
 
-    if (selecciones.dia) {
+    if (selecciones.dia && diaInfo && diaInfo.ast) {
       pasos.push(`Trabaja este ritual un ${selecciones.dia}, día regido por ${diaInfo.ast}, especialmente poderoso para ${diaInfo.para}.`);
+    } else if (selecciones.dia) {
+      pasos.push(`Trabaja este ritual un ${selecciones.dia}.`);
+    }
+
+    if (selecciones.panteon) {
+      pasos.push(`Invoca al panteón ${selecciones.panteon} para que guíe y amplifique tu intención.`);
     }
 
     if (vela) {
@@ -3311,7 +3781,7 @@ const Hechizos = (() => {
       </div>`;
 
     // Guardar temporalmente para poder guardar después
-    res._ritualData = { intencion, pasos, dia: selecciones.dia, luna: selecciones.luna, vela, hierba };
+    res._ritualData = { intencion, pasos, dia: selecciones.dia, luna: selecciones.luna, vela, hierba, panteon: selecciones.panteon };
   }
 
   function _guardarRitual() {
@@ -3895,94 +4365,326 @@ const Ancestros = (() => {
 </script>
   <script>
 /* ============================================================
-   RUEDA.JS — Rueda del Año con selector de hemisferio
+   RUEDA.JS — Rueda del Año (SVG visual) + 13 Lunas
    ============================================================ */
 
 const Rueda = (() => {
   let hemisferio = App.lsGet('bruja_hemisferio', 'norte');
+  let sabatActivo = null;
+  let lunaActiva  = null;
 
+  /* ── Colores por sabat (por ID) ── */
+  const SABAT_COLORS = {
+    imbolc:      '#5a9e6e',
+    ostara:      '#7ec86a',
+    beltane:     '#c45a7a',
+    litha:       '#d4a010',
+    lughnasadh:  '#c47235',
+    mabon:       '#b04020',
+    samhain:     '#6a3a8e',
+    yule:        '#3a6b9e',
+  };
+  const SABAT_COLOR_DARK = {
+    imbolc:      '#3a7e4e',
+    ostara:      '#5ea84a',
+    beltane:     '#a43a5a',
+    litha:       '#a48000',
+    lughnasadh:  '#a45215',
+    mabon:       '#903000',
+    samhain:     '#4a1a6e',
+    yule:        '#1a4b7e',
+  };
+
+  /* ── Color de luna por índice ── */
+  function lunaColor(i) {
+    const h = Math.round((i * 360) / 13);
+    return `hsl(${h},45%,30%)`;
+  }
+  function lunaColorDark(i) {
+    const h = Math.round((i * 360) / 13);
+    return `hsl(${h},45%,18%)`;
+  }
+
+  /* ── Helper SVG: segmento de rueda ── */
+  function wedgePath(cx, cy, r1, r2, a1, a2) {
+    const x1 = cx + r2 * Math.cos(a1), y1 = cy + r2 * Math.sin(a1);
+    const x2 = cx + r2 * Math.cos(a2), y2 = cy + r2 * Math.sin(a2);
+    const x3 = cx + r1 * Math.cos(a2), y3 = cy + r1 * Math.sin(a2);
+    const x4 = cx + r1 * Math.cos(a1), y4 = cy + r1 * Math.sin(a1);
+    const lg = (a2 - a1) > Math.PI ? 1 : 0;
+    return `M${x1},${y1} A${r2},${r2},0,${lg},1,${x2},${y2} L${x3},${y3} A${r1},${r1},0,${lg},0,${x4},${y4}Z`;
+  }
+
+  /* ── Render principal ── */
   function render() {
     const sec = document.getElementById('sec-rueda');
     if (!sec) return;
 
-    const sabats = App.lsGet('bruja_sabats', Admin.getDefaultSabats());
-
     sec.innerHTML = `
       <h1 class="section-title">☀️ Rueda del Año</h1>
-      <p class="section-sub">Las ocho festividades del ciclo solar.</p>
+      <p class="section-sub">Las ocho festividades del ciclo solar y las trece lunas.</p>
 
       <div class="hemisferio-toggle">
-        <button class="hemi-btn ${hemisferio === 'norte' ? 'active' : ''}"
-          onclick="Rueda._setHemi('norte', this)">🌍 Hemisferio Norte</button>
-        <button class="hemi-btn ${hemisferio === 'sur' ? 'active' : ''}"
-          onclick="Rueda._setHemi('sur', this)">🌏 Hemisferio Sur</button>
+        <button class="hemi-btn ${hemisferio==='norte'?'active':''}"
+          onclick="Rueda._setHemi('norte',this)">🌍 Hemisferio Norte</button>
+        <button class="hemi-btn ${hemisferio==='sur'?'active':''}"
+          onclick="Rueda._setHemi('sur',this)">🌏 Hemisferio Sur</button>
       </div>
 
-      <div id="rueda-sabats"></div>`;
+      <div id="rueda-solar-wrap" style="width:100%;max-width:360px;margin:0 auto 1rem"></div>
+      <div id="rueda-sabat-detalle"></div>
 
-    renderSabats(sabats);
+      <div style="margin:2rem 0 .5rem;text-align:center">
+        <h2 style="font-size:1.1rem;color:var(--gold-l)">🌙 Las 13 Lunas</h2>
+        <p style="font-size:.82rem;color:var(--muted)">Las trece lunaciones del año mágico.</p>
+      </div>
+      <div id="rueda-lunar-wrap" style="width:100%;max-width:320px;margin:0 auto 1rem"></div>
+      <div id="rueda-luna-detalle"></div>`;
+
+    renderSolarWheel();
+    renderLunarWheel();
   }
 
-  function renderSabats(sabats) {
-    const container = document.getElementById('rueda-sabats');
-    if (!container) return;
+  /* ══════════════════════════════════════════════
+     RUEDA SOLAR (8 sabats)
+     ══════════════════════════════════════════════ */
+  function renderSolarWheel() {
+    const wrap = document.getElementById('rueda-solar-wrap');
+    if (!wrap) return;
 
-    // Ordenar por fecha del hemisferio seleccionado
+    const sabats = App.lsGet('bruja_sabats', Admin.getDefaultSabats());
+    const hoy    = new Date();
+    const mmdd   = String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
+
+    // Ordenar por fecha del hemisferio
     const sorted = [...sabats].sort((a, b) => {
-      const fa = hemisferio === 'norte' ? (a.fecha_n || '12-31') : (a.fecha_s || '12-31');
-      const fb = hemisferio === 'norte' ? (b.fecha_n || '12-31') : (b.fecha_s || '12-31');
+      const fa = hemisferio === 'norte' ? (a.fecha_n||'12-31') : (a.fecha_s||'12-31');
+      const fb = hemisferio === 'norte' ? (b.fecha_n||'12-31') : (b.fecha_s||'12-31');
       return fa.localeCompare(fb);
     });
 
-    const hoy = new Date();
-    const mmdd = String(hoy.getMonth() + 1).padStart(2, '0') + '-' + String(hoy.getDate()).padStart(2, '0');
+    const N  = sorted.length || 8;
+    const cx = 160, cy = 160, r2 = 148, r1 = 54;
+    const step = (2 * Math.PI) / N;
+    const offset = -Math.PI / 2; // 12 o'clock
 
-    container.innerHTML = sorted.map(s => {
+    let paths = '', labels = '';
+
+    sorted.forEach((s, i) => {
+      const a1 = offset + i * step;
+      const a2 = offset + (i + 1) * step;
+      const mid = (a1 + a2) / 2;
+      const isActive = sabatActivo === s.id;
+
       const fecha = hemisferio === 'norte' ? (s.fecha_n || '') : (s.fecha_s || '');
       const esPasado = fecha && fecha < mmdd;
-      const esProximo = !esPasado && fecha && Math.abs(diasHasta(fecha)) <= 14;
 
-      return `
-        <div class="card" style="cursor:pointer;${esPasado ? 'opacity:.6' : ''}" onclick="Rueda._toggle('${s.id}')">
-          <div class="flex-between">
-            <div class="card-title">
-              ${s.emoji || '☀️'} ${s.name}
-              ${esProximo ? `<span class="badge badge-gold" style="margin-left:.4rem">Próximo</span>` : ''}
-            </div>
-            <span style="font-size:.82rem;color:var(--muted)">${formatFecha(fecha)}</span>
-          </div>
-          <div id="rueda-det-${s.id}" style="display:none">
-            <hr class="section-divider">
-            ${s.desc ? `<p style="font-size:.9rem;color:var(--lavender)">${s.desc}</p>` : ''}
-            ${s.rituales ? `
-              <div class="bib-prop mt-1">
-                <div class="bib-prop-label">🕯️ Rituales & Prácticas</div>
-                <div class="bib-prop-value">${s.rituales.replace(/\n/g,'<br>')}</div>
-              </div>` : ''}
-            ${Admin.isUnlocked() ? `
-              <button class="btn btn-ghost btn-sm mt-2"
-                onclick="event.stopPropagation();Admin._sabatNuevo('${s.id}');App.navigate('admin');Admin._showPanel('rueda')">
-                ✏️ Editar
-              </button>` : ''}
-          </div>
-        </div>`;
-    }).join('');
+      const fillBase  = SABAT_COLORS[s.id]  || '#5a3a7e';
+      const fillDark  = SABAT_COLOR_DARK[s.id] || '#3a1a5e';
+      const fill = isActive ? fillBase : (esPasado ? fillDark + 'aa' : fillDark);
+      const stroke = isActive ? '#FFD966' : '#221A42';
+
+      const d = wedgePath(cx, cy, r1, r2, a1, a2);
+
+      // Emoji en el anillo
+      const er = (r1 + r2) / 2;
+      const ex = cx + er * Math.cos(mid);
+      const ey = cy + er * Math.sin(mid);
+
+      // Nombre corto (máx 7 chars)
+      const shortName = s.name.length > 7 ? s.name.slice(0, 6) + '…' : s.name;
+      const nr = r1 + (r2 - r1) * 0.72;
+      const nx = cx + nr * Math.cos(mid);
+      const ny = cy + nr * Math.sin(mid);
+
+      // Fecha label justo al borde del segmento
+      const fechaStr = formatFecha(fecha);
+
+      paths += `<path d="${d}" fill="${fill}" stroke="${stroke}" stroke-width="2"
+        style="cursor:pointer;transition:all .2s"
+        onclick="Rueda._selSabat('${s.id}')"
+        data-sid="${s.id}"/>`;
+
+      labels += `
+        <text x="${ex}" y="${ey}" text-anchor="middle" dominant-baseline="middle"
+          font-size="22" style="pointer-events:none">${s.emoji || '☀️'}</text>
+        <text x="${nx}" y="${ny + 12}" text-anchor="middle" dominant-baseline="middle"
+          font-size="8.5" fill="${isActive ? '#FFD966' : '#DDD0F5'}" font-family="Cinzel,serif"
+          style="pointer-events:none">${shortName}</text>
+        ${fechaStr ? `<text x="${nx}" y="${ny + 21}" text-anchor="middle" dominant-baseline="middle"
+          font-size="7.5" fill="#7A6A9A" style="pointer-events:none">${fechaStr}</text>` : ''}`;
+    });
+
+    // Círculo central
+    const centerText = `
+      <circle cx="${cx}" cy="${cy}" r="${r1 - 4}" fill="#07050F" stroke="#C4972A" stroke-width="1.5"/>
+      <text x="${cx}" y="${cy - 8}" text-anchor="middle" dominant-baseline="middle"
+        font-size="26">☀️</text>
+      <text x="${cx}" y="${cy + 12}" text-anchor="middle" dominant-baseline="middle"
+        font-size="8" fill="#C4972A" font-family="Cinzel,serif">RUEDA</text>
+      <text x="${cx}" y="${cy + 21}" text-anchor="middle" dominant-baseline="middle"
+        font-size="7" fill="#C4972A" font-family="Cinzel,serif">DEL AÑO</text>`;
+
+    wrap.innerHTML = `
+      <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg"
+        style="width:100%;height:auto;display:block">
+        <circle cx="${cx}" cy="${cy}" r="${r2+4}" fill="#0d0a1a" stroke="#221A42" stroke-width="1"/>
+        ${paths}
+        ${labels}
+        ${centerText}
+      </svg>`;
   }
 
-  function diasHasta(mmdd) {
-    const hoy = new Date();
-    const año = hoy.getFullYear();
-    const [m, d] = mmdd.split('-').map(Number);
-    let fecha = new Date(año, m - 1, d);
-    if (fecha < hoy) fecha = new Date(año + 1, m - 1, d);
-    return Math.round((fecha - hoy) / (1000 * 60 * 60 * 24));
+  function _selSabat(id) {
+    sabatActivo = sabatActivo === id ? null : id;
+    renderSolarWheel(); // re-render para actualizar colores
+
+    const det = document.getElementById('rueda-sabat-detalle');
+    if (!det) return;
+
+    if (!sabatActivo) { det.innerHTML = ''; return; }
+
+    const sabats = App.lsGet('bruja_sabats', Admin.getDefaultSabats());
+    const s = sabats.find(x => x.id === sabatActivo);
+    if (!s) return;
+
+    const fecha = hemisferio === 'norte' ? (s.fecha_n || '') : (s.fecha_s || '');
+
+    det.innerHTML = `
+      <div class="card" style="border:1px solid var(--gold);margin-bottom:1rem">
+        <div class="flex-between mb-1">
+          <div class="card-title" style="font-size:1.1rem">${s.emoji || '☀️'} ${s.name}</div>
+          <button class="btn-icon" onclick="Rueda._selSabat('${s.id}')">✕</button>
+        </div>
+        ${fecha ? `<div style="font-size:.82rem;color:var(--muted);margin-bottom:.5rem">📅 ${formatFecha(fecha)}</div>` : ''}
+        ${s.desc ? `<p style="font-size:.9rem;color:var(--lavender);margin-bottom:.75rem">${s.desc}</p>` : '<p style="font-size:.88rem;color:var(--muted);margin-bottom:.75rem">Sin descripción aún.</p>'}
+        ${s.rituales ? `
+          <div class="bib-prop">
+            <div class="bib-prop-label">🕯️ Rituales & Prácticas</div>
+            <div class="bib-prop-value">${s.rituales.replace(/\n/g,'<br>')}</div>
+          </div>` : ''}
+        ${Admin.isUnlocked() ? `
+          <div style="margin-top:.75rem">
+            <button class="btn btn-ghost btn-sm"
+              onclick="Admin._sabatNuevo('${s.id}');App.navigate('admin');Admin._showPanel('rueda')">
+              ✏️ Editar
+            </button>
+          </div>` : ''}
+      </div>`;
+    det.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
+  /* ══════════════════════════════════════════════
+     RUEDA LUNAR (13 lunas)
+     ══════════════════════════════════════════════ */
+  function renderLunarWheel() {
+    const wrap = document.getElementById('rueda-lunar-wrap');
+    if (!wrap) return;
+
+    const lunas = App.lsGet('bruja_lunas', Admin.getDefaultLunas13());
+    const N  = lunas.length || 13;
+    const cx = 150, cy = 150, r2 = 138, r1 = 50;
+    const step = (2 * Math.PI) / N;
+    const offset = -Math.PI / 2;
+
+    let paths = '', labels = '';
+
+    lunas.forEach((l, i) => {
+      const a1 = offset + i * step;
+      const a2 = offset + (i + 1) * step;
+      const mid = (a1 + a2) / 2;
+      const isActive = lunaActiva === l.id;
+
+      const fillBase = lunaColor(i);
+      const fillDark = lunaColorDark(i);
+      const fill   = isActive ? fillBase : fillDark;
+      const stroke = isActive ? '#DDD0F5' : '#221A42';
+
+      const d = wedgePath(cx, cy, r1, r2, a1, a2);
+      const er = (r1 + r2) / 2;
+      const ex = cx + er * Math.cos(mid);
+      const ey = cy + er * Math.sin(mid);
+
+      const shortName = l.nombre.split(' ').slice(-1)[0]; // última palabra
+      const nr = r1 + (r2 - r1) * 0.72;
+      const nx = cx + nr * Math.cos(mid);
+      const ny = cy + nr * Math.sin(mid);
+
+      paths += `<path d="${d}" fill="${fill}" stroke="${stroke}" stroke-width="2"
+        style="cursor:pointer;transition:all .2s"
+        onclick="Rueda._selLuna('${l.id}')"/>`;
+
+      labels += `
+        <text x="${ex}" y="${ey}" text-anchor="middle" dominant-baseline="middle"
+          font-size="18" style="pointer-events:none">${l.emoji || '🌙'}</text>
+        <text x="${nx}" y="${ny+12}" text-anchor="middle" dominant-baseline="middle"
+          font-size="7.5" fill="${isActive ? '#DDD0F5' : '#9a8aba'}" font-family="Cinzel,serif"
+          style="pointer-events:none">${shortName.length > 6 ? shortName.slice(0,6) : shortName}</text>`;
+    });
+
+    const centerText = `
+      <circle cx="${cx}" cy="${cy}" r="${r1-4}" fill="#07050F" stroke="#5a3a8e" stroke-width="1.5"/>
+      <text x="${cx}" y="${cy-7}" text-anchor="middle" dominant-baseline="middle" font-size="22">🌕</text>
+      <text x="${cx}" y="${cy+12}" text-anchor="middle" dominant-baseline="middle"
+        font-size="7" fill="#9a8aba" font-family="Cinzel,serif">13 LUNAS</text>`;
+
+    wrap.innerHTML = `
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"
+        style="width:100%;height:auto;display:block">
+        <circle cx="${cx}" cy="${cy}" r="${r2+4}" fill="#0a0714" stroke="#221A42" stroke-width="1"/>
+        ${paths}
+        ${labels}
+        ${centerText}
+      </svg>`;
+  }
+
+  function _selLuna(id) {
+    lunaActiva = lunaActiva === id ? null : id;
+    renderLunarWheel();
+
+    const det = document.getElementById('rueda-luna-detalle');
+    if (!det) return;
+
+    if (!lunaActiva) { det.innerHTML = ''; return; }
+
+    const lunas = App.lsGet('bruja_lunas', Admin.getDefaultLunas13());
+    const l = lunas.find(x => x.id === lunaActiva);
+    if (!l) return;
+
+    det.innerHTML = `
+      <div class="card" style="border:1px solid var(--lavender);margin-bottom:1rem">
+        <div class="flex-between mb-1">
+          <div class="card-title" style="font-size:1.1rem">${l.emoji || '🌙'} ${l.nombre}</div>
+          <button class="btn-icon" onclick="Rueda._selLuna('${l.id}')">✕</button>
+        </div>
+        ${l.mes ? `<div style="font-size:.82rem;color:var(--muted);margin-bottom:.5rem">Luna ${l.mes} del año</div>` : ''}
+        ${l.ritual ? `
+          <div class="bib-prop mt-1">
+            <div class="bib-prop-label">🕯️ Ritual sugerido</div>
+            <div class="bib-prop-value">${l.ritual.replace(/\n/g,'<br>')}</div>
+          </div>` : ''}
+        ${l.usos ? `
+          <div class="bib-prop mt-1">
+            <div class="bib-prop-label">✨ Usos mágicos</div>
+            <div class="bib-prop-value">${l.usos.replace(/\n/g,'<br>')}</div>
+          </div>` : ''}
+        ${Admin.isUnlocked() ? `
+          <div style="margin-top:.75rem">
+            <button class="btn btn-ghost btn-sm"
+              onclick="Admin._lunaNueva('${l.id}');App.navigate('admin');Admin._showPanel('lunas')">
+              ✏️ Editar
+            </button>
+          </div>` : ''}
+      </div>`;
+    det.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ── Helpers ── */
   function formatFecha(mmdd) {
     if (!mmdd) return '';
     const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
     const [m, d] = mmdd.split('-').map(Number);
-    return `${d} ${meses[m - 1] || ''}`;
+    return `${d} ${meses[m-1] || ''}`;
   }
 
   function _setHemi(h, btn) {
@@ -3990,16 +4692,10 @@ const Rueda = (() => {
     App.lsSet('bruja_hemisferio', h);
     document.querySelectorAll('.hemi-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const sabats = App.lsGet('bruja_sabats', Admin.getDefaultSabats());
-    renderSabats(sabats);
+    renderSolarWheel();
   }
 
-  function _toggle(id) {
-    const det = document.getElementById('rueda-det-' + id);
-    if (det) det.style.display = det.style.display === 'none' ? 'block' : 'none';
-  }
-
-  return { render, _setHemi, _toggle };
+  return { render, _setHemi, _selSabat, _selLuna };
 })();
 
 </script>
@@ -4443,11 +5139,12 @@ const Tarot = (() => {
       <p class="section-sub">Tarot y Runas — herramientas para la intuición y el autoconocimiento.</p>
 
       <div class="tabs mb-2" id="adiv-tabs">
-        <button class="tab-btn active" onclick="Tarot._tabPrincipal('tarot', this)">🃏 Tarot</button>
+        <button class="tab-btn active" onclick="Tarot._tabPrincipal('tarot', this)">🃏 Tiradas</button>
+        <button class="tab-btn" onclick="Tarot._tabPrincipal('estudio', this)">📖 Estudiar cartas</button>
         <button class="tab-btn" onclick="Tarot._tabPrincipal('runas', this)">ᚠ Runas</button>
       </div>
 
-      <!-- TAROT -->
+      <!-- TIRADAS -->
       <div id="adiv-tarot" class="tab-panel active">
         <div class="tabs mb-2" id="tirada-tabs">
           ${TIRADAS.map((t, i) =>
@@ -4471,6 +5168,25 @@ const Tarot = (() => {
               Ir a Admin
             </button>
           </div>` : ''}
+      </div>
+
+      <!-- ESTUDIO — todas las cartas -->
+      <div id="adiv-estudio" class="tab-panel">
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem">
+          Los 22 Arcanos Mayores — toca una carta para ver su significado completo.
+        </p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.6rem">
+          ${ARCANOS_MAYORES.map(c => `
+            <div onclick="Tarot._verCarta(${c.num})"
+              style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+                     padding:.6rem;text-align:center;cursor:pointer;transition:border-color .2s"
+              onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+              <div style="font-size:1.8rem">${c.emoji}</div>
+              <div style="font-size:.68rem;color:var(--muted)">${c.num}</div>
+              <div style="font-size:.78rem;font-family:var(--font-heading);margin-top:.2rem;line-height:1.3">${c.nombre}</div>
+            </div>`).join('')}
+        </div>
+        <div id="carta-estudio-detalle"></div>
       </div>
 
       <!-- RUNAS -->
@@ -4547,11 +5263,14 @@ const Tarot = (() => {
     }));
 
     const imgs = App.lsGet('bruja_tarot_imgs', {});
+    const custom = App.lsGet('bruja_tarot_meanings', {});
+    // Aplicar significados custom encima de los base
+    const selConMeaning = seleccionadas.map(c => ({ ...c, ...(custom[c.num] || {}) }));
     const display = document.getElementById('tarot-display');
     if (!display) return;
 
     if (t.cartas === 1) {
-      const c = seleccionadas[0];
+      const c = selConMeaning[0];
       const significado = c.invertida ? (c.inv || '') : (c.normal || '');
       display.innerHTML = `
         <div class="tarot-card-img" style="${c.invertida?'transform:rotate(180deg)':''}">
@@ -4565,11 +5284,11 @@ const Tarot = (() => {
     } else {
       const posiciones = tiradaActual === 'cruz' ? POSICIONES_CRUZ :
                          tiradaActual === 'tres' ? ['Pasado', 'Presente', 'Futuro'] :
-                         seleccionadas.map((_, i) => 'Carta ' + (i+1));
+                         selConMeaning.map((_, i) => 'Carta ' + (i+1));
 
       display.innerHTML = `
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem">
-          ${seleccionadas.map((c, i) => {
+          ${selConMeaning.map((c, i) => {
             const significado = c.invertida ? (c.inv || '') : (c.normal || '');
             return `
             <div style="text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem">
@@ -4630,6 +5349,75 @@ const Tarot = (() => {
     }
   }
 
+  function _verCarta(num) {
+    const imgs = App.lsGet('bruja_tarot_imgs', {});
+    const custom = App.lsGet('bruja_tarot_meanings', {});
+    const base = ARCANOS_MAYORES.find(c => c.num === num);
+    if (!base) return;
+
+    // Mezclar significados custom encima de los base
+    const c = { ...base, ...( custom[num] || {} ) };
+
+    const detalle = document.getElementById('carta-estudio-detalle');
+    if (!detalle) return;
+
+    detalle.innerHTML = `
+      <div class="card" style="margin-top:1.25rem;border-color:var(--gold)">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+          <div style="font-size:3rem">${imgs[c.num] ? `<img src="${imgs[c.num]}" style="width:60px;border-radius:6px" onerror="this.outerHTML='${c.emoji}'">` : c.emoji}</div>
+          <div>
+            <div style="font-family:var(--font-heading);font-size:1.1rem;color:var(--gold-l)">${c.nombre}</div>
+            <div style="font-size:.8rem;color:var(--muted)">Arcano ${c.num} · ${c.clave}</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="margin-left:auto"
+            onclick="Tarot._editarCarta(${c.num})">✏️ Editar</button>
+        </div>
+        <div style="margin-bottom:.75rem">
+          <div style="font-size:.75rem;font-weight:600;color:var(--gold);margin-bottom:.3rem">⬆ NORMAL</div>
+          <p style="font-size:.88rem;color:var(--lavender);line-height:1.6">${c.normal || '—'}</p>
+        </div>
+        <div>
+          <div style="font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:.3rem">⬇ INVERTIDA</div>
+          <p style="font-size:.88rem;color:var(--lavender);line-height:1.6">${c.inv || '—'}</p>
+        </div>
+      </div>`;
+    detalle.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function _editarCarta(num) {
+    const custom = App.lsGet('bruja_tarot_meanings', {});
+    const base = ARCANOS_MAYORES.find(c => c.num === num);
+    if (!base) return;
+    const c = { ...base, ...(custom[num] || {}) };
+
+    App.openModal(`✏️ Editar: ${c.nombre}`, `
+      <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem">
+        Modifica los significados. Se guardan en tu dispositivo sin afectar los originales.
+      </p>
+      <div class="form-group">
+        <label class="form-label">⬆ Normal</label>
+        <textarea id="tc-normal" class="form-textarea" style="min-height:80px">${c.normal || ''}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">⬇ Invertida</label>
+        <textarea id="tc-inv" class="form-textarea" style="min-height:80px">${c.inv || ''}</textarea>
+      </div>`,
+      {
+        confirmLabel: 'Guardar',
+        onConfirm: () => {
+          const meanings = App.lsGet('bruja_tarot_meanings', {});
+          meanings[num] = {
+            normal: document.getElementById('tc-normal')?.value.trim(),
+            inv:    document.getElementById('tc-inv')?.value.trim(),
+          };
+          App.lsSet('bruja_tarot_meanings', meanings);
+          App.toast('Significados guardados ✓');
+          _verCarta(num); // actualizar detalle
+        }
+      }
+    );
+  }
+
   function _limpiar() {
     const display = document.getElementById('tarot-display');
     if (display) display.innerHTML = '<p class="text-muted">Presiona el botón para tirar las cartas</p>';
@@ -4640,7 +5428,7 @@ const Tarot = (() => {
     if (display) display.innerHTML = '<p class="text-muted">Presiona el botón para sacar las runas</p>';
   }
 
-  return { render, _tabPrincipal, _setTirada, _tirar, _limpiar, _setTiradaRuna, _tirarRunas, _limpiarRunas };
+  return { render, _tabPrincipal, _setTirada, _tirar, _limpiar, _setTiradaRuna, _tirarRunas, _limpiarRunas, _verCarta, _editarCarta };
 })();
 
 </script>
