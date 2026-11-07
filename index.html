@@ -4697,6 +4697,308 @@ const Rituales = (() => {
 </script>
   <script>
 /* ============================================================
+   HECHIZOS-DEFAULTS.JS — Hechizos del Libro
+   Basado en "El Año de la Bruja" — Los 12 Ciclos
+   ============================================================ */
+
+const HechizosDefaults = (() => {
+  const hechizos = [
+
+    /* ════════ CICLO I — FUNDAMENTOS ════════ */
+    {
+      id: 'h-c1-01',
+      name: 'Círculo de Protección',
+      categoria: 'proteccion',
+      ciclo: 'I – Fundamentos',
+      intencion: 'Crear un espacio sagrado y protegido para cualquier trabajo mágico',
+      luna: 'Cualquier fase. Luna llena para potencia máxima.',
+      materiales: '4 velas (blancas o de los colores de los elementos: amarilla/azul/roja/verde)\nSal\nAgua\nIncienso\nVela central blanca',
+      preparacion: 'Limpia el espacio físico. Enciende el incienso. Respira y centra tu energía.',
+      pasos: '1. Coloca las cuatro velas en los puntos cardinales: Norte (tierra/verde), Este (aire/amarillo), Sur (fuego/rojo), Oeste (agua/azul).\n2. Traza un círculo con sal alrededor del espacio donde trabajarás.\n3. Enciende las velas comenzando por el Este, en el sentido de las manecillas del reloj.\n4. Llama a cada elemento al encender: "Espíritu del Aire, del Este, te convoco. Espíritu del Fuego, del Sur, te convoco..." etc.\n5. Enciende la vela central: "El círculo está abierto y sellado."\n6. Trabaja dentro del círculo.\n7. Para cerrar, apaga las velas en sentido inverso: comenzando por el Norte. Agradece a cada elemento.',
+      cierre: 'Di: "El círculo está cerrado. Lo que fue convocado, ha sido liberado en amor. Que así sea."',
+      notas: 'El círculo es la base de toda práctica segura. No es obligatorio para hechizos cotidianos, pero sí para rituales intensos, trabajo con entidades o cuando sientas que necesitas protección extra.',
+      tags: 'círculo, elementos, fundamento, protección, espacio sagrado',
+    },
+    {
+      id: 'h-c1-02',
+      name: 'Hechizo de Tierra para Enraizarse',
+      categoria: 'sanacion',
+      ciclo: 'I – Fundamentos',
+      intencion: 'Estabilizarse, centrarse, volver al cuerpo cuando hay ansiedad o dispersión',
+      luna: 'Luna nueva o luna llena',
+      materiales: 'Un puñado de tierra\nUna piedra (cualquier piedra del suelo)\nVela marrón o verde\nTu cuerpo descalzo sobre tierra real (si es posible)',
+      preparacion: 'Ve al exterior si puedes. Si no, coloca tierra en un recipiente y descálzate frente a él.',
+      pasos: '1. Quítate los zapatos. Parate (o siéntate) con los pies tocando tierra o el recipiente con tierra.\n2. Enciende la vela.\n3. Cierra los ojos. Visualiza raíces saliendo de las plantas de tus pies, bajando profundo en la tierra.\n4. Con cada respiración, las raíces van más profundo — hasta el corazón de la tierra.\n5. Siente el peso de tu cuerpo. Siente la gravedad como abrazo, no como carga.\n6. Sostén la piedra en tu mano dominante. Transfiere a ella la energía dispersa, la ansiedad, lo que no puedes controlar.\n7. Cuando sientas que la piedra absorbió suficiente, ponla en la tierra frente a ti.\n8. Respira una vez más desde las raíces. Regresa.',
+      cierre: 'Deja la piedra afuera o entiérrala. Lleva contigo solo el peso estable del cuerpo.',
+      notas: 'Este hechizo funciona en momentos de crisis de ansiedad, disociación o cuando sientes que "no estás en tu cuerpo". Es el primer hechizo que enseña el libro porque sin enraizamiento, nada más funciona bien.',
+      tags: 'tierra, enraizamiento, ansiedad, cuerpo, crisis',
+    },
+
+    /* ════════ CICLO II — LAS FUERZAS ════════ */
+    {
+      id: 'h-c2-01',
+      name: 'Consagración de Herramientas',
+      categoria: 'ritual',
+      ciclo: 'II – Las Fuerzas',
+      intencion: 'Cargar y dedicar una herramienta ritual a tu práctica',
+      luna: 'Luna llena',
+      materiales: 'La herramienta a consagrar\nSal\nAgua\nVela\nIncienso\nTu intención clara',
+      preparacion: 'Limpia físicamente la herramienta. Colócala en el centro de tu altar.',
+      pasos: '1. Presenta la herramienta a cada elemento:\n   - Tierra: pásala por sal (o toca tierra con ella). Di: "Que la tierra le dé forma y permanencia."\n   - Aire: pásala por el humo del incienso. Di: "Que el aire le dé claridad y propósito."\n   - Fuego: pásala (con cuidado) cerca de la llama sin quemarla. Di: "Que el fuego le dé poder y voluntad."\n   - Agua: salpícala con agua. Di: "Que el agua le dé fluidez e intuición."\n2. Sostén la herramienta entre tus manos. Visualiza luz blanca o dorada fluyendo desde tus palmas hacia ella.\n3. Di en voz alta para qué la destinas y con qué intención.\n4. Deja la herramienta expuesta a la luz de la luna llena esa noche.',
+      cierre: 'La herramienta está consagrada. Guárdala en su lugar designado — no la uses para cosas cotidianas.',
+      notas: 'Una herramienta no tiene que ser "auténtica" o cara. Una cuchara de cocina puede ser tu athame si la consagras con esa intención. Los objetos no tienen magia propia — tú se la das.',
+      tags: 'consagración, herramientas, altar, elementos, carga',
+    },
+    {
+      id: 'h-c2-02',
+      name: 'Hechizo de Protección del Hogar',
+      categoria: 'proteccion',
+      ciclo: 'II – Las Fuerzas',
+      intencion: 'Crear una barrera de protección energética en la casa',
+      luna: 'Luna llena o luna nueva (para renovar)',
+      materiales: 'Sal gruesa\nRuda (hierba)\nRomero\nAgua bendita o agua de luna\nVela negra o blanca\n4 cuarzos pequeños (o piedras de tu jardín)',
+      preparacion: 'Haz un sahumerio de ruda por toda la casa antes de comenzar.',
+      pasos: '1. Comienza en la puerta principal.\n2. Traza una línea de sal en el umbral de cada puerta y ventana que da al exterior. Di: "Nada que no sea amor puede entrar aquí."\n3. En las cuatro esquinas de la casa coloca un cuarzo (o piedra). Di en cada esquina: "Esta esquina es protegida. Esta esquina es sagrada."\n4. Mezcla agua con ruda y romero. Deja reposar un día. Luego rocía cada habitación, especialmente las esquinas.\n5. Enciende la vela en el centro de la casa. Di: "Esta casa es un templo. Este hogar es sagrado. Lo que no vibra con mi bienestar no tiene lugar aquí."',
+      cierre: 'Deja que la vela se consuma completamente. Renueva la sal de los umbrales cada luna nueva.',
+      notas: 'Esta es la protección básica que toda bruja debería tener en su hogar. La sal seca se puede barrer después de tres días — su trabajo ya está hecho.',
+      tags: 'protección, hogar, sal, ruda, romero, barrera',
+    },
+
+    /* ════════ CICLO III — RUEDA DEL AÑO / LUNA ════════ */
+    {
+      id: 'h-c3-01',
+      name: 'Ritual de Luna Nueva — Siembra de Intención',
+      categoria: 'manifestacion',
+      ciclo: 'III – Rueda del Año & Luna',
+      intencion: 'Plantar las semillas de lo que quieres crear en el nuevo ciclo',
+      luna: 'Luna nueva (dentro de las primeras 48 horas)',
+      materiales: 'Papel y pluma (tinta negra)\nVela blanca o plateada\nSemilla real (opcional)\nTaza de té de manzanilla o lavanda',
+      preparacion: 'Encuentra silencio. Apaga el teléfono. Prepara el té.',
+      pasos: '1. Siéntate con el té en las manos. Respira. La luna nueva es oscuridad — es potencial puro.\n2. Escribe en papel tres intenciones para este ciclo lunar. No deseos vagos: intenciones concretas y en primera persona: "Yo creo...", "Yo recibo...", "Yo me permito..."\n3. Lee cada una en voz alta tres veces.\n4. Dobla el papel hacia ti (movimiento de atracción). Ponlo bajo la vela.\n5. Enciende la vela. Di: "Planto estas semillas en la oscuridad fértil. Que crezcan con la luna."\n6. Si tienes una semilla real, plántala después del ritual — acto físico que ancla la intención.',
+      cierre: 'Guarda el papel doblado hasta la luna llena. En luna llena, léelo y evalúa cómo crecieron esas intenciones. Luego quémalo con gratitud.',
+      notas: 'La luna nueva no es momento de rituales intensos — es momento de susurrarle al universo. Suave, clara, con confianza.',
+      tags: 'luna nueva, intención, siembra, manifestación, ciclo',
+    },
+    {
+      id: 'h-c3-02',
+      name: 'Ritual de Luna Llena — Cosecha y Liberación',
+      categoria: 'liberacion',
+      ciclo: 'III – Rueda del Año & Luna',
+      intencion: 'Recibir la energía del plenilunio, agradecer lo recibido y soltar lo que ya no sirve',
+      luna: 'Luna llena',
+      materiales: 'Papel y pluma\nFuego seguro (vela, cenicero o plato metálico)\nVela blanca\nAgua (cuenco de agua que puedas dejar a la luz de la luna)\nFlores blancas o de cualquier color',
+      preparacion: 'Si puedes ver la luna, hazlo afuera o cerca de una ventana.',
+      pasos: '1. Coloca el cuenco de agua donde reciba la luz de la luna. Esta agua cargada servirá para limpiar y potenciar.\n2. Enciende la vela blanca. Siéntate con las flores frente a ti.\n3. Escribe en papel lo que quieres soltar: situaciones, emociones, patrones, personas. Sé honesto.\n4. Lee lo que escribiste en voz alta, sin enjuiciarte.\n5. Quema el papel en la llama (con cuidado) o en el fuego del cenicero. Mientras arde, di: "Suelto esto con amor. Gracias por lo que enseñó. Ya puede irse."\n6. Baña tus manos en el agua de luna. Visualiza que la luz llena lo que el fuego vació.',
+      cierre: 'Usa el agua de luna en los días siguientes: en tu baño, para regar plantas, para sahumerios.',
+      notas: 'La luna llena amplifica todo — lo bueno y lo que necesita salir. No la desperdicies scrolleando tu teléfono.',
+      tags: 'luna llena, cosecha, liberación, fuego, agua de luna',
+    },
+
+    /* ════════ CICLO IV — PLANTAS, VELAS Y FUEGO ════════ */
+    {
+      id: 'h-c4-01',
+      name: 'Vela de Intención — Carga y Labrado',
+      categoria: 'manifestacion',
+      ciclo: 'IV – Plantas, Velas & Fuego',
+      intencion: 'Cargar una vela con tu intención y activarla para cualquier propósito',
+      luna: 'Según la intención: creciente para atraer, menguante para alejar, llena para potencia',
+      materiales: 'Vela del color apropiado\nAceite esencial relacionado (lavanda = paz, canela = prosperidad, rosa = amor)\nHierbas relevantes (pulverizadas o enteras pequeñas)\nUn objeto puntiagudo para grabar',
+      preparacion: 'Sostén la vela entre tus manos. Transfiere tu intención.',
+      pasos: '1. Graba en la vela: tu nombre, la fecha, un símbolo que represente tu intención, o las primeras palabras de lo que pides.\n2. Unta el aceite: si quieres atraer, ve del centro hacia las puntas. Si quieres alejar, del centro hacia abajo.\n3. Rueda la vela engrasada sobre las hierbas para que se peguen.\n4. Enciende la vela con una cerilla (no encendedor — el fuego vivo es más limpio).\n5. Mientras prende, habla tu intención en voz alta una sola vez, con claridad.\n6. Deja que arda todo lo que pueda esa sesión. No la apagues soplando — usa tus dedos o un apagavelas.',
+      cierre: 'Observa la llama: si arde clara y alta = buen augurio. Si chisporrotea = obstáculos a trabajar. Si se apaga = revisa tu intención o el momento.',
+      notas: 'La piromancia (lectura de la llama y la cera) es una habilidad que se desarrolla con práctica. Registra tus observaciones en el diario. Con el tiempo, aprenderás a leer tu propia vela.',
+      tags: 'vela, labrado, aceite, hierbas, piromancia, intención',
+    },
+    {
+      id: 'h-c4-02',
+      name: 'Baño de Ruda para Limpiar Mal de Ojo',
+      categoria: 'proteccion',
+      ciclo: 'IV – Plantas, Velas & Fuego',
+      intencion: 'Limpiar envidias, mal de ojo y energías ajenas que se han pegado',
+      luna: 'Luna menguante preferiblemente',
+      materiales: 'Ruda fresca (un manojo)\nAgua caliente\nSal\nLimón (cortado en cuartos)\nVela negra o morada',
+      preparacion: 'Hierve la ruda en agua durante 5 minutos. Deja enfriar a temperatura tibia.',
+      pasos: '1. Vierte el agua de ruda en un cubo o en la bañera.\n2. Agrega sal y el jugo del limón.\n3. Enciende la vela negra.\n4. Mientras te bañas con esta agua (de cabeza hacia abajo), visualiza una luz blanca saliendo de tu cuerpo y disolviendo todo lo que sea ajeno.\n5. Di en voz alta: "Lo que no es mío, se va. Lo que no me pertenece, se libera. Mi energía es mía."\n6. No te enjuagues — deja que el cuerpo absorba.\n7. Desvístete en la puerta (si es posible) antes de entrar a la casa — deja que lo que salió no entre contigo.',
+      cierre: 'Viste ropa limpia después. Duerme esa noche con un cuarzo negro o una obsidiana bajo la almohada.',
+      notas: 'El mal de ojo no siempre viene de enemistad — viene de envidia involuntaria, de miradas intensas de personas que desean algo que tú tienes. No tienes que odiar a quien te lo hizo para limpiarlo.',
+      tags: 'ruda, mal de ojo, envidia, limpieza, baño',
+    },
+    {
+      id: 'h-c4-03',
+      name: 'Bolsa de Protección Personal',
+      categoria: 'proteccion',
+      ciclo: 'IV – Plantas, Velas & Fuego',
+      intencion: 'Crear un amuleto portátil de protección para llevar contigo',
+      luna: 'Luna llena',
+      materiales: 'Tela negra (un cuadrado pequeño)\nHilo negro o rojo\nRuda\nRomero\nUna piedra pequeña negra (turmalina negra, obsidiana, o cualquier piedra oscura)\nTu pelo o una gota de tu sangre (opcional, para vincularla)',
+      preparacion: 'Limpia todos los materiales con incienso antes de empezar.',
+      pasos: '1. Extiende la tela. Coloca en el centro las hierbas y la piedra.\n2. Si vas a vincularla: agrega tu pelo o una gota de sangre propia — esto la hace específicamente tuya.\n3. Visualiza mientras doblas la tela: una luz oscura y densa formando un escudo a tu alrededor.\n4. Ata con el hilo haciendo nueve nudos. En cada nudo, afirma: "Con este nudo sello mi protección."\n5. Sopla sobre la bolsa tres veces — tu aliento la activa.\n6. Lleva la bolsa contigo: en el bolsillo, en la cartera, bajo la almohada.',
+      cierre: 'Recarga la bolsa cada luna llena: déjala expuesta a la luna, agrega una gota de aceite de ruda.',
+      notas: 'Esta bolsa absorbe energías negativas. Si algún día la sientes muy cargada o pesada, desentiérrala o tírala al mar/río y haz una nueva.',
+      tags: 'bolsa, amuleto, protección personal, ruda, nudo',
+    },
+
+    /* ════════ CICLO VI — COSMOS Y ADIVINACIÓN ════════ */
+    {
+      id: 'h-c6-01',
+      name: 'Lectura de Vela para Respuesta',
+      categoria: 'adivinacion',
+      ciclo: 'VI – Cosmos & Adivinación',
+      intencion: 'Usar la llama y la cera de una vela como oráculo para una pregunta específica',
+      luna: 'Cualquier fase',
+      materiales: 'Vela blanca sin labrar\nPlato blanco\nTu pregunta clara y específica',
+      preparacion: 'Formula la pregunta con claridad. No preguntes "¿me va a ir bien en la vida?" — pregunta algo concreto y observarable.',
+      pasos: '1. Sostén la vela y conecta con tu pregunta.\n2. Enciende y coloca en el plato.\n3. Observa durante al menos 5 minutos sin interrupciones:\n   - La llama: alta y estable = sí / fortaleza. Oscilante sin viento = influencias externas. Baja o titilante = obstáculos. Que se apague = no es el momento.\n   - El humo: blanco = respuesta positiva. Negro = bloqueos presentes.\n   - La cera: fluye abundante = movimiento, cosas en progreso. Se solidifica pronto = estancamiento. Forma figuras reconocibles = símbolos a interpretar.\n4. Registra TODO lo que ves en tu diario sin interpretarlo primero. Luego analiza.',
+      cierre: 'Al apagar, di: "Gracias por mostrarme."',
+      notas: 'La piromancia es un oráculo que se desarrolla con práctica. Las primeras lecturas serán confusas — eso es normal. La consistencia de tu práctica de registro es lo que te enseña a leer.',
+      tags: 'piromancia, vela, oráculo, adivinación, llama, cera',
+    },
+    {
+      id: 'h-c6-02',
+      name: 'Tirada de Runas de Tres Posiciones',
+      categoria: 'adivinacion',
+      ciclo: 'VI – Cosmos & Adivinación',
+      intencion: 'Consultar las runas para una situación actual: pasado, presente, camino',
+      luna: 'Cualquier fase. Mejor en silencio.',
+      materiales: 'Tu set de runas\nTela oscura para extenderlas\nVela encendida (cualquier color)\nTu diario',
+      preparacion: 'Sostén las runas entre las manos. Respira. Formula una pregunta o situación clara.',
+      pasos: '1. Extiende la tela. Revuelve las runas boca abajo.\n2. Con la mano no dominante, selecciona tres runas una a una sin ver.\n3. Colócalas en fila sin voltear.\n4. Voltea la primera (izquierda): raíz de la situación, lo que viene de atrás.\n5. Voltea la segunda (centro): energía presente, lo que está activo ahora.\n6. Voltea la tercera (derecha): el camino que se abre si sigues la dirección actual.\n7. Lee cada runa en su posición — no de forma aislada. Las tres forman una historia.\n8. Registra en el diario. Las runas hablan más claro cuando vuelves a leerlas días después.',
+      cierre: 'Agradece al oráculo. Guarda las runas en su bolsa.',
+      notas: 'Las runas no predicen el futuro fijo — muestran energías en movimiento. Lo que "viene" puede cambiar si cambias tú. Esa es su utilidad real.',
+      tags: 'runas, tirada, adivinación, tres posiciones, oráculo',
+    },
+
+    /* ════════ CICLO VII — EL ARTE DE CONJURAR ════════ */
+    {
+      id: 'h-c7-01',
+      name: 'Ritual Lunar Completo — Las Cuatro Fases',
+      categoria: 'ritual',
+      ciclo: 'VII – El Arte de Conjurar',
+      intencion: 'Ritual estructurado que usa las cuatro fases lunares como motor',
+      luna: 'Se trabaja a lo largo de un ciclo completo de 28 días',
+      materiales: 'Diario mágico para registro\nVelas de cuatro colores (blanca, plateada, azul, negra)\nAgua de luna (preparada en luna llena)\nHierbas según la intención\nTu carta natal (opcional, para personalizar)',
+      preparacion: 'Elige una intención que merezca un ciclo completo. Nada trivial — algo que realmente quieres transformar.',
+      pasos: 'LUNA NUEVA: Escribe tu intención. Planta la semilla en palabras y en acto físico (siembra algo, inicia algo). Vela blanca.\nLUNA CRECIENTE: Toma acción concreta. El ritual es aquí el trabajo real: haz lo que tu intención requiere en el mundo físico. Vela plateada.\nLUNA LLENA: Ritual de plenitud y gratitud. Recibe la energía del plenilunio en tu cuerpo. Agua de luna. Escribe qué creció. Vela azul.\nLUNA MENGUANTE: Suelta lo que no sirve a tu intención. Identifica los obstáculos internos. Quema lo que ya no necesitas. Vela negra.',
+      cierre: 'Al finalizar el ciclo, escribe qué aprendiste — independientemente del resultado externo. El ciclo siempre enseña.',
+      notas: 'Este es el ritual que el libro llama "magia real" — no el momento de encender una vela, sino el compromiso de actuar en coherencia con tu intención durante 28 días.',
+      tags: 'ciclo lunar, cuatro fases, ritual completo, transformación',
+    },
+    {
+      id: 'h-c7-02',
+      name: 'Corte de Lazos Energéticos',
+      categoria: 'liberacion',
+      ciclo: 'VII – El Arte de Conjurar',
+      intencion: 'Cortar una conexión energética no deseada con una persona, situación o hábito',
+      luna: 'Luna menguante o luna nueva',
+      materiales: 'Dos velas (una para ti: blanca, una para lo que cortas: negra o del color que sientas)\nCordón negro de hilo\nTijeras o cuchillo ritual\nPlato resistente al calor\nSal\nAgua',
+      preparacion: 'Medita antes sobre lo que quieres cortar. Sé honesto: a veces no queremos realmente cortar — solo queremos que cambie. El ritual solo funciona si la intención es real.',
+      pasos: '1. Coloca las dos velas separadas pero conectadas por el cordón.\n2. Enciende la vela blanca primero (tú).\n3. Siéntate. Cierra los ojos. Visualiza el lazo energético entre tú y lo que quieres cortar — cómo se ve, dónde se conecta en tu cuerpo.\n4. Habla en voz alta: "Te libero con amor y sin rencor. Corto este lazo en mi bienestar. Lo que fue, fue. Lo que necesita fluir, fluye."\n5. Enciende la segunda vela desde la primera (hay que dar para cortar).\n6. Con las tijeras o cuchillo, corta el cordón entre las dos velas.\n7. Quema el pedazo de cordón que quedó conectado a la vela ajena.\n8. Deja que tu vela arda hasta el final. Apaga la otra.',
+      cierre: 'Lávate las manos con agua y sal después. Haz un baño de florecimiento al día siguiente.',
+      notas: 'El corte de lazos hecho desde el dolor o la rabia raramente funciona — y puede rebotar. Se hace desde la paz, aunque duela. La diferencia es crucial.',
+      tags: 'corte de lazos, liberación, velas, menguante, relaciones',
+    },
+
+    /* ════════ CICLO VIII — AMOR Y RELACIONES ════════ */
+    {
+      id: 'h-c8-01',
+      name: 'Ritual de Amor Propio',
+      categoria: 'amor',
+      ciclo: 'VIII – Amor & Relaciones',
+      intencion: 'Fortalecer la relación contigo mismo — base de toda magia de amor',
+      luna: 'Luna creciente o luna llena',
+      materiales: 'Espejo\nVela rosada\nAceite de rosa o lavanda\nFlores de tu elección\nAgua con sal de rosas\nTu nombre escrito en papel',
+      preparacion: 'Báñate antes del ritual. Este es un ritual para ti — tómate tiempo.',
+      pasos: '1. Coloca el espejo frente a ti. Las flores alrededor.\n2. Unge la vela con aceite de rosa (del centro hacia arriba para atraer). Enciéndela.\n3. Mira tu reflejo directamente. Esto puede ser incómodo — es normal.\n4. Di en voz alta tres cosas que genuinamente valoras de ti mismo. No de tu cuerpo — de quién eres.\n5. Luego di: "Me acepto como soy ahora. Me elijo. Soy digno/a de amor y de lo que deseo."\n6. Escribe tu nombre en el papel. Rodéalo de un círculo. Dobla hacia ti.\n7. Pon el papel bajo la vela y deja que arda.',
+      cierre: 'Guarda una flor del ritual hasta que se seque. Cuando se seque completamente, entiérrala — devuelve lo que ya se integró.',
+      notas: 'Sin amor propio sólido, toda la magia de amor atrae lo que creemos merecer — y si creemos merecer poco, así llega. Este ritual no es opcional: es el fundamento.',
+      tags: 'amor propio, espejo, rosa, autoestima, fundamento',
+    },
+    {
+      id: 'h-c8-02',
+      name: 'Atadura de Miel para Suavizar una Situación',
+      categoria: 'amor',
+      ciclo: 'VIII – Amor & Relaciones',
+      intencion: 'Hacer que una persona, institución o situación sea más receptiva y benévola hacia ti',
+      luna: 'Luna creciente o llena',
+      materiales: 'Frasco de vidrio con tapa\nMiel\nNombre de la persona o situación (escrito en papel)\nCanela en polvo\nUna foto tuya (opcional)\nVela amarilla o rosada',
+      preparacion: 'No se hace desde el enojo. Si estás enojado/a, espera a calmarte.',
+      pasos: '1. Escribe el nombre de la persona o situación en papel. Si es una institución (trabajo, banco, etc.), escribe su nombre también.\n2. Dobla el papel hacia ti.\n3. Pon el papel en el fondo del frasco.\n4. Vierte miel sobre el papel mientras dices: "Que [nombre] sea dulce conmigo. Que todo lo que venga de [nombre] fluya con facilidad y benevolencia."\n5. Agrega canela — abre caminos y atrae buenas energías.\n6. Cierra el frasco. Sacúdelo suavemente mientras repites tu intención.\n7. Coloca el frasco sobre la vela encendida o junto a ella.',
+      cierre: 'Guarda el frasco en un lugar alto (el amor y la prosperidad suben). Renuévalo si la situación lo requiere.',
+      notas: 'La atadura de miel no obliga a nadie — suaviza las condiciones para que el encuentro sea más armónico. No viola el libre albedrío: solo crea el ambiente.',
+      tags: 'miel, atadura, amor, relaciones, dulzura, trabajo',
+    },
+
+    /* ════════ CICLO IX — PROSPERIDAD ════════ */
+    {
+      id: 'h-c9-01',
+      name: 'Hechizo de la Billetera Verde',
+      categoria: 'prosperidad',
+      ciclo: 'IX – Prosperidad & Manifestación',
+      intencion: 'Atraer dinero y abundancia',
+      luna: 'Luna creciente o luna llena',
+      materiales: 'Billetera verde o verde dentro de tu billetera actual\nCinco monedas (de distinto valor)\nCanela en polvo\nUna hoja de laurel\nAceite de canela o pino',
+      preparacion: 'Limpia tu billetera con incienso primero. Saca todo el dinero y las tarjetas.',
+      pasos: '1. Unge el interior de la billetera con aceite de canela.\n2. Coloca las cinco monedas en diferentes bolsillos o compartimentos.\n3. Escribe en la hoja de laurel: "Siempre tengo más de lo que necesito."\n4. Dobla la hoja y colócala en el compartimento principal.\n5. Espolvorea una pequeña cantidad de canela en el interior.\n6. Mientras lo armas, visualiza la billetera siempre llena, dinero que entra con facilidad.\n7. Di: "Esta billetera atrae abundancia. El dinero llega a mí con gratitud y regresa multiplicado."',
+      cierre: 'Devuelve tu dinero y tarjetas. Renueva el laurel cada luna llena.',
+      notas: 'La magia de prosperidad requiere acción complementaria: busca trabajo, abre el negocio, envía la factura. La vela abre el camino — tú lo caminas.',
+      tags: 'dinero, billetera, prosperidad, laurel, canela, abundancia',
+    },
+
+    /* ════════ CICLO X — SANACIÓN ════════ */
+    {
+      id: 'h-c10-01',
+      name: 'Ritual de Sanación con Aceites',
+      categoria: 'sanacion',
+      ciclo: 'X – Sanación, Cuerpo & Energía',
+      intencion: 'Sanar o aliviar mediante el trabajo energético con aceites esenciales',
+      luna: 'Cualquier fase. Luna llena para potenciar.',
+      materiales: 'Aceite base (almendras, jojoba o coco)\nAceite esencial de lavanda (calmante), eucalipto (respiratorio), árbol de té (antibacterial) o rosa (corazón)\nVela verde o blanca\nTus manos',
+      preparacion: 'Mezcla el aceite esencial con el base en proporción 3-5% (3-5 gotas de esencial por cada 10ml de base). Sostén la mezcla y programa la intención.',
+      pasos: '1. Enciende la vela verde.\n2. Vierte unas gotas de aceite en tus palmas. Frota suavemente para calentar.\n3. Lleva las palmas a tu nariz e inhala profundo tres veces — el aceite entra por el sistema olfativo directo al sistema nervioso.\n4. Aplica con movimientos suaves y circulares en la zona que necesita atención (pecho para emociones, nuca para tensión, plexo solar para ansiedad).\n5. Mientras masajeas, visualiza la zona bañada en luz verde.\n6. Di: "Esta parte de mí está siendo cuidada. Recibo sanación."',
+      cierre: 'Descansa 10 minutos después. No te laves las manos — deja que el aceite se absorba.',
+      notas: 'Los aceites esenciales son química real: lavanda reduce cortisol, eucalipto abre vías respiratorias, árbol de té tiene propiedades antibacterianas comprobadas. La magia y la ciencia no son opuestos aquí.',
+      tags: 'aceites, sanación, cuerpo, lavanda, masaje, fisioterapia',
+    },
+
+    /* ════════ CICLO XI — ENTIDADES Y ESPÍRITUS ════════ */
+    {
+      id: 'h-c11-01',
+      name: 'Ritual de Protección antes de Trabajar con Entidades',
+      categoria: 'proteccion',
+      ciclo: 'XI – Entidades & Espíritus',
+      intencion: 'Crear una protección sólida antes de cualquier trabajo de comunicación o invocación',
+      luna: 'Luna llena o luna nueva',
+      materiales: 'Sal\nAgua\nIncienso de copal o mirra\nVela blanca\nUn objeto personal de protección (amuleto, piedra, tu athame)',
+      preparacion: 'No hagas esto si estás en un estado emocional alterado — el miedo, el dolor o la rabia son puertas que atraen lo equivocado.',
+      pasos: '1. Comienza con el sahumerio: lleva el humo alrededor de tu cuerpo en espiral ascendente.\n2. Traza un círculo de sal a tu alrededor.\n3. Enciende la vela blanca en el centro.\n4. Di en voz alta: "Solo lo que vibra en amor y luz puede entrar en este espacio y en este cuerpo. Estoy protegido/a. Mi mente y mi espíritu pertenecen a mí."\n5. Visualiza una esfera de luz blanca dorada rodeando todo tu cuerpo, impenetrable.\n6. Sostén tu objeto de protección y transfiere la intención de escudo a él.\n7. Mantén el objeto en tu mano durante todo el trabajo.',
+      cierre: 'Al terminar cualquier trabajo con entidades, haz una limpieza con sal y agua. Sal a tierra abierta si puedes.',
+      notas: 'Esta protección no es opcional cuando trabajas con entidades. Es equivalente a ponerse guantes antes de manipular algo desconocido. No es miedo — es protocolo.',
+      tags: 'protección, entidades, escudo, círculo, protocolo',
+    },
+
+    /* ════════ CICLO XII — SOMBRA Y GRIMORIO ════════ */
+    {
+      id: 'h-c12-01',
+      name: 'Ritual de Integración de la Sombra',
+      categoria: 'sombra',
+      ciclo: 'XII – Magia Oscura, Sombra & Grimorio Final',
+      intencion: 'Integrar un aspecto de ti mismo/a que has rechazado — el Trabajo de Sombra mágico',
+      luna: 'Luna nueva o luna menguante',
+      materiales: 'Espejo negro (obsidiana o espejo pintado de negro por detrás)\nVela negra\nTu diario\nSal\nAgua',
+      preparacion: 'Esta es una práctica que requiere honestidad radical. No la hagas si no estás dispuesto/a a ver lo que sale.',
+      pasos: '1. Siéntate frente al espejo negro con la vela negra encendida.\n2. Pregunta en voz alta: "¿Qué parte de mí tengo miedo de ver?"\n3. Mira en el espejo negro sin apartar la vista. No analices — solo observa.\n4. Escribe en el diario lo que emerge: imágenes, palabras, emociones, recuerdos. Sin juzgar.\n5. Cuando sientas que llegaste a algo real, di en voz alta: "Te veo. No te tengo miedo. Te recibo como parte de mí."\n6. Cierra el ritual: apaga la vela, cubre el espejo con un paño negro.',
+      cierre: 'Después de este ritual, necesitas reposo y cuidado. Come algo. Sal a la luz natural. Habla con alguien de confianza si lo necesitas.',
+      notas: 'El trabajo de sombra (Jung + brujería) no es "invocar lo oscuro" — es reconocer las partes de ti que has negado. Lo que negas en ti mismo se vuelve tu mayor punto ciego y, eventualmente, te controla. Integrarlo es el acto más poderoso de cualquier práctica espiritual.',
+      tags: 'sombra, Jung, integración, espejo negro, honestidad, transformación',
+    },
+  ];
+
+  return hechizos;
+})();
+
+</script>
+  <script>
+/* ============================================================
    HECHIZOS.JS — Biblioteca + Generador completo de rituales
    ============================================================ */
 
@@ -4744,7 +5046,10 @@ const Hechizos = (() => {
   }
 
   function renderBiblioteca() {
-    const items = App.lsGet('bruja_hechizos', []);
+    const _stored = App.lsGet('bruja_hechizos', []);
+    const defaults = typeof HechizosDefaults !== 'undefined' ? HechizosDefaults : [];
+    const items = (_stored && _stored.length > 0) ? _stored : defaults;
+
     if (items.length === 0) {
       return `<div class="empty-state">
         <span class="es-emoji">✨</span>
@@ -5065,14 +5370,19 @@ const Hechizos = (() => {
   }
 
   function _ver(id) {
-    const items = App.lsGet('bruja_hechizos', []);
-    const it = items.find(x => x.id === id);
+    const stored = App.lsGet('bruja_hechizos', []);
+    const defaults = typeof HechizosDefaults !== 'undefined' ? HechizosDefaults : [];
+    const it = stored.find(x => x.id === id) || defaults.find(x => x.id === id);
     if (!it) return;
     const lunaMap = { nueva:'🌑 Luna Nueva', creciente:'🌒 Luna Creciente', llena:'🌕 Luna Llena', menguante:'🌘 Luna Menguante' };
+    // pasos/preparacion son campos del libro; procedimiento es del formato admin
+    const procTexto = it.procedimiento || [it.preparacion, it.pasos].filter(Boolean).join('\n\n');
 
     App.openModal(it.name, `
       <div style="text-align:center;font-size:3rem;margin-bottom:.75rem">${it.emoji || '✨'}</div>
+      ${it.ciclo ? `<p style="font-size:.78rem;color:var(--muted);text-align:center;margin-bottom:.75rem">📚 ${it.ciclo}</p>` : ''}
       ${it.intencion ? `<p><strong>Intención:</strong> ${it.intencion}</p>` : ''}
+      ${it.categoria ? `<p><strong>Categoría:</strong> ${it.categoria}</p>` : ''}
       ${it.panteon ? `<p><strong>Panteón:</strong> ${it.panteon}</p>` : ''}
       ${it.luna ? `<p><strong>Luna ideal:</strong> ${lunaMap[it.luna] || it.luna}</p>` : ''}
       ${it.materiales ? `
@@ -5080,10 +5390,15 @@ const Hechizos = (() => {
           <div class="bib-prop-label">🌿 Materiales</div>
           <div class="bib-prop-value">${it.materiales.replace(/\n/g,'<br>')}</div>
         </div>` : ''}
-      ${it.procedimiento ? `
+      ${procTexto ? `
         <div class="bib-prop mt-2">
           <div class="bib-prop-label">📋 Procedimiento</div>
-          <div class="bib-prop-value">${it.procedimiento.replace(/\n/g,'<br>')}</div>
+          <div class="bib-prop-value">${procTexto.replace(/\n/g,'<br>')}</div>
+        </div>` : ''}
+      ${it.cierre ? `
+        <div class="bib-prop mt-2">
+          <div class="bib-prop-label">🌟 Cierre</div>
+          <div class="bib-prop-value">${it.cierre.replace(/\n/g,'<br>')}</div>
         </div>` : ''}
       ${it.notas ? `
         <div class="bib-prop mt-2">
@@ -5164,17 +5479,174 @@ const Hechizos = (() => {
 </script>
   <script>
 /* ============================================================
+   ALTAR-DEFAULTS.JS — Panteones del Libro
+   Contenido basado en "El Año de la Bruja"
+   ============================================================ */
+
+const AltarDefaults = (() => {
+  const panteones = [
+    {
+      id: 'pan-nordico',
+      name: 'Panteón Nórdico',
+      emoji: '⚡',
+      descripcion: 'Las fuerzas del norte: dioses de la guerra, la sabiduría, el amor y el destino. Trabajan con quien actúa con honestidad y valentía. Sus herramientas principales son las runas — un sistema de escritura sagrada que también es oráculo y magia en sí mismo.',
+      origen: 'Escandinavia, pueblos germánicos',
+      elemento: 'Tierra y Aire',
+      deidades: [
+        { nombre: 'Odín', rol: 'Dios de la sabiduría, la magia, los muertos y la guerra. Sacrificó un ojo por conocimiento y se colgó nueve días para recibir las runas. Patrón de los brujos, poetas y guerreros espirituales.', ofrendas: 'Hidromiel, cuervos (representados), huesos, tabaco, runas grabadas', tags: 'sabiduría, magia, muerte, runas' },
+        { nombre: 'Freya', rol: 'Diosa del amor, la magia Seiðr, la guerra y la muerte. Recibe la mitad de los caídos en batalla. Primera maestra de la magia chamánica entre los dioses.', ofrendas: 'Miel, flores de la primavera, oro, gatos (representados), ámbar', tags: 'amor, magia, magia sexual, fertilidad' },
+        { nombre: 'Thor', rol: 'Dios del trueno, la protección y la agricultura. Defiende a la humanidad de los gigantes del caos. Accesible y directo — el dios más querido por la gente común.', ofrendas: 'Cerveza, pan, huesos, hierro, martillo (mjölnir)', tags: 'protección, fuerza, casa, familia' },
+        { nombre: 'Hel', rol: 'Señora del inframundo nórdico: Niflheim. Recibe a los muertos que no caen en batalla. Mitad viva, mitad muerta. Poderosa en trabajo ancestral y comunicación con los que partieron.', ofrendas: 'Agua, comida oscura, velas negras, monedas antiguas', tags: 'ancestros, muerte, inframundo' },
+        { nombre: 'Frigg', rol: 'Reina de los dioses, diosa del hogar, la maternidad y la clarividencia. Conoce el destino de todos pero rara vez lo habla. Protege los matrimonios y los hogares.', ofrendas: 'Leche, manzanas, rueca, lino, velas blancas', tags: 'hogar, familia, clarividencia' },
+        { nombre: 'Loki', rol: 'El dios del cambio, el engaño creativo y las transformaciones necesarias. Ni bueno ni malo: catalizador. Trabaja con quienes necesitan romper estructuras rígidas.', ofrendas: 'Cosas rotas, comida picante, llamas de colores, todo lo inusual', tags: 'caos, cambio, transformación, magia caótica' },
+      ],
+      herramientas: 'Runas, mjölnir (martillo), lanza, cuernos para beber, piel de animal',
+      colores: 'Rojo, azul marino, dorado, negro',
+      dias: 'Miércoles (Odín/Wōden), Jueves (Thor), Viernes (Freya)',
+      compatibilidad: 'Especialmente fuerte para magia con runas, trabajo con muertos, protección del hogar y guerreros espirituales.',
+    },
+    {
+      id: 'pan-celta',
+      name: 'Panteón Celta / Wicca',
+      emoji: '🌿',
+      descripcion: 'El panteón de la tierra, las estaciones y el ciclo eterno de la naturaleza. La Rueda del Año es su mapa sagrado. Trabajan con la dualidad Dios-Diosa como motor de la creación — el Dios solar que nace, muere y renace; la Diosa lunar que lo contiene todo.',
+      origen: 'Islas Británicas, Irlanda, Galia',
+      elemento: 'Los Cuatro Elementos + Espíritu',
+      deidades: [
+        { nombre: 'La Diosa (Dama)', rol: 'La fuerza femenina universal: doncella, madre y anciana. Tierra, luna y misterio. No tiene un único nombre — es todas las diosas a la vez. En Wicca, es la polaridad receptiva del universo.', ofrendas: 'Luna llena, flores blancas, leche, miel, perlas, espejos', tags: 'luna, fertilidad, magia, misterio' },
+        { nombre: 'El Dios (Señor)', rol: 'La fuerza masculina universal: sol, ciervo y sacrificio voluntario. Nace en Yule, muere en Samhain y renace. Es la energía activa, la vida que se entrega para que otra vida continúe.', ofrendas: 'Sol saliente, madera, cuernos, granos, bellotas, hidromiel', tags: 'sol, ciclos, vida, muerte, renacimiento' },
+        { nombre: 'Brigid', rol: 'Diosa triple del fuego: fuego de la forja (artesanía), fuego del hogar (familia) y fuego de la inspiración (poesía y magia). Se celebra en Imbolc — la primera llama del año.', ofrendas: 'Llamas, leche, cruces de paja, herramientas de artesanía', tags: 'fuego, sanación, creatividad, hogares' },
+        { nombre: 'Cernunnos', rol: 'El Señor Cornudo: dios de los animales, el bosque, la prosperidad y los caminos entre mundos. Señor de lo salvaje y lo indomesticable.', ofrendas: 'Nueces, huesos, cuernos de ciervo, monedas, animales (representados)', tags: 'naturaleza, prosperidad, límite entre mundos' },
+        { nombre: 'La Morrighan', rol: 'Diosa triple de la batalla, la magia y la muerte: doncella guerrera, madre soberana, anciana del destino. Aparece como cuervo. No es fácil de trabajar — exige honestidad total.', ofrendas: 'Vino tinto, sangre (propia, con cuidado), plumas negras, hierro', tags: 'guerra, destino, corte de lazos, trabajo de sombra' },
+        { nombre: 'Hécate', rol: 'Diosa griega adoptada por Wicca: guardiana de los cruces de caminos, la luna oscura, la magia y el mundo de los muertos. Se invoca en momentos de transición y en la magia más profunda.', ofrendas: 'Ajo, huevos, velas negras, llaves, encrucijadas', tags: 'magia, encrucijadas, luna oscura, transición' },
+      ],
+      herramientas: 'Athame, varita, cáliz, pentáculo, caldero, escoba',
+      colores: 'Verde, blanco, negro, dorado, plateado',
+      dias: 'Lunes (luna), Viernes (amor), Sábado (magia profunda)',
+      compatibilidad: 'Sistema completo y coherente. Ideal para quien trabaja con la Rueda del Año, hechizos con elementos y ciclos naturales.',
+    },
+    {
+      id: 'pan-egipcio',
+      name: 'Panteón Egipcio',
+      emoji: '𓂀',
+      descripcion: 'Uno de los sistemas mágicos más complejos y duraderos de la historia. Los dioses egipcios no son solo seres — son fuerzas cósmicas que sostienen el universo. Su magia (heka) es la misma fuerza creativa que mueve la realidad.',
+      origen: 'Valle del Nilo, Egipto antiguo',
+      elemento: 'Fuego (Ra), Agua (Osiris), Tierra (Geb), Aire (Shu)',
+      deidades: [
+        { nombre: 'Isis (Aset)', rol: 'La Gran Maga: diosa de la magia, la curación, la maternidad y la resurrección. Reconstruyó a Osiris desde los pedazos. Es el arquetipo de la bruja que actúa desde el amor y la astucia.', ofrendas: 'Agua del Nilo, loto, azul lapislázuli, estrellas, nudos de magia', tags: 'magia, curación, amor, resurrección' },
+        { nombre: 'Thoth', rol: 'Dios de la sabiduría, la escritura, la magia y el tiempo. Registra los destinos. Patrón de magos y escribas. Corresponde al Hermes griego — dios de los mensajes entre mundos.', ofrendas: 'Tinta, papiro, plumas de ibis, luna creciente, matemáticas', tags: 'sabiduría, escritura, magia ceremonial, comunicación' },
+        { nombre: 'Anubis', rol: 'Guardián de los muertos y del umbral. Pesa el corazón de los difuntos contra la pluma de Maat. Poderoso en trabajo ancestral, acompañamiento en el duelo y magia de protección.', ofrendas: 'Lino negro, oro, mirra, agua, figuras del chacal', tags: 'ancestros, muerte, duelo, protección' },
+        { nombre: 'Bastet', rol: 'Diosa del hogar, los gatos, la alegría, la protección y la magia femenina. Feroz cuando protege, juguetona cuando celebra. Patrona de las brujas que tienen gatos.', ofrendas: 'Leche, carne, joyas de oro, música, danza', tags: 'hogar, protección, alegría, gatos, fertilidad' },
+        { nombre: 'Sekhmet', rol: 'La leona: diosa de la guerra, la curación y la destrucción necesaria. Lo mismo que destruye puede sanar — es la misma energía. Se trabaja para destruir enfermedad, enemigos o bloqueos profundos.', ofrendas: 'Cerveza roja, sangre (propia), fuego, carne, granadas', tags: 'curación, destrucción, guerra, poder femenino' },
+        { nombre: 'Ra / Ra-Horakhty', rol: 'El sol: fuente de toda vida y toda magia. Viaja cada noche por el inframundo y vence a Apofis (el caos) para volver a amanecer. Dios de la manifestación y la voluntad creadora.', ofrendas: 'Oro, aceites solares, incienso de mirra y kemi, trigo', tags: 'sol, manifestación, voluntad, vida' },
+      ],
+      herramientas: 'Ankh, sistrum (sonajero ritual), ojo de Horus, escarabeo, pergaminos',
+      colores: 'Dorado, azul lapislázuli, negro, turquesa, blanco',
+      dias: 'Domingo (Ra), Miércoles (Thoth), Lunes (Isis)',
+      compatibilidad: 'Poderoso para magia ceremonial, trabajo con muertos y curación. Requiere precisión ritual y respeto por la forma.',
+    },
+    {
+      id: 'pan-afrolatino',
+      name: 'Panteón Yoruba / Afrolatino',
+      emoji: '🥁',
+      descripcion: 'Uno de los sistemas espirituales más vivos del mundo — llegó con la diáspora africana y se transformó en América Latina. Los Orishas son fuerzas de la naturaleza que también son ancestros divinizados. Cada persona tiene un Orisha regente que la acompaña toda la vida.',
+      origen: 'Nigeria, Benín — adaptado en Cuba (Santería/Lucumí), Brasil (Candomblé), Venezuela',
+      elemento: 'Cada Orisha gobierna un elemento o aspecto de la naturaleza',
+      deidades: [
+        { nombre: 'Elegguá', rol: 'El primero y el último: guardián de los caminos, las puertas y las encrucijadas. No se hace nada sin su permiso. Niño eterno y anciano sabio a la vez. Abre y cierra los destinos.', ofrendas: 'Dulces, ron, tabaco, juguetes, coco, maíz tostado', tags: 'caminos, apertura, destino, encrucijadas' },
+        { nombre: 'Ogún', rol: 'Señor del hierro, el trabajo, la guerra y la selva. Patrón de herreros, soldados y todos los que trabajan con sus manos. Despeja caminos bloqueados con fuerza bruta.', ofrendas: 'Ron, tabaco, frijoles, hierro, palma', tags: 'trabajo, apertura de caminos, fuerza, protección' },
+        { nombre: 'Shangó', rol: 'Dios del trueno, la justicia y la danza. Rey guerrero que maneja el rayo como látigo. Apasionado, generoso y temible. Defiende a quienes buscan justicia.', ofrendas: 'Manzanas rojas, vino tinto, ron, madera de ceiba, castañuelas', tags: 'justicia, poder, trueno, pasión' },
+        { nombre: 'Oshún', rol: 'Señora de las aguas dulces, el amor, la fertilidad, el dinero y la belleza. Miel de sus manos. La más querida de los Orishas — se ríe, seduce y da lo que pedimos con sinceridad.', ofrendas: 'Miel, naranja, canela, oro, girasoles, calabaza', tags: 'amor, dinero, belleza, fertilidad, dulzura' },
+        { nombre: 'Yemayá', rol: 'Madre de las aguas del mar y madre de todos los Orishas. Protectora de las mujeres y los marineros. Sus aguas todo lo limpian y todo lo contienen. Amor incondicional y poder oceánico.', ofrendas: 'Sandía, melón, sal, conchas, azul y blanco, agua de mar', tags: 'mar, maternidad, limpieza, protección' },
+        { nombre: 'Obatalá', rol: 'Padre de los hombres y dios de la paz, la pureza y la sabiduría. Gobierna la cabeza, los pensamientos y los huesos. Anciano sereno que no juzga — solo guía.', ofrendas: 'Todo lo blanco, caracoles, mantequilla de cacao, agua fresca', tags: 'pureza, paz, sabiduría, claridad mental' },
+      ],
+      herramientas: 'Collares de colores (elekes), caldero de Ogún, semillas de coco, caracoles (dilogún), tambores batá',
+      colores: 'Cada Orisha tiene colores propios: rojo/negro (Elegguá), verde/negro (Ogún), rojo/blanco (Shangó), amarillo/dorado (Oshún), azul/blanco (Yemayá), blanco (Obatalá)',
+      dias: 'Lunes (Obatalá), Martes (Ogún/Shangó), Jueves (Shangó), Sábado (Elegguá/Yemayá)',
+      compatibilidad: 'Sistema vivo que requiere iniciación para niveles profundos. Para trabajo sincrónico sin iniciación formal: ofrenda, respeto y pedir desde el corazón.',
+    },
+    {
+      id: 'pan-mexica',
+      name: 'Panteón Mexica / Azteca',
+      emoji: '☀️',
+      descripcion: 'Uno de los sistemas más complejos y poderosos de América. Los dioses mexicas no solo gobiernan la naturaleza — la sostienen activamente. El universo requiere alimentación ritual constante. Su calendario (Tonalpohualli) es un mapa completo de energías divinas.',
+      origen: 'Mesoamérica, México central',
+      elemento: 'Los cuatro soles + el quinto sol actual (Movimiento)',
+      deidades: [
+        { nombre: 'Coatlicue / Tonantzin', rol: 'La Madre Tierra: dadora de vida y recibidora de muertos. Falda de serpientes, collar de corazones. Terrible y amorosa a la vez. Tonantzin es su aspecto más tierno — asimilada a la Virgen de Guadalupe.', ofrendas: 'Flores de cempasúchil, copal, maíz, tierra, sangre propia (gota)', tags: 'tierra, madre, muerte, fertilidad, dualidad' },
+        { nombre: 'Quetzalcóatl', rol: 'La Serpiente Emplumada: dios de la sabiduría, el viento, la creación y el conocimiento. Civilizador que enseñó artes y ciencias a los humanos. Patrón de sacerdotes, artistas y maestros.', ofrendas: 'Copal, jade, cacao, plumas de quetzal, mariposas (representadas)', tags: 'sabiduría, creación, arte, conocimiento, ascensión' },
+        { nombre: 'Xipe Tótec', rol: 'El Desollado: dios de la renovación, la primavera y la fertilidad a través del sacrificio. Lo que debe morir para que algo nuevo nazca. Señor de la transformación dolorosa pero necesaria.', ofrendas: 'Semillas, tierra nueva, sacrificio simbólico de lo viejo, flores rojas', tags: 'renovación, transformación, sacrificio, primavera' },
+        { nombre: 'Tlaloc', rol: 'Señor de la lluvia, el rayo y la fertilidad de la tierra. Sus aguas dan vida o destruyen. Los niños eran sus favoritos — sus lágrimas convocaban la lluvia. Dios de los agricultores.', ofrendas: 'Agua azul, copal, maíz, jade, llanto sincero', tags: 'lluvia, fertilidad, tierra, abundancia' },
+        { nombre: 'Mictlantecuhtli', rol: 'Señor de Mictlan: el inframundo de los nueve niveles. Recibe a los muertos ordinarios. Esqueleto que baila — no temible sino sereno. Se trabaja en Día de Muertos para comunicación ancestral.', ofrendas: 'Cempasúchil, copal negro, pan de muertos, tabaco, cacao', tags: 'muerte, ancestros, inframundo, día de muertos' },
+      ],
+      herramientas: 'Copal (incienso sagrado mexica), caracol marino, obsidiana, cempasúchil, tonalamatl (libro de los destinos)',
+      colores: 'Negro y rojo (Mictlan), azul turquesa (Tlaloc), verde y dorado (Quetzalcóatl), blanco (viento)',
+      dias: 'Se trabaja principalmente por el Tonalpohualli; en calendario occidental: Miércoles (Quetzalcóatl), Viernes (tierra), Lunes (luna/agua)',
+      compatibilidad: 'Poderoso para trabajo con ancestros latinoamericanos, especialmente en México y Centroamérica. Compatible con sincretismo católico-mágico.',
+    },
+    {
+      id: 'pan-greco',
+      name: 'Panteón Grecolatino',
+      emoji: '🏛️',
+      descripcion: 'El panteón de Olimpo: dioses apasionados, imperfectos y profundamente humanos. Gobiernan cada aspecto de la vida desde el amor hasta la guerra, el mar y la muerte. Su magia es directa y efectiva para trabajos puntuales.',
+      origen: 'Grecia y Roma clásicas',
+      elemento: 'Los cuatro elementos clásicos: agua, fuego, tierra, aire',
+      deidades: [
+        { nombre: 'Hermes / Mercurio', rol: 'Mensajero entre los mundos: Olimpo, tierra e inframundo. Patrón del comercio, los viajeros, los ladrones, los escritores y los magos. Lleva las almas de los muertos a Hades.', ofrendas: 'Monedas en encrucijadas, vino, laurel, alas, caduceo', tags: 'comunicación, magia, viajes, negocios, muerte' },
+        { nombre: 'Hécate', rol: 'Guardiana de los cruces de caminos, la luna triple y la magia. Anterior al Olimpo — una Titánide que conservó su poder. Se invoca en la luna menguante y en la noche más oscura.', ofrendas: 'Ajo, huevos, velas negras, llaves triples, perros (representados)', tags: 'magia, cruces, luna oscura, transición, mundo de los muertos' },
+        { nombre: 'Afrodita / Venus', rol: 'Diosa del amor, la belleza y el deseo. Nació de la espuma del mar. Su poder es magnético — atrae lo que el corazón desea. También gobierna la guerra a través del deseo y la pasión.', ofrendas: 'Rosas, mirto, manzanas rojas, miel, conchas de mar, perfume', tags: 'amor, belleza, atracción, deseo, autoestima' },
+        { nombre: 'Artemisa / Diana', rol: 'Diosa virgen de la caza, la luna creciente y las mujeres que se pertenecen a sí mismas. Protectora de las que no se someten. Poderosa en independencia, claridad de propósito y protección femenina.', ofrendas: 'Agua de luna, hierbas silvestres, flechas, ramas de roble', tags: 'independencia, protección, luna, claridad' },
+        { nombre: 'Ares / Marte', rol: 'Dios de la guerra y el conflicto necesario. No solo batalla física — también la fuerza para defender lo que amas y cortar lo que te daña. Patrón del coraje y la acción directa.', ofrendas: 'Hierro, vino tinto, sangre propia, fuego, laurel de guerra', tags: 'coraje, protección, conflicto, fuerza' },
+        { nombre: 'Deméter / Ceres', rol: 'Diosa de la agricultura, la fertilidad y los ciclos de la naturaleza. Su duelo por Perséfone creó el invierno. Poderosa en trabajo con la tierra, la comida como ofrenda y los ciclos naturales.', ofrendas: 'Trigo, granadas, semillas, tierra fértil, espigas', tags: 'tierra, fertilidad, ciclos, abundancia, cosecha' },
+      ],
+      herramientas: 'Liras, tridentes, arcos, laurel, tirso, caduceo',
+      colores: 'Blanco y dorado (Olimpo), azul (mar), rojo (guerra), verde (tierra), negro (inframundo)',
+      dias: 'Lunes (Selene/Artemisa), Martes (Ares), Miércoles (Hermes), Viernes (Afrodita), Sábado (Crono)',
+      compatibilidad: 'Accesible y directo. Los dioses griegos responden bien a quien los conoce y los llama con claridad. Amplia bibliografía disponible.',
+    },
+    {
+      id: 'pan-sincretico',
+      name: 'Sincretismo Latinoamericano',
+      emoji: '🌺',
+      descripcion: 'El espíritu espiritual de América Latina vive en la mezcla: santos que son Orishas, Vírgenes que son diosas, chamanes que leen cartas. Esta tradición sincrética no es confusión — es adaptación creativa y poderosa. La magia latinoamericana habla todos los idiomas a la vez.',
+      origen: 'América Latina — resultado del encuentro entre tradiciones indígenas, africanas y europeas',
+      elemento: 'Tierra de América + Agua de África + Fuego de Europa',
+      deidades: [
+        { nombre: 'Santa Muerte', rol: 'La más querida y más temida: la Madrina Muerte. No discrimina — recibe a todos por igual. Poderosa en protección, amor, justicia y paso entre mundos. Venerada especialmente en México y la diáspora.', ofrendas: 'Cigarros, ron, flores de todos los colores, velas de colores según petición, agua', tags: 'protección, amor, justicia, muerte, magia poderosa' },
+        { nombre: 'San Expedito', rol: 'El santo de las causas urgentes — dice sí cuando todo parece imposible. Lleva la palma del martirio y aplasta la duda. Se le pide para situaciones desesperadas que necesitan resolución rápida.', ofrendas: 'Flores rojas, velas rojas, pan, rezos breves con promesas claras', tags: 'urgencia, rapidez, resolución, trabajo, dinero' },
+        { nombre: 'Pachamama', rol: 'La Madre Tierra andina: no solo el suelo — toda la fuerza creadora del planeta. Dar y recibir con ella es un pacto de vida. Se honra especialmente en agosto (mes de la tierra) en los Andes.', ofrendas: 'Coca, chicha, comida enterrada, flores, agradecimiento sincero', tags: 'tierra, abundancia, agradecer, América del Sur' },
+        { nombre: 'Exu / Pomba Gira', rol: 'En Umbanda y Candomblé: Exu (masculino) y Pomba Gira (femenino) son los guardianes de los caminos y del deseo. Exu abre y cierra puertas; Pomba Gira trabaja en amor, sexualidad y poder personal femenino.', ofrendas: 'Cigarros, rum, aceite de palma, rosas rojas (Pomba Gira), palomitas de maíz (Exu)', tags: 'caminos, amor, sexualidad, apertura, poder personal' },
+        { nombre: 'Las Tres Potencias', rol: 'En la tradición venezolana y colombiana: María Lionza (naturaleza), El Negro Felipe (protección popular) y El Indio Guaicaipuro (tierra). Un panteón criollo nacido del sincretismo americano. Especialmente poderoso en Venezuela y Colombia.', ofrendas: 'Tabaco, ron, flores silvestres, hierbas locales, velas de colores', tags: 'Venezuela, Colombia, tierra, sincretismo, protección' },
+      ],
+      herramientas: 'Todo lo que ya tienes: velas, hierbas, agua, tierra, fuego, fe',
+      colores: 'Todos los colores según la intención. No hay un color "equivocado" en el sincretismo.',
+      dias: 'Lunes (almas y ancestros), Martes (protección y guerra), Viernes (amor), Sábado (Santa Muerte, magia profunda)',
+      compatibilidad: 'El sistema más accesible para quien viene de América Latina. No requiere iniciación formal — solo respeto, intención clara y coherencia.',
+    },
+  ];
+
+  return panteones;
+})();
+
+</script>
+  <script>
+/* ============================================================
    ALTAR.JS — Altar por panteones
    ============================================================ */
 
 const Altar = (() => {
   let panteonActivo = null;
 
+  function _getPanteones() {
+    const _ps = App.lsGet('bruja_panteones', []);
+    return (_ps && _ps.length > 0) ? _ps : (typeof AltarDefaults !== 'undefined' ? AltarDefaults : []);
+  }
+
   function render() {
     const sec = document.getElementById('sec-altar');
     if (!sec) return;
 
-    const panteones = App.lsGet('bruja_panteones', []);
+    const panteones = _getPanteones();
 
     sec.innerHTML = `
       <h1 class="section-title">🔥 Altar</h1>
@@ -5265,7 +5737,7 @@ const Altar = (() => {
       return;
     }
 
-    const panteones = App.lsGet('bruja_panteones', []);
+    const panteones = _getPanteones();
     const p = panteones.find(x => x.id === panteonActivo);
     if (p) {
       detalle.classList.add('visible');
@@ -5278,35 +5750,68 @@ const Altar = (() => {
     const detalle = document.getElementById('altar-detalle');
     if (!detalle) return;
 
-    // Parsear elementos del altar (formato: emoji|nombre|posición)
-    const elementos = p.elementos
+    // Formato enriquecido (AltarDefaults) vs formato simple (admin)
+    const esDefault = Array.isArray(p.deidades);
+
+    // Parsear elementos del altar (formato simple: emoji|nombre|posición)
+    const elementos = (!esDefault && p.elementos)
       ? p.elementos.split('\n').filter(Boolean).map(line => {
           const parts = line.split('|');
           return { emoji: parts[0] || '✨', nombre: parts[1] || '', pos: parts[2] || '' };
         })
       : [];
 
+    const desc = p.descripcion || p.desc || '';
+
     detalle.innerHTML = `
       <div class="card">
         <div class="flex-between mb-1">
-          <h2>${p.name}</h2>
+          <h2>${p.emoji || ''} ${p.name}</h2>
           <button class="btn-icon" onclick="Altar._seleccionar('${p.id}')">✕</button>
         </div>
         ${p.img ? `<img src="${p.img}" style="width:100%;max-height:200px;object-fit:cover;border-radius:var(--radius-s);margin-bottom:1rem"
           onerror="this.style.display='none'" alt="${p.name}">` : ''}
-        ${p.desc ? `<p style="color:var(--lavender);font-size:.9rem;margin-bottom:1rem">${p.desc}</p>` : ''}
-        ${elementos.length > 0
-          ? `<h3 style="margin-bottom:.75rem">Elementos del altar</h3>
-             ${elementos.map(e => `
-               <div class="altar-elem">
-                 <span class="altar-elem-emoji">${e.emoji}</span>
-                 <div>
-                   <div class="altar-elem-nombre">${e.nombre}</div>
-                   <div class="altar-elem-pos">${e.pos}</div>
-                 </div>
-               </div>`).join('')}`
-          : `<p class="text-muted" style="font-size:.88rem">No hay elementos definidos para este altar aún.</p>`}
-        ${Admin.isUnlocked()
+        ${desc ? `<p style="color:var(--lavender);font-size:.9rem;margin-bottom:1rem">${desc}</p>` : ''}
+
+        ${esDefault ? `
+          ${p.origen ? `<div class="bib-prop"><div class="bib-prop-label">🌍 Origen</div><div class="bib-prop-value">${p.origen}</div></div>` : ''}
+          ${p.elemento ? `<div class="bib-prop"><div class="bib-prop-label">🌊 Elementos</div><div class="bib-prop-value">${p.elemento}</div></div>` : ''}
+
+          ${p.deidades && p.deidades.length > 0 ? `
+            <h3 style="margin:1rem 0 .5rem">⚡ Deidades principales</h3>
+            ${p.deidades.map(d => `
+              <div class="card" style="margin-bottom:.75rem;cursor:pointer" onclick="this.querySelector('.deit-body').style.display=this.querySelector('.deit-body').style.display==='none'?'block':'none'">
+                <div class="flex-between">
+                  <div class="card-title">${d.nombre}</div>
+                  <span style="color:var(--muted);font-size:.8rem">▼</span>
+                </div>
+                <div class="deit-body" style="display:none">
+                  <p style="font-size:.88rem;margin:.5rem 0">${d.rol}</p>
+                  ${d.ofrendas ? `<div class="bib-prop"><div class="bib-prop-label">🌸 Ofrendas</div><div class="bib-prop-value">${d.ofrendas}</div></div>` : ''}
+                  ${d.tags ? `<div style="margin-top:.5rem">${d.tags.split(',').map(t=>`<span class="badge badge-gold">${t.trim()}</span>`).join(' ')}</div>` : ''}
+                </div>
+              </div>`).join('')}
+          ` : ''}
+
+          ${p.herramientas ? `<div class="bib-prop"><div class="bib-prop-label">⚔️ Herramientas</div><div class="bib-prop-value">${p.herramientas}</div></div>` : ''}
+          ${p.colores ? `<div class="bib-prop"><div class="bib-prop-label">🎨 Colores</div><div class="bib-prop-value">${p.colores}</div></div>` : ''}
+          ${p.dias ? `<div class="bib-prop"><div class="bib-prop-label">📅 Días de poder</div><div class="bib-prop-value">${p.dias}</div></div>` : ''}
+          ${p.compatibilidad ? `<div class="bib-prop"><div class="bib-prop-label">✨ Compatibilidad</div><div class="bib-prop-value">${p.compatibilidad}</div></div>` : ''}
+        ` : `
+          ${elementos.length > 0
+            ? `<h3 style="margin-bottom:.75rem">Elementos del altar</h3>
+               ${elementos.map(e => `
+                 <div class="altar-elem">
+                   <span class="altar-elem-emoji">${e.emoji}</span>
+                   <div>
+                     <div class="altar-elem-nombre">${e.nombre}</div>
+                     <div class="altar-elem-pos">${e.pos}</div>
+                   </div>
+                 </div>`).join('')}`
+            : `<p class="text-muted" style="font-size:.88rem">No hay elementos definidos para este panteón aún.</p>`}
+        `}
+
+        ${Admin.isUnlocked() && !esDefault
           ? `<div style="margin-top:1rem">
               <button class="btn btn-ghost btn-sm"
                 onclick="Admin._panteonNuevo('${p.id}');App.navigate('admin');Admin._showPanel('altar')">
@@ -5324,6 +5829,203 @@ const Altar = (() => {
   }
 
   return { render, _seleccionar, _tab };
+})();
+
+</script>
+  <script>
+/* ============================================================
+   ANCESTROS-DEFAULTS.JS — Entidades, Ritos y Ofrendas del Libro
+   Contenido basado en "El Año de la Bruja" — Ciclo XI
+   ============================================================ */
+
+const AncestrosDefaults = (() => {
+
+  /* ── Tipos de entidades / ancestros ── */
+  const entidades = [
+    {
+      id: 'ent-01',
+      tipo: 'ancestro',
+      name: 'Ancestros de Sangre',
+      emoji: '🩸',
+      descripcion: 'Los que vinieron antes de ti por línea familiar directa. No necesitas haber conocido a todos — tu relación con ellos no depende de la memoria sino de la sangre. Pueden ayudar o bloquear dependiendo de lo que carguen y de lo que tú estés dispuesto a ver.',
+      formas: 'Sueños con personas fallecidas del árbol familiar, olores sin fuente (perfume de abuela, tabaco del abuelo), sensación de no estar solo en casa, patrones que se repiten en la familia sin explicación lógica',
+      como_trabajar: 'Altar de ancestros con fotos, nombre o algún objeto que les perteneció. Agua fresca (siempre). Vela blanca encendida los lunes. Hablarles en voz alta como si estuvieran. No es necesario que seas creyente — solo que estés dispuesto.',
+      ofrendas: 'Agua fresca, comida que les gustaba en vida, flores blancas, tabaco, ron o licor que tomaban, café, velas blancas',
+      precauciones: 'Algunos ancestros cargaron heridas muy profundas. No todos están en paz. Si sientes presiones o energías pesadas en el altar, comienza con una limpia energética del espacio y pide que solo los ancestros que "están en luz" se acerquen.',
+      ritual_base: 'Enciende una vela blanca. Coloca un vaso de agua fresca. Di su nombre (si lo sabes) o simplemente "ancestros de mi sangre". Diles qué necesitas. Escucha en silencio por un momento. Apaga con los dedos, nunca soplando.',
+      tags: 'familia, sangre, herencia, sueños, patrones familiares',
+    },
+    {
+      id: 'ent-02',
+      tipo: 'ancestro',
+      name: 'Ancestros Elegidos',
+      emoji: '💜',
+      descripcion: 'Los que no son de tu sangre pero te formaron: maestros que te cambiaron, amigos que ya no están, figuras históricas que te inspiraron, personas que te dieron algo esencial sin ser familia. También los ancestros de tu linaje espiritual, si lo tienes.',
+      formas: 'Recuerdos repentinos e inesperados de alguien que falleció, sensación de su presencia en momentos de decisión, sueños con personas que fueron importantes pero no son familia de sangre',
+      como_trabajar: 'Se trabajan igual que los ancestros de sangre. La diferencia es que tú los eliges conscientemente. Puedes tener un espacio separado en tu altar o integrarlos con los de sangre.',
+      ofrendas: 'Algo que les representara: su libro favorito, música que amaban, el tipo de flores que les gustaban, comida de su cultura',
+      precauciones: 'No todos los muertos que conociste son buenos ancestros. No estás obligado a incluir a alguien que te hizo daño. El altar de ancestros es tuyo.',
+      ritual_base: 'Coloca su foto o algo que los represente. Enciende una vela del color que sientas apropiado. Habla con ellos. Si no recuerdas bien cómo eran, puedes hablar de cómo los recuerdas y qué te dejaron.',
+      tags: 'maestros, amigos, inspiración, linaje espiritual',
+    },
+    {
+      id: 'ent-03',
+      tipo: 'guia',
+      name: 'Guías Espirituales',
+      emoji: '👁️',
+      descripcion: 'Seres que acompañan a una persona de manera consistente a lo largo de su vida — no son ancestros necesariamente, aunque pueden serlo. Algunos son reconocidos como parte de un panteón; otros no tienen nombre conocido. Su característica es la constancia: están, aunque no los invoques.',
+      formas: 'Sensación persistente de no estar solo, sueños recurrentes con la misma figura, animales que aparecen en momentos de decisión, voz interior que se siente diferente a tus propios pensamientos, sincronías repetidas',
+      como_trabajar: 'Primero, identifica si ya tienes uno. Medita con la pregunta "¿quién me acompaña?" y registra lo que ves, sientes o escuchas. No fuerces una forma o nombre — deja que se revele. Luego, construye una relación: habla con tu guía regularmente, no solo cuando necesitas algo.',
+      ofrendas: 'Las ofrendas varían según quién es el guía. Si no lo sabes aún: agua fresca, incienso blanco o copal, tu presencia y atención.',
+      precauciones: 'No todo lo que se presenta es un guía benévolo. Un guía real nunca te pide que hagas daño, que te aisles de personas que te quieren, o que dependas únicamente de él/ella. La protección antes de cualquier trabajo de comunicación es esencial.',
+      ritual_base: 'Crea un espacio limpio y en silencio. Enciende incienso o vela blanca. Respira despacio. Pide que se presente quien te acompaña. Registra todo lo que percibas: sensaciones físicas, imágenes, palabras, emociones. No juzgues — solo observa y anota.',
+      tags: 'compañeros, protección, comunicación, sueños, clarividencia',
+    },
+    {
+      id: 'ent-04',
+      tipo: 'elemental',
+      name: 'Elementales',
+      emoji: '🌪️',
+      descripcion: 'Espíritus que habitan los elementos: gnomos (tierra), sílfides (aire), salamandras (fuego), ondinas (agua). No son seres con agenda personal — son la inteligencia del elemento mismo. Se trabajan para potenciar magia elemental y como aliados en el espacio.',
+      formas: 'Llamas que se mueven sin viento, agua que "habla" (sonidos sin fuente), plantas que crecen más rápido de lo esperado en tu espacio ritual, brisa interior durante meditación',
+      como_trabajar: 'Los elementales no se "invocan" como deidades — se invitan. Limpiar el espacio y crear las condiciones del elemento es la invitación. Para tierra: trabaja con plantas, cristales, sal. Para fuego: velas y brasas. Para agua: cuencos, lluvia, baños rituales. Para aire: incienso, campanas, viento.',
+      ofrendas: 'Los propios de cada elemento: piedras y tierra (gnomos), incienso y plumas (sílfides), velas y brasas (salamandras), agua y flores acuáticas (ondinas)',
+      precauciones: 'Los elementales responden a la energía del espacio. Si tu espacio está sucio, caótico o cargado de emociones negativas, atraes elementales de baja vibración. La limpieza regular del espacio es protección.',
+      ritual_base: 'Para conectar con un elemental específico: crea su ambiente (vela encendida para fuego, cuenco de agua para agua, etc.). Siéntate en silencio. Llama al espíritu del elemento con tus propias palabras. Presta atención a lo que cambia en el ambiente.',
+      tags: 'tierra, agua, fuego, aire, naturaleza, espacios',
+    },
+    {
+      id: 'ent-05',
+      tipo: 'animal',
+      name: 'Animales de Poder',
+      emoji: '🐺',
+      descripcion: 'En muchas tradiciones chamanánicas, cada persona tiene uno o varios animales espirituales que la acompañan con sus cualidades. No son mascotas espirituales — son espejos de tu fuerza. Se manifiestan en sueños, en sincronías (el mismo animal apareciendo en momentos clave) o en visiones.',
+      formas: 'El mismo animal en sueños repetidos, encontrarte con él en momentos inesperados de manera llamativa, sentir una conexión inexplicable con cierto animal, que un animal salvaje te busque o no te tema',
+      como_trabajar: 'Presta atención a qué animales aparecen en tus sueños o en momentos de decisión. Estudia las cualidades del animal — no solo simbólicamente, sino cómo viven realmente: cómo cazan, cómo cuidan a sus crías, cómo sobreviven. Eso es lo que te ofrecen.',
+      ofrendas: 'Representaciones del animal (figuras, dibujos), comida que ese animal consume, ofrecer tus acciones al espíritu del animal cuando actúas desde sus cualidades',
+      precauciones: 'El animal de poder no siempre es un lobo o un águila. Puede ser un ratón, un escarabajo, una hormiga. No lo elijas por estética — déjate encontrar por él.',
+      ritual_base: 'Meditación de viaje chamánico: relájate completamente, imagina una entrada (cueva, árbol, lago) y pide conocer a tu animal de poder. Observa qué aparece sin juzgar. Pregunta su nombre y qué te ofrece. Agradece y regresa.',
+      tags: 'chamanismo, sueños, poder, sincronías, identidad',
+    },
+    {
+      id: 'ent-06',
+      tipo: 'protector',
+      name: 'Guardianes del Espacio',
+      emoji: '🛡️',
+      descripcion: 'Espíritus vinculados a un lugar específico: la casa, el barrio, el terreno. No los invocaste — ya estaban cuando llegaste. Pueden ser aliados o pueden ser incómodos si no los reconoces. Comunicarte con el espíritu del lugar donde vives es básico para la práctica.',
+      formas: 'Sensaciones muy distintas en diferentes partes de la casa, animales que frecuentan el espacio sin razón aparente, sueños relacionados con el lugar antes de conocer su historia, que las plantas crezcan mejor en ciertas partes que en otras',
+      como_trabajar: 'Ofrenda al espíritu del lugar: agua, tabaco o copal, comida simple, agradecimiento en voz alta por el techo que te da. Pide permiso para hacer tu práctica en ese espacio. Mantén el lugar limpio, físico y energéticamente.',
+      ofrendas: 'Agua, tabaco, copal, comida simple, sal en las esquinas, hierbas de protección (ruda, romero)',
+      precauciones: 'Si el espíritu del lugar es incómodo (historia de violencia, casa construida sobre algo), no es necesario que te vayas — pero sí que hagas una limpieza profunda y establezcas tu intención de transformar el espacio.',
+      ritual_base: 'En cada nuevo hogar: recorre las habitaciones en silencio con copal o sahumerio de ruda y romero. En voz alta, presenta: quién eres, qué traes, cuáles son tus intenciones. Deja una ofrenda simple en el umbral de la puerta principal.',
+      tags: 'hogar, lugar, permiso, limpieza, protección',
+    },
+  ];
+
+  /* ── Ritos de conexión ancestral ── */
+  const ritos = [
+    {
+      id: 'rito-01',
+      name: 'Altar de Ancestros Básico',
+      emoji: '🕯️',
+      descripcion: 'El primer paso para trabajar con tus ancestros: crear un espacio dedicado a ellos.',
+      materiales: 'Paño blanco o negro\nFoto o nombre de tus ancestros (escrito en papel)\nVaso de agua fresca\nVela blanca\nFlores (preferiblemente blancas)\nIncienso de copal o mirra',
+      pasos: '1. Elige un lugar fijo — puede ser pequeño, una repisa o esquina de mesa.\n2. Coloca el paño. Encima, la foto o el papel con el nombre.\n3. Coloca el vaso de agua fresca — es el elemento más importante.\n4. Pon la vela y las flores.\n5. Enciende el incienso y la vela.\n6. Siéntate frente al altar y preséntate en voz alta.\n7. Di sus nombres si los sabes. Si no, di: "ancestros de mi sangre y de mi alma."\n8. Habla con ellos. Diles quién eres y qué necesitas.',
+      frecuencia: 'Mantén el agua fresca cada semana. Enciende la vela los lunes.',
+      notas: 'No necesitas hacer esto perfecto. Los ancestros responden a la intención, no a la perfección del altar.',
+      tags: 'altar, primer paso, básico',
+    },
+    {
+      id: 'rito-02',
+      name: 'Ritual de Comunicación Ancestral',
+      emoji: '📡',
+      descripcion: 'Para cuando quieres comunicarte activamente con tus ancestros — hacer una pregunta, pedir guía o cerrar algo inconcluso.',
+      materiales: 'Altar de ancestros preparado\nVela blanca\nAgua fresca\nPapel y pluma\nIncienso de mirra o copal\nSal en un platito',
+      pasos: '1. Limpia el espacio con el incienso antes de comenzar.\n2. Coloca la sal — absorbe energías pesadas durante el ritual.\n3. Enciende la vela. Siéntate cómodamente.\n4. Escribe tu pregunta en el papel con claridad.\n5. Lee la pregunta en voz alta frente al altar.\n6. Cierra los ojos. Respira profundo tres veces.\n7. Permanece en silencio. Observa: sensaciones físicas, palabras que emergen, imágenes.\n8. Registra todo lo que percibas, sin filtrar.\n9. Agradece y cierra: "Gracias. Estoy escuchando."',
+      frecuencia: 'Cuando necesites orientación. No abuses — la comunicación constante sin propósito claro cansa el espacio y a ti mismo.',
+      notas: 'Los ancestros no siempre responden con palabras. Pueden responder con sueños esa noche, con sincronías al día siguiente, con una sensación de certeza sin explicación.',
+      tags: 'comunicación, pregunta, guía, meditación',
+    },
+    {
+      id: 'rito-03',
+      name: 'Limpieza con Huevo',
+      emoji: '🥚',
+      descripcion: 'Uno de los rituales más usados en América Latina para limpiar energías pesadas del cuerpo y del aura. El huevo actúa como esponja energética.',
+      materiales: 'Un huevo fresco (preferiblemente de rancho, no de granja)\nAgua con sal\nVaso transparente con agua fría y sal\nVela blanca (opcional)',
+      pasos: '1. Siéntate o párate en un espacio tranquilo.\n2. Toma el huevo entre las manos y dile mentalmente su propósito: limpiar y absorber lo que ya no sirve.\n3. Comienza a pasarlo por el cuerpo: cabeza primero, luego rostro, cuello, pecho, espalda, brazos, abdomen, piernas, pies.\n4. Muévelo siempre hacia abajo o en movimientos circulares hacia afuera del cuerpo.\n5. Mientras lo pasas, puedes rezar, decir afirmaciones de limpieza o simplemente mantener la intención clara.\n6. Al terminar, rompe el huevo en el vaso de agua fría con sal.\n7. Observa cómo queda: agua turbia, burbujas, hilos oscuros = energía densa absorbida. Agua clara = no había mucho que limpiar.\n8. Desecha el vaso fuera de tu casa (en la calle, no en tu basura interior).',
+      frecuencia: 'Cuando sientas pesadez, cansancio inexplicable, racha de mala suerte o si has estado en lugares o con personas que drenan energía. También tras rituales intensos.',
+      notas: 'Esta es una práctica popular en Venezuela, México, Colombia y toda Latinoamérica. No es "superstición" — es una técnica de limpieza energética probada por generaciones.',
+      tags: 'limpieza, huevo, latinoamérica, aura, energía',
+    },
+    {
+      id: 'rito-04',
+      name: 'Baño de Florecimiento',
+      emoji: '🌺',
+      descripcion: 'Para cuando necesitas abrir caminos, aumentar tu vibración o prepararte para algo importante. Diferente a un baño de limpieza — este es de expansión.',
+      materiales: 'Flores amarillas y blancas (girasoles, crisantemos, rosas blancas)\nCanela en raja\nMiel (dos cucharadas)\nAgua de colonia o agua florida\nAgua tibia\nSal rosada o sal de mar',
+      pasos: '1. Hierve agua y agrega las flores. Deja reposar 10 minutos.\n2. Cuela el agua floral. Agrega la miel, la canela y el agua de colonia.\n3. Mezcla mientras pones la intención: "Me abro al flujo de la abundancia y el bienestar."\n4. Báñate normalmente primero.\n5. Luego vierte el agua floral desde la cabeza hacia abajo, en movimientos descendentes.\n6. No te enjuagues el agua del baño — deja que el cuerpo la absorba.\n7. Vístete con ropa limpia, preferiblemente de colores claros.',
+      frecuencia: 'En luna creciente o luna llena para máximos resultados. También antes de entrevistas, fechas importantes, o cuando sientes que tu energía está estancada.',
+      notas: 'El baño de florecimiento es diferente al de limpieza. Después de uno de limpieza, siempre haz uno de florecimiento para "llenar el espacio" que dejó lo que salió.',
+      tags: 'baño, apertura, abundancia, florecimiento, luna',
+    },
+    {
+      id: 'rito-05',
+      name: 'Sahumerio de Limpieza',
+      emoji: '🌿',
+      descripcion: 'El humo de hierbas sagradas limpia el espacio físico y energético. Es una de las prácticas más universales — presente en casi todas las culturas del mundo.',
+      materiales: 'Ruda (protección y limpieza profunda)\nRomero (purificación y claridad)\nSalvia blanca o copal (si tienes)\nRecipiente resistente al calor\nVela para encender',
+      pasos: '1. Abre una ventana o puerta — el humo debe poder salir y llevar consigo lo que limpia.\n2. Enciende las hierbas hasta que broten con llama, luego sopla la llama para que solo humeen.\n3. Comienza por la puerta principal y recorre en sentido contrario a las manecillas del reloj (para limpiar) o en el mismo sentido (para atraer).\n4. Lleva el humo a todas las esquinas — las esquinas acumulan energía estancada.\n5. Pasa el humo por tu propio cuerpo: cabeza, torso, brazos, piernas.\n6. Mientras sahumas, habla en voz alta tu intención o reza algo que resuene.\n7. Termina en la puerta principal y deja que el humo salga hacia afuera.',
+      frecuencia: 'Semanal si la casa se siente pesada. Mensual como mantenimiento. Siempre después de visitas incómodas o discusiones fuertes.',
+      notas: 'La ruda es especialmente poderosa para limpiar casas nuevas o espacios con historia. El romero es más suave y se puede usar más frecuentemente.',
+      tags: 'sahumerio, ruda, romero, limpieza, espacio',
+    },
+  ];
+
+  /* ── Ofrendas por intención ── */
+  const ofrendas = [
+    {
+      id: 'of-01',
+      name: 'Ofrendas para Pedir',
+      emoji: '🙏',
+      descripcion: 'Cuando quieres pedir algo — una ofrenda es un intercambio, no un soborno. Das algo de valor, pides con claridad, cumples lo que prometiste.',
+      elementos: 'Agua fresca, flores del color de tu intención, vela de ese mismo color, comida que simbólicamente represente lo que pides (miel para el amor, monedas para el dinero, laurel para el éxito)',
+      como: 'Coloca la ofrenda en tu altar o en el espacio de la entidad a quien pides. Habla en voz alta: qué pides, por qué lo necesitas, qué darás a cambio cuando se cumpla. Sé específico. No pidas "todo lo bueno del mundo" — pide algo concreto y posible.',
+      importante: 'Siempre cumple lo que prometiste cuando se cumpla la petición. Los ancestros y guías no olvidan. Incumplir corta la conexión.',
+      tags: 'petición, intercambio, altar',
+    },
+    {
+      id: 'of-02',
+      name: 'Ofrendas de Agradecimiento',
+      emoji: '💛',
+      descripcion: 'El agradecimiento es más poderoso que la petición. Una práctica de agradecimiento regular construye relaciones con tus guías y ancestros más fuertes que cualquier ritual especial.',
+      elementos: 'Lo que sea de tu corazón: flores, una comida que cocines con amor, música, tu tiempo y atención, una vela encendida por ellos',
+      como: 'No tiene formato fijo. Siéntate frente a tu altar, enciende una vela y simplemente di gracias — por todo lo que ya tienes, por los momentos difíciles que te formaron, por la vida. Los ancestros se alimentan de tu gratitud y de tu presencia.',
+      importante: 'El agradecimiento no tiene que esperar a que las cosas estén perfectas. Se puede agradecer incluso en los momentos difíciles — especialmente en los momentos difíciles.',
+      tags: 'agradecimiento, práctica diaria, corazón',
+    },
+    {
+      id: 'of-03',
+      name: 'Mesa de Muertos / Altar de Día de Difuntos',
+      emoji: '🌸',
+      descripcion: 'Tradición mexicana y latinoamericana de tender una mesa con todo lo que amaban los que partieron, para que regresen y compartan el momento. No es solo Día de Muertos — puede hacerse en aniversarios, cumpleaños o cuando sientes que alguien quiere acercarse.',
+      elementos: 'Foto del ser querido\nSu comida y bebida favorita\nFlores de cempasúchil (o las flores que les gustaban)\nVela por cada difunto que invitas\nAgua fresca\nSal (en pequeño plato)\nArco de flores (si quieres el formato tradicional)',
+      como: 'Enciende las velas y el incienso. Llama a cada persona por su nombre. Cuéntales de tu vida, de lo que ha pasado desde que se fueron. Come y bebe con ellos. Al cerrar, agradece su visita y diles que pueden seguir su camino en paz.',
+      importante: 'No dejes la mesa más de tres días. Después de eso, retira las ofrendas de comida y deja solo el altar base.',
+      tags: 'día de muertos, mesa, familia, memoria, tradición',
+    },
+    {
+      id: 'of-04',
+      name: 'Ofrendas en Cruces de Caminos',
+      emoji: '🔀',
+      descripcion: 'Las encrucijadas son puntos de poder en casi todas las tradiciones mágicas. Dejar una ofrenda en un cruce de tres o cuatro caminos es una manera de comunicar con entidades guardianas de los caminos (Hécate, Elegguá, Exu) y de "soltar" algo al universo.',
+      elementos: 'Monedas, pan, tabaco, ron (una pequeña cantidad), flores, sal',
+      como: 'Ve a una encrucijada de noche (o al amanecer — antes de que haya mucho tráfico). No mires atrás cuando te vayas. Deja la ofrenda en el centro o en cada esquina. Habla en voz baja tu petición o lo que quieres soltar. Regresa a casa sin voltear.',
+      importante: 'Las ofrendas de cruce no son para peticiones cotidianas — son para momentos de transición real: cambios de vida, cortes de lazos, aperturas grandes.',
+      tags: 'encrucijada, Hécate, Elegguá, transición, corte',
+    },
+  ];
+
+  return { entidades, ritos, ofrendas };
 })();
 
 </script>
@@ -5361,17 +6063,25 @@ const Ancestros = (() => {
       <h1 class="section-title">👁️ Ancestros & Espíritus</h1>
       <p class="section-sub">Tu registro sagrado: familia, guías, deidades, elementales y más.</p>
 
-      <div class="tabs mb-2" id="anc-tabs">
-        <button class="tab-btn active" onclick="Ancestros._tab('registro', this)">📜 Registro</button>
-        <button class="tab-btn" onclick="Ancestros._tab('rituales', this)">🕯️ Rituales</button>
+      <div class="tabs mb-2" id="anc-tabs" style="flex-wrap:wrap">
+        <button class="tab-btn active" onclick="Ancestros._tab('registro', this)">📜 Mis Registros</button>
+        <button class="tab-btn" onclick="Ancestros._tab('entidades', this)">👁️ Guía de Entidades</button>
+        <button class="tab-btn" onclick="Ancestros._tab('rituales', this)">🕯️ Ritos</button>
         <button class="tab-btn" onclick="Ancestros._tab('ofrendas', this)">🌺 Ofrendas</button>
       </div>
 
       <div id="anc-registro" class="tab-panel active">
         ${renderRegistro()}
       </div>
+      <div id="anc-entidades" class="tab-panel">
+        <p class="text-muted mb-2" style="font-size:.85rem">Tipos de entidades y seres con quienes puedes trabajar — del Ciclo XI del libro.</p>
+        ${renderEntidades()}
+      </div>
       <div id="anc-rituales" class="tab-panel">
         ${renderRituales()}
+        <hr class="section-divider" style="margin:1rem 0">
+        <h3 style="margin-bottom:.75rem">🌿 Ritos del Libro</h3>
+        ${renderRitualesDefaults()}
       </div>
       <div id="anc-ofrendas" class="tab-panel">
         ${renderOfrendas()}
@@ -5433,6 +6143,44 @@ const Ancestros = (() => {
                </div>` : ''}
         </div>
       </div>`;
+  }
+
+  function renderEntidades() {
+    if (typeof AncestrosDefaults === 'undefined') return '<p class="text-muted">Sin datos.</p>';
+    const entidades = AncestrosDefaults.entidades || [];
+    return entidades.map(e => `
+      <div class="card" style="cursor:pointer" onclick="this.querySelector('.ent-body').style.display=this.querySelector('.ent-body').style.display==='none'?'block':'none'">
+        <div class="flex-between">
+          <div class="card-title">${e.emoji || ''} ${e.name}</div>
+          <span class="badge badge-purple" style="font-size:.7rem">${e.tipo}</span>
+        </div>
+        <p style="font-size:.82rem;color:var(--muted);margin:.25rem 0">${e.descripcion ? e.descripcion.substring(0,100)+'…' : ''}</p>
+        <div class="ent-body" style="display:none">
+          <hr class="section-divider">
+          ${e.formas ? `<div class="bib-prop"><div class="bib-prop-label">👁️ Cómo se manifiesta</div><div class="bib-prop-value">${e.formas}</div></div>` : ''}
+          ${e.como_trabajar ? `<div class="bib-prop"><div class="bib-prop-label">🌿 Cómo trabajar</div><div class="bib-prop-value">${e.como_trabajar}</div></div>` : ''}
+          ${e.ofrendas ? `<div class="bib-prop"><div class="bib-prop-label">🌸 Ofrendas</div><div class="bib-prop-value">${e.ofrendas}</div></div>` : ''}
+          ${e.precauciones ? `<div class="bib-prop"><div class="bib-prop-label">⚠️ Precauciones</div><div class="bib-prop-value">${e.precauciones}</div></div>` : ''}
+          ${e.ritual_base ? `<div class="bib-prop"><div class="bib-prop-label">🕯️ Ritual base</div><div class="bib-prop-value">${e.ritual_base.replace(/\n/g,'<br>')}</div></div>` : ''}
+        </div>
+      </div>`).join('');
+  }
+
+  function renderRitualesDefaults() {
+    if (typeof AncestrosDefaults === 'undefined') return '';
+    const ritos = AncestrosDefaults.ritos || [];
+    return ritos.map(r => `
+      <div class="card" style="cursor:pointer" onclick="this.querySelector('.rit-body').style.display=this.querySelector('.rit-body').style.display==='none'?'block':'none'">
+        <div class="card-title">${r.emoji || ''} ${r.name}</div>
+        <p style="font-size:.82rem;color:var(--muted);margin:.25rem 0">${r.descripcion || ''}</p>
+        <div class="rit-body" style="display:none">
+          <hr class="section-divider">
+          ${r.materiales ? `<div class="bib-prop"><div class="bib-prop-label">🌿 Materiales</div><div class="bib-prop-value">${r.materiales.replace(/\n/g,'<br>')}</div></div>` : ''}
+          ${r.pasos ? `<div class="bib-prop"><div class="bib-prop-label">🔮 Pasos</div><div class="bib-prop-value">${r.pasos.replace(/\n/g,'<br>')}</div></div>` : ''}
+          ${r.frecuencia ? `<div class="bib-prop"><div class="bib-prop-label">🌙 Frecuencia</div><div class="bib-prop-value">${r.frecuencia}</div></div>` : ''}
+          ${r.notas ? `<div class="bib-prop"><div class="bib-prop-label">📝 Notas</div><div class="bib-prop-value">${r.notas}</div></div>` : ''}
+        </div>
+      </div>`).join('');
   }
 
   function renderRituales() {
@@ -5507,6 +6255,8 @@ const Ancestros = (() => {
       a.ofrendas ? a.ofrendas.split(',').map(o => ({ entidad: a.name, ofrenda: o.trim(), tipo: a.tipo || 'ancestro' })) : []
     );
 
+    const ofrendasLibro = typeof AncestrosDefaults !== 'undefined' ? (AncestrosDefaults.ofrendas || []) : [];
+
     if (todas.length === 0) {
       return `
         <p class="text-muted mb-2" style="font-size:.85rem">Ofrendas generales recomendadas para cualquier ser</p>
@@ -5518,7 +6268,21 @@ const Ancestros = (() => {
                 `<div style="padding:.4rem;background:var(--bg3);border-radius:var(--radius-s)">${o}</div>`
               ).join('')}
           </div>
-        </div>`;
+        </div>
+        ${ofrendasLibro.map(of => `
+          <div class="card" style="cursor:pointer" onclick="this.querySelector('.of-body').style.display=this.querySelector('.of-body').style.display==='none'?'block':'none'">
+            <div class="flex-between">
+              <div class="card-title">${of.emoji || ''} ${of.name}</div>
+              <span style="color:var(--muted);font-size:.8rem">▼</span>
+            </div>
+            <p style="font-size:.82rem;color:var(--muted)">${of.descripcion || ''}</p>
+            <div class="of-body" style="display:none">
+              <hr class="section-divider">
+              ${of.elementos ? `<div class="bib-prop"><div class="bib-prop-label">🌿 Elementos</div><div class="bib-prop-value">${of.elementos.replace(/\n/g,'<br>')}</div></div>` : ''}
+              ${of.como ? `<div class="bib-prop"><div class="bib-prop-label">📋 Cómo hacerlo</div><div class="bib-prop-value">${of.como}</div></div>` : ''}
+              ${of.importante ? `<div class="bib-prop"><div class="bib-prop-label">⚠️ Importante</div><div class="bib-prop-value">${of.importante}</div></div>` : ''}
+            </div>
+          </div>`).join('')}`;
     }
 
     const porEntidad = {};
