@@ -8004,7 +8004,7 @@ const Tarot = (() => {
     detalle.innerHTML = `
       <div class="card" style="margin-top:1.25rem;border-color:var(--gold)">
         <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem">
-          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('carta-estudio-detalle').innerHTML='';document.getElementById('estudio-tabs')?.scrollIntoView({behavior:'smooth',block:'start'})">← Volver</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('carta-estudio-detalle').innerHTML='';window.scrollTo({top:document.getElementById('adiv-estudio')?.offsetTop-60||0,behavior:'smooth'})">← Tipos de cartas</button>
           <div style="font-size:2.5rem;margin-left:.5rem">${imgs[c.num] ? `<img src="${imgs[c.num]}" style="width:50px;border-radius:6px" onerror="this.outerHTML='${c.emoji}'">` : c.emoji}</div>
           <div style="flex:1">
             <div style="font-family:var(--font-heading);font-size:1.1rem;color:var(--gold-l)">${c.nombre}</div>
@@ -8012,6 +8012,12 @@ const Tarot = (() => {
           </div>
           <button class="btn btn-ghost btn-sm"
             onclick="Tarot._editarCarta(${c.num})">✏️ Editar</button>
+        </div>
+        <!-- Navegación rápida entre tipos -->
+        <div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:1rem;padding:.5rem;background:var(--bg3);border-radius:var(--radius-s)">
+          <span style="font-size:.72rem;color:var(--muted);align-self:center;margin-right:.2rem">Ver:</span>
+          <button class="btn btn-ghost btn-sm" style="font-size:.72rem;padding:.2rem .5rem" onclick="Tarot._tabEstudio('mayores',document.querySelector('#estudio-tabs .tab-btn'))">✨ Mayores</button>
+          ${PALOS.map(p=>`<button class="btn btn-ghost btn-sm" style="font-size:.72rem;padding:.2rem .5rem" onclick="Tarot._tabEstudio('${p.id}',document.querySelectorAll('#estudio-tabs .tab-btn')[${PALOS.indexOf(p)+1}])">${p.emoji} ${p.nombre}</button>`).join('')}
         </div>
         <div style="margin-bottom:.75rem">
           <div style="font-size:.75rem;font-weight:600;color:var(--gold);margin-bottom:.3rem">⬆ NORMAL</div>
@@ -8022,7 +8028,7 @@ const Tarot = (() => {
           <p style="font-size:.88rem;color:var(--lavender);line-height:1.6">${c.inv || '—'}</p>
         </div>
       </div>`;
-    detalle.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    detalle.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function _editarCarta(num) {
