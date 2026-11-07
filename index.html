@@ -3786,6 +3786,140 @@ const Admin = (() => {
 </script>
   <script>
 /* ============================================================
+   BIBLIOTECA-DEFAULTS.JS — Contenido inicial del grimorio
+   Hierbas, cristales y más del libro "El Año de la Bruja"
+   ============================================================ */
+
+const BibliotecaDefaults = (() => {
+  // IDs fijos para que no se dupliquen al recargar
+  const hierbas = [
+    { id:'bib-h-01', tipo:'hierba', name:'Ruda', emoji:'🌿',
+      medicinal:'Antiespasmódica, digestiva, regula menstruación.',
+      magica:'Protección fuerte, rompe hechizos, mal de ojo, limpias de energía negativa. La hierba protectora más poderosa de América Latina.',
+      usos:'Ramito fresco en entrada del hogar. Baño de despojos: hervir con agua y sal, bañarse de cuello hacia abajo. Agua de ruda para limpiar espacios y objetos.',
+      sustitutos:'Romero, Albahaca' },
+    { id:'bib-h-02', tipo:'hierba', name:'Romero', emoji:'🌿',
+      medicinal:'Estimulante circulatorio, antioxidante, mejora memoria.',
+      magica:'Purificación, protección, memoria, amor. Reemplaza al sándalo en muchos rituales. Excelente para consagrar herramientas mágicas.',
+      usos:'Sahumerio seco, baños rituales, aceite, hechizos de amor y memoria. Colocar ramitas en el hogar para protección.',
+      sustitutos:'Salvia, Tomillo' },
+    { id:'bib-h-03', tipo:'hierba', name:'Lavanda', emoji:'💜',
+      medicinal:'Relajante, ansiolítica, antibacteriana, mejora el sueño.',
+      magica:'Amor, paz, sueños proféticos, purificación, calma mental.',
+      usos:'Sachets bajo la almohada para sueños lúcidos, aceite relajante en sienes, baños de pureza, hechizos de amor suave.',
+      sustitutos:'Manzanilla, Jazmín' },
+    { id:'bib-h-04', tipo:'hierba', name:'Canela', emoji:'🟤',
+      medicinal:'Antiinflamatoria, regula azúcar, digestiva.',
+      magica:'Éxito, poder solar, amor, prosperidad, velocidad. Acelera cualquier ritual — añadirla potencia resultados.',
+      usos:'Soplar polvo de canela hacia el interior del hogar el 1 de cada mes. Poner en cartera para atraer dinero. Aceite en velas de prosperidad.',
+      sustitutos:'Cardamomo, Clavo' },
+    { id:'bib-h-05', tipo:'hierba', name:'Laurel', emoji:'🌿',
+      medicinal:'Digestivo, antiinflamatorio, antibacteriano.',
+      magica:'Éxito, protección, purificación, deseos, victorias, claridad.',
+      usos:'Escribir un deseo en hoja de laurel y quemarla. Ramas en ventanas para proteger el hogar. Sahumerio para limpieza y éxito.',
+      sustitutos:'Romero, Cedro' },
+    { id:'bib-h-06', tipo:'hierba', name:'Manzanilla', emoji:'🌼',
+      medicinal:'Digestiva, antiinflamatoria, calmante nerviosa.',
+      magica:'Calma, sueños lúcidos, dinero, paz familiar, amor suave.',
+      usos:'Infusión ritual antes de dormir para potenciar sueños. Lavar manos con infusión antes de manipular dinero. Baños de calma y amor.',
+      sustitutos:'Lavanda, Tilo' },
+    { id:'bib-h-07', tipo:'hierba', name:'Palo Santo', emoji:'🪵',
+      medicinal:'Antiinflamatorio, expectorante, reduce estrés.',
+      magica:'Purificación profunda, paz, inspiración espiritual, atracción de energía positiva. A diferencia de la salvia que barre, el Palo Santo invita.',
+      usos:'Sahumerio para limpiar espacios y objetos. Encender y mover en espiral en sentido horario para atraer lo positivo. Siempre de producción sostenible.',
+      sustitutos:'Copal, Incienso blanco' },
+    { id:'bib-h-08', tipo:'hierba', name:'Copal', emoji:'🤍',
+      medicinal:'Antiséptico, expectorante, cicatrizante.',
+      magica:'Purificación sagrada, conexión con ancestros, ofrendas, limpias. Resina sagrada mesoamericana. Lleva mensajes entre vivos y muertos.',
+      usos:'Sahumerio en ceremonias y altares ancestrales. Ofrenda en Día de Muertos. Fundamental para rituales de Samhain latinoamericano.',
+      sustitutos:'Incienso blanco, Mirra' },
+    { id:'bib-h-09', tipo:'hierba', name:'Salvia', emoji:'🌿',
+      medicinal:'Antiséptica, regula sudoración, menopausia.',
+      magica:'Purificación potente, sabiduría, protección, claridad mental. La hierba purificadora por excelencia.',
+      usos:'Smudge para limpiar personas y espacios. Infusión de sabiduría. Baños rituales de purificación profunda.',
+      sustitutos:'Ruda, Romero' },
+    { id:'bib-h-10', tipo:'hierba', name:'Flor de Jamaica', emoji:'🌺',
+      medicinal:'Antihipertensiva, diurética, rica en vitamina C.',
+      magica:'Amor, belleza, protección femenina, clarividencia, ofrenda a la Diosa.',
+      usos:'Infusión ritual de amor. Baños de flores rojas para amor y belleza. Agua de jamaica cargada con intención para hechizos de Venus.',
+      sustitutos:'Rosa, Hibisco' },
+    { id:'bib-h-11', tipo:'hierba', name:'Tabaco', emoji:'🌿',
+      medicinal:'Uso exclusivamente ceremonial.',
+      magica:'Ofrendas, conexión con espíritus, protección, apertura de caminos. Moneda de intercambio con el mundo espiritual en tradiciones indígenas.',
+      usos:'Ofrenda a la Tierra en rituales. Petición a los espíritus. Nunca para consumo — solo ceremonial.',
+      sustitutos:'Copal (para ofrendas)' },
+    { id:'bib-h-12', tipo:'hierba', name:'Jazmín', emoji:'🌸',
+      medicinal:'Antidepresivo leve, relajante, afrodisíaco natural.',
+      magica:'Amor, sueños proféticos, dinero, intuición lunar. Sagrado de la Luna.',
+      usos:'Aceite en ritual de luna llena. Flores como ofrenda lunar. Té para despertar intuición. Hechizos de amor delicado.',
+      sustitutos:'Rosa, Lavanda' },
+    { id:'bib-h-13', tipo:'hierba', name:'Cilantro', emoji:'🌿',
+      medicinal:'Digestivo, antioxidante, quelante de metales pesados.',
+      magica:'Amor, salud, protección, paz en el hogar. Hierba latinoamericana de magia cotidiana.',
+      usos:'Semillas en hechizos de amor. Hojas frescas en cocina ritual con intención. Cilantro seco cerca de la entrada para protección.',
+      sustitutos:'Perejil, Albahaca' },
+    { id:'bib-h-14', tipo:'hierba', name:'Hierba Buena', emoji:'🌱',
+      medicinal:'Digestiva, antigripal, refrescante.',
+      magica:'Prosperidad, claridad mental, viajes seguros, comunicación. Tener planta en cocina atrae dinero.',
+      usos:'Infusión antes de conversaciones importantes. Ramita en bolsillo para claridad. Planta viva en cocina para atraer prosperidad.',
+      sustitutos:'Menta, Hierbaluisa' },
+    { id:'bib-h-15', tipo:'hierba', name:'Rosa', emoji:'🌹',
+      medicinal:'Antiinflamatoria, astringente, rica en vitamina C.',
+      magica:'Amor, belleza, clarividencia, paz. Pétalos rojos: amor romántico. Blancos: amor puro. Rosa: autoamor.',
+      usos:'Pétalos en baños de amor. Aceite en hechizos. Agua de rosas para limpias suaves. Ofrenda a Venus.',
+      sustitutos:'Jazmín, Geranio' },
+  ];
+
+  const cristales = [
+    { id:'bib-c-01', tipo:'cristal', name:'Amatista', emoji:'💜',
+      medicinal:'Uso meditativo. Ayuda a reducir estrés y ansiedad.',
+      magica:'Intuición, protección espiritual, sueños, conexión con lo divino. Piedra del camino espiritual.',
+      usos:'Colocar bajo almohada para sueños proféticos. Meditar sosteniendo en mano izquierda. Limpiar con luna llena.',
+      sustitutos:'Cuarzo ahumado' },
+    { id:'bib-c-02', tipo:'cristal', name:'Cuarzo Claro', emoji:'🔮',
+      medicinal:'Uso meditativo. Amplifica claridad mental.',
+      magica:'Amplificación, claridad, programación de intenciones, curación. El maestro amplificador.',
+      usos:'Programar con intención tocándolo y visualizando. Poner junto a otros cristales para amplificar su poder. Altar central.',
+      sustitutos:'Selenita' },
+    { id:'bib-c-03', tipo:'cristal', name:'Turmalina Negra', emoji:'⚫',
+      medicinal:'Uso protector energético.',
+      magica:'Protección absoluta, anclaje, escudo energético. La protectora número uno contra energías oscuras.',
+      usos:'Colocar una en cada esquina del hogar. Llevar al salir. Colocar junto a la puerta de entrada.',
+      sustitutos:'Obsidiana negra' },
+    { id:'bib-c-04', tipo:'cristal', name:'Cuarzo Rosa', emoji:'💗',
+      medicinal:'Uso meditativo. Fomenta autocompasión.',
+      magica:'Amor propio, compasión, sanación emocional, paz interior. Especialmente para el amor hacia uno mismo.',
+      usos:'Baños de amor con pétalos de rosa. Colocar en habitación. Meditar con mano sobre el corazón.',
+      sustitutos:'Rodonita, Rodocrosita' },
+    { id:'bib-c-05', tipo:'cristal', name:'Citrino', emoji:'🌟',
+      medicinal:'Uso meditativo. Levanta el ánimo.',
+      magica:'Abundancia, alegría, energía solar, manifestación. No absorbe energía negativa, la transforma.',
+      usos:'Colocar en billetera o altar de prosperidad. Llevar en bolsillo derecho. No necesita limpieza frecuente.',
+      sustitutos:'Cornalina, Ojo de Tigre' },
+    { id:'bib-c-06', tipo:'cristal', name:'Obsidiana Negra', emoji:'⚫',
+      medicinal:'Uso meditativo para enfrentar sombras.',
+      magica:'Protección fuerte, verdad sin filtros, trabajo con la sombra, anclaje. Muestra lo que necesitas ver.',
+      usos:'Espejo de obsidiana para scrying. Llevar encima para revelar verdades. Límite del altar para proteger.',
+      sustitutos:'Turmalina negra' },
+    { id:'bib-c-07', tipo:'cristal', name:'Labradorita', emoji:'🔵',
+      medicinal:'Uso meditativo. Reduce ansiedad ante cambios.',
+      magica:'Magia, protección, intuición, viajes astrales. La piedra del mago — crea escudo y amplifica habilidades psíquicas.',
+      usos:'Meditar sosteniendo al tercer ojo. Colocar en altar de magia. Llevar en rituales nocturnos.',
+      sustitutos:'Moonstone, Labradorita espectrolita' },
+    { id:'bib-c-08', tipo:'cristal', name:'Selenita', emoji:'🤍',
+      medicinal:'Uso meditativo. Claridad mental.',
+      magica:'Limpieza, conexión angélica, claridad, paz. Limpia automáticamente otros cristales a su lado.',
+      usos:'Colocar otros cristales sobre ella para limpiarlos. Altar de paz. NO poner en agua — se disuelve.',
+      sustitutos:'Cuarzo claro' },
+  ];
+
+  // Combinar todo con IDs únicos
+  return [...hierbas, ...cristales];
+})();
+
+</script>
+  <script>
+/* ============================================================
    BIBLIOTECA.JS — Hierbas, cristales y más
    Contenido gestionado 100% desde Admin
    ============================================================ */
@@ -3797,7 +3931,7 @@ const Biblioteca = (() => {
     const sec = document.getElementById('sec-biblioteca');
     if (!sec) return;
 
-    const items = App.lsGet('bruja_biblioteca', []);
+    const items = App.lsGet('bruja_biblioteca', typeof BibliotecaDefaults !== 'undefined' ? BibliotecaDefaults : []);
 
     sec.innerHTML = `
       <h1 class="section-title">🌿 Biblioteca Mágica</h1>
@@ -3855,14 +3989,14 @@ const Biblioteca = (() => {
   function _filtrar(tipo, btn) {
     document.querySelectorAll('#bib-filtro-tabs .tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const items = App.lsGet('bruja_biblioteca', []);
+    const items = App.lsGet('bruja_biblioteca', typeof BibliotecaDefaults !== 'undefined' ? BibliotecaDefaults : []);
     renderGrid(tipo ? items.filter(i => i.tipo === tipo) : items);
     _cerrarDetalle();
   }
 
   function _buscar(query) {
     const q = query.toLowerCase().trim();
-    const items = App.lsGet('bruja_biblioteca', []);
+    const items = App.lsGet('bruja_biblioteca', typeof BibliotecaDefaults !== 'undefined' ? BibliotecaDefaults : []);
     renderGrid(q ? items.filter(i =>
       i.name.toLowerCase().includes(q) ||
       (i.medicinal || '').toLowerCase().includes(q) ||
@@ -3871,7 +4005,7 @@ const Biblioteca = (() => {
   }
 
   function _ver(id) {
-    const items = App.lsGet('bruja_biblioteca', []);
+    const items = App.lsGet('bruja_biblioteca', typeof BibliotecaDefaults !== 'undefined' ? BibliotecaDefaults : []);
     const it = items.find(x => x.id === id);
     if (!it) return;
     activeItem = id;
@@ -3917,6 +4051,279 @@ const Biblioteca = (() => {
 
   return { render, _filtrar, _buscar, _ver, _cerrarDetalle };
 })();
+
+</script>
+  <script>
+'use strict';
+/* ============================================================
+   TALLER-DATA.JS — Contenido base del Taller de Brujas
+   Velas · Aceites · Tinturas · Incienso · Cocina Mágica
+   Basado en "El Año de la Bruja" (Ciclos IV y V)
+   Este contenido es editable desde Admin → Taller
+   ============================================================ */
+
+const TallerData = {
+
+  // ── VELAS ────────────────────────────────────────────────────
+  velas: [
+    {
+      id: 'v_blanca',
+      name: 'Vela Blanca — La Universal',
+      proposito: 'Purificación, inicio, todo propósito',
+      desc: 'La vela blanca es la más versátil del grimorio. Contiene todos los colores y todas las intenciones. Úsala cuando no tengas el color indicado, cuando quieras un inicio limpio, o cuando tu intención sea puramente espiritual. Es la vela de la luna nueva, del altar desnudo y del practicante que empieza.',
+      ingredientes: 'Vela blanca (tamaño que tengas)\nAceite de oliva o aceite de tu elección\nSal marina (opcional)\nHierba de tu intención (lavanda, romero o lo que tengas)',
+      preparacion: '1. Limpia la vela con sal o humo de palo santo.\n2. Aplica aceite desde el centro hacia arriba (para atraer) o del centro hacia abajo (para liberar).\n3. Labra en la cera el símbolo o palabra de tu intención.\n4. Coloca en el altar con claridad de propósito.\n5. Enciéndela y nombra en voz alta lo que deseas purificar o comenzar.\n6. Deja que se consuma sola si es posible. Lee la cera al terminar.'
+    },
+    {
+      id: 'v_roja',
+      name: 'Vela Roja — Fuego y Vida',
+      proposito: 'Amor, pasión, energía vital, coraje',
+      desc: 'El rojo es la sangre, el fuego, la fuerza de vivir. Se usa en rituales de amor apasionado (nunca amor forzado), para convocar energía vital cuando estás agotado, para trabajos de Marte y para rituales de valentía. Es una vela potente — usarla desde el amor, no desde la desesperación.',
+      ingredientes: 'Vela roja\nAceite de canela o aceite de rosas\nPétalos de rosa roja (opcional)\nHilo rojo para anudar intenciones',
+      preparacion: '1. Prepara el espacio en viernes (día de Venus) o martes (día de Marte).\n2. Unge la vela con aceite de canela en espiral ascendente.\n3. Labra el nombre de la intención o el símbolo de Marte (♂).\n4. Rodea la base con pétalos de rosa roja.\n5. Enciende y visualiza la energía fluyendo hacia tu intención.\n6. Deja consumir o apaga con los dedos (nunca soplar — esto se aplica a todas las velas).'
+    },
+    {
+      id: 'v_verde',
+      name: 'Vela Verde — Prosperidad y Salud',
+      proposito: 'Dinero, crecimiento, salud, abundancia, tierra',
+      desc: 'El verde es el color de la tierra que da fruto, del dinero que crece y del cuerpo que sana. Úsala para atraer prosperidad material, para rituales de salud, para hacer crecer proyectos y para conectar con la energía de la tierra. Se trabaja mejor en luna creciente o luna llena.',
+      ingredientes: 'Vela verde\nAceite de patchouli o aceite de albahaca\nMoneda pequeña\nHierba de albahaca o canela en polvo',
+      preparacion: '1. Coloca una moneda bajo la vela como base de manifestación material.\n2. Unge con aceite de patchouli desde el centro hacia la llama.\n3. Espolvorea canela o albahaca alrededor.\n4. Labra el símbolo de la moneda (€, $) o escribe "abundancia" en espiral.\n5. Enciende en luna creciente, idealmente un jueves (día de Júpiter).\n6. Medita visualizando el dinero o la salud fluyendo hacia ti de forma natural y justa.'
+    },
+    {
+      id: 'v_azul',
+      name: 'Vela Azul — Paz y Verdad',
+      proposito: 'Paz, comunicación, verdad, agua, sueños, salud emocional',
+      desc: 'El azul calma. Es el color del agua en calma, del cielo despejado y de la palabra que llega al corazón. Se usa para traer paz a conflictos, para rituales de comunicación honesta, para trabajar con la garganta y la expresión, para rituales antes de dormir y para invocar sueños lúcidos o proféticos.',
+      ingredientes: 'Vela azul\nAceite de lavanda o manzanilla\nSal (para rituales de paz en el hogar)\nFlores de manzanilla o lavanda',
+      preparacion: '1. Mejor en lunes (luna) o miércoles (Mercurio).\n2. Unge con aceite de lavanda del centro hacia abajo (para bajar tensiones).\n3. Labra una ola o el símbolo de agua (🌊) en la cera.\n4. Enciende antes de una conversación difícil o antes de dormir.\n5. Mientras arde, habla en voz alta lo que necesitas comunicar o liberar.\n6. Para el hogar: enciende en la sala o cocina para limpiar discordias.'
+    },
+    {
+      id: 'v_negra',
+      name: 'Vela Negra — Protección y Sombra',
+      proposito: 'Protección fuerte, destierro, absorber negatividad, trabajo de sombra',
+      desc: 'La vela negra no es brujería oscura — es la herramienta de los límites. Absorbe lo que necesita irse: energías negativas, lazos tóxicos, miedos encarnados. También es la vela del trabajo de sombra: iluminar lo que está oculto en uno mismo. Úsala con intención clara y sin miedo. El negro es protección, no maldad.',
+      ingredientes: 'Vela negra\nAceite de ruda, incienso o mirra\nSal negra (sal + carbón o sal + pimienta negra)\nAgua con ruda para limpiar el espacio después',
+      preparacion: '1. Trabaja en sábado (Saturno) o en luna menguante.\n2. Limpia primero el espacio con ruda o sahumerio.\n3. Unge la vela con aceite de ruda desde la punta hacia abajo.\n4. Labra aquello que quieres alejar o destruir: un miedo, un vínculo, un patrón.\n5. Enciende y visualiza la energía de lo que quieres alejar siendo absorbida y neutralizada por la llama.\n6. Cuando se consuma, desecha los restos fuera de tu hogar (a la basura, no entierres).'
+    },
+    {
+      id: 'v_amarilla',
+      name: 'Vela Amarilla / Dorada — Sol y Éxito',
+      proposito: 'Éxito, claridad mental, sol, aprendizaje, confianza',
+      desc: 'El amarillo y el dorado son los colores del sol: la claridad que lo ilumina todo, la confianza que nace de dentro, el éxito que viene del esfuerzo bien dirigido. Úsala para rituales de exámenes, presentaciones, proyectos importantes, para activar el plexo solar y para reconectar con tu propio poder personal.',
+      ingredientes: 'Vela amarilla o dorada\nAceite de naranja o canela\nCáscara de naranja seca (opcional)\nSemillas de girasol (opcional)',
+      preparacion: '1. Mejor en domingo (sol) o en luna llena.\n2. Unge con aceite de naranja o canela de abajo hacia arriba (atracción de éxito).\n3. Labra el símbolo del sol (☀️) o las palabras "claridad" y "confianza".\n4. Enciende antes de un evento importante o durante tu estudio.\n5. Concéntrate en la llama y visualiza la luz del sol entrando por tu coronilla, bajando por tu columna y llenando tu plexo solar de dorado.\n6. Puedes dejarla arder a ratos durante varios días.'
+    },
+    {
+      id: 'v_morada',
+      name: 'Vela Morada — Espiritualidad e Intuición',
+      proposito: 'Espiritualidad, intuición, tercer ojo, conexión divina, magia',
+      desc: 'El morado es el color del umbral entre mundos: la última luz del día antes de la noche, el color de la adivinación y del camino místico. Úsala para profundizar tu práctica espiritual, para trabajar con el tercer ojo, en rituales de tarot y runas, para contacto con guías o ancestros, y para meditaciones profundas.',
+      ingredientes: 'Vela morada\nAceite de sándalo o incienso (frankincense)\nMirra en resina (opcional)\nAmatista cerca de la vela',
+      preparacion: '1. Mejor en lunes (luna) o miércoles (Mercurio).\n2. Unge con aceite de sándalo en espiral.\n3. Coloca una amatista a la derecha de la vela.\n4. Labra el símbolo del ojo (👁️) o el tercer ojo (punto en el centro de dos espirales).\n5. Enciende antes de sesiones de tarot, meditación o trabajo con sueños.\n6. Mientras arde, mantén la mente abierta y receptiva. Anota en tu diario lo que emerge.'
+    },
+    {
+      id: 'v_naranja',
+      name: 'Vela Naranja — Atracción y Cambio Rápido',
+      proposito: 'Atracción, creatividad, suerte, cambio de rumbo, energía Solar-Lunar',
+      desc: 'El naranja es el color del amanecer y del ocaso — el momento entre dos estados. Es el color del cambio que llega rápido, de la creatividad que se manifiesta y de la atracción que funciona por simpatía natural. Úsala cuando necesitas que algo se mueva, cuando buscas inspiración creativa o cuando el estancamiento te asfixia.',
+      ingredientes: 'Vela naranja\nAceite de naranja dulce o canela\nCáscara de naranja fresca\nUnas semillas de cilantro (opcional)',
+      preparacion: '1. Trabaja en miércoles (Mercurio) para comunicación o domingo (sol) para éxito creativo.\n2. Unge con aceite de naranja en espiral.\n3. Coloca cáscara de naranja fresca alrededor de la base.\n4. Labra la palabra o símbolo de aquello que quieres atraer.\n5. Enciende con intención de movimiento y cambio.\n6. Esta vela funciona bien en tiradas rápidas: encenderla, dejar arder 20 minutos visualizando, apagarla, repetir 3 días seguidos.'
+    },
+    {
+      id: 'v_rosada',
+      name: 'Vela Rosada — Amor Propio y Romance',
+      proposito: 'Amor romántico, autoamor, amistad profunda, compasión',
+      desc: 'El rosado es el rojo suavizado por la luz: amor sin posesividad, atracción sin desesperación, romance sin obsesión. Es la primera vela que debe encender quien quiere trabajar amor — no el rojo, sino el rosado. Primero el amor propio, luego el romántico. Cuando trabajamos amor desde la carencia, atraemos carencia.',
+      ingredientes: 'Vela rosada\nAceite de rosa o ylang ylang\nPétalos de rosa rosada o rosa blanca\nCuarzo rosa (opcional)',
+      preparacion: '1. Mejor en viernes (Venus), especialmente si la luna está en Libra o Tauro.\n2. Unge con aceite de rosa desde el centro hacia ambos extremos (equilibrio).\n3. Escribe en un papel pequeño: "Me amo. Soy digno/a de amor." Ponlo bajo la vela.\n4. Rodea con pétalos de rosa.\n5. Enciende y recita tres veces en voz alta: "El amor que doy, el amor que recibo, son iguales."\n6. Deja arder mientras meditas en tu propio valor. No en otra persona — en ti.'
+    },
+    {
+      id: 'v_labrado',
+      name: 'El Arte del Labrado — Cómo Preparar Cualquier Vela',
+      proposito: 'Técnica base para activar y personalizar tus velas',
+      desc: 'Labrar una vela es escribir tu intención directamente en la cera. No necesitas herramientas especiales: un alfiler, una aguja de coser, un palillo de madera o la punta de un bolígrafo sin tinta funcionan igual que un bolígrafo ritual de oro. La magia está en la intención, no en el objeto.',
+      ingredientes: 'Vela del color correspondiente\nHerramienta de labrado (alfiler, aguja, palillo)\nAceite para ungir (oliva si no tienes otro)\nHierbas opcionales según intención\nPapel y lápiz para diseñar el símbolo antes',
+      preparacion: 'LIMPIAR: Pasa la vela por humo de incienso o sahumerio, o frótala con sal. Visualiza que toda energía anterior se neutraliza.\n\nUNGIR: Para ATRAER — aplica aceite desde el centro hacia la punta (mecha). Para ALEJAR — aplica desde el centro hacia la base. Para EQUILIBRIO — desde el centro hacia ambos extremos.\n\nLABRAR: Dibuja con tu herramienta en la cera. Puede ser:\n- Una palabra (protección, amor, dinero)\n- Un símbolo planetario (☀️ ☽ ♀ ♂ ♃ ♄)\n- Tu nombre o el nombre del propósito\n- Un sigilo que hayas creado\n- Una flecha hacia arriba (para atraer) o abajo (para liberar)\n\nCARGAR: Sostén la vela entre tus manos. Cierra los ojos. Visualiza tu intención como luz que entra por tus palmas y llena la vela. Cuando la sientas "llena", está lista.\n\nENCENDER: Nunca soples para apagar — usa los dedos o un apagavelas. Soplar dispersa la intención. Si necesitas apagar antes de que se consuma, hazlo con intención de continuar después.'
+    },
+  ],
+
+  // ── TINTURAS Y PREPARACIONES LÍQUIDAS ─────────────────────
+  tinturas: [
+    {
+      id: 't_lunar',
+      name: 'Agua Lunar — La Base de Todo',
+      proposito: 'Agua cargada con energía lunar para rituales, limpias y preparaciones',
+      desc: 'El agua lunar es la preparación más simple y más poderosa del grimorio. No tiene ingredientes especiales: solo agua y la luna. Esta agua lleva la energía de la fase lunar en que fue cargada y amplifica cualquier preparación, ritual o limpieza que hagas con ella. Es la base de muchas otras recetas.',
+      ingredientes: 'Agua filtrada o de lluvia (preferible)\nRecipiente de vidrio o cristal (nunca plástico)\nAcceso a la luz lunar directa o desde una ventana',
+      preparacion: 'AGUA DE LUNA LLENA (la más poderosa y versátil):\n1. La noche de luna llena, llena el recipiente de vidrio con agua.\n2. Colócalo en una ventana o al exterior donde reciba la luz de la luna (no importa si está nublado — la energía traspasa las nubes).\n3. Déjalo toda la noche.\n4. Al amanecer, recoge el agua antes de que le dé el sol directo.\n5. Puedes añadir una pizca de sal o una pieza de selenita para potenciar.\n6. Guarda en un frasco con tapa en lugar fresco y oscuro. Dura 1 mes.\n\nUSOS: Limpiar el altar, ungir cristales, rociar el hogar, baños de purificación, base para tinturas, regar plantas con intención.\n\nAGUA DE LUNA NUEVA (para comenzar proyectos): Mismo proceso pero en noche de luna nueva — carga intenciones de inicio y semilla.\n\nAGUA DE LUNA MENGUANTE (para liberar): Para rituales de destierro, corte y limpieza profunda.'
+    },
+    {
+      id: 't_lavanda',
+      name: 'Tintura de Lavanda — Calma y Sueños',
+      proposito: 'Relajación, sueños lúcidos, paz emocional, anti-ansiedad',
+      desc: 'La tintura de lavanda en alcohol extrae los compuestos aromáticos y energéticos de la planta de forma estable. Esta tintura dura meses y se puede usar de múltiples formas: en baños, como spray para la almohada, en rituales de luna o como parte de aceites. La lavanda fue la primera hierba con la que Gianfranco trabajó y sigue siendo su favorita.',
+      ingredientes: '1 frasco de vidrio con tapa hermética\n2 cucharadas de flores de lavanda secas\n100 ml de alcohol de 70° (vodka también funciona)\n1 colador fino o tela de queso para filtrar',
+      preparacion: '1. Coloca las flores de lavanda secas en el frasco de vidrio.\n2. Vierte el alcohol hasta cubrir las flores completamente.\n3. Cierra herméticamente y agita suavemente.\n4. Coloca en un lugar oscuro durante 4 semanas. Agita cada 3-4 días.\n5. Al mes, filtra con colador fino o tela. Exprime bien las flores para extraer todo.\n6. Guarda la tintura en un frasco oscuro con etiqueta y fecha.\n\nDura hasta 2 años correctamente almacenada.\n\nUSOS MÁGICOS:\n- Unas gotas en la almohada antes de dormir para sueños proféticos\n- Añadir al agua del piso para limpiar la casa con energía de paz\n- Ungir muñecas antes de rituales de tarot\n- Mezclar con agua en spray para perfumar el altar'
+    },
+    {
+      id: 't_ruda',
+      name: 'Agua de Ruda — Protección Latinoamericana',
+      proposito: 'Protección fuerte, destierro, limpias energéticas, alejar mal de ojo',
+      desc: 'La ruda es la hierba protectora por excelencia en América Latina. No hay casa de practicante latinoamericano sin ruda fresca en la entrada. Esta preparación de agua de ruda es la base para limpias de personas, espacios y objetos. Es la primera limpieza que Gianfranco aprendió — fácil, potente y de materiales al alcance de todos.',
+      ingredientes: '1 ramo de ruda fresca (una planta entera si puedes)\nAgua filtrada suficiente para un cubo o recipiente grande\nSal marina gruesa\n1 cucharada de agua florida (opcional, amplifica)',
+      preparacion: '1. Hierve el agua con la ruda durante 10 minutos. Deja enfriar a temperatura ambiente.\n2. Añade sal marina y agua florida si tienes.\n3. Cuela las hojas.\n\nPARA LIMPIEZA DE PERSONAS:\n- Remoja tus manos en la preparación.\n- Comienza desde la cabeza y baja hacia los pies, como si "barrieran" la energía hacia abajo y fuera del cuerpo.\n- Menciona en voz alta lo que estás liberando.\n\nPARA LIMPIEZA DEL HOGAR:\n- Pasa un trapo empapado en la preparación por las esquinas de cada habitación.\n- De adentro hacia afuera (empieza en el centro y termina en la puerta).\n- Deja la preparación restante en la entrada durante una noche.\n\nFRECUENCIA: Cada luna nueva o cuando sientas la energía del espacio pesada.'
+    },
+    {
+      id: 't_vinagre4',
+      name: 'Vinagre de las Cuatro Ladronas',
+      proposito: 'Protección potente, inmunidad espiritual, destierro, limpieza de mal',
+      desc: 'Esta preparación tiene raíces en la tradición europea y americana. La leyenda dice que cuatro ladrones sobrevivieron la plaga robando a los muertos porque se empapaban en este vinagre. Mágicamente, es protección activa — no solo escudo sino repelente de energías negativas. Es una receta que requiere tiempo pero que dura años.',
+      ingredientes: '250 ml de vinagre de manzana orgánico\n1 cucharadita de cada una: romero, lavanda, salvia, tomillo, ruda\n4 dientes de ajo aplastados\n4 granos de pimienta negra\n1 cucharadita de canela en rama\nFrasco de vidrio con tapa hermética',
+      preparacion: '1. Coloca todas las hierbas y el ajo en el frasco de vidrio.\n2. Vierte el vinagre de manzana sobre todo.\n3. Cierra bien y guarda en lugar oscuro y fresco durante 4 semanas (lo ideal: 4 semanas = número de las ladronas).\n4. Agita cada pocos días.\n5. Filtra y guarda en frasco oscuro etiquetado.\n\nDura 2-3 años almacenado correctamente.\n\nUSOS:\n- Añadir unas cucharadas al agua de fregar el piso (protección del hogar)\n- Diluir en agua y rociar umbral y ventanas\n- Colocar un pequeño cuenco en la entrada del hogar\n- NO consumir directamente — uso exclusivamente ritual'
+    },
+    {
+      id: 't_floral',
+      name: 'Hidrolato Casero de Rosas',
+      proposito: 'Amor, autoestima, Venus, belleza interior y exterior',
+      desc: 'Un hidrolato es el agua aromática que queda después de destilar una planta — pero podemos hacer una versión casera muy efectiva a nivel energético. Esta agua de rosas casera lleva la vibración de Venus y se puede usar en la piel, en el altar y en rituales de amor propio.',
+      ingredientes: '1 taza de pétalos de rosa frescos (rosas sin pesticidas)\n2 tazas de agua destilada o agua lunar\n1 olla pequeña con tapa\nHielo para el proceso\n1 frasco de vidrio pequeño para recolectar',
+      preparacion: 'MÉTODO SIMPLE (sin destilar):\n1. Coloca los pétalos en la olla con el agua.\n2. Calienta a fuego muy bajo hasta que los pétalos pierdan su color (quedan blancos o muy pálidos). No hervir.\n3. Deja enfriar completamente.\n4. Filtra los pétalos y guarda el agua rosada en frasco de vidrio.\n\nAÑADE INTENCIÓN:\nMientras los pétalos se calientan, recita: "Venus, que esta agua lleve tu amor. Que quien la use se sienta digno/a y bello/a."\n\nUSOS:\n- Spray para la piel (tonificante y energético)\n- Ungir cristales de cuarzo rosa\n- Rociar el altar de Venus o el espacio de trabajo de amor\n- Añadir al baño de luna llena\n- Dura 2 semanas en nevera o 1 semana sin refrigerar'
+    },
+    {
+      id: 't_romero',
+      name: 'Infusión de Romero y Laurel — Éxito y Memoria',
+      proposito: 'Éxito, memoria, claridad, purificación, rituales solares',
+      desc: 'El romero y el laurel son dos hierbas solares con las que Gianfranco empezó su herbolaria porque ya las tenía en casa para cocinar. Esta infusión ritual combina sus propiedades: el romero que purifica y protege la mente, el laurel que consagra y atrae el éxito. Puede beberse en contexto ritual (es segura) o usarse externamente.',
+      ingredientes: '1 cucharadita de romero seco\n2 hojas de laurel secas\n1 taza de agua caliente (no hirviendo)\nMiel de abeja (opcional, para endulzar y amplificar)\nTaza que uses solo para rituales (si tienes)',
+      preparacion: 'PARA BEBER RITUALMENTE:\n1. Calienta el agua hasta que humee (no hiervas — destruye aceites esenciales).\n2. Coloca el romero y el laurel en la taza.\n3. Vierte el agua caliente.\n4. Mientras infusiona (5 minutos), sostén la taza y visualiza claridad mental y éxito fluyendo hacia ti.\n5. Añade miel si gustas.\n6. Bebe lentamente, con conciencia de lo que estás incorporando.\n\nPARA USO EXTERNO (en cabello o manos):\n1. Haz la infusión más concentrada (3 cucharadas de romero en 1 taza de agua).\n2. Deja enfriar completamente.\n3. Úsala como enjuague de cabello o para mojar las manos antes de trabajar con documentos importantes, antes de entrevistas o presentaciones.\n\nMEJOR MOMENTO: Mañanas de domingo o antes de exámenes y presentaciones.'
+    },
+  ],
+
+  // ── INCIENSO Y SAHUMERIOS ─────────────────────────────────
+  incienso: [
+    {
+      id: 'i_ruda_romero',
+      name: 'Sahumerio de Ruda y Romero — Limpieza Latinoamericana',
+      proposito: 'Limpieza energética profunda, destierro, inicio limpio',
+      desc: 'Esta es la limpieza base en la tradición latinoamericana. Ruda y romero juntos crean un humo que purifica, destierra lo que no sirve y establece un escudo protector. Es la primera limpieza que debe hacerse en un espacio nuevo, después de conflictos intensos, o antes de cualquier ritual importante. Simple, potente, con hierbas al alcance de todos.',
+      ingredientes: '1 manojo pequeño de ruda fresca (o seca)\n1 manojo pequeño de romero fresco (o seco)\nHilo natural (algodón o lana) para atar — nunca sintético\n1 recipiente resistente al calor para quemar suelto\no carbón de incienso para quemar suelta',
+      preparacion: 'VERSIÓN ATADA (similar al smudge):\n1. Seca la ruda y el romero colgándolos boca abajo 1-2 semanas.\n2. Ata con el hilo natural comenzando desde la base y subiendo en espiral.\n3. Deja secar completamente antes de usar.\n4. Para quemar: enciende la punta, apaga la llama y deja que humee.\n\nVERSIÓN SUELTA (más rápida):\n1. Coloca carbón de incienso en el recipiente resistente.\n2. Enciende el carbón y espera a que esté al rojo vivo.\n3. Coloca las hierbas sobre el carbón poco a poco.\n\nTÉCNICA DE LIMPIEZA DEL ESPACIO:\n- Comienza desde la habitación más alejada de la entrada.\n- Mueve el humo en las esquinas (esquinas acumulan energía estancada).\n- Avanza hacia la puerta principal.\n- Termina en la entrada, llevando el humo hacia afuera.\n- Abre ventanas para que la energía vieja salga.'
+    },
+    {
+      id: 'i_purif',
+      name: 'Incienso de Purificación — Salvia y Palo Santo',
+      proposito: 'Purificación espiritual profunda, limpiar aura y espacio sagrado',
+      desc: 'Esta combinación une la tradición indígena norteamericana (salvia blanca) con la latinoamericana (palo santo). Juntas crean un humo de purificación muy completo. Es el incienso que Gianfranco usa antes de sesiones de tarot, rituales mayores y en lunas nuevas. Usar con responsabilidad — el palo santo es especie en estudio de conservación.',
+      ingredientes: '1 palo de palo santo (o pizca pequeña de chips)\nHojas secas de salvia blanca o criolla\nCarbón de incienso\nRecipiente de cerámica o concha de mar',
+      preparacion: '1. Coloca el carbón en el recipiente y enciéndelo.\n2. Cuando esté listo (gris por afuera), añade primero la salvia — aporta purificación.\n3. Luego añade chips de palo santo — aporta luz y atracción de energía positiva.\n4. Para limpiar tu aura: pasa el humo alrededor de tu cuerpo, comenzando por los pies y subiendo.\n5. Para el espacio: igual que el sahumerio de ruda (empezando lejos de la entrada, terminando en la puerta).\n6. Para objetos: pasa la pieza por el humo tres veces girándola.\n\nNOTA: La salvia criolla o común (Salvia officinalis, la de cocina) funciona igual que la salvia blanca. No es necesario importar hierba — trabaja con lo que tienes cerca.'
+    },
+    {
+      id: 'i_prosperidad',
+      name: 'Incienso de Prosperidad — Canela, Laurel y Naranja',
+      proposito: 'Atraer dinero, éxito, oportunidades y abundancia',
+      desc: 'Esta mezcla combina tres ingredientes solares que activan la energía de la abundancia. El laurel consagra las intenciones, la canela las acelera y la naranja las llena de alegría y vitalidad solar. Es el incienso para quemar el primer día del mes, antes de una entrevista de trabajo, o cuando un proyecto importante arranca.',
+      ingredientes: '3 hojas de laurel secas, trituradas\n1 cucharadita de canela en polvo\nCáscara de naranja seca, triturada\nCarbón de incienso\n1 cucharadita de copal (opcional, para profundidad)',
+      preparacion: '1. Mezcla los ingredientes en un cuenco pequeño con una cucharita.\n2. Mientras mezclas, visualiza abundancia fluyendo hacia ti de forma natural.\n3. Puedes añadir unas gotas de aceite de naranja o patchouli a la mezcla.\n4. Enciende el carbón y cuando esté listo, añade la mezcla poco a poco.\n5. Deja que el humo llene el espacio. No apagues ventanas — deja que el humo salga y lleve tu intención al universo.\n6. Escribe en un papel tu intención de prosperidad y pásalo por el humo 3 veces antes de guardarlo bajo la vela verde.\n\nMOMENTO IDEAL: Jueves (Júpiter, planeta de abundancia) o el día 1 de cada mes.'
+    },
+    {
+      id: 'i_ancestros',
+      name: 'Sahumerio de Ancestros — Copal y Ciprés',
+      proposito: 'Conexión con ancestros, rituales de Samhain, honrar a los que se fueron',
+      desc: 'El copal es la resina sagrada mesoamericana que conecta con el mundo de los ancestros — lleva mensajes entre los vivos y los muertos desde antes de la colonia. El ciprés acompaña las transiciones y los duelos. Esta mezcla es para Samhain, Día de Muertos, rituales de duelo, o cuando sientes la presencia de alguien que partió.',
+      ingredientes: 'Resina de copal (blanco o negro)\nAguja o chips secos de ciprés\nMirra en resina (opcional, amplifica la conexión)\nCarbón de incienso\nFotos o objetos de los ancestros en el altar',
+      preparacion: '1. Prepara un altar simple con fotos o recuerdos de tus ancestros. Un vaso de agua siempre se pone para los que vienen.\n2. Enciende el carbón y deja que esté listo.\n3. Añade el copal — el primero, para abrir el camino.\n4. Luego el ciprés — para acompañar la transición.\n5. Deja el humo envolver el altar mientras hablas a tus ancestros en voz alta o en silencio.\n6. Puedes dejar comida o bebida que les gustaba como ofrenda.\n\nNOTA: No es invocación ni evocación — es comunicación simple, como hablar a alguien que amas y ya no está. No tienes que temer este ritual si lo haces desde el amor.'
+    },
+    {
+      id: 'i_lunar',
+      name: 'Incienso Lunar — Jazmín y Lavanda',
+      proposito: 'Rituales de luna llena, intuición, sueños, conexión con la Diosa',
+      desc: 'El jazmín es la flor de la luna — se abre de noche, embriaga en la oscuridad y lleva la magia de lo femenino en su esencia. La lavanda aporta claridad onírica y paz. Esta mezcla es perfecta para rituales de luna llena, para activar la intuición antes del tarot y para las noches en que quieres recibir mensajes desde el sueño.',
+      ingredientes: 'Flores de jazmín secas (o aceite esencial de jazmín)\nFlores de lavanda secas\nCáscara de limón seca (aporta claridad)\nCarbón de incienso\nAgua lunar para el altar',
+      preparacion: '1. Mejor el día o la noche de luna llena.\n2. Prepara el espacio con agua lunar en un cuenco en el altar.\n3. Enciende el carbón.\n4. Añade la lavanda primero, luego el jazmín.\n5. Si tienes aceite de jazmín, añade 2 gotas al carbón (en lugar de flores).\n6. Siéntate en silencio mientras el humo sube. Deja que tu mente se aquiete.\n7. Este es el momento para tirar el tarot, consultar las runas o simplemente recibir.\n\nRITUAL DE CARGA: Mientras el incienso arde, coloca tus herramientas de adivinación en el altar para que se carguen con la energía lunar.'
+    },
+  ],
+
+  // ── ACEITES PREPARADOS ────────────────────────────────────
+  aceites: [
+    {
+      id: 'a_proteccion',
+      name: 'Aceite de Protección — Escudo del Practicante',
+      proposito: 'Protección energética, escudo personal, destierro de lo negativo',
+      desc: 'Este aceite se aplica al cuerpo antes de salir de casa, antes de rituales de trabajo con entidades o antes de situaciones que intuyes que drenarán tu energía. Es el aceite más práctico del grimorio — fácil de llevar en bolsillo y aplicar en segundos.',
+      ingredientes: '30 ml de aceite base (oliva, almendra o jojoba)\n5 gotas de aceite esencial de incienso (frankincense)\n3 gotas de aceite esencial de mirra\n5 gotas de aceite esencial de ciprés\n1 ramita de ruda fresca o seca dentro del frasco\nFragmento pequeño de turmalina negra o obsidiana (opcional)',
+      preparacion: '1. Vierte el aceite base en frasco de vidrio oscuro (ámbar o azul).\n2. Añade los aceites esenciales en el orden indicado.\n3. Coloca la ramita de ruda dentro del frasco.\n4. Si tienes turmalina negra, añade un fragmento pequeño al aceite.\n5. Cierra el frasco y agita suavizando con las palmas.\n6. Carga con tu intención: "Que este aceite sea escudo y defensa."\n7. Dejar reposar 24 horas antes de usar.\n\nUSO: Aplica en muñecas, nuca y sobre el corazón antes de salir. También en las plantas de los pies antes de rituales. Unge la puerta de entrada del hogar para protección del espacio.'
+    },
+    {
+      id: 'a_amor',
+      name: 'Aceite de Amor Propio — Venus Interior',
+      proposito: 'Amor propio, autoestima, atracción desde la completitud',
+      desc: 'Este aceite no es para atraer a una persona específica — es para elevar tu propia vibración de amor. Cuando te amas, atraes amor. Es el aceite para aplicar antes de salir, en rituales de viernes, o cuando el espejo interno muestra dudas sobre tu propio valor.',
+      ingredientes: '30 ml de aceite de jojoba o almendra dulce\n5 gotas de aceite esencial de rosa (o geranio como alternativa)\n4 gotas de aceite esencial de ylang ylang\n3 gotas de aceite esencial de neroli o naranja dulce\nPétalos secos de rosa rosada\nCuarzo rosa (un fragmento pequeño)',
+      preparacion: '1. Vierte el aceite base en frasco de vidrio.\n2. Añade los aceites esenciales uno a uno, oliendo la mezcla después de cada uno.\n3. Coloca los pétalos de rosa y el cuarzo dentro del frasco.\n4. Cierra y agita suavemente mientras repites mentalmente: "Me amo. Soy digno/a de amor."\n5. Déjalo en el altar durante una noche de luna llena o cerca de una vela rosada durante 1 hora.\n\nUSO: Aplica en muñecas y sobre el corazón. Perfume el pulso antes de salir. Añade unas gotas al baño cuando necesitas reconectar con tu propio valor. Úsalo también antes de sesiones de trabajo de sombra para ir con amor hacia tus propios miedos.'
+    },
+    {
+      id: 'a_exito',
+      name: 'Aceite de Éxito — Sol en el Bolsillo',
+      proposito: 'Éxito, claridad, confianza, apertura de caminos',
+      desc: 'El aceite de éxito es el compañero del practicante ambicioso que sabe que la magia apoya el esfuerzo, no lo reemplaza. Aplícalo antes de entrevistas, presentaciones, reuniones importantes y cada vez que necesites que tu mejor versión esté presente.',
+      ingredientes: '30 ml de aceite de girasol o almendra\n5 gotas de aceite esencial de canela (con cuidado — puede irritar)\n4 gotas de aceite esencial de naranja dulce\n3 gotas de aceite esencial de jengibre\n1 ramita de canela pequeña dentro del frasco\n1 hoja de laurel seca',
+      preparacion: '1. Vierte el aceite base. NOTA: La canela puede irritar piel sensible. Prueba primero en un área pequeña.\n2. Añade los aceites esenciales.\n3. Coloca la ramita de canela y la hoja de laurel dentro del frasco.\n4. Cierra y carga: sostén el frasco en las manos y visualiza el sol llenándolo de luz dorada.\n5. Guarda en lugar cálido (ventana con sol durante una hora) para potenciar.\n\nUSO: Aplica en muñecas y sobre el plexo solar (centro del abdomen). Para apertura de caminos: unge las suelas de los zapatos antes de un evento importante. Para el hogar: unge la puerta de entrada con una pequeña cantidad los domingos.'
+    },
+    {
+      id: 'a_suenos',
+      name: 'Aceite de Sueños y Visiones',
+      proposito: 'Sueños lúcidos, mensajes nocturnos, conexión con el inconsciente',
+      desc: 'Los sueños son el oráculo principal de Gianfranco — más que el tarot o las runas. Este aceite potencia la memoria onírica y abre el canal de los sueños proféticos. Se aplica exclusivamente antes de dormir. Ten un diario cerca para anotar al despertar.',
+      ingredientes: '30 ml de aceite de almendra dulce\n5 gotas de aceite esencial de lavanda\n3 gotas de aceite esencial de sándalo\n2 gotas de aceite esencial de jazmín\n2 gotas de aceite esencial de cedro\nAmatista pequeña dentro del frasco',
+      preparacion: '1. Mezcla los aceites en el frasco con la amatista dentro.\n2. Agita suavemente mientras visualizas una puerta de luz morada (el umbral entre la vigilia y el sueño).\n3. Carga bajo la luz de luna llena o nueva durante una noche.\n\nRITUAL DE SUEÑO:\n- Aplica en sienes, frente (tercer ojo) y base del cuello antes de acostarte.\n- Mientras aplicas, di en voz baja: "Que mis sueños me hablen con claridad. Que recuerde lo que necesito recordar."\n- Deja un diario y lápiz en la mesita de noche.\n- Al despertar, antes de revisar el teléfono, escribe todo lo que recuerdes del sueño aunque parezca sin sentido.\n\nUSO CON LA VELA MORADA: Encender la vela morada y aplicar el aceite mientras arde — potencia la conexión.'
+    },
+  ],
+
+  // ── COCINA MÁGICA ─────────────────────────────────────────
+  cocina: [
+    {
+      id: 'c_te_manana',
+      name: 'Té de la Mañana con Intención',
+      proposito: 'Rituales matutinos, claridad, anclar la intención del día',
+      desc: 'No hace falta un ritual complejo para trabajar magia cotidiana. Este té de mañana convierte el primer sorbo del día en un acto mágico. La clave no está en los ingredientes sino en la consciencia con que se prepara y se bebe. Cocinar con intención es una de las formas más antiguas de magia, presente en todas las culturas.',
+      ingredientes: '1 taza de agua\n1 bolsita de té verde o negro (o yerba suelta de tu preferencia)\n1 pizca de canela en polvo\n1 cucharadita de miel\nCáscara de naranja o limón (opcional)',
+      preparacion: '1. PREPARA EL ESPACIO: Silencia el teléfono. 5 minutos solo para ti.\n2. HIERVE CON INTENCIÓN: Mientras el agua calienta, piensa en una intención para el día — una sola. No una lista, una sola cosa.\n3. VIERTE CON PRESENCIA: Al verter el agua caliente sobre el té, nombra en voz alta tu intención: "Hoy me abro a [claridad / oportunidades / paciencia / lo que necesites]."\n4. Añade la canela (acelera las intenciones), la miel (endulza el camino) y la cáscara de cítrico (alegría y sol).\n5. BEBE LENTAMENTE: Cada sorbo es una renovación de tu intención. Nada de teléfono mientras bebes.\n\nNOTA: Este ritual no requiere altar, velas ni herramientas. Solo tú, el té y tu intención. Es la magia más accesible del grimorio.'
+    },
+    {
+      id: 'c_sal_hierbas',
+      name: 'Sal de Hierbas Sagrada',
+      proposito: 'Protección del hogar, cocinar con intención, limpias de espacios',
+      desc: 'La sal es el purificador más antiguo de la humanidad — aparece en rituales de protección de todas las culturas conocidas. Esta sal de hierbas combina la protección de la sal con la magia de las hierbas. Se usa en cocina para cocinar con intención Y como herramienta ritual. Cuando sazonas con esta sal, estás poniendo magia en tu comida.',
+      ingredientes: '1 taza de sal marina gruesa\n1 cucharada de romero seco\n1 cucharada de laurel seco triturado\n1 cucharadita de tomillo seco\n1 cucharadita de lavanda seca\n1 pizca de pimienta negra molida\nFrasco de vidrio hermético',
+      preparacion: '1. Muele ligeramente el romero y el laurel en mortero (no demasiado fino).\n2. Mezcla todas las hierbas con la sal en un cuenco.\n3. Mientras mezclas con las manos, visualiza luz dorada entrando por tus palmas y llenando la sal.\n4. Transfiere al frasco de vidrio.\n5. Cierra y coloca en el altar durante una noche completa para que absorba la energía del espacio sagrado.\n\nUSOS:\n🧂 COCINAR: Reemplaza la sal normal cuando cocinas con intención de protección, éxito o amor.\n🏠 HOGAR: Coloca una línea fina en el umbral de puertas y ventanas para protección.\n✨ RITUAL: Usa para limpiar objetos (entierra en sal 24 horas) o para trazar círculos rituales.\n🌊 BAÑOS: Añade al baño para purificación energética.'
+    },
+    {
+      id: 'c_sopa_cuatro',
+      name: 'Caldo de los Cuatro Elementos',
+      proposito: 'Equilibrio, salud, ritual de alimentación consciente',
+      desc: 'La cocina como acto mágico. Este caldo incorpora los cuatro elementos en cada ingrediente, convirtiendo una comida simple en un ritual de equilibrio. No necesitas pronunciar ningún hechizo — la magia está en la consciencia y en los ingredientes elegidos con propósito.',
+      ingredientes: 'FUEGO: 1 cucharadita de pimentón ahumado, 1 pizca de cayena, cebolla\nAGUA: 1 litro de agua filtrada (o agua lunar), 2 ramas de apio\nTIERRA: 2 zanahorias, 1 papa, 2 ramas de perejil fresco\nAIRE: 3 dientes de ajo, tomillo fresco, laurel\nSAL DE HIERBAS (receta del grimorio) al gusto',
+      preparacion: '1. FUEGO: Sofríe la cebolla y el ajo con el pimentón en aceite de oliva hasta dorar. Mientras lo haces, piensa en la pasión que quieres activar.\n2. AGUA: Añade el agua. Mientras la viertes, nombra aquello que deseas que fluya con facilidad en tu vida.\n3. TIERRA: Agrega las verduras. Con cada una, piensa en estabilidad y abundancia material.\n4. AIRE: Coloca el tomillo, laurel y perejil. Pide claridad y comunicación.\n5. Deja hervir a fuego lento 30 minutos.\n6. Sirve con consciencia. Antes de comer, toma el cuenco entre las manos, cierra los ojos 10 segundos y agradece los cuatro elementos.\n\nNOTA: La intención hace la magia. Este caldo alimentado con gratitud y consciencia es medicina para el cuerpo y el espíritu. Gianfranco lo llama "cocinar con amor" — y eso, en sí mismo, ya es magia.'
+    },
+    {
+      id: 'c_infusion_lunar',
+      name: 'Infusión Lunar de Manzanilla y Jazmín',
+      proposito: 'Ritual de luna llena, calma, conexión femenina, sueños proféticos',
+      desc: 'Esta infusión para luna llena combina la manzanilla (sol/calma) con el jazmín (luna/misterio). Se prepara durante la luna llena y se bebe en el ritual nocturno de carga lunar. Es una de las recetas favoritas de Gianfranco para las noches de luna.',
+      ingredientes: '1 cucharadita de flores de manzanilla secas\n1 cucharadita de flores de jazmín secas (o 2 gotas de aceite esencial)\n1 cucharadita de lavanda seca\nAgua caliente (no hirviendo)\nMiel de lavanda (si tienes)\nTaza clara o de cristal (para ver la infusión)',
+      preparacion: '1. PREPARAR EN LUNA LLENA: Esta infusión se prepara cuando la luna está en su punto más alto (medianoche o cerca).\n2. Hierve el agua y deja reposar 2 minutos antes de verter — no quemar los aceites de las flores.\n3. Añade todas las flores a la taza.\n4. Vierte el agua caliente.\n5. Mientras infusiona, lleva la taza a la ventana o exterior donde reciba la luz lunar. Deja infusionar 7 minutos bajo la luna.\n6. Añade miel si gustas.\n7. Bebe en silencio, mirando la luna si es posible, o con los ojos cerrados visualizando la luz plateada llenando tu cuerpo.\n\nANTES DE DORMIR: Si tomas esta infusión antes de acostarte en luna llena, ten el diario de sueños listo. Esta noche los sueños suelen ser especialmente vívidos y portadores de mensajes.'
+    },
+    {
+      id: 'c_aceite_cocina',
+      name: 'Aceite de Cocina Consagrado — Ajo y Romero',
+      proposito: 'Cocinar con protección y bendición en cada comida',
+      desc: 'Este aceite es para cocinar a diario, no para rituales. La idea es simple: cuando consagras el aceite con el que cocinas, cada comida que preparas para ti y para quienes amas lleva protección, salud y amor. Es magia práctica en su forma más cotidiana.',
+      ingredientes: '500 ml de aceite de oliva virgen extra\n4 dientes de ajo ligeramente aplastados\n2 ramas de romero fresco\n1 rama de tomillo fresco\nPimienta negra en grano\n1 hoja de laurel\nFrasco de vidrio grande',
+      preparacion: '1. Calienta el aceite de oliva a fuego BAJO. No debe humear — solo tibio.\n2. Añade todos los ingredientes al aceite tibio.\n3. Cocina a fuego muy bajo 20 minutos (el ajo no debe dorarse).\n4. Retira del fuego y deja enfriar completamente con los ingredientes dentro.\n5. Transfiere al frasco de vidrio con todo el ajo y las ramas.\n6. CONSAGRAR: Sostén el frasco con ambas manos, cierra los ojos y di: "Que todo lo que cocine con este aceite lleve salud, protección y amor a quienes lo consuman."\n7. Coloca en el altar una noche antes de usar.\n\nUsa como sustituto del aceite regular. Dura 2-3 semanas a temperatura ambiente, más en nevera. El ajo confitado que queda se puede comer — lleva la intención.'
+    },
+  ],
+};
 
 </script>
   <script>
@@ -3968,7 +4375,7 @@ const Taller = (() => {
     if (!content) return;
 
     const cat = CATEGORIAS.find(c => c.key === key);
-    const items = App.lsGet('bruja_taller_' + key, []);
+    const items = App.lsGet('bruja_taller_' + key, TallerData[key] || []);
 
     content.innerHTML = `
       <p class="text-muted mb-2" style="font-size:.88rem">${cat?.desc || ''}</p>
