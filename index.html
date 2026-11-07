@@ -5726,6 +5726,251 @@ const Tarot = (() => {
       inv:    'Ciclo incompleto, bloqueos de cierre o buscar atajos. Termina lo que empezaste.' },
   ];
 
+  // ── Arcanos Menores ─────────────────────────────────────────
+  // 56 cartas: Copas · Bastos · Espadas · Oros (num 22-77)
+  const ARCANOS_MENORES = [
+    // ── COPAS (Agua · Emociones · Amor) ─────────────────────
+    { num:22, palo:'copas', valor:1,  emoji:'🏆', nombre:'As de Copas',
+      clave:'amor nuevo, inicio emocional, intuición',
+      normal:'Un nuevo ciclo emocional o espiritual se abre. El corazón está listo para amar y recibir. Gran fertilidad creativa.',
+      inv:'Emociones reprimidas, bloqueo del corazón. Algo impide que el amor fluya. Revisa lo que sientes.' },
+    { num:23, palo:'copas', valor:2,  emoji:'🥂', nombre:'2 de Copas',
+      clave:'unión, atracción mutua, armonía',
+      normal:'Conexión profunda entre dos personas. Un vínculo armonioso, una sociedad o romance en florecimiento.',
+      inv:'Desequilibrio en la relación, falta de comunicación o ruptura de la conexión.' },
+    { num:24, palo:'copas', valor:3,  emoji:'🎉', nombre:'3 de Copas',
+      clave:'celebración, amistad, abundancia compartida',
+      normal:'Tiempo de alegría, reuniones y celebraciones. Rodearte de tus personas más queridas. Gratitud.',
+      inv:'Excesos, chismes entre amigas o celebración superficial. Cuida la calidad de tus vínculos.' },
+    { num:25, palo:'copas', valor:4,  emoji:'😶', nombre:'4 de Copas',
+      clave:'apatía, contemplación, oportunidad perdida',
+      normal:'Un momento de retiro interior. Medita sobre lo que realmente deseas antes de actuar.',
+      inv:'Apertura renovada, salir del ensimismamiento. Estás listo/a para recibir lo que se te ofrece.' },
+    { num:26, palo:'copas', valor:5,  emoji:'😢', nombre:'5 de Copas',
+      clave:'pérdida, duelo, mirar lo que se fue',
+      normal:'Duelo por algo perdido. Pero detrás de la tristeza aún quedan copas en pie. No todo está perdido.',
+      inv:'Comienza la aceptación. Poco a poco tu mirada se dirige hacia lo que sí tienes y lo que viene.' },
+    { num:27, palo:'copas', valor:6,  emoji:'🌼', nombre:'6 de Copas',
+      clave:'nostalgia, inocencia, recuerdos felices',
+      normal:'Volver a la infancia, a los recuerdos dulces. Un reencuentro o una bondad del pasado regresa a tu vida.',
+      inv:'Vivir atrapado/a en el pasado. Es tiempo de crecer y soltar lo que ya fue.' },
+    { num:28, palo:'copas', valor:7,  emoji:'🌈', nombre:'7 de Copas',
+      clave:'ilusiones, fantasías, múltiples opciones',
+      normal:'Muchas opciones frente a ti, pero algunas son ilusiones. Discrimina con la razón antes de elegir.',
+      inv:'Fantasías que se disipan, necesidad de tomar decisiones concretas. La realidad pide atención.' },
+    { num:29, palo:'copas', valor:8,  emoji:'🚶', nombre:'8 de Copas',
+      clave:'dejar ir, buscar más profundidad, caminar',
+      normal:'Abandonas algo que ya no llena tu alma para buscar un propósito más elevado. Valentía del corazón.',
+      inv:'Miedo a soltar, aferración. O el regreso hacia algo que creías haber dejado atrás.' },
+    { num:30, palo:'copas', valor:9,  emoji:'🌟', nombre:'9 de Copas',
+      clave:'deseo cumplido, satisfacción, bienestar',
+      normal:'La carta del deseo concedido. Satisfacción emocional, placeres y bienestar. Tu corazón está contento.',
+      inv:'Autoindulgencia, deseos superficiales o placer que llega con vacío interior.' },
+    { num:31, palo:'copas', valor:10, emoji:'🏡', nombre:'10 de Copas',
+      clave:'alegría familiar, plenitud, hogar armonioso',
+      normal:'Plenitud emocional y familiar. Un hogar lleno de amor y paz. Los vínculos están en su mejor momento.',
+      inv:'Armonía familiar perturbada, desconexión emocional o ideales que no coinciden con la realidad.' },
+    { num:32, palo:'copas', valor:11, emoji:'🐟', nombre:'Paje de Copas',
+      clave:'mensaje intuitivo, creatividad, apertura emocional',
+      normal:'Un mensaje del corazón o del inconsciente. Momento de curiosidad espiritual y apertura emocional.',
+      inv:'Inmadurez emocional, fantasías sin raíz o evitar las emociones difíciles.' },
+    { num:33, palo:'copas', valor:12, emoji:'🦢', nombre:'Caballero de Copas',
+      clave:'oferta romántica, idealismo, seguir el corazón',
+      normal:'Un mensajero que trae amor, creatividad o una propuesta desde el corazón. Sigue tu sentir.',
+      inv:'Idealismo exagerado, promesas vacías o seducción sin fondo real.' },
+    { num:34, palo:'copas', valor:13, emoji:'🌊', nombre:'Reina de Copas',
+      clave:'empatía, intuición, sabiduría emocional',
+      normal:'Profunda sabiduría emocional e intuitiva. Escucha tu interior. Nutre con compasión a quienes te rodean.',
+      inv:'Hipersensibilidad, emociones absorbentes o manipulación emocional inconsciente.' },
+    { num:35, palo:'copas', valor:14, emoji:'🌀', nombre:'Rey de Copas',
+      clave:'equilibrio emocional, compasión, autoridad del corazón',
+      normal:'Madura el mundo emocional con sabiduría y control. Líder compasivo y diplomático.',
+      inv:'Frialdad emocional, represión o excesos emocionales disfrazados de control.' },
+
+    // ── BASTOS (Fuego · Acción · Pasión) ─────────────────────
+    { num:36, palo:'bastos', valor:1,  emoji:'🌱', nombre:'As de Bastos',
+      clave:'chispa creativa, inicio, potencial',
+      normal:'Una chispa de energía creativa o emprendedora. El inicio de un proyecto con gran potencial.',
+      inv:'Energía bloqueada, inicio postergado. Las ideas no encuentran su camino al mundo todavía.' },
+    { num:37, palo:'bastos', valor:2,  emoji:'🔭', nombre:'2 de Bastos',
+      clave:'visión, planificación, explorar horizontes',
+      normal:'Tienes el mundo en tus manos. Planifica con visión tu próximo gran paso. Es momento de expandirte.',
+      inv:'Falta de planificación, miedo a lo desconocido o planes sin concretar.' },
+    { num:38, palo:'bastos', valor:3,  emoji:'🚢', nombre:'3 de Bastos',
+      clave:'expansión, primeros resultados, mirar lejos',
+      normal:'Los primeros resultados de tu esfuerzo llegan. Miras hacia horizontes más lejanos con confianza.',
+      inv:'Retrasos en planes, obstáculos externos o resultados que tardan más de lo esperado.' },
+    { num:39, palo:'bastos', valor:4,  emoji:'🎊', nombre:'4 de Bastos',
+      clave:'celebración, estabilidad alcanzada, hogar',
+      normal:'Celebración y logro alcanzado. Un momento de estabilidad, descanso y fiesta bien merecida.',
+      inv:'Inestabilidad en el hogar, celebración postergada o cimientos que tambalean.' },
+    { num:40, palo:'bastos', valor:5,  emoji:'⚡', nombre:'5 de Bastos',
+      clave:'conflicto, competencia, caos creativo',
+      normal:'Competencia, conflicto o una tormenta creativa. Mucho ruido pero también energía para usar.',
+      inv:'Conflictos que se resuelven, acuerdos que llegan o evitar un enfrentamiento necesario.' },
+    { num:41, palo:'bastos', valor:6,  emoji:'🏅', nombre:'6 de Bastos',
+      clave:'victoria, reconocimiento, liderazgo',
+      normal:'Éxito público y reconocimiento bien ganado. Lideras con confianza y los demás te apoyan.',
+      inv:'Ego inflado, reconocimiento que no llega o caída del liderazgo por soberbia.' },
+    { num:42, palo:'bastos', valor:7,  emoji:'🛡️', nombre:'7 de Bastos',
+      clave:'defensa, resistencia, mantener posición',
+      normal:'Defiendes lo que has construido frente a los que quieren derrumbarlo. Mantente firme.',
+      inv:'Rendirse ante la presión, sentirse superado/a o defender lo que ya no vale la pena.' },
+    { num:43, palo:'bastos', valor:8,  emoji:'💨', nombre:'8 de Bastos',
+      clave:'velocidad, movimiento, noticias que llegan',
+      normal:'Todo se acelera. Noticias, resultados y movimiento. Las cosas van rápido: prepárate.',
+      inv:'Retrasos, mensajes cruzados, energía dispersa. No es el momento de actuar impulsivamente.' },
+    { num:44, palo:'bastos', valor:9,  emoji:'🧱', nombre:'9 de Bastos',
+      clave:'resistencia, perseverancia, último esfuerzo',
+      normal:'Estás agotado/a pero sigues en pie. Un último esfuerzo y cruzarás la meta. No te rindas.',
+      inv:'Obstinación, paranoia o incapacidad de delegar. Suelta un poco el control.' },
+    { num:45, palo:'bastos', valor:10, emoji:'🎒', nombre:'10 de Bastos',
+      clave:'carga excesiva, responsabilidad, agotamiento',
+      normal:'Cargas demasiado. Es momento de delegar, priorizar y soltar lo que no es tuyo llevar.',
+      inv:'Liberas una carga, comienzas a delegar o reconoces que el peso era autoimpuesto.' },
+    { num:46, palo:'bastos', valor:11, emoji:'🦎', nombre:'Paje de Bastos',
+      clave:'entusiasmo, exploración, fuego nuevo',
+      normal:'Energía fresca y entusiasta para un nuevo proyecto o aventura. Curiosidad encendida.',
+      inv:'Energía dispersa, falta de dirección o entusiasmo que se apaga rápido.' },
+    { num:47, palo:'bastos', valor:12, emoji:'🏇', nombre:'Caballero de Bastos',
+      clave:'aventura, acción impulsiva, movimiento',
+      normal:'Acción rápida, aventura y energía desbordante. ¡A moverse! Pero con algo de dirección.',
+      inv:'Impulsividad peligrosa, cambios de plan constantes o energía sin destino.' },
+    { num:48, palo:'bastos', valor:13, emoji:'🌻', nombre:'Reina de Bastos',
+      clave:'confianza, coraje, independencia, pasión',
+      normal:'Llena de confianza, carisma y energía vital. Líder natural, apasionada y auténtica.',
+      inv:'Dominio exagerado, celos o energía que intimida en lugar de inspirar.' },
+    { num:49, palo:'bastos', valor:14, emoji:'🦁', nombre:'Rey de Bastos',
+      clave:'visión, liderazgo emprendedor, fuerza solar',
+      normal:'Visión clara, liderazgo inspirado y capacidad emprendedora. Tu energía mueve a otros.',
+      inv:'Autoritarismo, impulsividad ejecutiva o proyectos sin seguimiento.' },
+
+    // ── ESPADAS (Aire · Mente · Conflicto) ───────────────────
+    { num:50, palo:'espadas', valor:1,  emoji:'⚔️', nombre:'As de Espadas',
+      clave:'claridad mental, verdad, avance decisivo',
+      normal:'Claridad absoluta, verdad que emerge y mente afilada. Un breakthrough o nueva idea transformadora.',
+      inv:'Confusión, pensamiento distorsionado o una verdad que duele y se evita.' },
+    { num:51, palo:'espadas', valor:2,  emoji:'🙈', nombre:'2 de Espadas',
+      clave:'decisión bloqueada, negación, punto muerto',
+      normal:'Estás evitando una decisión difícil. Las espadas cruzadas ante tus ojos no te dejan ver claro.',
+      inv:'La verdad emerge aunque duela. La decisión ya no puede postergarse más.' },
+    { num:52, palo:'espadas', valor:3,  emoji:'💔', nombre:'3 de Espadas',
+      clave:'dolor, traición, verdad que hiere',
+      normal:'Dolor, pena o una verdad que rompe el corazón. Permite sentir para sanar. El duelo es necesario.',
+      inv:'El dolor comienza a ceder. La cicatriz es parte del camino, no el fin del camino.' },
+    { num:53, palo:'espadas', valor:4,  emoji:'🛌', nombre:'4 de Espadas',
+      clave:'descanso, recuperación, pausa necesaria',
+      normal:'Tu mente y cuerpo necesitan descanso. Retiro, meditación y recarga antes de seguir la batalla.',
+      inv:'Inquietud, incapacidad de descansar o regresar demasiado pronto a la lucha.' },
+    { num:54, palo:'espadas', valor:5,  emoji:'😤', nombre:'5 de Espadas',
+      clave:'conflicto, derrota, victoria vacía',
+      normal:'Un conflicto donde nadie realmente gana. Evalúa si vale la pena seguir peleando esta batalla.',
+      inv:'El conflicto llega a su fin, aunque queden heridas. Es momento de reconciliarse.' },
+    { num:55, palo:'espadas', valor:6,  emoji:'⛵', nombre:'6 de Espadas',
+      clave:'transición, aguas más calmas, alejarse',
+      normal:'Te alejas de la tormenta hacia aguas más tranquilas. Un viaje o transición hacia algo mejor.',
+      inv:'Resistencia a alejarse, o regreso a situaciones que ya habías superado.' },
+    { num:56, palo:'espadas', valor:7,  emoji:'🦊', nombre:'7 de Espadas',
+      clave:'estrategia, engaño, actuar en solitario',
+      normal:'Alguien actúa con astucia, quizás evitando el enfrentamiento directo. ¿Eres tú o es otro?',
+      inv:'Secretos que salen a la luz, engaños descubiertos o regreso a la honestidad.' },
+    { num:57, palo:'espadas', valor:8,  emoji:'🕸️', nombre:'8 de Espadas',
+      clave:'restricción, trampa mental, límites ilusorios',
+      normal:'Te sientes atrapado/a, pero la trampa es más mental que real. Puedes salir si decides moverte.',
+      inv:'Liberación de creencias limitantes. Los grilletes caen y recuperas tu agencia.' },
+    { num:58, palo:'espadas', valor:9,  emoji:'😰', nombre:'9 de Espadas',
+      clave:'ansiedad, pesadillas, mente en tormento',
+      normal:'Noches de angustia, pensamientos que no dan tregua. Busca apoyo; la oscuridad no es eterna.',
+      inv:'La ansiedad cede, la perspectiva regresa. Lo peor ya pasó o está pasando.' },
+    { num:59, palo:'espadas', valor:10, emoji:'🌅', nombre:'10 de Espadas',
+      clave:'fin doloroso, traición, pero el alba llega',
+      normal:'Un ciclo termina de forma dolorosa. Pero detrás de este oscuro final está el amanecer.',
+      inv:'La recuperación comienza. Te levantas de la caída. Lo peor definitivamente pasó.' },
+    { num:60, palo:'espadas', valor:11, emoji:'🦋', nombre:'Paje de Espadas',
+      clave:'mente curiosa, vigilancia, nuevas ideas',
+      normal:'Mente ágil, curiosa y observadora. Nuevas ideas y ganas de aprender. Comunica con claridad.',
+      inv:'Pensamiento disperso, indiscreción o palabras usadas para herir sin querer.' },
+    { num:61, palo:'espadas', valor:12, emoji:'🌪️', nombre:'Caballero de Espadas',
+      clave:'acción rápida, ambición, ir directo al grano',
+      normal:'Acción decidida y mente clara. Vas directo a tu objetivo. Cuidado con atropellar a los demás.',
+      inv:'Agresividad verbal, impulsividad peligrosa o planes que se ejecutan sin medir consecuencias.' },
+    { num:62, palo:'espadas', valor:13, emoji:'🗡️', nombre:'Reina de Espadas',
+      clave:'claridad, independencia, verdad directa',
+      normal:'Mente brillante y directa. Corta lo que no sirve con precisión y sin dramas. Independencia total.',
+      inv:'Frialdad excesiva, crueldad disfrazada de honestidad o dolor reprimido que endurece.' },
+    { num:63, palo:'espadas', valor:14, emoji:'👁️', nombre:'Rey de Espadas',
+      clave:'autoridad intelectual, juicio claro, razón',
+      normal:'Razón, justicia y autoridad intelectual. Decisiones claras basadas en la verdad, no en el miedo.',
+      inv:'Tiranía mental, manipulación intelectual o razón que aplasta a la emoción.' },
+
+    // ── OROS (Tierra · Material · Trabajo) ───────────────────
+    { num:64, palo:'oros', valor:1,  emoji:'🪙', nombre:'As de Oros',
+      clave:'nueva oportunidad material, prosperidad, manifestación',
+      normal:'Una semilla de prosperidad. Nueva oportunidad de trabajo, dinero o creación material concreta.',
+      inv:'Oportunidad perdida, mal manejo del dinero o no reconocer lo que se ofrece.' },
+    { num:65, palo:'oros', valor:2,  emoji:'⚖️', nombre:'2 de Oros',
+      clave:'equilibrio, flexibilidad, malabarismo de recursos',
+      normal:'Manejas múltiples asuntos a la vez con gracia. Adaptabilidad ante los cambios financieros.',
+      inv:'Desequilibrio económico, desorganización o más compromisos de los que puedes cumplir.' },
+    { num:66, palo:'oros', valor:3,  emoji:'🏗️', nombre:'3 de Oros',
+      clave:'trabajo en equipo, habilidad, artesanía',
+      normal:'El trabajo en equipo y el oficio bien hecho producen grandes resultados. Colabora y confía.',
+      inv:'Falta de coordinación, trabajo solitario innecesario o resultados por debajo del esfuerzo.' },
+    { num:67, palo:'oros', valor:4,  emoji:'🤲', nombre:'4 de Oros',
+      clave:'seguridad, control, apego a lo material',
+      normal:'Cuidas tus recursos con prudencia. Pero el miedo a perder puede volverse avaricia. Suelta un poco.',
+      inv:'Generosidad que emerge, soltar el control o pérdida de lo que se aferraba con exceso.' },
+    { num:68, palo:'oros', valor:5,  emoji:'🌧️', nombre:'5 de Oros',
+      clave:'dificultad material, aislamiento, pero hay luz',
+      normal:'Un momento de escasez o dificultad. Pero la ayuda existe: solo hay que saber pedirla y mirarla.',
+      inv:'La situación comienza a mejorar. Se abre una puerta o llega apoyo en el momento justo.' },
+    { num:69, palo:'oros', valor:6,  emoji:'🤝', nombre:'6 de Oros',
+      clave:'generosidad, dar y recibir, equilibrio material',
+      normal:'El flujo del dar y recibir está en equilibrio. Generosidad genuina que regresa multiplicada.',
+      inv:'Desequilibrio en el dar, condiciones en la ayuda o recibir sin poder devolver.' },
+    { num:70, palo:'oros', valor:7,  emoji:'🌾', nombre:'7 de Oros',
+      clave:'paciencia, inversión a largo plazo, esperar cosecha',
+      normal:'Has sembrado bien. Ahora es tiempo de esperar con paciencia. Los resultados están en camino.',
+      inv:'Impaciencia, falta de dirección o cuestionarte si lo sembrado valía la pena.' },
+    { num:71, palo:'oros', valor:8,  emoji:'🔨', nombre:'8 de Oros',
+      clave:'maestría, dedicación, perfeccionamiento del oficio',
+      normal:'Te dedicas con diligencia a perfeccionar tu arte o trabajo. La práctica constante da sus frutos.',
+      inv:'Perfeccionismo bloqueante, falta de foco o trabajo sin propósito claro.' },
+    { num:72, palo:'oros', valor:9,  emoji:'🌿', nombre:'9 de Oros',
+      clave:'abundancia, independencia, logro material',
+      normal:'Disfrutas los frutos de tu propio esfuerzo. Abundancia, lujo bien ganado y autosuficiencia.',
+      inv:'Dependencia material, lujos que no puedes costear o éxito que llega al costo de la soledad.' },
+    { num:73, palo:'oros', valor:10, emoji:'🏰', nombre:'10 de Oros',
+      clave:'legado, riqueza familiar, estabilidad duradera',
+      normal:'Prosperidad plena y legado construido. Lo que creas trasciende tu tiempo y nutre a los tuyos.',
+      inv:'Conflictos por herencia, riqueza mal administrada o familia que no sostiene.' },
+    { num:74, palo:'oros', valor:11, emoji:'🌱', nombre:'Paje de Oros',
+      clave:'estudio, manifestación, sueños prácticos',
+      normal:'Mente práctica y estudiosa. Convierte tus sueños en pasos concretos. El potencial está en tus manos.',
+      inv:'Falta de dirección, sueños sin acción o procrastinación disfrazada de planificación.' },
+    { num:75, palo:'oros', valor:12, emoji:'🐂', nombre:'Caballero de Oros',
+      clave:'confiabilidad, método, trabajo constante',
+      normal:'Avance lento pero seguro. La consistencia y el método son tus armas. Nada te detiene.',
+      inv:'Rutina sofocante, resistencia al cambio o trabajo sin visión de futuro.' },
+    { num:76, palo:'oros', valor:13, emoji:'🌺', nombre:'Reina de Oros',
+      clave:'practicidad, abundancia, nutrición, arraigo',
+      normal:'Nutre con generosidad, arraigo y sabiduría práctica. Crea abundancia desde la tierra.',
+      inv:'Dependencia material, descuido del cuerpo o cuidado de otros a costa de uno mismo.' },
+    { num:77, palo:'oros', valor:14, emoji:'🏆', nombre:'Rey de Oros',
+      clave:'éxito material, proveedor, estabilidad, liderazgo',
+      normal:'Dominio del mundo material. Liderazgo sólido, éxito duradero y generosidad desde la abundancia.',
+      inv:'Materialismo excesivo, control financiero o éxito sin disfrute real.' },
+  ];
+
+  const PALOS = [
+    { id:'copas',   nombre:'Copas',   emoji:'🏆', elemEmoji:'💧', elem:'Agua · Emociones · Amor',    rango:[22,35] },
+    { id:'bastos',  nombre:'Bastos',  emoji:'🌿', elemEmoji:'🔥', elem:'Fuego · Acción · Pasión',    rango:[36,49] },
+    { id:'espadas', nombre:'Espadas', emoji:'⚔️', elemEmoji:'💨', elem:'Aire · Mente · Conflicto',   rango:[50,63] },
+    { id:'oros',    nombre:'Oros',    emoji:'🪙', elemEmoji:'🌍', elem:'Tierra · Material · Trabajo', rango:[64,77] },
+  ];
+
+  const MAZO_COMPLETO = [...ARCANOS_MAYORES, ...ARCANOS_MENORES];
+
   const TIRADAS = [
     { id: 'una',  label: '1 carta',   desc: 'Mensaje del día',              cartas: 1 },
     { id: 'tres', label: '3 cartas',  desc: 'Pasado / Presente / Futuro',   cartas: 3 },
@@ -5777,9 +6022,11 @@ const Tarot = (() => {
   const POS_NORNAS = ['Urd — Lo que fue', 'Verdandi — Lo que es', 'Skuld — Lo que será'];
   const POS_CINCO  = ['Centro (tú ahora)', 'Arriba (lo que aspiras)', 'Abajo (raíz / fundamento)', 'Izquierda (lo que liberas)', 'Derecha (lo que recibes)'];
 
-  let tiradaActual = 'una';
-  let tiradaRuna   = 'una';
-  let tabActual    = 'tarot'; // 'tarot' | 'runas'
+  let tiradaActual  = 'una';
+  let tiradaRuna    = 'una';
+  let tabActual     = 'tarot'; // 'tarot' | 'runas'
+  let tabEstudio    = 'mayores'; // 'mayores' | 'copas' | 'bastos' | 'espadas' | 'oros'
+  let mazoCopleto   = false;
 
   function render() {
     const sec = document.getElementById('sec-tarot');
@@ -5807,9 +6054,18 @@ const Tarot = (() => {
         <div class="tarot-card-display" id="tarot-display">
           <p class="text-muted">Presiona el botón para tirar las cartas</p>
         </div>
-        <div style="display:flex;gap:.5rem;justify-content:center;margin-bottom:1.5rem">
+        <div style="display:flex;gap:.5rem;justify-content:center;margin-bottom:.5rem">
           <button class="btn btn-primary" onclick="Tarot._tirar()">🃏 Tirar cartas</button>
           <button class="btn btn-ghost btn-sm" onclick="Tarot._limpiar()">↺ Limpiar</button>
+        </div>
+        <div style="text-align:center;margin-bottom:1.5rem">
+          <label style="font-size:.8rem;color:var(--muted);cursor:pointer;user-select:none">
+            <input type="checkbox" id="chk-mazo-completo"
+              ${mazoCopleto ? 'checked' : ''}
+              onchange="Tarot._toggleMazo(this.checked)"
+              style="accent-color:var(--gold);margin-right:.35rem">
+            Mazo completo 78 cartas (incluir Arcanos Menores)
+          </label>
         </div>
         ${Admin.isUnlocked() ? `
           <div class="card" style="font-size:.82rem;color:var(--muted)">
@@ -5823,20 +6079,47 @@ const Tarot = (() => {
 
       <!-- ESTUDIO — todas las cartas -->
       <div id="adiv-estudio" class="tab-panel">
-        <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem">
-          Los 22 Arcanos Mayores — toca una carta para ver su significado completo.
-        </p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.6rem">
-          ${ARCANOS_MAYORES.map(c => `
-            <div onclick="Tarot._verCarta(${c.num})"
-              style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
-                     padding:.6rem;text-align:center;cursor:pointer;transition:border-color .2s"
-              onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-              <div style="font-size:1.8rem">${c.emoji}</div>
-              <div style="font-size:.68rem;color:var(--muted)">${c.num}</div>
-              <div style="font-size:.78rem;font-family:var(--font-heading);margin-top:.2rem;line-height:1.3">${c.nombre}</div>
-            </div>`).join('')}
+        <div class="tabs mb-2" id="estudio-tabs" style="flex-wrap:wrap">
+          <button class="tab-btn ${tabEstudio==='mayores'?'active':''}" onclick="Tarot._tabEstudio('mayores',this)">✨ Mayores</button>
+          ${PALOS.map(p => `<button class="tab-btn ${tabEstudio===p.id?'active':''}" onclick="Tarot._tabEstudio('${p.id}',this)">${p.emoji}${p.elemEmoji} ${p.nombre}</button>`).join('')}
         </div>
+
+        <!-- Mayores -->
+        <div id="estudio-mayores" class="${tabEstudio==='mayores'?'':'hidden'}">
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem">Los 22 Arcanos Mayores — las grandes energías arquetípicas.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.6rem">
+            ${ARCANOS_MAYORES.map(c => `
+              <div onclick="Tarot._verCarta(${c.num})"
+                style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+                       padding:.6rem;text-align:center;cursor:pointer;transition:border-color .2s"
+                onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+                <div style="font-size:1.8rem">${c.emoji}</div>
+                <div style="font-size:.68rem;color:var(--muted)">${c.num}</div>
+                <div style="font-size:.76rem;font-family:var(--font-heading);margin-top:.2rem;line-height:1.3">${c.nombre}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+
+        <!-- Palos -->
+        ${PALOS.map(p => {
+          const cartas = ARCANOS_MENORES.filter(c => c.palo === p.id);
+          return `
+          <div id="estudio-${p.id}" class="${tabEstudio===p.id?'':'hidden'}">
+            <p style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem">${p.emoji} <strong>${p.nombre}</strong> ${p.elemEmoji} · ${p.elem}</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.6rem">
+              ${cartas.map(c => `
+                <div onclick="Tarot._verCarta(${c.num})"
+                  style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+                         padding:.6rem;text-align:center;cursor:pointer;transition:border-color .2s"
+                  onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+                  <div style="font-size:1.8rem">${c.emoji}</div>
+                  <div style="font-size:.7rem;color:var(--gold-l)">${['As','2','3','4','5','6','7','8','9','10','Paje','Caballero','Reina','Rey'][c.valor-1]}</div>
+                  <div style="font-size:.74rem;font-family:var(--font-heading);margin-top:.2rem;line-height:1.3">${c.nombre}</div>
+                </div>`).join('')}
+            </div>
+          </div>`;
+        }).join('')}
+
         <div id="carta-estudio-detalle"></div>
       </div>
 
@@ -5904,11 +6187,25 @@ const Tarot = (() => {
     _limpiarRunas();
   }
 
+  function _toggleMazo(checked) {
+    mazoCopleto = checked;
+  }
+
+  function _tabEstudio(key, btn) {
+    tabEstudio = key;
+    document.querySelectorAll('#estudio-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#adiv-estudio [id^="estudio-"]').forEach(el => el.classList.add('hidden'));
+    document.getElementById('estudio-' + key)?.classList.remove('hidden');
+    document.getElementById('carta-estudio-detalle').innerHTML = '';
+  }
+
   function _tirar() {
     const t = TIRADAS.find(x => x.id === tiradaActual);
     if (!t) return;
 
-    const shuffled = [...ARCANOS_MAYORES].sort(() => Math.random() - 0.5);
+    const mazo = mazoCopleto ? MAZO_COMPLETO : ARCANOS_MAYORES;
+    const shuffled = [...mazo].sort(() => Math.random() - 0.5);
     const seleccionadas = shuffled.slice(0, t.cartas).map(c => ({
       ...c, invertida: Math.random() > 0.7
     }));
@@ -6003,8 +6300,9 @@ const Tarot = (() => {
   function _verCarta(num) {
     const imgs = App.lsGet('bruja_tarot_imgs', {});
     const custom = App.lsGet('bruja_tarot_meanings', {});
-    const base = ARCANOS_MAYORES.find(c => c.num === num);
+    const base = MAZO_COMPLETO.find(c => c.num === num);
     if (!base) return;
+    const esMenor = num >= 22;
 
     // Mezclar significados custom encima de los base
     const c = { ...base, ...( custom[num] || {} ) };
@@ -6018,7 +6316,7 @@ const Tarot = (() => {
           <div style="font-size:3rem">${imgs[c.num] ? `<img src="${imgs[c.num]}" style="width:60px;border-radius:6px" onerror="this.outerHTML='${c.emoji}'">` : c.emoji}</div>
           <div>
             <div style="font-family:var(--font-heading);font-size:1.1rem;color:var(--gold-l)">${c.nombre}</div>
-            <div style="font-size:.8rem;color:var(--muted)">Arcano ${c.num} · ${c.clave}</div>
+            <div style="font-size:.8rem;color:var(--muted)">${esMenor ? (()=>{ const pl=PALOS.find(p=>p.id===c.palo); return pl ? pl.emoji+pl.elemEmoji+' '+pl.nombre+' · ' : ''; })() : 'Arcano '+c.num+' · '}${c.clave}</div>
           </div>
           <button class="btn btn-ghost btn-sm" style="margin-left:auto"
             onclick="Tarot._editarCarta(${c.num})">✏️ Editar</button>
@@ -6037,7 +6335,7 @@ const Tarot = (() => {
 
   function _editarCarta(num) {
     const custom = App.lsGet('bruja_tarot_meanings', {});
-    const base = ARCANOS_MAYORES.find(c => c.num === num);
+    const base = MAZO_COMPLETO.find(c => c.num === num);
     if (!base) return;
     const c = { ...base, ...(custom[num] || {}) };
 
@@ -6079,7 +6377,7 @@ const Tarot = (() => {
     if (display) display.innerHTML = '<p class="text-muted">Presiona el botón para sacar las runas</p>';
   }
 
-  return { render, _tabPrincipal, _setTirada, _tirar, _limpiar, _setTiradaRuna, _tirarRunas, _limpiarRunas, _verCarta, _editarCarta };
+  return { render, _tabPrincipal, _setTirada, _tirar, _toggleMazo, _tabEstudio, _limpiar, _setTiradaRuna, _tirarRunas, _limpiarRunas, _verCarta, _editarCarta };
 })();
 
 </script>
