@@ -4545,6 +4545,8 @@ const Taller = (() => {
     const content = document.getElementById('taller-content');
     if (!content) return;
 
+    if (key === 'piromancia') { renderPiromancia(content); return; }
+
     const cat = CATEGORIAS.find(c => c.key === key);
     const _ts = App.lsGet('bruja_taller_' + key, []);
     const items = (_ts && _ts.length > 0) ? _ts : (typeof TallerData !== 'undefined' ? (TallerData[key] || []) : []);
@@ -4558,6 +4560,116 @@ const Taller = (() => {
             ${Admin.isUnlocked() ? `<button class="btn btn-ghost btn-sm" onclick="App.navigate('admin');Admin._showPanel('taller')">Ir a Admin</button>` : ''}
           </div>`
         : items.map(it => recetaCard(it)).join('')}`;
+  }
+
+  function renderPiromancia(content) {
+    const registros = App.lsGet('bruja_piromancia', []);
+    content.innerHTML = `
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.5">
+        🔥 La piromancia lee los mensajes de la llama: su movimiento, color, humo y cómo se consume la vela. Registra cada lectura para ver patrones a lo largo del tiempo.
+      </p>
+      <div style="text-align:center;margin-bottom:1rem">
+        <button class="btn btn-primary" onclick="Taller._piroNuevo()">🕯️ Nueva lectura de vela</button>
+      </div>
+      ${registros.length === 0
+        ? `<div class="empty-state"><span class="es-emoji">🔥</span><p>Aún no hay lecturas registradas.</p></div>`
+        : registros.slice().reverse().map((r, i) => `
+          <div class="card" style="margin-bottom:.6rem">
+            <div class="flex-between" style="margin-bottom:.4rem">
+              <div style="font-size:.7rem;color:var(--muted)">📅 ${r.fecha}</div>
+              <button class="btn-icon" style="font-size:.75rem" onclick="Taller._piroBorrar(${registros.length-1-i})">✕</button>
+            </div>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
+              ${r.color ? `<span class="badge badge-gold">🕯️ ${r.color}</span>` : ''}
+              ${r.luna ? `<span class="badge" style="background:var(--bg3);color:var(--lavender)">${r.luna}</span>` : ''}
+            </div>
+            <div class="bib-prop">
+              <div class="bib-prop-label">🎯 Intención</div>
+              <div class="bib-prop-value">${r.intencion}</div>
+            </div>
+            <div class="bib-prop">
+              <div class="bib-prop-label">👁️ Lo que vi</div>
+              <div class="bib-prop-value" style="white-space:pre-wrap">${r.visto}</div>
+            </div>
+            ${r.interpretacion ? `
+              <div class="bib-prop">
+                <div class="bib-prop-label">🌙 Interpretación</div>
+                <div class="bib-prop-value" style="font-style:italic">${r.interpretacion}</div>
+              </div>` : ''}
+          </div>`).join('')}`;
+  }
+
+  function _piroNuevo() {
+    const lunaOpts = ['🌑 Luna Nueva','🌒 Creciente','🌕 Luna Llena','🌘 Menguante'];
+    App.openModal('🔥 Registrar lectura de vela', `
+      <div class="form-group">
+        <label class="form-label">Color de la vela</label>
+        <select id="piro-color" class="form-input">
+          <option value="">— Selecciona —</option>
+          <option>Blanca (pureza, limpieza)</option>
+          <option>Negra (protección, absorción)</option>
+          <option>Roja (amor, pasión, fuerza)</option>
+          <option>Verde (abundancia, salud)</option>
+          <option>Amarilla (claridad, comunicación)</option>
+          <option>Azul (paz, intuición)</option>
+          <option>Naranja (éxito, creatividad)</option>
+          <option>Morada (espiritualidad, magia)</option>
+          <option>Rosa (amor propio, amistad)</option>
+          <option>Dorada (prosperidad, Sol)</option>
+          <option>Plateada (Luna, intuición)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fase lunar</label>
+        <select id="piro-luna" class="form-input">
+          <option value="">— Opcional —</option>
+          ${lunaOpts.map(l => `<option>${l}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Intención</label>
+        <input id="piro-int" class="form-input" placeholder="¿Qué pediste o trabajaste?">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Lo que vi (llama, humo, cera, chispa...)</label>
+        <textarea id="piro-visto" class="form-textarea" style="min-height:80px"
+          placeholder="Describe el comportamiento de la llama, el humo, cómo cayó la cera..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Interpretación (opcional)</label>
+        <textarea id="piro-interp" class="form-textarea" style="min-height:60px"
+          placeholder="¿Qué crees que significa?"></textarea>
+      </div>`,
+      {
+        confirmLabel: 'Guardar',
+        onConfirm: () => {
+          const intencion = document.getElementById('piro-int')?.value.trim();
+          const visto = document.getElementById('piro-visto')?.value.trim();
+          if (!intencion || !visto) { App.toast('Completa intención y lo que viste'); return; }
+          const regs = App.lsGet('bruja_piromancia', []);
+          regs.push({
+            id: Date.now(),
+            fecha: new Date().toLocaleDateString('es-ES'),
+            color: document.getElementById('piro-color')?.value || '',
+            luna: document.getElementById('piro-luna')?.value || '',
+            intencion,
+            visto,
+            interpretacion: document.getElementById('piro-interp')?.value.trim() || ''
+          });
+          App.lsSet('bruja_piromancia', regs);
+          App.toast('Lectura guardada 🔥');
+          renderCat('piromancia');
+        }
+      }
+    );
+  }
+
+  function _piroBorrar(idx) {
+    const regs = App.lsGet('bruja_piromancia', []);
+    regs.splice(idx, 1);
+    App.lsSet('bruja_piromancia', regs);
+    App.toast('Registro eliminado');
+    renderCat('piromancia');
   }
 
   function recetaCard(it) {
@@ -4594,7 +4706,7 @@ const Taller = (() => {
     if (det) det.style.display = det.style.display === 'none' ? 'block' : 'none';
   }
 
-  return { render, _tab, _toggle };
+  return { render, _tab, _toggle, _piroNuevo, _piroBorrar };
 })();
 
 </script>
@@ -7553,6 +7665,7 @@ const Tarot = (() => {
         <button class="tab-btn active" onclick="Tarot._tabPrincipal('tarot', this)">🃏 Tiradas</button>
         <button class="tab-btn" onclick="Tarot._tabPrincipal('estudio', this)">📖 Estudiar cartas</button>
         <button class="tab-btn" onclick="Tarot._tabPrincipal('runas', this)">ᚠ Runas</button>
+        <button class="tab-btn" onclick="Tarot._tabPrincipal('pendulo', this)">⚖️ Péndulo</button>
       </div>
 
       <!-- TIRADAS -->
@@ -7669,6 +7782,11 @@ const Tarot = (() => {
               </div>`).join('')}
           </div>
         </details>
+      </div>
+
+      <!-- PÉNDULO -->
+      <div id="adiv-pendulo" class="tab-panel">
+        ${renderPendulo()}
       </div>`;
   }
 
@@ -7747,26 +7865,73 @@ const Tarot = (() => {
                          tiradaActual === 'tres' ? ['Pasado', 'Presente', 'Futuro'] :
                          selConMeaning.map((_, i) => 'Carta ' + (i+1));
 
-      display.innerHTML = `
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem">
-          ${selConMeaning.map((c, i) => {
-            const significado = c.invertida ? (c.inv || '') : (c.normal || '');
-            return `
-            <div style="text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem">
-              <div style="font-size:2.2rem;${c.invertida?'transform:rotate(180deg);display:inline-block':''}">
-                ${imgs[c.num]
-                  ? `<img src="${imgs[c.num]}" alt="${c.nombre}"
-                      style="width:60px;height:auto;border-radius:6px;${c.invertida?'transform:rotate(180deg)':''}"
-                      onerror="this.outerHTML='${c.emoji}'">`
-                  : c.emoji}
-              </div>
-              <div style="font-size:.7rem;color:var(--gold-l);margin-top:.3rem">${posiciones[i] || ''}</div>
-              <div style="font-size:.82rem;font-family:var(--font-heading);margin:.2rem 0">${c.nombre}</div>
-              ${c.invertida ? '<div style="font-size:.65rem;color:var(--muted);margin-bottom:.3rem">invertida</div>' : '<div style="margin-bottom:.3rem"></div>'}
-              ${significado ? `<div style="font-size:.75rem;color:var(--lavender);line-height:1.4;text-align:left;border-top:1px solid var(--border);padding-top:.4rem;margin-top:.2rem">${significado}</div>` : ''}
-            </div>`;
-          }).join('')}
+      function _cardHtml(c, pos) {
+        const sig = c.invertida ? (c.inv || '') : (c.normal || '');
+        return `<div style="text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem">
+          <div style="font-size:2.2rem;${c.invertida?'transform:rotate(180deg);display:inline-block':''}">
+            ${imgs[c.num]
+              ? `<img src="${imgs[c.num]}" alt="${c.nombre}"
+                  style="width:60px;height:auto;border-radius:6px;${c.invertida?'transform:rotate(180deg)':''}"
+                  onerror="this.outerHTML='${c.emoji}'">`
+              : c.emoji}
+          </div>
+          <div style="font-size:.68rem;color:var(--gold-l);margin-top:.3rem;line-height:1.3">${pos}</div>
+          <div style="font-size:.82rem;font-family:var(--font-heading);margin:.2rem 0">${c.nombre}</div>
+          ${c.invertida ? '<div style="font-size:.65rem;color:var(--muted);margin-bottom:.3rem">invertida</div>' : '<div style="margin-bottom:.3rem"></div>'}
+          ${sig ? `<div style="font-size:.75rem;color:var(--lavender);line-height:1.4;text-align:left;border-top:1px solid var(--border);padding-top:.4rem;margin-top:.2rem">${sig}</div>` : ''}
         </div>`;
+      }
+
+      if (tiradaActual === 'cruz') {
+        // Layout clásico Cruz Celta — 2 columnas anchas + columna derecha
+        // Columna izq (posiciones 2,3,0,4,5) + Centro cruzado (0 y 1 solapadas) + Col derecha (6,7,8,9)
+        // Simplificado: grid 4 col
+        const [c0,c1,c2,c3,c4,c5,c6,c7,c8,c9] = selConMeaning;
+        display.innerHTML = `
+          <div style="font-size:.75rem;color:var(--muted);text-align:center;margin-bottom:.75rem">
+            Cruz Celta — 10 posiciones
+          </div>
+          <!-- Fila superior: col 2 vacía, posición 3 (arriba) -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.5rem;max-width:600px;margin:0 auto">
+            <div></div>
+            <div>${_cardHtml(c3, posiciones[3])}</div>
+            <div></div>
+            <div>${_cardHtml(c9, posiciones[9])}</div>
+          </div>
+          <!-- Fila media: izquierda, cruz central (0 encima de 1), derecha -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.5rem;max-width:600px;margin:.5rem auto">
+            <div>${_cardHtml(c5, posiciones[5])}</div>
+            <div>
+              <div style="position:relative;min-height:160px">
+                <div style="opacity:.9">${_cardHtml(c0, posiciones[0])}</div>
+                <div style="position:absolute;top:8px;left:8px;right:8px;transform:rotate(90deg);transform-origin:center;opacity:.85;filter:hue-rotate(30deg)">
+                  ${_cardHtml(c1, posiciones[1])}
+                </div>
+              </div>
+            </div>
+            <div>${_cardHtml(c4, posiciones[4])}</div>
+            <div>${_cardHtml(c8, posiciones[8])}</div>
+          </div>
+          <!-- Fila inferior: vacía, posición 2 (abajo), vacía, col derecha -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.5rem;max-width:600px;margin:.5rem auto">
+            <div></div>
+            <div>${_cardHtml(c2, posiciones[2])}</div>
+            <div></div>
+            <div>${_cardHtml(c7, posiciones[7])}</div>
+          </div>
+          <!-- Posiciones 6 y 10 debajo -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.5rem;max-width:600px;margin:.5rem auto">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div>${_cardHtml(c6, posiciones[6])}</div>
+          </div>`;
+      } else {
+        display.innerHTML = `
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem">
+            ${selConMeaning.map((c, i) => _cardHtml(c, posiciones[i] || '')).join('')}
+          </div>`;
+      }
     }
   }
 
@@ -7825,13 +7990,14 @@ const Tarot = (() => {
 
     detalle.innerHTML = `
       <div class="card" style="margin-top:1.25rem;border-color:var(--gold)">
-        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-          <div style="font-size:3rem">${imgs[c.num] ? `<img src="${imgs[c.num]}" style="width:60px;border-radius:6px" onerror="this.outerHTML='${c.emoji}'">` : c.emoji}</div>
-          <div>
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem">
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('carta-estudio-detalle').innerHTML='';document.getElementById('carta-estudio-detalle').scrollIntoView({behavior:'smooth',block:'nearest'})">← Volver</button>
+          <div style="font-size:2.5rem;margin-left:.5rem">${imgs[c.num] ? `<img src="${imgs[c.num]}" style="width:50px;border-radius:6px" onerror="this.outerHTML='${c.emoji}'">` : c.emoji}</div>
+          <div style="flex:1">
             <div style="font-family:var(--font-heading);font-size:1.1rem;color:var(--gold-l)">${c.nombre}</div>
             <div style="font-size:.8rem;color:var(--muted)">${esMenor ? (()=>{ const pl=PALOS.find(p=>p.id===c.palo); return pl ? pl.emoji+pl.elemEmoji+' '+pl.nombre+' · ' : ''; })() : 'Arcano '+c.num+' · '}${c.clave}</div>
           </div>
-          <button class="btn btn-ghost btn-sm" style="margin-left:auto"
+          <button class="btn btn-ghost btn-sm"
             onclick="Tarot._editarCarta(${c.num})">✏️ Editar</button>
         </div>
         <div style="margin-bottom:.75rem">
@@ -7890,7 +8056,184 @@ const Tarot = (() => {
     if (display) display.innerHTML = '<p class="text-muted">Presiona el botón para sacar las runas</p>';
   }
 
-  return { render, _tabPrincipal, _setTirada, _tirar, _toggleMazo, _tabEstudio, _limpiar, _setTiradaRuna, _tirarRunas, _limpiarRunas, _verCarta, _editarCarta };
+  /* ── PÉNDULO ─────────────────────────────────────── */
+
+  const PENDULO_TABLAS = [
+    {
+      id: 'sino',
+      label: 'Sí / No / Tal vez',
+      preguntas: [
+        '¿Es el momento correcto para actuar?',
+        '¿Debo confiar en esta persona?',
+        '¿Este proyecto tiene futuro?',
+        '¿Debo seguir o soltar esto?',
+        '¿Estoy en el camino correcto?',
+      ],
+      opciones: ['Sí', 'No', 'Tal vez', 'Pregunta de nuevo', 'No es el momento', 'Confía']
+    },
+    {
+      id: 'num',
+      label: 'Números (1–7)',
+      preguntas: [
+        '¿Cuántos días debo esperar?',
+        '¿En cuál de estas opciones enfocarme?',
+        '¿Cuántas veces repetir el ritual?',
+      ],
+      opciones: ['1', '2', '3', '4', '5', '6', '7']
+    },
+    {
+      id: 'chakras',
+      label: 'Chakras',
+      preguntas: [
+        '¿Qué centro energético necesita atención?',
+        '¿Dónde está el bloqueo?',
+      ],
+      opciones: ['Raíz 🔴', 'Sacro 🟠', 'Plexo solar 🟡', 'Corazón 💚', 'Garganta 🔵', 'Tercer ojo 🟣', 'Corona ⚪']
+    },
+    {
+      id: 'elementos',
+      label: 'Elementos',
+      preguntas: [
+        '¿Qué elemento me falta?',
+        '¿Con qué energía trabajar hoy?',
+      ],
+      opciones: ['Fuego 🔥', 'Agua 💧', 'Tierra 🌍', 'Aire 💨', 'Éter/Espíritu ✨']
+    },
+  ];
+
+  let pendTabActivo = 'sino';
+  let pendRegTab = 'tabla';
+
+  function renderPendulo() {
+    const registros = App.lsGet('bruja_pendulo_reg', []);
+    return `
+      <div class="tabs mb-2" id="pend-tabs">
+        <button class="tab-btn active" onclick="Tarot._pendTab('tabla', this)">📋 Tablas</button>
+        <button class="tab-btn" onclick="Tarot._pendTab('reg', this)">📖 Registros</button>
+      </div>
+
+      <!-- TABLAS -->
+      <div id="pend-tabla" class="tab-panel active">
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:.75rem;line-height:1.5">
+          El péndulo responde por resonancia — úsalo cuando tu mente está quieta. Sostén, centra, pregunta una sola cosa a la vez.
+        </p>
+        <div class="tabs mb-2" style="flex-wrap:wrap" id="pend-cat-tabs">
+          ${PENDULO_TABLAS.map((t, i) =>
+            `<button class="tab-btn ${i===0?'active':''}" onclick="Tarot._pendCatTab('${t.id}',this)">${t.label}</button>`
+          ).join('')}
+        </div>
+        ${PENDULO_TABLAS.map((t, i) => `
+          <div id="pendcat-${t.id}" class="${i===0?'':'hidden'}">
+            <div style="margin-bottom:.75rem">
+              <div style="font-size:.75rem;color:var(--gold);font-weight:600;margin-bottom:.4rem">💬 Preguntas sugeridas</div>
+              ${t.preguntas.map(p => `<div style="font-size:.82rem;color:var(--lavender);padding:.25rem 0;border-bottom:1px solid var(--border)">${p}</div>`).join('')}
+            </div>
+            <div style="margin-top:1rem">
+              <div style="font-size:.75rem;color:var(--gold);font-weight:600;margin-bottom:.5rem">🎯 Tabla de respuestas</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.4rem">
+                ${t.opciones.map((o, idx) => `
+                  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-s);padding:.6rem;text-align:center;font-size:.82rem;color:var(--lavender)">
+                    <div style="font-size:1.1rem;font-weight:600;color:var(--gold-l);margin-bottom:.2rem">${idx+1}</div>
+                    ${o}
+                  </div>`).join('')}
+              </div>
+            </div>
+            <div style="margin-top:1rem;text-align:center">
+              <button class="btn btn-primary btn-sm" onclick="Tarot._pendNuevoReg('${t.id}')">📝 Registrar lectura</button>
+            </div>
+          </div>`).join('')}
+      </div>
+
+      <!-- REGISTROS -->
+      <div id="pend-reg" class="tab-panel">
+        ${registros.length === 0
+          ? `<div class="empty-state"><span class="es-emoji">⚖️</span><p>Aún no hay registros de péndulo.</p></div>`
+          : `<div id="pend-reg-list">
+              ${registros.slice().reverse().map((r, i) => `
+                <div class="card" style="margin-bottom:.6rem">
+                  <div class="flex-between">
+                    <div style="font-size:.7rem;color:var(--muted)">${r.fecha} · ${r.tabla}</div>
+                    <button class="btn-icon" style="font-size:.75rem" onclick="Tarot._pendBorrar(${registros.length-1-i})">✕</button>
+                  </div>
+                  <div style="font-size:.88rem;color:var(--lavender);margin:.35rem 0"><strong>❓</strong> ${r.pregunta}</div>
+                  <div style="font-size:.88rem;color:var(--gold-l)"><strong>↪</strong> ${r.respuesta}</div>
+                  ${r.notas ? `<div style="font-size:.78rem;color:var(--muted);margin-top:.3rem;font-style:italic">${r.notas}</div>` : ''}
+                </div>`).join('')}
+             </div>`}
+      </div>`;
+  }
+
+  function _pendTab(key, btn) {
+    document.querySelectorAll('#pend-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['tabla','reg'].forEach(k => {
+      const el = document.getElementById('pend-' + k);
+      if (el) el.classList.toggle('active', k === key);
+    });
+  }
+
+  function _pendCatTab(id, btn) {
+    document.querySelectorAll('#pend-cat-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    PENDULO_TABLAS.forEach(t => {
+      const el = document.getElementById('pendcat-' + t.id);
+      if (el) el.classList.toggle('hidden', t.id !== id);
+    });
+  }
+
+  function _pendNuevoReg(tablaId) {
+    const tabla = PENDULO_TABLAS.find(t => t.id === tablaId);
+    App.openModal('⚖️ Registrar lectura de péndulo', `
+      <div class="form-group">
+        <label class="form-label">Tabla usada</label>
+        <input id="pr-tabla" class="form-input" value="${tabla ? tabla.label : ''}" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pregunta</label>
+        <input id="pr-preg" class="form-input" placeholder="¿Qué preguntaste?">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Respuesta obtenida</label>
+        <input id="pr-resp" class="form-input" placeholder="¿Qué indicó el péndulo?">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notas (opcional)</label>
+        <textarea id="pr-notas" class="form-textarea" style="min-height:60px" placeholder="Interpretación, contexto..."></textarea>
+      </div>`,
+      {
+        confirmLabel: 'Guardar',
+        onConfirm: () => {
+          const preg = document.getElementById('pr-preg')?.value.trim();
+          const resp = document.getElementById('pr-resp')?.value.trim();
+          if (!preg || !resp) { App.toast('Completa pregunta y respuesta'); return; }
+          const regs = App.lsGet('bruja_pendulo_reg', []);
+          regs.push({
+            id: Date.now(),
+            fecha: new Date().toLocaleDateString('es-ES'),
+            tabla: tabla ? tabla.label : tablaId,
+            pregunta: preg,
+            respuesta: resp,
+            notas: document.getElementById('pr-notas')?.value.trim() || ''
+          });
+          App.lsSet('bruja_pendulo_reg', regs);
+          App.toast('Lectura guardada ✓');
+          document.getElementById('adiv-pendulo').innerHTML = renderPendulo();
+          _pendTab('reg', document.querySelector('#pend-tabs .tab-btn:last-child'));
+        }
+      }
+    );
+  }
+
+  function _pendBorrar(idx) {
+    const regs = App.lsGet('bruja_pendulo_reg', []);
+    regs.splice(idx, 1);
+    App.lsSet('bruja_pendulo_reg', regs);
+    App.toast('Registro eliminado');
+    document.getElementById('adiv-pendulo').innerHTML = renderPendulo();
+    _pendTab('reg', document.querySelector('#pend-tabs .tab-btn:last-child'));
+  }
+
+  return { render, _tabPrincipal, _setTirada, _tirar, _toggleMazo, _tabEstudio, _limpiar, _setTiradaRuna, _tirarRunas, _limpiarRunas, _verCarta, _editarCarta, _pendTab, _pendCatTab, _pendNuevoReg, _pendBorrar };
 })();
 
 </script>
