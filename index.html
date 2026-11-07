@@ -7882,9 +7882,11 @@ const Tarot = (() => {
                          tiradaActual === 'tres' ? ['Pasado', 'Presente', 'Futuro'] :
                          selConMeaning.map((_, i) => 'Carta ' + (i+1));
 
-      function _cardHtml(c, pos) {
+      function _cardHtml(c, pos, n = null) {
         const sig = c.invertida ? (c.inv || '') : (c.normal || '');
-        return `<div style="text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem">
+        const badge = n !== null ? `<span style="position:absolute;top:4px;left:4px;background:var(--gold);color:#000;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;line-height:1;z-index:1">${n}</span>` : '';
+        return `<div style="text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem;position:relative">
+          ${badge}
           <div style="font-size:2.2rem;${c.invertida?'transform:rotate(180deg);display:inline-block':''}">
             ${imgs[c.num]
               ? `<img src="${imgs[c.num]}" alt="${c.nombre}"
@@ -7905,43 +7907,40 @@ const Tarot = (() => {
         // Simplificado: grid 4 col
         const [c0,c1,c2,c3,c4,c5,c6,c7,c8,c9] = selConMeaning;
         display.innerHTML = `
-          <div style="font-size:.75rem;color:var(--muted);text-align:center;margin-bottom:.75rem">
-            Cruz Celta — 10 posiciones
+          <div style="font-size:.72rem;color:var(--gold-l);text-align:center;margin-bottom:.75rem;padding:.4rem;background:var(--bg3);border-radius:var(--radius-s)">
+            ✦ Cruz Celta — Orden de lectura: <strong style="color:var(--gold)">1→2→3→4→5→6</strong> (cruz) luego <strong style="color:var(--gold)">7→8→9→10</strong> (columna der.)
           </div>
-          <!-- Fila superior: col 2 vacía, posición 3 (arriba) -->
+          <!-- Fila 1: arriba (posición 4) -->
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.5rem;max-width:600px;margin:0 auto">
             <div></div>
-            <div>${_cardHtml(c3, posiciones[3])}</div>
+            <div>${_cardHtml(c3, posiciones[3], 4)}</div>
             <div></div>
-            <div>${_cardHtml(c9, posiciones[9])}</div>
+            <div>${_cardHtml(c9, posiciones[9], 10)}</div>
           </div>
-          <!-- Fila media: izquierda, cruz central (0 encima de 1), derecha -->
+          <!-- Fila 2: izq · centro(1+2 separadas) · der · col der -->
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.5rem;max-width:600px;margin:.5rem auto">
-            <div>${_cardHtml(c5, posiciones[5])}</div>
+            <div>${_cardHtml(c5, posiciones[5], 6)}</div>
             <div>
-              <div style="position:relative;min-height:160px">
-                <div style="opacity:.9">${_cardHtml(c0, posiciones[0])}</div>
-                <div style="position:absolute;top:8px;left:8px;right:8px;transform:rotate(90deg);transform-origin:center;opacity:.85;filter:hue-rotate(30deg)">
-                  ${_cardHtml(c1, posiciones[1])}
-                </div>
-              </div>
+              ${_cardHtml(c0, posiciones[0], 1)}
+              <div style="text-align:center;font-size:.68rem;color:var(--gold);padding:.25rem 0;margin:.35rem 0;border-top:1px solid var(--gold);border-bottom:1px solid var(--gold)">✗ cruza</div>
+              ${_cardHtml(c1, posiciones[1], 2)}
             </div>
-            <div>${_cardHtml(c4, posiciones[4])}</div>
-            <div>${_cardHtml(c8, posiciones[8])}</div>
+            <div>${_cardHtml(c4, posiciones[4], 5)}</div>
+            <div>${_cardHtml(c8, posiciones[8], 9)}</div>
           </div>
-          <!-- Fila inferior: vacía, posición 2 (abajo), vacía, col derecha -->
+          <!-- Fila 3: abajo (posición 3 de la cruz) -->
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.5rem;max-width:600px;margin:.5rem auto">
             <div></div>
-            <div>${_cardHtml(c2, posiciones[2])}</div>
+            <div>${_cardHtml(c2, posiciones[2], 3)}</div>
             <div></div>
-            <div>${_cardHtml(c7, posiciones[7])}</div>
+            <div>${_cardHtml(c7, posiciones[7], 8)}</div>
           </div>
-          <!-- Posiciones 6 y 10 debajo -->
+          <!-- Fila 4: col derecha inferior -->
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.5rem;max-width:600px;margin:.5rem auto">
             <div></div>
             <div></div>
             <div></div>
-            <div>${_cardHtml(c6, posiciones[6])}</div>
+            <div>${_cardHtml(c6, posiciones[6], 7)}</div>
           </div>`;
       } else {
         display.innerHTML = `
