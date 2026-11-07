@@ -6175,25 +6175,47 @@ const Astro = (() => {
     return norm(L0+sl/1000000);
   }
 
-  function planetLon(t, p){
-    const tab = {
-      MERCURY: [252.251,149472.6746, 0],
-      VENUS:   [181.979, 58517.8158, 0],
-      MARS:    [355.433, 19140.2993, 10.6912],
-      JUPITER: [ 34.351,  3034.9057,  5.5549],
-      SATURN:  [ 50.077,  1222.1138,  6.3585],
-      URANUS:  [314.055,   428.4759,  5.3042],
-      NEPTUNE: [304.348,   218.4600,  1.0302],
-      PLUTO:   [238.929,   144.9600,  0],
-    };
-    const [L0,n,eqC] = tab[p]||[0,0,0];
-    const L=norm(L0+n*t);
-    if(!eqC) return L;
-    const M=norm(L0+n*t-280);
-    return norm(L+eqC*Math.sin(M*DEG)+0.2*Math.sin(2*M*DEG));
+  // Elementos orbitales J2000.0: [a_UA, e, L0_deg, n_deg/century, om_deg]
+  // om = longitud del perihelio
+  const ORB = {
+    MERCURY: [0.38710,  0.20563, 252.2503, 149472.6746,  77.4568],
+    VENUS:   [0.72333,  0.00677, 181.9798,  58517.8157, 131.5637],
+    EARTH:   [1.00000,  0.01671, 100.4664,  36000.7698, 102.9358],
+    MARS:    [1.52366,  0.09341, 355.4333,  19140.2993, 336.0590],
+    JUPITER: [5.20260,  0.04849,  34.3515,   3034.9057,  14.3312],
+    SATURN:  [9.53707,  0.05551,  50.0774,   1222.1138,  93.0572],
+    URANUS:  [19.1912,  0.04630, 314.0550,    428.4670, 173.0052],
+    NEPTUNE: [30.0689,  0.00895, 304.3487,    218.4600,  48.1230],
+    PLUTO:   [39.4817,  0.24881, 238.9290,    144.9600, 224.0670],
+  };
+
+  // Calcula longitud heliocéntrica verdadera y radio vector para un cuerpo
+  function _helio(t, key) {
+    const [a, e, L0, n, om] = ORB[key];
+    const L  = norm(L0 + n * t);
+    const M  = norm(L - om);
+    const Mr = M * DEG;
+    // Ecuación del centro (hasta 3er orden)
+    const C  = (2*e - e*e*e/4)*Math.sin(Mr)
+              + (5/4)*e*e*Math.sin(2*Mr)
+              + (13/12)*e*e*e*Math.sin(3*Mr);
+    const lon = norm(L + C * RAD);
+    const v   = norm(lon - om) * DEG;
+    const R   = a*(1 - e*e)/(1 + e*Math.cos(v));
+    return { lon, R };
   }
 
-  function lilith(t){ return norm(83.3532+40690.1360*t); }
+  // Longitud geocéntrica eclíptica (vista desde la Tierra)
+  function planetLon(t, planet) {
+    const p = _helio(t, planet);
+    const e = _helio(t, 'EARTH');
+    const dX = p.R*Math.cos(p.lon*DEG) - e.R*Math.cos(e.lon*DEG);
+    const dY = p.R*Math.sin(p.lon*DEG) - e.R*Math.sin(e.lon*DEG);
+    return norm(Math.atan2(dY, dX)*RAD);
+  }
+
+  // Lilith (apogeo medio de la Luna): tasa corregida ~4069°/siglo
+  function lilith(t){ return norm(83.3532+4069.0*t); }
   function nnode(t) { return norm(125.0445-1934.1363*t); }
 
   function obliquity(t){ return 23.439291111-0.013004167*t; }
@@ -6688,7 +6710,7 @@ const CartaModule = (() => {
   function renderInterpretaciones(chart){
     const wrap = document.getElementById('interp-wrap');
     if(!wrap) return;
-    const main=['SUN','MOON','MERCURY','VENUS','MARS','JUPITER','SATURN'];
+    const main=['SUN','MOON','MERCURY','VENUS','MARS','JUPITER','SATURN','URANUS','NEPTUNE','PLUTO','LILITH','NNODE'];
     const asc = chart.ascSign;
     let html = `<div class="interp-card" style="border-color:rgba(184,134,11,.4);margin-bottom:.75rem">
       <div class="interp-planet">🌅 Ascendente — ${asc.sym} ${asc.name}</div>
