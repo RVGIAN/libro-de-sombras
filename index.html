@@ -4647,6 +4647,302 @@ const Tarot = (() => {
   <script>
 'use strict';
 // ============================================================
+// ASTRO.JS — Cálculos astronómicos precisos
+// Jean Meeus "Astronomical Algorithms" 2ª ed.
+// ============================================================
+const Astro = (() => {
+  const DEG = Math.PI / 180;
+  const RAD = 180 / Math.PI;
+
+  const ZODIAC = [
+    { name:'Aries',       sym:'♈', el:'fuego',  mode:'cardinal', ruler:'Marte',          start:0   },
+    { name:'Tauro',       sym:'♉', el:'tierra', mode:'fijo',     ruler:'Venus',           start:30  },
+    { name:'Géminis',     sym:'♊', el:'aire',   mode:'mutable',  ruler:'Mercurio',        start:60  },
+    { name:'Cáncer',      sym:'♋', el:'agua',   mode:'cardinal', ruler:'Luna',            start:90  },
+    { name:'Leo',         sym:'♌', el:'fuego',  mode:'fijo',     ruler:'Sol',             start:120 },
+    { name:'Virgo',       sym:'♍', el:'tierra', mode:'mutable',  ruler:'Mercurio',        start:150 },
+    { name:'Libra',       sym:'♎', el:'aire',   mode:'cardinal', ruler:'Venus',           start:180 },
+    { name:'Escorpio',    sym:'♏', el:'agua',   mode:'fijo',     ruler:'Marte/Plutón',   start:210 },
+    { name:'Sagitario',   sym:'♐', el:'fuego',  mode:'mutable',  ruler:'Júpiter',        start:240 },
+    { name:'Capricornio', sym:'♑', el:'tierra', mode:'cardinal', ruler:'Saturno',         start:270 },
+    { name:'Acuario',     sym:'♒', el:'aire',   mode:'fijo',     ruler:'Urano',           start:300 },
+    { name:'Piscis',      sym:'♓', el:'agua',   mode:'mutable',  ruler:'Júpiter/Neptuno',start:330 },
+  ];
+
+  const EL_COLORS = { fuego:'#FF6B35', tierra:'#7B9E3A', aire:'#A8D8EA', agua:'#4A90D9' };
+  const EL_EMOJI  = { fuego:'🔥', tierra:'🌍', aire:'💨', agua:'💧' };
+
+  const PLANETS = {
+    SUN:     { name:'Sol',      sym:'☉', color:'#FFD700' },
+    MOON:    { name:'Luna',     sym:'☽', color:'#C0C0C0' },
+    MERCURY: { name:'Mercurio', sym:'☿', color:'#B5B5B5' },
+    VENUS:   { name:'Venus',    sym:'♀', color:'#FFB6C1' },
+    MARS:    { name:'Marte',    sym:'♂', color:'#FF6347' },
+    JUPITER: { name:'Júpiter',  sym:'♃', color:'#DEB887' },
+    SATURN:  { name:'Saturno',  sym:'♄', color:'#8B7355' },
+    URANUS:  { name:'Urano',    sym:'♅', color:'#7EC8E3' },
+    NEPTUNE: { name:'Neptuno',  sym:'♆', color:'#4169E1' },
+    PLUTO:   { name:'Plutón',   sym:'♇', color:'#8B4513' },
+    LILITH:  { name:'Lilith',   sym:'⚸', color:'#800020' },
+    NNODE:   { name:'Nodo ☊',  sym:'☊', color:'#DAA520' },
+  };
+
+  function norm(a){ return ((a%360)+360)%360; }
+
+  function jd(yr,mo,dy,hr=12,mn=0){
+    const h=hr+mn/60; let y=yr,m=mo;
+    if(m<=2){y--;m+=12;}
+    const A=Math.floor(y/100), B=2-A+Math.floor(A/4);
+    return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+dy+h/24+B-1524.5;
+  }
+  function T(jday){ return (jday-2451545)/36525; }
+
+  function sunLon(t){
+    const L0=norm(280.46646+36000.76983*t+0.0003032*t*t);
+    const M=norm(357.52911+35999.05029*t-0.0001537*t*t);
+    const Mrad=M*DEG;
+    const C=(1.914602-0.004817*t-0.000014*t*t)*Math.sin(Mrad)
+           +(0.019993-0.000101*t)*Math.sin(2*Mrad)
+           +0.000289*Math.sin(3*Mrad);
+    const omega=125.04-1934.136*t;
+    return norm(L0+C-0.00569-0.00478*Math.sin(omega*DEG));
+  }
+
+  function moonLon(t){
+    const L0=norm(218.3165+481267.8813*t);
+    const M=norm(357.5291+35999.0503*t);
+    const Mp=norm(134.9634+477198.8676*t);
+    const D=norm(297.8502+445267.1115*t);
+    const F=norm(93.2721+483202.0175*t);
+    const [Mrad,Mprad,Drad,Frad]=[M,Mp,D,F].map(x=>x*DEG);
+    const sl=6288774*Math.sin(Mprad)
+            +1274027*Math.sin(2*Drad-Mprad)
+            +658314*Math.sin(2*Drad)
+            +213618*Math.sin(2*Mprad)
+            -185116*Math.sin(Mrad)
+            -114332*Math.sin(2*Frad)
+            +58793*Math.sin(2*Drad-2*Mprad)
+            +57066*Math.sin(2*Drad-Mrad-Mprad)
+            +53322*Math.sin(2*Drad+Mprad)
+            +45758*Math.sin(2*Drad-Mrad)
+            -40923*Math.sin(Mrad-Mprad)
+            -34720*Math.sin(Drad)
+            -30383*Math.sin(Mrad+Mprad)
+            +15327*Math.sin(2*Drad-2*Frad)
+            +10980*Math.sin(Mprad-2*Frad)
+            +10675*Math.sin(4*Drad-Mprad)
+            +10034*Math.sin(3*Mprad)
+            +8548*Math.sin(4*Drad-2*Mprad);
+    return norm(L0+sl/1000000);
+  }
+
+  function planetLon(t, p){
+    const tab = {
+      MERCURY: [252.251,149472.6746, 0],
+      VENUS:   [181.979, 58517.8158, 0],
+      MARS:    [355.433, 19140.2993, 10.6912],
+      JUPITER: [ 34.351,  3034.9057,  5.5549],
+      SATURN:  [ 50.077,  1222.1138,  6.3585],
+      URANUS:  [314.055,   428.4759,  5.3042],
+      NEPTUNE: [304.348,   218.4600,  1.0302],
+      PLUTO:   [238.929,   144.9600,  0],
+    };
+    const [L0,n,eqC] = tab[p]||[0,0,0];
+    const L=norm(L0+n*t);
+    if(!eqC) return L;
+    const M=norm(L0+n*t-280);
+    return norm(L+eqC*Math.sin(M*DEG)+0.2*Math.sin(2*M*DEG));
+  }
+
+  function lilith(t){ return norm(83.3532+40690.1360*t); }
+  function nnode(t) { return norm(125.0445-1934.1363*t); }
+
+  function obliquity(t){ return 23.439291111-0.013004167*t; }
+
+  function gmst(jday){
+    const t0=T(jday);
+    return norm(280.46061837+360.98564736629*(jday-2451545)+0.000387933*t0*t0);
+  }
+
+  function ascendant(jday, lat, lon){
+    const t0=T(jday);
+    const eps=obliquity(t0)*DEG;
+    const LST=norm(gmst(jday)+lon);
+    const RAMC=LST*DEG;
+    const latR=lat*DEG;
+    const y=-Math.cos(RAMC);
+    const x=Math.sin(RAMC)*Math.cos(eps)+Math.tan(latR)*Math.sin(eps);
+    // atan2 ya maneja todos los cuadrantes; norm convierte a 0-360
+    return norm(Math.atan2(y,x)*RAD);
+  }
+
+  function mc(jday, lon){
+    const t0=T(jday);
+    const eps=obliquity(t0)*DEG;
+    const LST=norm(gmst(jday)+lon);
+    const RAMC=LST*DEG;
+    return norm(Math.atan2(Math.sin(RAMC),Math.cos(RAMC)*Math.cos(eps))*RAD);
+  }
+
+  function wholeSignHouses(asc){
+    const start=Math.floor(asc/30)*30;
+    return Array.from({length:12},(_,i)=>norm(start+i*30));
+  }
+
+  function moonPhase(jday){
+    const t0=T(jday);
+    const angle=norm(moonLon(t0)-sunLon(t0));
+    // Iluminación real: (1 - cos(ángulo)) / 2
+    const illum = Math.round((1 - Math.cos(angle * DEG)) / 2 * 100);
+    if(angle<22.5)  return {name:'Luna Nueva',       emoji:'🌑',pct:illum,angle};
+    if(angle<67.5)  return {name:'Luna Creciente',   emoji:'🌒',pct:illum,angle};
+    if(angle<112.5) return {name:'Cuarto Creciente', emoji:'🌓',pct:illum,angle};
+    if(angle<157.5) return {name:'Gibosa Creciente', emoji:'🌔',pct:illum,angle};
+    if(angle<202.5) return {name:'Luna Llena',       emoji:'🌕',pct:100,angle};
+    if(angle<247.5) return {name:'Gibosa Menguante', emoji:'🌖',pct:illum,angle};
+    if(angle<292.5) return {name:'Cuarto Menguante', emoji:'🌗',pct:illum,angle};
+    if(angle<337.5) return {name:'Luna Balsámica',   emoji:'🌘',pct:illum,angle};
+    return {name:'Luna Nueva',emoji:'🌑',pct:0,angle};
+  }
+
+  // Lilith pública para dashboard
+  function lilithLon(t0){ return norm(83.3532+40690.1360*t0); }
+
+  function chartData(yr,mo,dy,hr,mn,lat,lon){
+    const jday=jd(yr,mo,dy,hr,mn);
+    const t0=T(jday);
+    const pos={
+      SUN:sunLon(t0), MOON:moonLon(t0),
+      MERCURY:planetLon(t0,'MERCURY'), VENUS:planetLon(t0,'VENUS'),
+      MARS:planetLon(t0,'MARS'),       JUPITER:planetLon(t0,'JUPITER'),
+      SATURN:planetLon(t0,'SATURN'),   URANUS:planetLon(t0,'URANUS'),
+      NEPTUNE:planetLon(t0,'NEPTUNE'), PLUTO:planetLon(t0,'PLUTO'),
+      LILITH:lilith(t0), NNODE:nnode(t0),
+    };
+    const asc=ascendant(jday,lat,lon);
+    const MC=mc(jday,lon);
+    const houses=wholeSignHouses(asc);
+    const signs={};
+    for(const [k,v] of Object.entries(pos)){
+      const idx=Math.floor(v/30)%12;
+      const deg=v%30;
+      signs[k]={lon:v,sign:ZODIAC[idx],deg:Math.floor(deg),min:Math.floor((deg%1)*60),info:PLANETS[k]};
+    }
+    return {pos,signs,asc,MC,houses,ascSign:ZODIAC[Math.floor(asc/30)%12],mcSign:ZODIAC[Math.floor(MC/30)%12]};
+  }
+
+  const ASPECTS=[
+    {name:'Conjunción',sym:'☌',angle:0,  orb:8, color:'#FFD700'},
+    {name:'Sextil',    sym:'⚹',angle:60, orb:6, color:'#7EC8E3'},
+    {name:'Cuadratura',sym:'□',angle:90, orb:8, color:'#FF4500'},
+    {name:'Trígono',   sym:'△',angle:120,orb:8, color:'#4CAF50'},
+    {name:'Oposición', sym:'☍',angle:180,orb:8, color:'#E91E63'},
+  ];
+
+  function calcAspects(pos){
+    const res=[]; const keys=Object.keys(pos);
+    for(let i=0;i<keys.length-1;i++){
+      for(let j=i+1;j<keys.length;j++){
+        let diff=Math.abs(pos[keys[i]]-pos[keys[j]]);
+        if(diff>180) diff=360-diff;
+        for(const asp of ASPECTS){
+          if(Math.abs(diff-asp.angle)<=asp.orb){
+            res.push({p1:keys[i],p2:keys[j],asp,exact:Math.abs(diff-asp.angle)});
+            break;
+          }
+        }
+      }
+    }
+    return res.sort((a,b)=>a.exact-b.exact);
+  }
+
+  // Sabbats 2026-2027
+  const SABBATS=[
+    {name:'Samhain',     date:'2026-11-01',emoji:'🎃',el:'tierra',
+     desc:'La noche más oscura. El velo entre mundos se adelgaza. Honra a tus ancestros y lo que quieres soltar.',
+     ritual:'Altar de ancestros con fotos y ofrendas. Velas negras y blancas. Meditación de tránsito.'},
+    {name:'Yule',        date:'2026-12-21',emoji:'☀️',el:'fuego',
+     desc:'Solsticio de Invierno. El sol renace desde la oscuridad. La luz comienza a crecer.',
+     ritual:'Encender velas al amanecer. Círculo de manifestación para el año nuevo. Árbol de deseos.'},
+    {name:'Imbolc',      date:'2027-02-01',emoji:'🕯️',el:'fuego',
+     desc:'Brigid despierta la tierra. Las primeras semillas de intención se plantan bajo la nieve.',
+     ritual:'Limpieza profunda del altar. Dedicación a un proyecto nuevo. Velas blancas o doradas.'},
+    {name:'Ostara',      date:'2027-03-20',emoji:'🌸',el:'aire',
+     desc:'Equinoccio de Primavera. Equilibrio y renacimiento. La tierra florece.',
+     ritual:'Planta semillas reales con intenciones escritas. Ritual de equilibrio. Ofrendas florales.'},
+    {name:'Beltane',     date:'2027-05-01',emoji:'🔥',el:'fuego',
+     desc:'El fuego de la vida. Celebración del deseo creativo y la abundancia que germina.',
+     ritual:'Fuego de Beltane. Danza. Ritual de amor y fertilidad (en sus múltiples formas).'},
+    {name:'Litha',       date:'2027-06-21',emoji:'🌞',el:'fuego',
+     desc:'Solsticio de Verano. El sol en su cénit. Poder solar máximo antes del descenso.',
+     ritual:'Vigilia solar. Ritual al mediodía. Hierbas mágicas cosechadas en el solsticio.'},
+    {name:'Lughnasadh',  date:'2027-08-01',emoji:'🌾',el:'tierra',
+     desc:'Primera cosecha. El sacrificio que da frutos. Gratitud por lo que creaste.',
+     ritual:'Ofrenda de los primeros frutos. Ritual de gratitud. Pan sagrado hecho a mano.'},
+    {name:'Mabon',       date:'2027-09-22',emoji:'🍂',el:'tierra',
+     desc:'Equinoccio de Otoño. Balance final antes del descenso. Segunda cosecha.',
+     ritual:'Inventario de lo cosechado en el año. Equilibrio en el altar. Preparación para el invierno.'},
+  ];
+
+  function nextSabbat(now=new Date()){
+    const today=now.toISOString().split('T')[0];
+    return SABBATS.find(s=>s.date>=today)||SABBATS[0];
+  }
+  function daysUntil(ds,now=new Date()){
+    return Math.ceil((new Date(ds+'T00:00:00')- now)/(864e5));
+  }
+
+  // Horas planetarias
+  const HP_ORDER=['Saturno','Júpiter','Marte','Sol','Venus','Mercurio','Luna'];
+  const HP_DOW={0:6,1:3,2:4,3:1,4:5,5:2,6:0}; // dom=0
+  const HP_MAGIC={
+    'Sol':      {color:'#FFD700',magic:['éxito','prosperidad','liderazgo'],    sym:'☉'},
+    'Luna':     {color:'#C0C0C0',magic:['intuición','sueños','emociones'],     sym:'☽'},
+    'Marte':    {color:'#FF4500',magic:['coraje','fuerza','protección'],       sym:'♂'},
+    'Mercurio': {color:'#9370DB',magic:['comunicación','viajes','negocios'],   sym:'☿'},
+    'Júpiter':  {color:'#1E90FF',magic:['abundancia','expansión','suerte'],    sym:'♃'},
+    'Venus':    {color:'#FF69B4',magic:['amor','belleza','armonía'],           sym:'♀'},
+    'Saturno':  {color:'#708090',magic:['karma','límites','disciplina'],       sym:'♄'},
+  };
+
+  function planetaryHours(date,lat){
+    const latR=lat*DEG;
+    // Hora del amanecer/atardecer aproximada
+    const dec=23.45*Math.sin((284+360*(date.getMonth()*30+date.getDate())/365)*DEG)*DEG;
+    const ha=Math.acos(-Math.tan(latR)*Math.tan(dec))*RAD/15;
+    const noon=12;
+    const sr=noon-ha, ss=noon+ha;
+    const dLen=ss-sr, nLen=24-dLen;
+    const idx=HP_DOW[date.getDay()];
+    const hours=[];
+    for(let h=0;h<24;h++){
+      const pIdx=(idx+h)%7;
+      const planet=HP_ORDER[pIdx];
+      let st,en;
+      if(h<12){st=sr+h*dLen/12;en=sr+(h+1)*dLen/12;}
+      else{const nh=h-12;st=ss+nh*nLen/12;en=ss+(nh+1)*nLen/12;}
+      hours.push({h:h+1,planet,st,en,...HP_MAGIC[planet]});
+    }
+    return {hours,sunrise:sr,sunset:ss};
+  }
+
+  function currentHP(hours,nowH){
+    return hours.find(h=>nowH>=h.st&&nowH<h.en)||hours[hours.length-1];
+  }
+
+  return {
+    ZODIAC,EL_COLORS,EL_EMOJI,PLANETS,ASPECTS,SABBATS,HP_MAGIC,
+    jd,T,norm,sunLon,moonLon,planetLon,moonPhase,lilithLon,
+    chartData,calcAspects,nextSabbat,daysUntil,
+    planetaryHours,currentHP,
+    sign:(lon)=>ZODIAC[Math.floor(norm(lon)/30)%12],
+  };
+})();
+
+</script>
+  <script>
+'use strict';
+// ============================================================
 // CARTA.JS — Carta natal: formulario + render SVG
 // ============================================================
 const CartaModule = (() => {
