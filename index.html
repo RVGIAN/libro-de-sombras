@@ -347,6 +347,141 @@ strong { color: var(--gold-l); }
 .dash-card .dc-value { font-size: .75rem; color: var(--muted); }
 @media (max-width: 360px) {
   .home-dash { grid-template-columns: repeat(3, 1fr); }
+
+/* ── Calendario Mágico ── */
+.cal-container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 .25rem 2rem;
+}
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .75rem;
+}
+.cal-mes-label {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  color: var(--gold);
+  letter-spacing: .05em;
+}
+.cal-nav-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--gold);
+  font-size: 1.3rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .2s;
+}
+.cal-nav-btn:hover { border-color: var(--gold); }
+.cal-grid-head {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 2px;
+}
+.cal-dow {
+  text-align: center;
+  font-size: .68rem;
+  color: var(--muted);
+  font-family: var(--font-heading);
+  padding: .25rem 0;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.cal-cell {
+  min-height: 52px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: .25rem .2rem .2rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  transition: border-color .15s;
+  position: relative;
+}
+.cal-cell:hover { border-color: var(--gold); }
+.cal-cell.cal-empty { background: transparent; border-color: transparent; cursor: default; }
+.cal-cell.cal-hoy {
+  border-color: var(--gold);
+  background: rgba(212,175,55,.12);
+}
+.cal-cell.cal-sabbat { background: rgba(123,79,166,.1); }
+.cal-cell.cal-luna-llena { background: rgba(255,230,100,.07); }
+.cal-cell.cal-luna-nueva { background: rgba(80,80,120,.15); }
+.cal-dia-num {
+  font-family: var(--font-heading);
+  font-size: .75rem;
+  color: var(--fg);
+  line-height: 1;
+}
+.cal-cell.cal-hoy .cal-dia-num { color: var(--gold); font-weight: 700; }
+.cal-luna-ico { font-size: .75rem; line-height: 1; }
+.cal-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1px;
+}
+.cal-badge { font-size: .65rem; line-height: 1; }
+.cal-section-title {
+  font-family: var(--font-heading);
+  font-size: .72rem;
+  color: var(--muted);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin: 1.1rem 0 .4rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: .2rem;
+}
+.cal-evento-row {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  padding: .5rem .6rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: .4rem;
+  font-size: .88rem;
+}
+.cal-add-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  align-items: center;
+  margin-top: .3rem;
+}
+
+/* ── Correspondencias cruzadas ── */
+.corresp-panel {
+  margin-top: 1rem;
+  padding: .75rem;
+  background: rgba(123,79,166,.07);
+  border: 1px solid rgba(123,79,166,.25);
+  border-radius: 10px;
+}
+.corresp-title {
+  font-family: var(--font-heading);
+  font-size: .72rem;
+  color: var(--lavender);
+  letter-spacing: .07em;
+  margin-bottom: .5rem;
+}
 }
 
 /* ── Secciones ── */
@@ -1854,50 +1989,21 @@ const App = (() => {
     return { emoji: '🌑', name: 'Luna Nueva' };
   }
 
-  /* ── Render pantalla de inicio ── */
+  /* ── Render pantalla de inicio — delegado al Calendario Mágico ── */
   function renderHome() {
-    const sec = document.getElementById('sec-home');
-    if (!sec) return;
-
-    const luna = lunarPhase();
-    const portada = lsGet('bruja_portada_url', '') || (typeof PORTADA_DEFAULT !== 'undefined' ? PORTADA_DEFAULT : '');
-
-    const quickLinks = [
-      { id: 'diario',    emoji: '📖', label: 'Diario'     },
-      { id: 'hechizos',  emoji: '✨', label: 'Hechizos'   },
-      { id: 'rituales',  emoji: '🕯️', label: 'Rituales'  },
-      { id: 'biblioteca',emoji: '🌿', label: 'Biblioteca' },
-      { id: 'tarot',     emoji: '🃏', label: 'Tarot'      },
-      { id: 'rueda',     emoji: '☀️', label: 'Rueda'     },
-      { id: 'altar',     emoji: '🔥', label: 'Altar'      },
-      { id: 'taller',    emoji: '🧪', label: 'Taller'     },
-      { id: 'cocina',    emoji: '🍵', label: 'Cocina'     },
-    ];
-
-    sec.innerHTML = `
-      <div class="home-portada">
-        ${portada
-          ? `<img src="${portada}" alt="El Año de la Bruja" onerror="this.outerHTML='<div class=home-portada-placeholder><span class=ph-emoji>🌙</span><h1>El Año de la Bruja</h1></div>'">`
-          : `<div class="home-portada-placeholder">
-               <span class="ph-emoji">🌙</span>
-               <h1>El Año de la Bruja</h1>
-             </div>`}
-      </div>
-      <div class="home-info">
-        <div class="home-fase">${luna.emoji} ${luna.name}</div>
-        <p class="text-muted" style="font-size:.88rem">${today()}</p>
-      </div>
-
-      <div class="home-quick">
-        <p class="home-quick-title">Tu práctica</p>
-        <div class="home-dash">
-          ${quickLinks.map(q => `
-            <button class="dash-card" onclick="App.navigate('${q.id}')">
-              <span class="dc-emoji">${q.emoji}</span>
-              <span class="dc-label">${q.label}</span>
-            </button>`).join('')}
-        </div>
-      </div>`;
+    if (typeof Calendario !== 'undefined') {
+      Calendario.render();
+    } else {
+      // fallback mínimo si calendario.js no cargó
+      const sec = document.getElementById('sec-home');
+      if (!sec) return;
+      const luna = lunarPhase();
+      sec.innerHTML = `
+        <div class="home-info" style="margin-top:2rem">
+          <div class="home-fase">${luna.emoji} ${luna.name}</div>
+          <p class="text-muted" style="font-size:.88rem">${today()}</p>
+        </div>`;
+    }
   }
 
   /* ── Semilla de datos por defecto ── */
@@ -2135,6 +2241,468 @@ const App = (() => {
     SECTIONS,
   };
 
+})();
+
+</script>
+  <script>
+/* ============================================================
+   CALENDARIO.JS — Calendario Mágico
+   Sabbats (hemisferio sur), fases lunares, eventos personales
+   ============================================================ */
+
+const Calendario = (() => {
+
+  const LS_KEY = 'bruja_calendario_eventos';
+
+  /* ── Sabbats hemisferio sur ── */
+  const SABBATS = [
+    { mes: 1,  dia: 2,  nombre: 'Imbolc',  emoji: '🕯️', color: '#c8a2c8', desc: 'El retorno de la luz. Purificación y nuevos comienzos.' },
+    { mes: 3,  dia: 20, nombre: 'Mabon',   emoji: '🍂', color: '#c0724a', desc: 'Equinoccio de otoño. Gratitud por la cosecha.' },
+    { mes: 5,  dia: 1,  nombre: 'Samhain', emoji: '💀', color: '#7b4fa6', desc: 'El velo es más delgado. Honor a los ancestros.' },
+    { mes: 6,  dia: 21, nombre: 'Yule',    emoji: '❄️', color: '#5ba3c9', desc: 'Solsticio de invierno. La noche más larga.' },
+    { mes: 8,  dia: 1,  nombre: 'Lammas',  emoji: '🌾', color: '#d4a017', desc: 'Primera cosecha. Gratitud y abundancia.' },
+    { mes: 9,  dia: 22, nombre: 'Ostara',  emoji: '🌸', color: '#7ec896', desc: 'Equinoccio de primavera. Renacimiento y fertilidad.' },
+    { mes: 11, dia: 1,  nombre: 'Beltane', emoji: '🔥', color: '#e05c5c', desc: 'Fuego sagrado. Vitalidad y pasión.' },
+    { mes: 12, dia: 21, nombre: 'Litha',   emoji: '☀️', color: '#f0c040', desc: 'Solsticio de verano. La luz en su punto más alto.' },
+  ];
+
+  /* ── Fase lunar (algoritmo simple) ── */
+  function getFaseLunar(fecha) {
+    const epoch = new Date(2000, 0, 6, 18, 14); // luna nueva conocida
+    const ciclo = 29.53058867;
+    const diff = (fecha - epoch) / (1000 * 60 * 60 * 24);
+    let fase = ((diff % ciclo) + ciclo) % ciclo;
+    if (fase < 1.85)        return { emoji: '🌑', nombre: 'Luna Nueva',      css: 'luna-nueva' };
+    if (fase < 7.38)        return { emoji: '🌒', nombre: 'Luna Creciente',   css: 'luna-creciente' };
+    if (fase < 9.22)        return { emoji: '🌓', nombre: 'Cuarto Creciente', css: 'luna-cuarto-c' };
+    if (fase < 14.76)       return { emoji: '🌔', nombre: 'Gibosa Creciente', css: 'luna-gibosa-c' };
+    if (fase < 16.61)       return { emoji: '🌕', nombre: 'Luna Llena',       css: 'luna-llena' };
+    if (fase < 22.15)       return { emoji: '🌖', nombre: 'Gibosa Menguante', css: 'luna-gibosa-m' };
+    if (fase < 24.0)        return { emoji: '🌗', nombre: 'Cuarto Menguante', css: 'luna-cuarto-m' };
+    if (fase < 29.53)       return { emoji: '🌘', nombre: 'Luna Menguante',   css: 'luna-menguante' };
+    return { emoji: '🌑', nombre: 'Luna Nueva', css: 'luna-nueva' };
+  }
+
+  function esLunaLlena(fecha) {
+    const epoch = new Date(2000, 0, 6, 18, 14);
+    const ciclo = 29.53058867;
+    const diff = (fecha - epoch) / (1000 * 60 * 60 * 24);
+    const fase = ((diff % ciclo) + ciclo) % ciclo;
+    return fase >= 14.76 && fase < 16.61;
+  }
+
+  function esLunaNueva(fecha) {
+    const epoch = new Date(2000, 0, 6, 18, 14);
+    const ciclo = 29.53058867;
+    const diff = (fecha - epoch) / (1000 * 60 * 60 * 24);
+    const fase = ((diff % ciclo) + ciclo) % ciclo;
+    return fase < 1.85 || fase >= 29.0;
+  }
+
+  /* ── Sabbat del día ── */
+  function sabbatDelDia(mes, dia) {
+    return SABBATS.find(s => s.mes === mes && s.dia === dia) || null;
+  }
+
+  /* ── Eventos personales ── */
+  function getEventos() { return App.lsGet(LS_KEY, []); }
+  function setEventos(arr) { App.lsSet(LS_KEY, arr); }
+  function eventosDelDia(año, mes, dia) {
+    const key = `${año}-${String(mes).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
+    return getEventos().filter(e => e.fecha === key);
+  }
+
+  /* ── Estado ── */
+  let viewYear  = new Date().getFullYear();
+  let viewMonth = new Date().getMonth() + 1; // 1-12
+
+  /* ── Render principal ── */
+  function render() {
+    const sec = document.getElementById('sec-home');
+    if (!sec) return;
+
+    const portada = App.lsGet('bruja_portada_url', '') || (typeof PORTADA_DEFAULT !== 'undefined' ? PORTADA_DEFAULT : '');
+    const luna = App.lunarPhase ? App.lunarPhase() : { emoji: '🌙', name: '' };
+
+    sec.innerHTML = `
+      <div class="home-portada" style="max-height:160px;overflow:hidden">
+        ${portada
+          ? `<img src="${portada}" alt="El Año de la Bruja" style="width:100%;height:160px;object-fit:cover;object-position:top" onerror="this.outerHTML='<div class=home-portada-placeholder style=height:120px><span class=ph-emoji>🌙</span><h1>El Año de la Bruja</h1></div>'">`
+          : `<div class="home-portada-placeholder" style="height:120px">
+               <span class="ph-emoji">🌙</span>
+               <h1>El Año de la Bruja</h1>
+             </div>`}
+      </div>
+      <div class="home-info" style="margin:.5rem 0 1rem">
+        <div class="home-fase">${luna.emoji} ${luna.name}</div>
+        <p class="text-muted" style="font-size:.85rem">${App.today()}</p>
+      </div>
+      <div id="cal-wrap"></div>`;
+
+    renderCal();
+  }
+
+  function renderCal() {
+    const wrap = document.getElementById('cal-wrap');
+    if (!wrap) return;
+
+    const hoy = new Date();
+    const añoHoy = hoy.getFullYear();
+    const mesHoy = hoy.getMonth() + 1;
+    const diaHoy = hoy.getDate();
+
+    const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                   'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+    // Primer día del mes y total de días
+    const primerDia = new Date(viewYear, viewMonth - 1, 1).getDay(); // 0=dom
+    const diasEnMes = new Date(viewYear, viewMonth, 0).getDate();
+
+    // Sabbats y lunas especiales del mes
+    const sabbatsMes = SABBATS.filter(s => s.mes === viewMonth);
+    const lunasMes = [];
+    for (let d = 1; d <= diasEnMes; d++) {
+      const f = new Date(viewYear, viewMonth - 1, d);
+      if (esLunaLlena(f)) lunasMes.push({ dia: d, tipo: 'llena', emoji: '🌕' });
+      if (esLunaNueva(f))  lunasMes.push({ dia: d, tipo: 'nueva', emoji: '🌑' });
+    }
+
+    // Eventos personales del mes
+    const eventosMes = getEventos().filter(e => {
+      const [y, m] = e.fecha.split('-');
+      return parseInt(y) === viewYear && parseInt(m) === viewMonth;
+    });
+
+    // Próximos Sabbats (2 siguientes)
+    const hoyMs = new Date(añoHoy, mesHoy - 1, diaHoy).getTime();
+    const proxSabbats = [];
+    for (let yr = añoHoy; yr <= añoHoy + 1 && proxSabbats.length < 2; yr++) {
+      for (const s of SABBATS) {
+        const fs = new Date(yr, s.mes - 1, s.dia);
+        if (fs.getTime() >= hoyMs) {
+          proxSabbats.push({ ...s, año: yr, fecha: fs });
+          if (proxSabbats.length >= 2) break;
+        }
+      }
+    }
+
+    // Días de la semana
+    const dias = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+    // Generar celdas
+    let celdas = '';
+    // espacios vacíos antes del primer día
+    for (let i = 0; i < primerDia; i++) {
+      celdas += `<div class="cal-cell cal-empty"></div>`;
+    }
+    for (let d = 1; d <= diasEnMes; d++) {
+      const fecha = new Date(viewYear, viewMonth - 1, d);
+      const luna = getFaseLunar(fecha);
+      const sabbat = sabbatDelDia(viewMonth, d);
+      const lunaEsp = esLunaLlena(fecha) ? 'llena' : esLunaNueva(fecha) ? 'nueva' : '';
+      const evsDay = eventosDelDia(viewYear, viewMonth, d);
+      const esHoy = d === diaHoy && viewMonth === mesHoy && viewYear === añoHoy;
+
+      let clases = 'cal-cell';
+      if (esHoy) clases += ' cal-hoy';
+      if (sabbat) clases += ' cal-sabbat';
+      if (lunaEsp === 'llena') clases += ' cal-luna-llena';
+      if (lunaEsp === 'nueva') clases += ' cal-luna-nueva';
+
+      let badges = '';
+      if (sabbat) badges += `<span class="cal-badge" title="${sabbat.nombre}">${sabbat.emoji}</span>`;
+      if (lunaEsp === 'llena') badges += `<span class="cal-badge" title="Luna Llena">🌕</span>`;
+      if (lunaEsp === 'nueva') badges += `<span class="cal-badge" title="Luna Nueva">🌑</span>`;
+      if (evsDay.length > 0) badges += `<span class="cal-badge" title="${evsDay.map(e=>e.nombre).join(', ')}">⭐</span>`;
+
+      celdas += `
+        <div class="${clases}" onclick="Calendario._diaClick(${viewYear},${viewMonth},${d})"
+          ${sabbat ? `style="border-color:${sabbat.color}44;background:${sabbat.color}11"` : ''}>
+          <span class="cal-dia-num">${d}</span>
+          <span class="cal-luna-ico" title="${luna.nombre}">${luna.emoji}</span>
+          <div class="cal-badges">${badges}</div>
+        </div>`;
+    }
+
+    wrap.innerHTML = `
+      <div class="cal-container">
+        <!-- Cabecera mes -->
+        <div class="cal-header">
+          <button class="cal-nav-btn" onclick="Calendario._prevMes()">‹</button>
+          <span class="cal-mes-label">${meses[viewMonth-1]} ${viewYear}</span>
+          <button class="cal-nav-btn" onclick="Calendario._nextMes()">›</button>
+        </div>
+
+        <!-- Grid días semana -->
+        <div class="cal-grid-head">
+          ${dias.map(d => `<div class="cal-dow">${d}</div>`).join('')}
+        </div>
+
+        <!-- Grid días -->
+        <div class="cal-grid">${celdas}</div>
+
+        <!-- Sabbats del mes -->
+        ${sabbatsMes.length > 0 ? `
+        <div class="cal-section-title">🌿 Sabbats este mes</div>
+        ${sabbatsMes.map(s => `
+          <div class="cal-evento-row" style="border-left:3px solid ${s.color}">
+            <span style="font-size:1.2rem">${s.emoji}</span>
+            <div>
+              <strong>${s.nombre}</strong> — ${s.dia} de ${meses[s.mes-1]}
+              <div style="font-size:.8rem;color:var(--muted)">${s.desc}</div>
+            </div>
+          </div>`).join('')}` : ''}
+
+        <!-- Lunas especiales del mes -->
+        ${lunasMes.length > 0 ? `
+        <div class="cal-section-title">🌙 Lunas especiales</div>
+        ${lunasMes.map(l => `
+          <div class="cal-evento-row">
+            <span style="font-size:1.2rem">${l.emoji}</span>
+            <div>
+              <strong>Luna ${l.tipo === 'llena' ? 'Llena' : 'Nueva'}</strong> — día ${l.dia}
+            </div>
+          </div>`).join('')}` : ''}
+
+        <!-- Eventos personales del mes -->
+        ${eventosMes.length > 0 ? `
+        <div class="cal-section-title">⭐ Tus eventos</div>
+        ${eventosMes.map(e => `
+          <div class="cal-evento-row" style="justify-content:space-between">
+            <div style="display:flex;gap:.6rem;align-items:center">
+              <span style="font-size:1.1rem">${e.emoji || '⭐'}</span>
+              <div>
+                <strong>${e.nombre}</strong>
+                <div style="font-size:.8rem;color:var(--muted)">${e.fecha.split('-').reverse().join('/')}</div>
+              </div>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="Calendario._borrarEvento('${e.id}')">🗑️</button>
+          </div>`).join('')}` : ''}
+
+        <!-- Próximos Sabbats -->
+        <div class="cal-section-title">🔮 Próximos Sabbats</div>
+        ${proxSabbats.map(s => {
+          const meses2 = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+          const diff = Math.ceil((s.fecha - new Date(añoHoy, mesHoy-1, diaHoy)) / (1000*60*60*24));
+          return `
+          <div class="cal-evento-row" style="border-left:3px solid ${s.color}">
+            <span style="font-size:1.2rem">${s.emoji}</span>
+            <div>
+              <strong>${s.nombre}</strong> — ${s.dia} ${meses2[s.mes-1]} ${s.año}
+              <div style="font-size:.8rem;color:var(--muted)">En ${diff} día${diff!==1?'s':''}</div>
+            </div>
+          </div>`;
+        }).join('')}
+
+        <!-- Agregar evento -->
+        <div class="cal-section-title">+ Agregar evento mágico</div>
+        <div class="cal-add-form">
+          <input id="cal-ev-fecha" type="date" class="form-input" value="${añoHoy}-${String(mesHoy).padStart(2,'0')}-${String(diaHoy).padStart(2,'0')}" style="flex:1">
+          <input id="cal-ev-emoji" type="text" class="form-input" placeholder="🌙" maxlength="2" style="width:3.5rem;text-align:center">
+          <input id="cal-ev-nombre" type="text" class="form-input" placeholder="Nombre del evento" style="flex:2">
+          <button class="btn btn-primary btn-sm" onclick="Calendario._agregarEvento()">Agregar</button>
+        </div>
+      </div>`;
+  }
+
+  /* ── Navegación de mes ── */
+  function _prevMes() {
+    viewMonth--;
+    if (viewMonth < 1) { viewMonth = 12; viewYear--; }
+    renderCal();
+  }
+  function _nextMes() {
+    viewMonth++;
+    if (viewMonth > 12) { viewMonth = 1; viewYear++; }
+    renderCal();
+  }
+
+  /* ── Click en día — detalle ── */
+  function _diaClick(año, mes, dia) {
+    const fecha = new Date(año, mes - 1, dia);
+    const luna  = getFaseLunar(fecha);
+    const sabbat = sabbatDelDia(mes, dia);
+    const evs    = eventosDelDia(año, mes, dia);
+    const meses  = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+    let html = `<strong>${dia} de ${meses[mes-1]} ${año}</strong><br>
+      ${luna.emoji} ${luna.nombre}`;
+    if (sabbat) html += `<br><br>${sabbat.emoji} <strong>${sabbat.nombre}</strong><br>${sabbat.desc}`;
+    if (evs.length > 0) {
+      html += `<br><br><strong>Tus eventos:</strong><br>` +
+        evs.map(e => `${e.emoji||'⭐'} ${e.nombre}`).join('<br>');
+    }
+
+    // Toast informativo
+    App.toast(html, 4000);
+  }
+
+  /* ── Gestión de eventos ── */
+  function _agregarEvento() {
+    const fecha  = document.getElementById('cal-ev-fecha')?.value;
+    const emoji  = document.getElementById('cal-ev-emoji')?.value.trim() || '⭐';
+    const nombre = document.getElementById('cal-ev-nombre')?.value.trim();
+    if (!fecha || !nombre) { App.toast('Completa fecha y nombre'); return; }
+
+    const evs = getEventos();
+    evs.push({ id: Date.now().toString(), fecha, emoji, nombre });
+    setEventos(evs);
+    App.toast('✅ Evento guardado');
+    renderCal();
+  }
+
+  function _borrarEvento(id) {
+    const evs = getEventos().filter(e => e.id !== id);
+    setEventos(evs);
+    renderCal();
+  }
+
+  return { render, renderCal, _prevMes, _nextMes, _diaClick, _agregarEvento, _borrarEvento };
+})();
+
+</script>
+  <script>
+/* ============================================================
+   CORRESPONDENCIAS.JS — Correspondencias cruzadas entre secciones
+   Lee datos de los módulos existentes; NO modifica nada.
+   ============================================================ */
+
+const Correspondencias = (() => {
+
+  /* Normaliza texto para comparar */
+  function norm(s) {
+    return (s || '').toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '');
+  }
+
+  /* ── Buscar menciones de una palabra clave en todas las secciones ── */
+  function buscar(keyword) {
+    const kw = norm(keyword);
+    if (!kw || kw.length < 3) return {};
+    const resultados = {};
+
+    // 1. Hechizos
+    try {
+      const hechizos = App.lsGet('bruja_hechizos', []);
+      const defaultsH = typeof HechizosDefaults !== 'undefined' ? HechizosDefaults : [];
+      const todosH = [...defaultsH, ...hechizos];
+      const matchH = todosH.filter(h =>
+        norm(h.nombre || h.name).includes(kw) ||
+        norm(h.ingredientes).includes(kw) ||
+        norm(h.pasos || h.instrucciones).includes(kw) ||
+        norm(h.desc || h.descripcion).includes(kw)
+      );
+      if (matchH.length) resultados.hechizos = matchH.map(h => ({
+        id: h.id, label: h.nombre || h.name, emoji: '✨',
+        onClick: `App.navigate('hechizos')`
+      }));
+    } catch(e) {}
+
+    // 2. Rituales
+    try {
+      const rituales = App.lsGet('bruja_rituales', []);
+      const defaultsR = typeof RitualesData !== 'undefined' ? RitualesData : [];
+      const todosR = [...defaultsR, ...rituales];
+      const matchR = todosR.filter(r =>
+        norm(r.nombre || r.name).includes(kw) ||
+        norm(r.materiales).includes(kw) ||
+        norm(r.pasos || r.desc).includes(kw)
+      );
+      if (matchR.length) resultados.rituales = matchR.map(r => ({
+        id: r.id, label: r.nombre || r.name, emoji: '🕯️',
+        onClick: `App.navigate('rituales')`
+      }));
+    } catch(e) {}
+
+    // 3. Biblioteca (hierbas/cristales)
+    try {
+      const bib = App.lsGet('bruja_biblioteca', []);
+      const defaultsB = typeof BibliotecaDefaults !== 'undefined' ? BibliotecaDefaults : [];
+      const todosB = [...defaultsB, ...bib];
+      const matchB = todosB.filter(b =>
+        norm(b.nombre || b.name).includes(kw) ||
+        norm(b.propiedades || b.usos).includes(kw) ||
+        norm(b.tags).includes(kw)
+      );
+      if (matchB.length) resultados.biblioteca = matchB.map(b => ({
+        id: b.id, label: b.nombre || b.name, emoji: b.emoji || '🌿',
+        onClick: `App.navigate('biblioteca')`
+      }));
+    } catch(e) {}
+
+    // 4. Taller
+    try {
+      const tallerItems = App.lsGet('bruja_taller', []);
+      const defaultsT = typeof TallerData !== 'undefined'
+        ? [...(TallerData.velas||[]), ...(TallerData.aceites||[]), ...(TallerData.banios||[])]
+        : [];
+      const todosT = [...defaultsT, ...tallerItems];
+      const matchT = todosT.filter(t =>
+        norm(t.nombre || t.name).includes(kw) ||
+        norm(t.ingredientes).includes(kw) ||
+        norm(t.desc || t.descripcion).includes(kw)
+      );
+      if (matchT.length) resultados.taller = matchT.map(t => ({
+        id: t.id, label: t.nombre || t.name, emoji: '🧪',
+        onClick: `App.navigate('taller')`
+      }));
+    } catch(e) {}
+
+    // 5. Cocina
+    try {
+      const cocinItems = App.lsGet('bruja_taller_cocina', []);
+      const defaultsC = typeof TallerData !== 'undefined' ? (TallerData.cocina || []) : [];
+      const todosC = [...defaultsC, ...cocinItems];
+      const matchC = todosC.filter(c =>
+        norm(c.nombre || c.name).includes(kw) ||
+        norm(c.ingredientes).includes(kw) ||
+        norm(c.desc || c.descripcion).includes(kw)
+      );
+      if (matchC.length) resultados.cocina = matchC.map(c => ({
+        id: c.id, label: c.nombre || c.name, emoji: '🍵',
+        onClick: `App.navigate('cocina')`
+      }));
+    } catch(e) {}
+
+    return resultados;
+  }
+
+  /* ── Genera HTML del panel de correspondencias ── */
+  function panelHTML(keyword) {
+    if (!keyword || keyword.length < 3) return '';
+    const res = buscar(keyword);
+    const total = Object.values(res).reduce((s, arr) => s + arr.length, 0);
+    if (total === 0) return '';
+
+    const labels = {
+      hechizos:  '✨ Hechizos',
+      rituales:  '🕯️ Rituales',
+      biblioteca:'🌿 Biblioteca',
+      taller:    '🧪 Taller',
+      cocina:    '🍵 Cocina',
+    };
+
+    const rows = Object.entries(res).map(([sec, items]) => `
+      <div style="margin-bottom:.4rem">
+        <span style="font-size:.7rem;color:var(--muted);font-family:var(--font-heading)">${labels[sec] || sec}</span>
+        <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.25rem">
+          ${items.slice(0, 4).map(it => `
+            <button class="btn btn-ghost btn-sm" style="font-size:.78rem;padding:.2rem .5rem"
+              onclick="${it.onClick}">${it.emoji} ${it.label}</button>
+          `).join('')}
+          ${items.length > 4 ? `<span style="font-size:.78rem;color:var(--muted);align-self:center">+${items.length-4} más</span>` : ''}
+        </div>
+      </div>`).join('');
+
+    return `
+      <div class="corresp-panel">
+        <div class="corresp-title">🔗 También aparece en</div>
+        ${rows}
+      </div>`;
+  }
+
+  return { buscar, panelHTML };
 })();
 
 </script>
@@ -4489,7 +5057,8 @@ const Biblioteca = (() => {
       ${Admin.isUnlocked() ? `
         <div style="margin-top:1rem;display:flex;gap:.5rem">
           <button class="btn btn-ghost btn-sm" onclick="Admin._bibNuevo('${it.id}')">✏️ Editar</button>
-        </div>` : ''}`;
+        </div>` : ''}
+      ${typeof Correspondencias !== 'undefined' ? Correspondencias.panelHTML(it.name) : ''}`;
 
     detalle.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
@@ -6653,7 +7222,7 @@ const Altar = (() => {
                   <div class="card-title">${d.nombre}</div>
                   <span style="color:var(--muted);font-size:.8rem">▼</span>
                 </div>
-                <div class="deit-body" style="display:none">
+                <div class="deit-body" style="display:block">
                   <p style="font-size:.88rem;margin:.5rem 0">${d.rol}</p>
                   ${d.ofrendas ? `<div class="bib-prop"><div class="bib-prop-label">🌸 Ofrendas</div><div class="bib-prop-value">${d.ofrendas}</div></div>` : ''}
                   ${d.tags ? `<div style="margin-top:.5rem">${d.tags.split(',').map(t=>`<span class="badge badge-gold">${t.trim()}</span>`).join(' ')}</div>` : ''}
@@ -6686,6 +7255,7 @@ const Altar = (() => {
                 ✏️ Editar panteón
               </button>
             </div>` : ''}
+        ${typeof Correspondencias !== 'undefined' ? Correspondencias.panelHTML(p.nombre || p.name) : ''}
       </div>`;
   }
 
