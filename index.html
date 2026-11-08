@@ -1734,11 +1734,21 @@ const App = (() => {
       if (bibNuevos.length > 0) lsSet('bruja_biblioteca', [...bibActuales, ...bibNuevos]);
     }
 
-    // Usuario RVGIAN siempre presente
+    // Usuario RVGIAN siempre presente — contraseña como hash SHA-256, nunca en claro
     const usuarios = lsGet('bruja_usuarios', []);
-    if (!usuarios.find(u => u.nombre === 'RVGIAN')) {
-      usuarios.unshift({ id: 'user-rvgian', nombre: 'RVGIAN', password: 'Gian19843*', rol: 'admin' });
+    const rvgian = usuarios.find(u => u.nombre === 'RVGIAN');
+    if (!rvgian) {
+      // Hash SHA-256 precalculado — contraseña nunca en claro en el código
+      const h = 'c3b4e328b8153558aec99650c1d2c96c177d284fa045a37dc2cf14a5f308b36e';
+      usuarios.unshift({ id: 'user-rvgian', nombre: 'RVGIAN', passwordHash: h, rol: 'admin' });
       lsSet('bruja_usuarios', usuarios);
+    } else if (rvgian.password && !rvgian.passwordHash) {
+      // Migrar contraseña en claro a hash si ya existía
+      _sha256(rvgian.password).then(h => {
+        const lista = lsGet('bruja_usuarios', []);
+        const u = lista.find(x => x.nombre === 'RVGIAN');
+        if (u) { u.passwordHash = h; delete u.password; lsSet('bruja_usuarios', lista); }
+      });
     }
 
     // Herramientas por defecto (sólo si aún no existen)
@@ -1810,48 +1820,67 @@ const App = (() => {
     if (userInp) userInp.addEventListener('keydown', e => { if (e.key === 'Enter') passInp && passInp.focus(); });
   }
 
+  // Hash SHA-256 usando WebCrypto nativo (nunca expone la contraseña en claro)
+  async function _sha256(text) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
   function _tryLogin() {
     const user = document.getElementById('login-user')?.value.trim();
     const pass = document.getElementById('login-pass')?.value;
     const err  = document.getElementById('login-err');
     if (!user || !pass) { if (err) err.style.display = 'block'; return; }
 
-    // Admin maestro — siempre funciona aunque el Sheet sobreescriba usuarios
     const MASTER_USER = 'RVGIAN';
-    const MASTER_PASS = 'Gian19843*';
 
-    let found = null;
-    if (user.toUpperCase() === MASTER_USER && pass === MASTER_PASS) {
-      // Asegurar que el usuario exista en localStorage
+    _sha256(pass).then(passHash => {
+      let found = null;
       const usuarios = lsGet('bruja_usuarios', []);
-      found = usuarios.find(u => u.nombre.toLowerCase() === MASTER_USER.toLowerCase());
-      if (!found) {
-        found = { id: 'user-rvgian', nombre: MASTER_USER, password: MASTER_PASS, rol: 'admin' };
-        usuarios.unshift(found);
-        lsSet('bruja_usuarios', usuarios);
+      const masterUser = usuarios.find(u => u.nombre.toLowerCase() === MASTER_USER.toLowerCase());
+
+      if (user.toUpperCase() === MASTER_USER && masterUser && passHash === masterUser.passwordHash) {
+        found = masterUser;
+      } else if (user.toUpperCase() === MASTER_USER && masterUser && masterUser.password && pass === masterUser.password) {
+        // Migración: contraseña antigua en claro → convertir a hash
+        _sha256(masterUser.password).then(h => {
+          masterUser.passwordHash = h;
+          delete masterUser.password;
+          lsSet('bruja_usuarios', usuarios);
+        });
+        found = masterUser;
+      } else {
+        found = usuarios.find(u =>
+          u.nombre.toLowerCase() === user.toLowerCase() &&
+          (u.passwordHash === passHash || u.password === pass)
+        );
+        // Migrar contraseña en claro si se encontró así
+        if (found && found.password && !found.passwordHash) {
+          _sha256(found.password).then(h => {
+            found.passwordHash = h;
+            delete found.password;
+            lsSet('bruja_usuarios', usuarios);
+          });
+        }
       }
-    } else {
-      const usuarios = lsGet('bruja_usuarios', []);
-      found = usuarios.find(u =>
-        u.nombre.toLowerCase() === user.toLowerCase() &&
-        (u.password === pass || u.pin === pass)
-      );
-    }
-    if (found) {
-      sessionStorage.setItem(SESSION_LOGIN, found.id);
-      const sc = document.getElementById('login-screen');
-      if (sc) sc.remove();
-      document.getElementById('topbar').style.display = '';
-      document.getElementById('main').style.display = '';
-      renderTopbar();
-      renderHome();
-      navigate('home');
-    } else {
-      if (err) err.style.display = 'block';
-      const passInp = document.getElementById('login-pass');
-      if (passInp) { passInp.value = ''; passInp.focus(); }
-    }
+
+      if (found) {
+        sessionStorage.setItem(SESSION_LOGIN, found.id);
+        const sc = document.getElementById('login-screen');
+        if (sc) sc.remove();
+        document.getElementById('topbar').style.display = '';
+        document.getElementById('main').style.display = '';
+        renderTopbar();
+        renderHome();
+        navigate('home');
+      } else {
+        if (err) err.style.display = 'block';
+        const passInp = document.getElementById('login-pass');
+        if (passInp) { passInp.value = ''; passInp.focus(); }
+      }
+    });
   }
+
 
   function _logoutUser() {
     sessionStorage.removeItem(SESSION_LOGIN);
@@ -1904,12 +1933,17 @@ const App = (() => {
   <script>
 /* ============================================================
    ADMIN.JS — Panel de administración central
-   PIN: bruja2024
    ============================================================ */
 
 const Admin = (() => {
-  const DEFAULT_PIN = 'bruja2024';
+  // Hash SHA-256 del PIN por defecto — el PIN real nunca aparece en el código
+  const DEFAULT_PIN_HASH = 'bf131ce3e19e47a10e8e9d544ee2bbf4150d2c083612bc9449db921bb9f23811';
   const SESSION_KEY = 'bruja_admin_unlocked';
+
+  async function _sha256(text) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
 
   let activePanel = null;
 
@@ -1918,9 +1952,10 @@ const Admin = (() => {
     return sessionStorage.getItem(SESSION_KEY) === '1';
   }
 
-  function unlock(pin) {
-    const stored = App.lsGet('bruja_admin_pin', DEFAULT_PIN);
-    if (pin === stored) {
+  async function unlock(pin) {
+    const pinHash = await _sha256(pin);
+    const stored = App.lsGet('bruja_admin_pin_hash', DEFAULT_PIN_HASH);
+    if (pinHash === stored) {
       sessionStorage.setItem(SESSION_KEY, '1');
       return true;
     }
@@ -1964,13 +1999,15 @@ const Admin = (() => {
     const inp = document.getElementById('admin-pin-input');
     const err = document.getElementById('admin-pin-err');
     if (!inp) return;
-    if (unlock(inp.value)) {
-      renderDashboard(document.getElementById('sec-admin'));
-    } else {
-      if (err) { err.style.display = 'block'; }
-      inp.value = '';
-      inp.focus();
-    }
+    unlock(inp.value).then(ok => {
+      if (ok) {
+        renderDashboard(document.getElementById('sec-admin'));
+      } else {
+        if (err) { err.style.display = 'block'; }
+        inp.value = '';
+        inp.focus();
+      }
+    });
   }
 
   /* ── Dashboard admin ── */
@@ -3425,12 +3462,16 @@ const Admin = (() => {
     const actual = document.getElementById('pin-actual')?.value;
     const nuevo = document.getElementById('pin-nuevo')?.value;
     const confirm = document.getElementById('pin-confirm')?.value;
-    const stored = App.lsGet('bruja_admin_pin', DEFAULT_PIN);
-    if (actual !== stored) { App.toast('PIN actual incorrecto'); return; }
     if (!nuevo || nuevo.length < 4) { App.toast('El PIN debe tener al menos 4 caracteres'); return; }
     if (nuevo !== confirm) { App.toast('Los PINs no coinciden'); return; }
-    App.lsSet('bruja_admin_pin', nuevo);
-    App.toast('PIN actualizado ✓');
+    _sha256(actual).then(actualHash => {
+      const stored = App.lsGet('bruja_admin_pin_hash', DEFAULT_PIN_HASH);
+      if (actualHash !== stored) { App.toast('PIN actual incorrecto'); return; }
+      _sha256(nuevo).then(nuevoHash => {
+        App.lsSet('bruja_admin_pin_hash', nuevoHash);
+        App.toast('PIN actualizado ✓');
+      });
+    });
   }
 
   /* ══════════════════════════════════════════════
@@ -3487,10 +3528,12 @@ const Admin = (() => {
           if (list.find(u => u.nombre.toLowerCase() === nombre.toLowerCase())) {
             App.toast('Ya existe un usuario con ese nombre'); return;
           }
-          list.push({ id: App.uid(), nombre, rol: document.getElementById('uf-rol')?.value, password });
-          App.lsSet('bruja_usuarios', list);
-          App.toast('Usuario creado ✓');
-          renderAdmUsuarios(document.getElementById('adm-usuarios'));
+          _sha256(password).then(h => {
+            list.push({ id: App.uid(), nombre, rol: document.getElementById('uf-rol')?.value, passwordHash: h });
+            App.lsSet('bruja_usuarios', list);
+            App.toast('Usuario creado ✓');
+            renderAdmUsuarios(document.getElementById('adm-usuarios'));
+          });
         }
       }
     );
@@ -3516,12 +3559,14 @@ const Admin = (() => {
           const p2 = document.getElementById('ur-pass2')?.value;
           if (!p1 || p1.length < 4) { App.toast('La contraseña debe tener al menos 4 caracteres'); return; }
           if (p1 !== p2) { App.toast('Las contraseñas no coinciden'); return; }
-          const list = App.lsGet('bruja_usuarios', []);
-          const i = list.findIndex(x => x.id === id);
-          if (i >= 0) { list[i].password = p1; delete list[i].pin; }
-          App.lsSet('bruja_usuarios', list);
-          App.toast('Contraseña actualizada ✓');
-          renderAdmUsuarios(document.getElementById('adm-usuarios'));
+          _sha256(p1).then(h => {
+            const list = App.lsGet('bruja_usuarios', []);
+            const i = list.findIndex(x => x.id === id);
+            if (i >= 0) { list[i].passwordHash = h; delete list[i].password; delete list[i].pin; }
+            App.lsSet('bruja_usuarios', list);
+            App.toast('Contraseña actualizada ✓');
+            renderAdmUsuarios(document.getElementById('adm-usuarios'));
+          });
         }
       }
     );
