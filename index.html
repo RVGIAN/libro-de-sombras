@@ -2994,11 +2994,68 @@ const Admin = (() => {
     const items = App.lsGet('bruja_biblioteca', []);
     panel.innerHTML = `
       <h2 style="margin-bottom:1rem">🌿 Biblioteca — Hierbas & Cristales</h2>
-      <button class="btn btn-primary mb-2" onclick="Admin._bibNuevo()">+ Agregar elemento</button>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem">
+        <button class="btn btn-primary btn-sm" onclick="Admin._bibNuevo()">+ Agregar elemento</button>
+        <button class="btn btn-ghost btn-sm" onclick="Admin._cargaMasivaBib()">📋 Carga masiva</button>
+      </div>
       ${items.length === 0 ? `<div class="empty-state"><span class="es-emoji">🌱</span><p>Aún no hay elementos. ¡Comienza agregando tu primera hierba o cristal!</p></div>` : ''}
       <div id="adm-bib-list">
         ${items.map(it => admItemRow(it, 'bib')).join('')}
       </div>`;
+  }
+
+  function _cargaMasivaBib() {
+    App.openModal('📋 Carga masiva — Biblioteca', `
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem">
+        Copia desde Excel y pega aquí. <strong>Columnas en orden:</strong>
+      </p>
+      <div style="font-size:.75rem;background:var(--bg3);border-radius:6px;padding:.6rem;margin-bottom:.75rem;font-family:monospace;line-height:1.6">
+        nombre &nbsp;|&nbsp; tipo &nbsp;|&nbsp; img_url &nbsp;|&nbsp; medicinal &nbsp;|&nbsp; magica &nbsp;|&nbsp; usos &nbsp;|&nbsp; sustitutos
+      </div>
+      <p style="font-size:.77rem;color:var(--muted);margin-bottom:.5rem">
+        <em>tipo</em>: hierba / cristal / aceite / otro &nbsp;·&nbsp; Las columnas vacías están bien.
+      </p>
+      <textarea id="carga-tsv" class="form-textarea" style="min-height:140px;font-family:monospace;font-size:.78rem"
+        placeholder="Pega aquí el contenido copiado de Excel..."></textarea>
+      <div id="carga-preview" style="font-size:.78rem;color:var(--muted);margin-top:.4rem"></div>`,
+      {
+        confirmLabel: '✅ Importar',
+        onConfirm: () => {
+          const raw = document.getElementById('carga-tsv')?.value || '';
+          const rows = _parseTSV(raw);
+          if (!rows.length) { App.toast('No hay filas para importar'); return; }
+          const items = App.lsGet('bruja_biblioteca', []);
+          let count = 0;
+          rows.forEach(cols => {
+            const name = (cols[0] || '').trim();
+            if (!name) return;
+            items.push({
+              id: 'bib_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+              name,
+              tipo:      (cols[1] || 'hierba').trim() || 'hierba',
+              img:       (cols[2] || '').trim(),
+              medicinal: (cols[3] || '').trim(),
+              magica:    (cols[4] || '').trim(),
+              usos:      (cols[5] || '').trim(),
+              sustitutos:(cols[6] || '').trim(),
+            });
+            count++;
+          });
+          App.lsSet('bruja_biblioteca', items);
+          App.toast(`✅ ${count} elemento${count!==1?'s':''} importado${count!==1?'s':''}`);
+          renderAdmBiblioteca(document.getElementById('adm-biblioteca'));
+        }
+      }
+    );
+    // Live preview
+    setTimeout(() => {
+      const ta = document.getElementById('carga-tsv');
+      const pre = document.getElementById('carga-preview');
+      if (ta && pre) ta.addEventListener('input', () => {
+        const n = _parseTSV(ta.value).filter(r => r[0]?.trim()).length;
+        pre.textContent = n ? `${n} fila${n!==1?'s':''} detectada${n!==1?'s':''}` : '';
+      });
+    }, 100);
   }
 
   function _bibNuevo(id = null) {
@@ -3276,11 +3333,64 @@ const Admin = (() => {
     const items = App.lsGet('bruja_hechizos', []);
     panel.innerHTML = `
       <h2 style="margin-bottom:1rem">✨ Biblioteca de Hechizos</h2>
-      <button class="btn btn-primary mb-2" onclick="Admin._hechizoNuevo()">+ Agregar hechizo</button>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem">
+        <button class="btn btn-primary btn-sm" onclick="Admin._hechizoNuevo()">+ Agregar hechizo</button>
+        <button class="btn btn-ghost btn-sm" onclick="Admin._cargaMasivaHechizos()">📋 Carga masiva</button>
+      </div>
       ${items.length === 0 ? `<div class="empty-state"><span class="es-emoji">✨</span><p>Comienza agregando tu primer hechizo</p></div>` : ''}
       <div id="adm-hechizo-list">
         ${items.map(it => admItemRow(it, 'hechizo')).join('')}
       </div>`;
+  }
+
+  function _cargaMasivaHechizos() {
+    App.openModal('📋 Carga masiva — Hechizos', `
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem">
+        Copia desde Excel y pega aquí. <strong>Columnas en orden:</strong>
+      </p>
+      <div style="font-size:.75rem;background:var(--bg3);border-radius:6px;padding:.6rem;margin-bottom:.75rem;font-family:monospace;line-height:1.6">
+        nombre &nbsp;|&nbsp; emoji &nbsp;|&nbsp; intencion &nbsp;|&nbsp; panteon &nbsp;|&nbsp; materiales &nbsp;|&nbsp; procedimiento &nbsp;|&nbsp; notas
+      </div>
+      <textarea id="carga-tsv-hech" class="form-textarea" style="min-height:140px;font-family:monospace;font-size:.78rem"
+        placeholder="Pega aquí el contenido copiado de Excel..."></textarea>
+      <div id="carga-preview-hech" style="font-size:.78rem;color:var(--muted);margin-top:.4rem"></div>`,
+      {
+        confirmLabel: '✅ Importar',
+        onConfirm: () => {
+          const raw = document.getElementById('carga-tsv-hech')?.value || '';
+          const rows = _parseTSV(raw);
+          if (!rows.length) { App.toast('No hay filas para importar'); return; }
+          const items = App.lsGet('bruja_hechizos', []);
+          let count = 0;
+          rows.forEach(cols => {
+            const name = (cols[0] || '').trim();
+            if (!name) return;
+            items.push({
+              id: 'hech_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+              name,
+              emoji:         (cols[1] || '✨').trim() || '✨',
+              intencion:     (cols[2] || '').trim(),
+              panteon:       (cols[3] || '').trim(),
+              materiales:    (cols[4] || '').trim(),
+              procedimiento: (cols[5] || '').trim(),
+              notas:         (cols[6] || '').trim(),
+            });
+            count++;
+          });
+          App.lsSet('bruja_hechizos', items);
+          App.toast(`✅ ${count} hechizo${count!==1?'s':''} importado${count!==1?'s':''}`);
+          renderAdmHechizos(document.getElementById('adm-hechizos'));
+        }
+      }
+    );
+    setTimeout(() => {
+      const ta = document.getElementById('carga-tsv-hech');
+      const pre = document.getElementById('carga-preview-hech');
+      if (ta && pre) ta.addEventListener('input', () => {
+        const n = _parseTSV(ta.value).filter(r => r[0]?.trim()).length;
+        pre.textContent = n ? `${n} hechizo${n!==1?'s':''} detectado${n!==1?'s':''}` : '';
+      });
+    }, 100);
   }
 
   function _hechizoNuevo(id = null) {
@@ -3492,7 +3602,10 @@ const Admin = (() => {
       <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem">
         Registra ancestros, deidades, guías, elementales, demonios, ángeles, hadas y más.
       </p>
-      <button class="btn btn-primary mb-2" onclick="Admin._ancestroNuevo()">+ Agregar ser / ancestro</button>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem">
+        <button class="btn btn-primary btn-sm" onclick="Admin._ancestroNuevo()">+ Agregar ser / ancestro</button>
+        <button class="btn btn-ghost btn-sm" onclick="Admin._cargaMasivaAncestros()">📋 Carga masiva</button>
+      </div>
       ${items.length === 0
         ? `<div class="empty-state"><span class="es-emoji">👁️</span><p>Comienza registrando a tus ancestros y guías</p></div>`
         : items.map(it => {
@@ -4097,9 +4210,33 @@ const Admin = (() => {
             <div class="admin-item-name">${i.name}</div>
           </div>
           <div class="admin-item-actions">
+            <button class="btn btn-ghost btn-sm" onclick="Admin._genIntencionEditar('${i.id}')">✏️</button>
             <button class="btn-icon" onclick="Admin._genIntencionEliminar('${i.id}')">🗑️</button>
           </div>
         </div>`).join('')}`;
+  }
+
+  function _genIntencionEditar(id) {
+    const list = App.lsGet('bruja_gen_intenciones', getDefaultIntenciones());
+    const item = list.find(x => x.id === id);
+    if (!item) return;
+    App.openModal('✏️ Editar intención', `
+      <div class="form-group">
+        <label class="form-label">Nombre *</label>
+        <input id="gint-name" class="form-input" value="${item.name}">
+      </div>`,
+      {
+        confirmLabel: 'Guardar',
+        onConfirm: () => {
+          const name = document.getElementById('gint-name')?.value.trim();
+          if (!name) { App.toast('El nombre es obligatorio'); return; }
+          item.name = name;
+          App.lsSet('bruja_gen_intenciones', list);
+          App.toast('Intención actualizada');
+          renderGenIntenciones();
+        }
+      }
+    );
   }
 
   function getDefaultIntenciones() {
@@ -4780,6 +4917,66 @@ const Admin = (() => {
   }
 
   /* ══════════════════════════════════════════════
+     HELPER — Parsear TSV pegado desde Excel
+     ══════════════════════════════════════════════ */
+  function _parseTSV(text) {
+    return text.split('\n')
+      .map(line => line.replace(/\r$/, '').split('\t'))
+      .filter(cols => cols.some(c => c.trim()));
+  }
+
+  function _cargaMasivaAncestros() {
+    App.openModal('📋 Carga masiva — Ancestros & Seres', `
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem">
+        Copia desde Excel y pega aquí. <strong>Columnas en orden:</strong>
+      </p>
+      <div style="font-size:.75rem;background:var(--bg3);border-radius:6px;padding:.6rem;margin-bottom:.75rem;font-family:monospace;line-height:1.6">
+        nombre &nbsp;|&nbsp; tipo &nbsp;|&nbsp; relacion &nbsp;|&nbsp; dominio &nbsp;|&nbsp; descripcion
+      </div>
+      <p style="font-size:.77rem;color:var(--muted);margin-bottom:.5rem">
+        <em>tipo</em>: ancestro / deidad / guia / elemental / demonio / angel / hada / otro
+      </p>
+      <textarea id="carga-tsv-anc" class="form-textarea" style="min-height:140px;font-family:monospace;font-size:.78rem"
+        placeholder="Pega aquí el contenido copiado de Excel..."></textarea>
+      <div id="carga-preview-anc" style="font-size:.78rem;color:var(--muted);margin-top:.4rem"></div>`,
+      {
+        confirmLabel: '✅ Importar',
+        onConfirm: () => {
+          const raw = document.getElementById('carga-tsv-anc')?.value || '';
+          const rows = _parseTSV(raw);
+          if (!rows.length) { App.toast('No hay filas para importar'); return; }
+          const items = App.lsGet('bruja_ancestros', []);
+          let count = 0;
+          rows.forEach(cols => {
+            const name = (cols[0] || '').trim();
+            if (!name) return;
+            items.push({
+              id: 'anc_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+              name,
+              tipo:        (cols[1] || 'ancestro').trim() || 'ancestro',
+              rel:         (cols[2] || '').trim(),
+              dominio:     (cols[3] || '').trim(),
+              descripcion: (cols[4] || '').trim(),
+            });
+            count++;
+          });
+          App.lsSet('bruja_ancestros', items);
+          App.toast(`✅ ${count} ser${count!==1?'es':''} importado${count!==1?'s':''}`);
+          renderAdmAncestros(document.getElementById('adm-ancestros'));
+        }
+      }
+    );
+    setTimeout(() => {
+      const ta = document.getElementById('carga-tsv-anc');
+      const pre = document.getElementById('carga-preview-anc');
+      if (ta && pre) ta.addEventListener('input', () => {
+        const n = _parseTSV(ta.value).filter(r => r[0]?.trim()).length;
+        pre.textContent = n ? `${n} ser${n!==1?'es':''} detectado${n!==1?'s':''}` : '';
+      });
+    }, 100);
+  }
+
+  /* ══════════════════════════════════════════════
      HELPER — Fila de item admin genérico
      ══════════════════════════════════════════════ */
   function admItemRow(item, type) {
@@ -4882,7 +5079,7 @@ const Admin = (() => {
     _tarotGuardarImg, _tarotLimpiar,
     _diarioLimpiar,
     _genVelaNueva, _genVelaEliminar,
-    _genIntencionNueva, _genIntencionEliminar,
+    _genIntencionNueva, _genIntencionEliminar, _genIntencionEditar,
     _genDiaNuevo, _genDiaEliminar,
     _genFaseNueva, _genFaseEliminar,
     _lunaNueva, _lunaEliminar,
@@ -4897,6 +5094,7 @@ const Admin = (() => {
     _admEliminar,
     _logout,
     renderAdmBiblioteca, renderAdmHechizos, renderAdmAltar, renderAdmAncestros,
+    _cargaMasivaBib, _cargaMasivaHechizos, _cargaMasivaAncestros,
     getDefaultSabats, getDefaultVelas, getDefaultIntenciones,
     getDefaultDias, getDefaultFases, getDefaultLunas13,
     isUnlocked,
