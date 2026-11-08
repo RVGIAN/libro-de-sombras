@@ -350,11 +350,43 @@ strong { color: var(--gold-l); }
 }
 
 /* ── Calendario Mágico ── */
+#sec-home.section {
+  max-width: 1100px;
+  padding-top: 0; /* la franja toca el topbar */
+}
+.cal-topstrip {
+  width: 100%;
+  height: 70px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  margin: 0 -1rem; /* cancela el padding lateral del .section */
+  width: calc(100% + 2rem);
+}
+.cal-topstrip-inner {
+  padding: 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  background: linear-gradient(to right, rgba(7,5,15,.75) 60%, transparent);
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+}
 .cal-container {
   width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 0 .25rem 2rem;
+  padding: 0 0 2rem;
+}
+/* En pantallas anchas: grid+sidebar lado a lado */
+@media (min-width: 700px) {
+  .cal-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  .cal-sidebar { min-width: 0; }
 }
 .cal-header {
   display: flex;
@@ -482,7 +514,6 @@ strong { color: var(--gold-l); }
   color: var(--lavender);
   letter-spacing: .07em;
   margin-bottom: .5rem;
-}
 }
 
 /* ── Secciones ── */
@@ -1643,7 +1674,7 @@ const App = (() => {
       id: 'conocer',
       label: 'Conocer',
       emoji: '📚',
-      secs: ['biblioteca','taller','cocina','rueda','libro','carta'],
+      secs: ['biblioteca','carta','rueda','libro','taller','cocina'],
     },
     {
       id: 'practicar',
@@ -1799,11 +1830,9 @@ const App = (() => {
     document.querySelectorAll('.section').forEach(el => el.classList.remove('visible'));
 
     // Mostrar la sección activa
+    window.scrollTo({ top: 0, behavior: 'instant' });
     const target = document.getElementById('sec-' + sectionId);
-    if (target) {
-      target.classList.add('visible');
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (target) target.classList.add('visible');
 
     // Actualizar estado activo en nueva nav de grupos
     document.querySelectorAll('.nav-pill[data-sec]').forEach(pill => {
@@ -2326,19 +2355,14 @@ const Calendario = (() => {
     const luna = App.lunarPhase ? App.lunarPhase() : { emoji: '🌙', name: '' };
 
     sec.innerHTML = `
-      <div class="home-portada" style="max-height:160px;overflow:hidden">
-        ${portada
-          ? `<img src="${portada}" alt="El Año de la Bruja" style="width:100%;height:160px;object-fit:cover;object-position:top" onerror="this.outerHTML='<div class=home-portada-placeholder style=height:120px><span class=ph-emoji>🌙</span><h1>El Año de la Bruja</h1></div>'">`
-          : `<div class="home-portada-placeholder" style="height:120px">
-               <span class="ph-emoji">🌙</span>
-               <h1>El Año de la Bruja</h1>
-             </div>`}
+      <!-- Franja compacta: portada + fecha + luna -->
+      <div class="cal-topstrip" ${portada ? `style="background-image:url('${portada}');background-size:cover;background-position:top center"` : ''}>
+        <div class="cal-topstrip-inner">
+          <div style="font-family:var(--font-title);font-size:1rem;color:var(--gold);text-shadow:0 1px 4px #000a">El Año de la Bruja</div>
+          <div style="font-size:.85rem;color:rgba(255,255,255,.8)">${luna.emoji} ${luna.name} &nbsp;·&nbsp; ${App.today()}</div>
+        </div>
       </div>
-      <div class="home-info" style="margin:.5rem 0 1rem">
-        <div class="home-fase">${luna.emoji} ${luna.name}</div>
-        <p class="text-muted" style="font-size:.85rem">${App.today()}</p>
-      </div>
-      <div id="cal-wrap"></div>`;
+      <div id="cal-wrap" style="margin-top:.75rem"></div>`;
 
     renderCal();
   }
@@ -2425,25 +2449,11 @@ const Calendario = (() => {
         </div>`;
     }
 
-    wrap.innerHTML = `
-      <div class="cal-container">
-        <!-- Cabecera mes -->
-        <div class="cal-header">
-          <button class="cal-nav-btn" onclick="Calendario._prevMes()">‹</button>
-          <span class="cal-mes-label">${meses[viewMonth-1]} ${viewYear}</span>
-          <button class="cal-nav-btn" onclick="Calendario._nextMes()">›</button>
-        </div>
+    const meses2 = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
-        <!-- Grid días semana -->
-        <div class="cal-grid-head">
-          ${dias.map(d => `<div class="cal-dow">${d}</div>`).join('')}
-        </div>
-
-        <!-- Grid días -->
-        <div class="cal-grid">${celdas}</div>
-
-        <!-- Sabbats del mes -->
-        ${sabbatsMes.length > 0 ? `
+    // Sidebar: sabbats + lunas + próximos + agregar
+    const sidebar = `
+      ${sabbatsMes.length > 0 ? `
         <div class="cal-section-title">🌿 Sabbats este mes</div>
         ${sabbatsMes.map(s => `
           <div class="cal-evento-row" style="border-left:3px solid ${s.color}">
@@ -2454,19 +2464,15 @@ const Calendario = (() => {
             </div>
           </div>`).join('')}` : ''}
 
-        <!-- Lunas especiales del mes -->
-        ${lunasMes.length > 0 ? `
+      ${lunasMes.length > 0 ? `
         <div class="cal-section-title">🌙 Lunas especiales</div>
         ${lunasMes.map(l => `
           <div class="cal-evento-row">
             <span style="font-size:1.2rem">${l.emoji}</span>
-            <div>
-              <strong>Luna ${l.tipo === 'llena' ? 'Llena' : 'Nueva'}</strong> — día ${l.dia}
-            </div>
+            <div><strong>Luna ${l.tipo === 'llena' ? 'Llena' : 'Nueva'}</strong> — día ${l.dia}</div>
           </div>`).join('')}` : ''}
 
-        <!-- Eventos personales del mes -->
-        ${eventosMes.length > 0 ? `
+      ${eventosMes.length > 0 ? `
         <div class="cal-section-title">⭐ Tus eventos</div>
         ${eventosMes.map(e => `
           <div class="cal-evento-row" style="justify-content:space-between">
@@ -2480,28 +2486,44 @@ const Calendario = (() => {
             <button class="btn btn-ghost btn-sm" onclick="Calendario._borrarEvento('${e.id}')">🗑️</button>
           </div>`).join('')}` : ''}
 
-        <!-- Próximos Sabbats -->
-        <div class="cal-section-title">🔮 Próximos Sabbats</div>
-        ${proxSabbats.map(s => {
-          const meses2 = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-          const diff = Math.ceil((s.fecha - new Date(añoHoy, mesHoy-1, diaHoy)) / (1000*60*60*24));
-          return `
-          <div class="cal-evento-row" style="border-left:3px solid ${s.color}">
-            <span style="font-size:1.2rem">${s.emoji}</span>
-            <div>
-              <strong>${s.nombre}</strong> — ${s.dia} ${meses2[s.mes-1]} ${s.año}
-              <div style="font-size:.8rem;color:var(--muted)">En ${diff} día${diff!==1?'s':''}</div>
-            </div>
-          </div>`;
-        }).join('')}
+      <div class="cal-section-title">🔮 Próximos Sabbats</div>
+      ${proxSabbats.map(s => {
+        const diff = Math.ceil((s.fecha - new Date(añoHoy, mesHoy-1, diaHoy)) / (1000*60*60*24));
+        return `
+        <div class="cal-evento-row" style="border-left:3px solid ${s.color}">
+          <span style="font-size:1.2rem">${s.emoji}</span>
+          <div>
+            <strong>${s.nombre}</strong> — ${s.dia} ${meses2[s.mes-1]} ${s.año}
+            <div style="font-size:.8rem;color:var(--muted)">En ${diff} día${diff!==1?'s':''}</div>
+          </div>
+        </div>`;
+      }).join('')}
 
-        <!-- Agregar evento -->
-        <div class="cal-section-title">+ Agregar evento mágico</div>
-        <div class="cal-add-form">
-          <input id="cal-ev-fecha" type="date" class="form-input" value="${añoHoy}-${String(mesHoy).padStart(2,'0')}-${String(diaHoy).padStart(2,'0')}" style="flex:1">
-          <input id="cal-ev-emoji" type="text" class="form-input" placeholder="🌙" maxlength="2" style="width:3.5rem;text-align:center">
-          <input id="cal-ev-nombre" type="text" class="form-input" placeholder="Nombre del evento" style="flex:2">
-          <button class="btn btn-primary btn-sm" onclick="Calendario._agregarEvento()">Agregar</button>
+      <div class="cal-section-title">+ Agregar evento mágico</div>
+      <div class="cal-add-form">
+        <input id="cal-ev-fecha" type="date" class="form-input" value="${añoHoy}-${String(mesHoy).padStart(2,'0')}-${String(diaHoy).padStart(2,'0')}" style="flex:1;min-width:130px">
+        <input id="cal-ev-emoji" type="text" class="form-input" placeholder="🌙" maxlength="2" style="width:3.5rem;text-align:center">
+        <input id="cal-ev-nombre" type="text" class="form-input" placeholder="Nombre del evento" style="flex:2;min-width:120px">
+        <button class="btn btn-primary btn-sm" onclick="Calendario._agregarEvento()">Agregar</button>
+      </div>`;
+
+    wrap.innerHTML = `
+      <div class="cal-container">
+        <div class="cal-layout">
+          <!-- Columna izquierda: grid del mes -->
+          <div class="cal-main-col">
+            <div class="cal-header">
+              <button class="cal-nav-btn" onclick="Calendario._prevMes()">‹</button>
+              <span class="cal-mes-label">${meses[viewMonth-1]} ${viewYear}</span>
+              <button class="cal-nav-btn" onclick="Calendario._nextMes()">›</button>
+            </div>
+            <div class="cal-grid-head">
+              ${dias.map(d => `<div class="cal-dow">${d}</div>`).join('')}
+            </div>
+            <div class="cal-grid">${celdas}</div>
+          </div>
+          <!-- Columna derecha: eventos y sabbats -->
+          <div class="cal-sidebar">${sidebar}</div>
         </div>
       </div>`;
   }
@@ -10722,8 +10744,7 @@ const Carta = {
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       App.init();
-      // Inicializar carta astral (módulo viejo que escribe en IDs fijos)
-      if (typeof CartaModule !== 'undefined') CartaModule.init();
+      // CartaModule se inicializa bajo demanda via Carta.render() al navegar a 'carta'
     });
   </script>
 
