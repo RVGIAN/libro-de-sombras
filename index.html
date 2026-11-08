@@ -2283,9 +2283,17 @@ const App = (() => {
 const Calendario = (() => {
 
   const LS_KEY = 'bruja_calendario_eventos';
+  const LS_HEMISFERIO = 'bruja_calendario_hemisferio'; // 'sur' | 'norte'
+
+  function getHemisferio() {
+    return localStorage.getItem(LS_HEMISFERIO) || 'sur';
+  }
+  function setHemisferio(h) {
+    localStorage.setItem(LS_HEMISFERIO, h);
+  }
 
   /* ── Sabbats hemisferio sur ── */
-  const SABBATS = [
+  const SABBATS_SUR = [
     { mes: 1,  dia: 2,  nombre: 'Imbolc',  emoji: '🕯️', color: '#c8a2c8', desc: 'El retorno de la luz. Purificación y nuevos comienzos.' },
     { mes: 3,  dia: 20, nombre: 'Mabon',   emoji: '🍂', color: '#c0724a', desc: 'Equinoccio de otoño. Gratitud por la cosecha.' },
     { mes: 5,  dia: 1,  nombre: 'Samhain', emoji: '💀', color: '#7b4fa6', desc: 'El velo es más delgado. Honor a los ancestros.' },
@@ -2295,6 +2303,22 @@ const Calendario = (() => {
     { mes: 11, dia: 1,  nombre: 'Beltane', emoji: '🔥', color: '#e05c5c', desc: 'Fuego sagrado. Vitalidad y pasión.' },
     { mes: 12, dia: 21, nombre: 'Litha',   emoji: '☀️', color: '#f0c040', desc: 'Solsticio de verano. La luz en su punto más alto.' },
   ];
+
+  /* ── Sabbats hemisferio norte ── */
+  const SABBATS_NORTE = [
+    { mes: 2,  dia: 2,  nombre: 'Imbolc',  emoji: '🕯️', color: '#c8a2c8', desc: 'Primeras señales de primavera. Fuego interno y pureza.' },
+    { mes: 3,  dia: 21, nombre: 'Ostara',  emoji: '🌸', color: '#7ec896', desc: 'Equinoccio de primavera. Renacimiento y fertilidad.' },
+    { mes: 5,  dia: 1,  nombre: 'Beltane', emoji: '🔥', color: '#e05c5c', desc: 'Fuego sagrado. Vitalidad, amor y pasión.' },
+    { mes: 6,  dia: 21, nombre: 'Litha',   emoji: '☀️', color: '#f0c040', desc: 'Solsticio de verano. La luz en su punto más alto.' },
+    { mes: 8,  dia: 1,  nombre: 'Lammas',  emoji: '🌾', color: '#d4a017', desc: 'Primera cosecha. Gratitud y abundancia.' },
+    { mes: 9,  dia: 22, nombre: 'Mabon',   emoji: '🍂', color: '#c0724a', desc: 'Equinoccio de otoño. Equilibrio y cosecha final.' },
+    { mes: 10, dia: 31, nombre: 'Samhain', emoji: '💀', color: '#7b4fa6', desc: 'El velo es más delgado. Honor a los ancestros.' },
+    { mes: 12, dia: 21, nombre: 'Yule',    emoji: '❄️', color: '#5ba3c9', desc: 'Solsticio de invierno. La noche más larga.' },
+  ];
+
+  function getSabbats() {
+    return getHemisferio() === 'norte' ? SABBATS_NORTE : SABBATS_SUR;
+  }
 
   /* ── Fase lunar (algoritmo simple) ── */
   function getFaseLunar(fecha) {
@@ -2331,7 +2355,7 @@ const Calendario = (() => {
 
   /* ── Sabbat del día ── */
   function sabbatDelDia(mes, dia) {
-    return SABBATS.find(s => s.mes === mes && s.dia === dia) || null;
+    return getSabbats().find(s => s.mes === mes && s.dia === dia) || null;
   }
 
   /* ── Eventos personales ── */
@@ -2384,7 +2408,7 @@ const Calendario = (() => {
     const diasEnMes = new Date(viewYear, viewMonth, 0).getDate();
 
     // Sabbats y lunas especiales del mes
-    const sabbatsMes = SABBATS.filter(s => s.mes === viewMonth);
+    const sabbatsMes = getSabbats().filter(s => s.mes === viewMonth);
     const lunasMes = [];
     for (let d = 1; d <= diasEnMes; d++) {
       const f = new Date(viewYear, viewMonth - 1, d);
@@ -2402,7 +2426,7 @@ const Calendario = (() => {
     const hoyMs = new Date(añoHoy, mesHoy - 1, diaHoy).getTime();
     const proxSabbats = [];
     for (let yr = añoHoy; yr <= añoHoy + 1 && proxSabbats.length < 2; yr++) {
-      for (const s of SABBATS) {
+      for (const s of getSabbats()) {
         const fs = new Date(yr, s.mes - 1, s.dia);
         if (fs.getTime() >= hoyMs) {
           proxSabbats.push({ ...s, año: yr, fecha: fs });
@@ -2517,6 +2541,15 @@ const Calendario = (() => {
               <span class="cal-mes-label">${meses[viewMonth-1]} ${viewYear}</span>
               <button class="cal-nav-btn" onclick="Calendario._nextMes()">›</button>
             </div>
+            <div style="text-align:center;margin-bottom:.5rem">
+              <span style="font-size:.75rem;color:var(--muted);margin-right:.4rem">Hemisferio:</span>
+              <button class="btn btn-sm ${getHemisferio()==='sur'?'btn-primary':'btn-ghost'}"
+                style="font-size:.72rem;padding:.2rem .6rem;margin-right:.25rem"
+                onclick="Calendario._setHemisferio('sur')">🌎 Sur</button>
+              <button class="btn btn-sm ${getHemisferio()==='norte'?'btn-primary':'btn-ghost'}"
+                style="font-size:.72rem;padding:.2rem .6rem"
+                onclick="Calendario._setHemisferio('norte')">🌍 Norte</button>
+            </div>
             <div class="cal-grid-head">
               ${dias.map(d => `<div class="cal-dow">${d}</div>`).join('')}
             </div>
@@ -2581,7 +2614,12 @@ const Calendario = (() => {
     renderCal();
   }
 
-  return { render, renderCal, _prevMes, _nextMes, _diaClick, _agregarEvento, _borrarEvento };
+  function _setHemisferio(h) {
+    setHemisferio(h);
+    renderCal();
+  }
+
+  return { render, renderCal, _prevMes, _nextMes, _diaClick, _agregarEvento, _borrarEvento, _setHemisferio };
 })();
 
 </script>
@@ -10599,6 +10637,8 @@ const CartaModule = (() => {
     // Llenar selector de ciudades (estándar + personalizadas del admin)
     const citySelect = document.getElementById('city-select');
     if(citySelect){
+      // Limpiar opciones previas para evitar duplicados al re-entrar
+      citySelect.innerHTML = '';
       // Ciudades personalizadas primero
       try {
         const extras = JSON.parse(localStorage.getItem('bruja_ciudades_extra') || '[]');
@@ -10722,7 +10762,8 @@ const CartaModule = (() => {
     document.getElementById('carta-result')?.scrollIntoView({behavior:'smooth'});
   }
 
-  return { init };
+  function render() { init(); }
+  return { init, render };
 })();
 
 // Alias para el nuevo sistema de navegación
