@@ -1697,20 +1697,17 @@ const App = (() => {
 
     // Ancestros & Espíritus por defecto (semillar desde AncestrosDefaults si existe)
     if (!localStorage.getItem('bruja_ancestros') && typeof AncestrosDefaults !== 'undefined') {
-      const entidades = (AncestrosDefaults.entidades || []).map(e => ({
-        id: e.id,
-        tipo: e.tipo || 'guia',
-        name: e.name,
-        emoji: e.emoji || '👁️',
-        descripcion: e.descripcion || '',
-        formas: e.formas || '',
-        como_trabajar: e.como_trabajar || '',
-        ofrendas: e.ofrendas || '',
-        precauciones: e.precauciones || '',
-        ritual_base: e.ritual_base || '',
-        tags: e.tags || '',
-      }));
-      if (entidades.length > 0) lsSet('bruja_ancestros', entidades);
+      const mapEnt = e => ({
+        id: e.id, tipo: e.tipo || 'guia', name: e.name, emoji: e.emoji || '👁️',
+        descripcion: e.descripcion || '', formas: e.formas || '',
+        como_trabajar: e.como_trabajar || '', ofrendas: e.ofrendas || '',
+        precauciones: e.precauciones || '', ritual_base: e.ritual_base || '',
+        tags: e.tags || '', panteon: e.panteon || '',
+      });
+      const entidades = (AncestrosDefaults.entidades || []).map(mapEnt);
+      const deidades  = (AncestrosDefaults.deidades  || []).map(mapEnt);
+      const todos = [...entidades, ...deidades];
+      if (todos.length > 0) lsSet('bruja_ancestros', todos);
     }
 
     // Usuario RVGIAN siempre presente
@@ -6193,7 +6190,123 @@ const AncestrosDefaults = (() => {
     },
   ];
 
-  return { entidades, ritos, ofrendas };
+  /* ── Deidades del libro ── */
+  const deidades = [
+    {
+      id: 'deid-01',
+      tipo: 'deidad',
+      name: 'Hécate',
+      emoji: '🌙',
+      panteон: 'Greco-Romano',
+      descripcion: 'Diosa griega de la magia, las encrucijadas, la luna y el mundo de los muertos. Guardiana de los umbrales y los cruces de caminos. Protectora de las brujas y las mujeres que caminan entre mundos. Se la representa con tres rostros o tres cuerpos — doncella, madre y anciana al mismo tiempo.',
+      formas: 'Perros que ladran sin razón en la noche, llave encontrada en el camino, encrucijadas que llaman la atención, luna menguante o nueva, sensación de protección en momentos de peligro.',
+      como_trabajar: 'Se trabaja de noche, especialmente en luna nueva o menguante. Las encrucijadas son su espacio sagrado. Ofrécele a las cruces de caminos. No le pidas riqueza o amor trivial — es una diosa de transformación profunda, magia real y protección.',
+      ofrendas: 'Ajo, huevos, miel, perros (representaciones), llaves, velas negras o plateadas, ajenjo, cipiente con agua de luna, lavanda',
+      precauciones: 'Hécate no es una diosa de peticiones superficiales. Trabaja con quienes están en transición real — un cambio de vida, el final de algo, la apertura de un camino nuevo. Si la llamas, estate preparado para que lo que necesita morir, muera.',
+      ritual_base: 'En luna nueva: lleva una ofrenda a un cruce de tres caminos. Enciende una vela negra o blanca. Di su nombre tres veces. Presenta tu petición con claridad. Deja la ofrenda y regresa sin mirar atrás.',
+      tags: 'magia, encrucijadas, luna, brujas, protección, transición',
+    },
+    {
+      id: 'deid-02',
+      tipo: 'deidad',
+      name: 'Isis / Aset',
+      emoji: '🪶',
+      panteон: 'Egipcio',
+      descripcion: 'Gran diosa egipcia de la magia, la curación, la maternidad y la resurrección. Esposa de Osiris y madre de Horus. Domina el arte de la magia en su forma más alta — fue ella quien reunió los pedazos del cuerpo de Osiris y lo devolvió a la vida. Protectora de los que sufren y de quienes buscan sanar.',
+      formas: 'Sensación de ser sostenida en momentos de quiebre, sueños con figuras aladas, encuentro con milanos o aves de rapiña, claridad repentina en situaciones complicadas.',
+      como_trabajar: 'Se trabaja para curación, protección, magia compleja y resurrección de lo que parecía perdido. También para la maternidad y los ciclos de la luna. Responde al esfuerzo sostenido más que a rituales únicos.',
+      ofrendas: 'Agua del Nilo (o agua bendecida), flores de loto, incienso de mirra y kyphi, lino blanco, turquesa o lapislázuli, cerveza de cebada, pan',
+      precauciones: 'Isis trabaja con quienes están dispuestos a hacer su parte. No es una diosa de atajos — si pides curación, también pide estar dispuesto a cambiar lo que enfermó.',
+      ritual_base: 'Enciende una vela azul o blanca. Coloca agua fresca y flores. Llama a Isis / Aset con su nombre. Pide protección, curación o guía. Deja que el silencio después de la invocación sea parte del ritual.',
+      tags: 'magia, curación, maternidad, protección, resurrección, luna',
+    },
+    {
+      id: 'deid-03',
+      tipo: 'deidad',
+      name: 'La Triple Diosa',
+      emoji: '🌑🌕🌘',
+      panteон: 'Wicca / Ecléctica',
+      descripcion: 'Principio femenino universal que se expresa en tres aspectos: la Doncella (luna creciente — comienzos, energía, deseo), la Madre (luna llena — creación, abundancia, poder) y la Anciana o Crone (luna menguante — sabiduría, magia profunda, fin de ciclos). No es una diosa específica sino un arquetipo que se manifiesta a través de muchas formas.',
+      formas: 'Sensación distinta según el ciclo lunar, cambios en el propio cuerpo que siguen el ritmo de la luna, encuentro con grupos de tres (tres animales, tres personas, tres señales).',
+      como_trabajar: 'Trabaja con ella siguiendo los ciclos lunares. Luna creciente para comenzar. Luna llena para potenciar y agradecer. Luna menguante para soltar y profundizar. Luna nueva para el silencio, la escucha y la magia más oscura.',
+      ofrendas: 'Flores frescas (doncella), frutas y panes (madre), hierbas de poder y raíces (anciana), agua de luna, velas blancas, plata',
+      precauciones: 'Respetar los tres aspectos por igual — muchas brujas honran la Doncella y la Madre pero evitan la Anciana. Eso es incompleto. La sabiduría y el poder más profundo está en la Crone.',
+      ritual_base: 'En cada luna llena: enciende tres velas (blanca, roja, negra o morada). Habla a cada aspecto: a la Doncella sobre lo que deseas comenzar, a la Madre sobre lo que agradeces, a la Anciana sobre lo que necesitas soltar.',
+      tags: 'triple diosa, luna, wicca, ciclos, doncella, madre, crone',
+    },
+    {
+      id: 'deid-04',
+      tipo: 'deidad',
+      name: 'Freya',
+      emoji: '🐱',
+      panteон: 'Nórdico',
+      descripcion: 'Diosa nórdica del amor, la belleza, la fertilidad, la magia seiðr, la guerra y la muerte. Recibe la mitad de los caídos en batalla en su salón Fólkvangr. Maestra de la magia rúnica y del seiðr — la magia de visión y destino. Poderosa, independiente y profundamente sensual. Llora lágrimas de oro por su esposo Óðr.',
+      formas: 'Gatos que buscan la compañía inesperadamente, ámbar encontrado o regalado, atracción hacia la magia de visión (seiðr), sueños intensos con significado de destino.',
+      como_trabajar: 'Para amor propio, poder personal, magia de visión, conexión con el destino y la abundancia. También para sanar el corazón después de pérdidas. Responde al trabajo con runas, especialmente Fehu, Gebo y Berkana.',
+      ofrendas: 'Miel, hidromiel, fresas, flores rojas, ámbar, oro, gatos (representaciones), runas escritas o talladas, lágrimas de incienso (lágrimas de ámbar o copal)',
+      precauciones: 'Freya exige autenticidad. No funciona bien con quienes esconden quiénes son o se disminuyen. Si trabajas con ella, estate dispuesto a reclamar tu propio poder.',
+      ritual_base: 'Enciende una vela roja o dorada. Ofrece miel o hidromiel. Di su nombre: Freya, Vanadís. Pide lo que necesitas con claridad y sin disculpas. Cierra con una afirmación de tu propio poder.',
+      tags: 'amor, magia, visión, nórdico, poder, abundancia, runas',
+    },
+    {
+      id: 'deid-05',
+      tipo: 'deidad',
+      name: 'Brigid',
+      emoji: '🔥',
+      panteон: 'Celta',
+      descripcion: 'Diosa irlandesa del fuego sagrado, la curación, la poesía y la herrería. Patrona de los artesanos, los poetas y los sanadores. Se celebra en Imbolc (1 de febrero) — el primer fuego de la primavera. Sobrevivió en la tradición cristiana como Santa Brígida de Kildare, donde las monjas mantenían un fuego sagrado eterno en su honor.',
+      formas: 'Llamas que cobran vida propia, inspiración creativa repentina, curación inesperada, conexión con el fuego sagrado en momentos de oscuridad.',
+      como_trabajar: 'Para inspiración creativa, curación, protección del hogar y del fuego del hogar, trabajo artístico o poético. Se trabaja especialmente en Imbolc pero cualquier martes (día del fuego en tradición celta) es propicio.',
+      ofrendas: 'Leche, mantequilla, pan, velas blancas, flores de primavera, cruces de Brigid hechas de paja o juncos, poemas escritos a mano',
+      precauciones: 'Brigid es una diosa de hacer — no de pedir sin actuar. Si pides inspiración, siéntate a crear. Si pides curación, haz también tu parte en el mundo físico.',
+      ritual_base: 'En Imbolc o cualquier martes: enciende una vela blanca. Ofrece leche o mantequilla. Lee un poema en voz alta o escribe uno — aunque sea simple. Pide su llama para tu trabajo.',
+      tags: 'fuego, curación, creatividad, Imbolc, celta, poesía, hogar',
+    },
+    {
+      id: 'deid-06',
+      tipo: 'deidad',
+      name: 'Lilith',
+      emoji: '🌑',
+      panteон: 'Hebreo / Ecléctico',
+      descripcion: 'Primera esposa de Adán según textos hebreos apócrifos. Rechazó la sumisión y eligió el exilio antes que doblegarse. Diosa de la libertad femenina radical, la sexualidad soberana, la noche y lo que fue demonizado por el orden patriarcal. No es una diosa de oscuridad per se — es una diosa de lo auténtico que fue declarado oscuro.',
+      formas: 'Rabia que surge ante la injusticia, rechazo profundo a ser controlada/o, encuentro con la propia sombra, sueños de vuelo libre, sensación de haber sido silenciada/o en algún momento importante.',
+      como_trabajar: 'Para recuperar la propia voz, trabajo con la sombra, liberarse de relaciones o situaciones donde hubo sumisión no elegida. No para magia de control sobre otros. Para reconectar con el deseo y la voluntad propios.',
+      ofrendas: 'Vino tinto, granadas, rosas rojas y negras, obsidiana, velas negras o carmesí, escritura automática o journaling de rabia sin censura',
+      precauciones: 'Lilith no es para magia de control, venganza o hacer daño. Es para liberación. Si tu intención no es liberarte sino controlar, esta no es tu diosa. También: trabajar con ella puede traer a la superficie emociones que tenías muy guardadas — es parte del proceso.',
+      ritual_base: 'En luna nueva o oscura: enciende una vela negra o roja. Escribe en papel todo lo que has callado, tolerado o fingido que no importaba. Léelo en voz alta. Quema el papel (con seguridad). Pide a Lilith que te acompañe en reclamar lo que es tuyo.',
+      tags: 'libertad, sombra, voz propia, sexualidad soberana, transformación, noche',
+    },
+    {
+      id: 'deid-07',
+      tipo: 'deidad',
+      name: 'Bastet',
+      emoji: '🐈',
+      panteон: 'Egipcio',
+      descripcion: 'Diosa egipcia con cabeza de gata. Protectora del hogar, de las mujeres, de los niños y de los gatos. También diosa de la danza, la música, la alegría y la fertilidad. En su aspecto más poderoso (Sejmet) es la leona destructora — Bastet es la faceta solar y protectora de esa misma fuerza.',
+      formas: 'Gatos que buscan tu presencia, alegría inesperada, música que llega en momentos precisos, sensación de protección en el hogar.',
+      como_trabajar: 'Para protección del hogar y la familia, alegría, danza, creatividad sensorial, fertilidad y protección de los animales. También para sanar la relación con el propio cuerpo y el placer.',
+      ofrendas: 'Leche, cerveza, perfume, estatuillas de gatos, joyas (especialmente doradas), flores, música en vivo o cantada en su honor',
+      precauciones: 'Bastet aprecia la alegría genuina. No la invocas en momentos de pura lamentación — primero trabaja con otra diosa para sanar, y luego invita a Bastet para reconstruir la alegría.',
+      ritual_base: 'Enciende una vela dorada o verde. Coloca una representación de gato. Ofrece leche o perfume. Pon música que te guste — Bastet aprecia el sonido. Baila si puedes, aunque sea en la mente.',
+      tags: 'protección, hogar, alegría, gatos, danza, cuerpo, fertilidad',
+    },
+    {
+      id: 'deid-08',
+      tipo: 'deidad',
+      name: 'Morrigan',
+      emoji: '🐦‍⬛',
+      panteон: 'Celta',
+      descripcion: 'Gran diosa celta irlandesa de la batalla, el destino, la muerte y la transformación. Se manifiesta como cuervo o corneja. No es diosa de la guerra por el combate en sí — es diosa de la transformación a través del conflicto. Preside los momentos en que algo debe morir para que algo nuevo pueda nacer. Guerrera, profetisa y portadora del destino.',
+      formas: 'Cuervos o cornejas que aparecen en momentos de decisión, sueños de batallas o transformaciones, llamado hacia la propia fuerza en momentos de miedo, clarividencia en torno al destino.',
+      como_trabajar: 'Para transformaciones profundas, corte de lo que debe terminar, trabajo con la propia fuerza y el coraje, adivinación del destino. No para rituales de amor o abundancia — es una diosa de lo que debe cambiar.',
+      ofrendas: 'Sangre (unas gotas tuyas, con intención), vino tinto, pan de centeno, plumas de cuervo, obsidiana, velas negras o rojas, escritura de pactos de transformación',
+      precauciones: 'La Morrigan no viene cuando la llamas por capricho. Si te responde, estate preparado para la transformación real. Esto puede incluir el final de relaciones, situaciones o partes de ti que ya no sirven.',
+      ritual_base: 'En luna menguante o nueva: enciende una vela negra. Llama a la Morrigan con su nombre. Declara lo que estás dispuesto a dejar morir para que algo nuevo nazca. Escúchala — puede llegar como sensación, imagen o certeza interna.',
+      tags: 'transformación, batalla interior, destino, coraje, muerte y renacimiento, cuervo',
+    },
+  ];
+
+  return { entidades, ritos, ofrendas, deidades };
 })();
 
 </script>
