@@ -93,12 +93,9 @@ strong { color: var(--gold-l); }
   display: flex;
   align-items: center;
   gap: .5rem;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  padding-bottom: 2px; /* evita corte de sombra */
+  overflow: visible; /* necesario para que los dropdowns no queden cortados */
+  padding-bottom: 2px;
 }
-#topbar-inner::-webkit-scrollbar { display: none; }
 
 /* Logo compacto */
 .topbar-logo {
@@ -1630,8 +1627,6 @@ const App = (() => {
     });
     inner.appendChild(logoutBtn);
 
-    // Cerrar dropdowns al tocar fuera
-    document.addEventListener('click', _closeDropdowns, { once: false });
   }
 
   /* ── Navegación ── */
@@ -2088,6 +2083,9 @@ const App = (() => {
     renderTopbar();
     renderHome();
     navigate('home');
+
+    // Cerrar dropdowns al tocar fuera — se agrega UNA sola vez
+    document.addEventListener('click', _closeDropdowns);
   }
 
   return {
