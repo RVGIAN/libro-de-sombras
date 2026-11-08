@@ -1302,6 +1302,26 @@ strong { color: var(--gold-l); }
   .bib-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ── Móvil: calendario compacto ── */
+@media (max-width: 480px) {
+  .cal-cell { min-height: 38px; padding: .15rem .1rem; }
+  .cal-dia-num { font-size: .68rem; }
+  .cal-luna-ico { font-size: .6rem; }
+  .cal-badge { font-size: .55rem; }
+  .cal-add-form {
+    flex-direction: column;
+  }
+  .cal-add-form input, .cal-add-form button {
+    width: 100%;
+  }
+  /* Topbar util: iconos más pequeños en móvil */
+  .nav-util-btn { width: 1.8rem !important; height: 1.8rem !important; font-size: .85rem !important; }
+  /* Modales: ancho completo en móvil */
+  .modal-box { padding: 1.25rem 1rem 1.75rem; }
+  /* Cards de panteones: 2 columnas mínimo */
+  .panteones-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
 /* ════════════════════════════════════════════
    LOGIN SCREEN
    ════════════════════════════════════════════ */
@@ -2115,8 +2135,12 @@ const App = (() => {
      ══════════════════════════════════════════════ */
   const SESSION_LOGIN = 'bruja_session';
 
+  function _sessionStore() {
+    return localStorage.getItem('bruja_recordar') === '1' ? localStorage : sessionStorage;
+  }
+
   function isLoggedIn() {
-    return !!sessionStorage.getItem(SESSION_LOGIN);
+    return !!sessionStorage.getItem(SESSION_LOGIN) || !!localStorage.getItem(SESSION_LOGIN);
   }
 
   function renderLogin() {
@@ -2146,7 +2170,11 @@ const App = (() => {
           <label class="form-label">Contraseña</label>
           <input id="login-pass" class="form-input" type="password" placeholder="••••••••" autocomplete="current-password">
         </div>
-        <button class="btn btn-primary" style="width:100%;margin-top:.5rem" onclick="App._tryLogin()">
+        <div style="display:flex;align-items:center;gap:.5rem;margin:.5rem 0;font-size:.83rem;color:var(--muted)">
+          <input type="checkbox" id="login-recordar" style="width:1rem;height:1rem;accent-color:var(--gold)">
+          <label for="login-recordar" style="cursor:pointer">Recordarme en este dispositivo</label>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:.25rem" onclick="App._tryLogin()">
           ✨ Entrar al Grimorio
         </button>
         <p id="login-err" style="color:#ff7070;font-size:.82rem;margin-top:.5rem;display:none">
@@ -2206,7 +2234,15 @@ const App = (() => {
       }
 
       if (found) {
-        sessionStorage.setItem(SESSION_LOGIN, found.id);
+        const recordar = document.getElementById('login-recordar')?.checked;
+        if (recordar) {
+          localStorage.setItem('bruja_recordar', '1');
+          localStorage.setItem(SESSION_LOGIN, found.id);
+        } else {
+          localStorage.removeItem('bruja_recordar');
+          localStorage.removeItem(SESSION_LOGIN);
+          sessionStorage.setItem(SESSION_LOGIN, found.id);
+        }
         const sc = document.getElementById('login-screen');
         if (sc) sc.remove();
         document.getElementById('topbar').style.display = '';
@@ -2225,6 +2261,8 @@ const App = (() => {
 
   function _logoutUser() {
     sessionStorage.removeItem(SESSION_LOGIN);
+    localStorage.removeItem(SESSION_LOGIN);
+    localStorage.removeItem('bruja_recordar');
     location.reload();
   }
 
@@ -3607,7 +3645,7 @@ const Admin = (() => {
         confirmLabel: isEdit ? 'Guardar' : 'Agregar',
         onConfirm: () => {
           const nombre = document.getElementById('lu-nombre')?.value.trim();
-          if (!nombre) return;
+          if (!nombre) { App.toast('El nombre es obligatorio'); return; }
           const nuevo = {
             id:     id || App.uid(),
             nombre,
@@ -3720,7 +3758,7 @@ const Admin = (() => {
         confirmLabel: isEdit ? 'Guardar' : 'Agregar',
         onConfirm: () => {
           const name = document.getElementById('sf-name')?.value.trim();
-          if (!name) return;
+          if (!name) { App.toast('El nombre es obligatorio'); return; }
           const nuevo = {
             id: id || App.uid(), name,
             emoji: document.getElementById('sf-emoji')?.value.trim() || '☀️',
@@ -3881,7 +3919,7 @@ const Admin = (() => {
         confirmLabel: id ? 'Guardar' : 'Agregar',
         onConfirm: () => {
           const d = document.getElementById('gd-d')?.value.trim();
-          if (!d) return;
+          if (!d) { App.toast('El día es obligatorio'); return; }
           const nuevo = { id: id || App.uid(), d,
             em:  document.getElementById('gd-em')?.value.trim() || '📅',
             ast: document.getElementById('gd-ast')?.value.trim(),
@@ -3948,7 +3986,7 @@ const Admin = (() => {
         confirmLabel: id ? 'Guardar' : 'Agregar',
         onConfirm: () => {
           const label = document.getElementById('gf-label')?.value.trim();
-          if (!label) return;
+          if (!label) { App.toast('La etiqueta es obligatoria'); return; }
           const nuevo = { id: id || App.uid(),
             label,
             key:  document.getElementById('gf-key')?.value.trim() || label.toLowerCase(),
@@ -4025,7 +4063,7 @@ const Admin = (() => {
         confirmLabel: id ? 'Guardar' : 'Agregar',
         onConfirm: () => {
           const name = document.getElementById('gv-name')?.value.trim();
-          if (!name) return;
+          if (!name) { App.toast('El nombre es obligatorio'); return; }
           const nuevo = { id: id || App.uid(), name,
             emoji: document.getElementById('gv-emoji')?.value.trim() || '🕯️',
             significado: document.getElementById('gv-sig')?.value.trim() };
@@ -4118,7 +4156,7 @@ const Admin = (() => {
         confirmLabel: 'Agregar',
         onConfirm: () => {
           const name = document.getElementById('gi-name')?.value.trim();
-          if (!name) return;
+          if (!name) { App.toast('El nombre es obligatorio'); return; }
           const list = App.lsGet('bruja_gen_intenciones', getDefaultIntenciones());
           list.push({ id: App.uid(), name });
           App.lsSet('bruja_gen_intenciones', list);
