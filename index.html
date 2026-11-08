@@ -1226,6 +1226,12 @@ const Sync = (() => {
           }
         });
         _showIndicator('✅ Datos cargados', '#4ade80');
+        // Re-renderizar sección actual para mostrar datos frescos del Sheet
+        if (typeof App !== 'undefined' && App.isLoggedIn()) {
+          const cur = document.querySelector('#main > section[style*="display: block"], #main > section.active');
+          const secId = cur ? cur.id.replace('sec-', '') : 'home';
+          setTimeout(() => App.navigate(secId), 50);
+        }
       } else {
         _showIndicator('⚠️ Sin datos en nube', '#fbbf24');
       }
@@ -1392,6 +1398,21 @@ const App = (() => {
       pill.addEventListener('click', () => navigate(sec.id));
       inner.appendChild(pill);
     });
+
+    // Botón Sync rápido (solo si hay URL configurada)
+    if (typeof Sync !== 'undefined' && Sync.getApiUrl()) {
+      const syncPill = document.createElement('button');
+      syncPill.className = 'nav-pill';
+      syncPill.id = 'btn-sync-nav';
+      syncPill.title = 'Sincronizar datos con la nube';
+      syncPill.innerHTML = `<span class="pill-emoji">☁️</span>Sync`;
+      syncPill.addEventListener('click', async () => {
+        syncPill.innerHTML = `<span class="pill-emoji">⏳</span>Sync`;
+        await Sync.pushAll();
+        syncPill.innerHTML = `<span class="pill-emoji">☁️</span>Sync`;
+      });
+      inner.appendChild(syncPill);
+    }
 
     // Botón Admin
     const adminPill = document.createElement('button');
@@ -1672,6 +1693,24 @@ const App = (() => {
         }
       ];
       lsSet('bruja_panteones', panteones);
+    }
+
+    // Ancestros & Espíritus por defecto (semillar desde AncestrosDefaults si existe)
+    if (!localStorage.getItem('bruja_ancestros') && typeof AncestrosDefaults !== 'undefined') {
+      const entidades = (AncestrosDefaults.entidades || []).map(e => ({
+        id: e.id,
+        tipo: e.tipo || 'guia',
+        name: e.name,
+        emoji: e.emoji || '👁️',
+        descripcion: e.descripcion || '',
+        formas: e.formas || '',
+        como_trabajar: e.como_trabajar || '',
+        ofrendas: e.ofrendas || '',
+        precauciones: e.precauciones || '',
+        ritual_base: e.ritual_base || '',
+        tags: e.tags || '',
+      }));
+      if (entidades.length > 0) lsSet('bruja_ancestros', entidades);
     }
 
     // Usuario RVGIAN siempre presente
