@@ -1108,6 +1108,9 @@ strong { color: var(--gold-l); }
     <!-- TALLER DE BRUJAS -->
     <section id="sec-taller" class="section"></section>
 
+    <!-- COCINA MÁGICA -->
+    <section id="sec-cocina" class="section"></section>
+
     <!-- HECHIZOS -->
     <section id="sec-hechizos" class="section"></section>
 
@@ -1385,6 +1388,7 @@ const App = (() => {
     { id: 'home',       label: 'Inicio',       emoji: '🌙' },
     { id: 'biblioteca', label: 'Biblioteca',   emoji: '🌿' },
     { id: 'taller',     label: 'Taller',       emoji: '🕯️' },
+    { id: 'cocina',     label: 'Cocina Mágica',emoji: '🍵' },
     { id: 'hechizos',   label: 'Hechizos',     emoji: '✨' },
     { id: 'altar',      label: 'Altar',        emoji: '🔥' },
     { id: 'ancestros',  label: 'Ancestros',    emoji: '👁️' },
@@ -1485,6 +1489,7 @@ const App = (() => {
     const moduleMap = {
       biblioteca: typeof Biblioteca !== 'undefined' ? Biblioteca : null,
       taller:     typeof Taller     !== 'undefined' ? Taller     : null,
+      cocina:     typeof Cocina     !== 'undefined' ? Cocina     : null,
       hechizos:   typeof Hechizos   !== 'undefined' ? Hechizos   : null,
       altar:      typeof Altar      !== 'undefined' ? Altar      : null,
       ancestros:  typeof Ancestros  !== 'undefined' ? Ancestros  : null,
@@ -1666,6 +1671,7 @@ const App = (() => {
       { id: 'rueda',     emoji: '☀️', label: 'Rueda'     },
       { id: 'altar',     emoji: '🔥', label: 'Altar'      },
       { id: 'taller',    emoji: '🧪', label: 'Taller'     },
+      { id: 'cocina',    emoji: '🍵', label: 'Cocina'     },
     ];
 
     sec.innerHTML = `
@@ -4838,6 +4844,86 @@ const Taller = (() => {
   }
 
   return { render, _tab, _toggle, _piroNuevo, _piroBorrar };
+})();
+
+</script>
+  <script>
+/* ============================================================
+   COCINA.JS — Cocina Mágica (sección propia)
+   Recetas con intención mágica y culinaria
+   ============================================================ */
+
+const Cocina = (() => {
+
+  function render() {
+    const sec = document.getElementById('sec-cocina');
+    if (!sec) return;
+
+    const stored = App.lsGet('bruja_taller_cocina', []);
+    const items = (stored && stored.length > 0)
+      ? stored
+      : (typeof TallerData !== 'undefined' ? (TallerData.cocina || []) : []);
+
+    sec.innerHTML = `
+      <h1 class="section-title">🍵 Cocina Mágica</h1>
+      <p class="section-sub">Alimentos que alimentan el cuerpo y el espíritu. Cada receta lleva intención.</p>
+
+      <div style="text-align:right;margin-bottom:.75rem">
+        ${Admin.isUnlocked()
+          ? `<button class="btn btn-primary btn-sm" onclick="Admin._tallerNuevo('cocina')">+ Nueva receta</button>`
+          : ''}
+      </div>
+
+      ${items.length === 0
+        ? `<div class="empty-state">
+            <span class="es-emoji">🍵</span>
+            <p>Aún no hay recetas de Cocina Mágica.</p>
+            ${Admin.isUnlocked()
+              ? `<button class="btn btn-ghost btn-sm" onclick="Admin._tallerNuevo('cocina')">Agregar receta</button>`
+              : ''}
+          </div>`
+        : items.map(it => recetaCard(it)).join('')}`;
+  }
+
+  function recetaCard(it) {
+    return `
+      <div class="card" style="cursor:pointer;margin-bottom:.6rem" onclick="Cocina._toggle('${it.id}')">
+        <div class="flex-between">
+          <div class="card-title">
+            ${it.img ? `<img src="${it.img}" style="width:32px;height:32px;border-radius:6px;object-fit:cover"
+              onerror="this.style.display='none'"> ` : ''}
+            ${it.name}
+          </div>
+          <span style="color:var(--muted);font-size:.8rem">▼</span>
+        </div>
+        ${it.proposito ? `<div style="font-size:.8rem;color:var(--muted)">✨ ${it.proposito}</div>` : ''}
+        <div id="cocina-det-${it.id}" style="display:none">
+          <hr class="section-divider">
+          ${it.desc ? `<p style="font-size:.9rem;color:var(--lavender)">${it.desc}</p>` : ''}
+          ${it.ingredientes ? `
+            <div class="bib-prop">
+              <div class="bib-prop-label">🌿 Ingredientes</div>
+              <div class="bib-prop-value">${it.ingredientes.replace(/\n/g,'<br>')}</div>
+            </div>` : ''}
+          ${it.preparacion ? `
+            <div class="bib-prop">
+              <div class="bib-prop-label">📋 Preparación</div>
+              <div class="bib-prop-value">${it.preparacion.replace(/\n/g,'<br>')}</div>
+            </div>` : ''}
+          ${Admin.isUnlocked() ? `
+            <div style="margin-top:.75rem" onclick="event.stopPropagation()">
+              <button class="btn btn-ghost btn-sm" onclick="Admin._tallerNuevo('cocina','${it.id}')">✏️ Editar</button>
+            </div>` : ''}
+        </div>
+      </div>`;
+  }
+
+  function _toggle(id) {
+    const det = document.getElementById('cocina-det-' + id);
+    if (det) det.style.display = det.style.display === 'none' ? 'block' : 'none';
+  }
+
+  return { render, _toggle };
 })();
 
 </script>
