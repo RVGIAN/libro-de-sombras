@@ -93,9 +93,27 @@ strong { color: var(--gold-l); }
   display: flex;
   align-items: center;
   gap: .5rem;
-  overflow: visible; /* necesario para que los dropdowns no queden cortados */
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   padding-bottom: 2px;
+  /* margen derecho para que los botones de utilidad no tapen los grupos */
+  padding-right: 76px;
 }
+#topbar-inner::-webkit-scrollbar { display: none; }
+
+/* Área de utilidad fija a la derecha del topbar */
+#topbar-util {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: .2rem;
+  padding: 0 .6rem 0 1.5rem;
+  background: linear-gradient(to right, transparent, rgba(7,5,15,.97) 30%);
+  pointer-events: none;
+}
+#topbar-util > * { pointer-events: auto; }
 
 /* Logo compacto */
 .topbar-logo {
@@ -166,12 +184,10 @@ strong { color: var(--gold-l); }
   flex-shrink: 0;
 }
 
-/* Dropdown panel */
+/* Dropdown panel — fixed para escapar del contenedor con overflow */
 .nav-dropdown {
   display: none;
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
+  position: fixed;
   min-width: 170px;
   background: rgba(10,7,22,.97);
   border: 1px solid var(--border);
@@ -1525,6 +1541,10 @@ const App = (() => {
     const isOpen = dropdown.classList.contains('open');
     _closeDropdowns();
     if (!isOpen) {
+      // Posicionar como fixed usando coordenadas reales del botón
+      const rect = btn.getBoundingClientRect();
+      dropdown.style.top  = (rect.bottom + 4) + 'px';
+      dropdown.style.left = Math.min(rect.left, window.innerWidth - 180) + 'px';
       dropdown.classList.add('open');
       btn.classList.add('open');
       _openGroup = groupId;
@@ -1588,24 +1608,29 @@ const App = (() => {
       inner.appendChild(wrapper);
     });
 
-    // Spacer
-    const spacer = document.createElement('div');
-    spacer.style.cssText = 'flex:1;min-width:.25rem';
-    inner.appendChild(spacer);
+    // ── Botones de utilidad: contenedor fijo fuera del scroll ──
+    let utilArea = document.getElementById('topbar-util');
+    if (!utilArea) {
+      utilArea = document.createElement('div');
+      utilArea.id = 'topbar-util';
+      document.getElementById('topbar').appendChild(utilArea);
+    }
+    utilArea.innerHTML = '';
 
-    // Sync (ícono pequeño, condicional)
+    // Sync (condicional)
     if (typeof Sync !== 'undefined' && Sync.getApiUrl()) {
       const syncBtn = document.createElement('button');
       syncBtn.className = 'nav-util-btn';
       syncBtn.id = 'btn-sync-nav';
       syncBtn.title = 'Sincronizar';
       syncBtn.innerHTML = '☁️';
-      syncBtn.addEventListener('click', async () => {
+      syncBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
         syncBtn.innerHTML = '⏳';
         await Sync.pushAll();
         syncBtn.innerHTML = '☁️';
       });
-      inner.appendChild(syncBtn);
+      utilArea.appendChild(syncBtn);
     }
 
     // Admin
@@ -1614,18 +1639,19 @@ const App = (() => {
     adminBtn.id = 'btn-admin-nav';
     adminBtn.title = 'Administración';
     adminBtn.innerHTML = '⚙️';
-    adminBtn.addEventListener('click', () => { _closeDropdowns(); navigate('admin'); });
-    inner.appendChild(adminBtn);
+    adminBtn.addEventListener('click', (e) => { e.stopPropagation(); _closeDropdowns(); navigate('admin'); });
+    utilArea.appendChild(adminBtn);
 
     // Salir
     const logoutBtn = document.createElement('button');
     logoutBtn.className = 'nav-util-btn';
     logoutBtn.title = 'Cerrar sesión';
     logoutBtn.innerHTML = '🔒';
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       if (confirm('¿Cerrar sesión?')) _logoutUser();
     });
-    inner.appendChild(logoutBtn);
+    utilArea.appendChild(logoutBtn);
 
   }
 
