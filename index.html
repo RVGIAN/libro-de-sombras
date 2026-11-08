@@ -141,18 +141,103 @@ strong { color: var(--gold-l); }
 }
 .nav-pill .pill-emoji { font-size: .9rem; }
 
-/* Botón Admin */
-.nav-pill.admin-pill {
-  background: rgba(74,14,143,.15);
-  border-color: rgba(138,43,226,.3);
-  color: var(--lavender);
-  margin-left: auto;
+/* Logo botón */
+.topbar-logo-btn {
+  background: none;
+  border: none;
+  font-size: 1.15rem;
+  cursor: pointer;
+  padding: .2rem .3rem;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: transform .2s;
+}
+.topbar-logo-btn:hover { transform: scale(1.15); }
+
+/* Caret del grupo */
+.nav-caret {
+  font-size: .65rem;
+  margin-left: .15rem;
+  opacity: .7;
+  transition: transform .2s;
+}
+.nav-group-btn.open .nav-caret { transform: rotate(180deg); }
+
+/* Wrapper relativo para el dropdown */
+.nav-group {
+  position: relative;
   flex-shrink: 0;
 }
-.nav-pill.admin-pill:hover {
-  background: rgba(74,14,143,.3);
-  border-color: #8A2BE2;
-  color: #fff;
+
+/* Dropdown panel */
+.nav-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 170px;
+  background: rgba(10,7,22,.97);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  box-shadow: 0 8px 24px rgba(0,0,0,.55);
+  backdrop-filter: blur(14px);
+  z-index: 200;
+  overflow: hidden;
+  animation: dropFade .15s ease;
+}
+.nav-dropdown.open { display: block; }
+@keyframes dropFade {
+  from { opacity:0; transform: translateY(-6px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+/* Items dentro del dropdown */
+.nav-drop-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  width: 100%;
+  padding: .55rem .9rem;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: .85rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s, color .15s;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.nav-drop-item:last-child { border-bottom: none; }
+.nav-drop-item:hover {
+  background: rgba(196,151,42,.1);
+  color: var(--gold-l);
+}
+.nav-drop-item.active {
+  background: rgba(196,151,42,.18);
+  color: var(--gold-g);
+  font-weight: 600;
+}
+
+/* Botones de utilidad (Sync, Admin, Salir) */
+.nav-util-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-s);
+  padding: .28rem .42rem;
+  font-size: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .18s, border-color .18s;
+  line-height: 1;
+}
+.nav-util-btn:hover {
+  background: rgba(196,151,42,.12);
+  border-color: rgba(196,151,42,.3);
+}
+.nav-util-btn.active {
+  background: rgba(74,14,143,.25);
+  border-color: rgba(138,43,226,.4);
 }
 
 /* Contenido principal */
@@ -1403,60 +1488,150 @@ const App = (() => {
 
   let currentSection = 'home';
 
+  /* ── Grupos de navegación ── */
+  const NAV_GROUPS = [
+    {
+      id: 'conocer',
+      label: 'Conocer',
+      emoji: '📚',
+      secs: ['biblioteca','taller','cocina','rueda','libro','carta'],
+    },
+    {
+      id: 'practicar',
+      label: 'Practicar',
+      emoji: '✨',
+      secs: ['hechizos','rituales','altar','ancestros','tarot'],
+    },
+    {
+      id: 'registrar',
+      label: 'Registrar',
+      emoji: '📖',
+      secs: ['diario','dia'],
+    },
+  ];
+
+  let _openGroup = null;
+
+  function _secLabel(id) {
+    return SECTIONS.find(s => s.id === id) || { label: id, emoji: '' };
+  }
+
+  function _closeDropdowns() {
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.nav-group-btn').forEach(b => b.classList.remove('open'));
+    _openGroup = null;
+  }
+
+  function _toggleGroup(groupId, btn) {
+    const dropdown = document.getElementById('ndrop-' + groupId);
+    if (!dropdown) return;
+    const isOpen = dropdown.classList.contains('open');
+    _closeDropdowns();
+    if (!isOpen) {
+      dropdown.classList.add('open');
+      btn.classList.add('open');
+      _openGroup = groupId;
+    }
+  }
+
   /* ── Renderizar topbar ── */
   function renderTopbar() {
     const inner = document.getElementById('topbar-inner');
     if (!inner) return;
+    inner.innerHTML = '';
 
-    // Logo
-    const logo = document.createElement('span');
-    logo.className = 'topbar-logo';
-    logo.textContent = '🌙';
+    // Logo → Inicio
+    const logo = document.createElement('button');
+    logo.className = 'topbar-logo-btn';
+    logo.innerHTML = '🌙';
+    logo.title = 'Inicio';
+    logo.addEventListener('click', () => { _closeDropdowns(); navigate('home'); });
     inner.appendChild(logo);
 
-    // Pills de secciones
-    SECTIONS.forEach(sec => {
-      const pill = document.createElement('button');
-      pill.className = 'nav-pill' + (sec.id === currentSection ? ' active' : '');
-      pill.dataset.sec = sec.id;
-      pill.innerHTML = `<span class="pill-emoji">${sec.emoji}</span>${sec.label}`;
-      pill.addEventListener('click', () => navigate(sec.id));
-      inner.appendChild(pill);
+    // Inicio pill directa
+    const homePill = document.createElement('button');
+    homePill.className = 'nav-pill' + (currentSection === 'home' ? ' active' : '');
+    homePill.dataset.sec = 'home';
+    homePill.innerHTML = `<span class="pill-emoji">🌿</span>Inicio`;
+    homePill.addEventListener('click', () => { _closeDropdowns(); navigate('home'); });
+    inner.appendChild(homePill);
+
+    // Grupos con dropdown
+    NAV_GROUPS.forEach(group => {
+      const groupInSecs = group.secs.includes(currentSection);
+      const wrapper = document.createElement('div');
+      wrapper.className = 'nav-group';
+
+      const btn = document.createElement('button');
+      btn.className = 'nav-pill nav-group-btn' + (groupInSecs ? ' active' : '');
+      btn.id = 'ngrp-' + group.id;
+      btn.innerHTML = `<span class="pill-emoji">${group.emoji}</span>${group.label}<span class="nav-caret">▾</span>`;
+      btn.addEventListener('click', (e) => { e.stopPropagation(); _toggleGroup(group.id, btn); });
+
+      const dropdown = document.createElement('div');
+      dropdown.className = 'nav-dropdown';
+      dropdown.id = 'ndrop-' + group.id;
+
+      group.secs.forEach(secId => {
+        const s = _secLabel(secId);
+        const item = document.createElement('button');
+        item.className = 'nav-drop-item' + (currentSection === secId ? ' active' : '');
+        item.dataset.sec = secId;
+        item.innerHTML = `<span>${s.emoji}</span>${s.label}`;
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          _closeDropdowns();
+          navigate(secId);
+        });
+        dropdown.appendChild(item);
+      });
+
+      wrapper.appendChild(btn);
+      wrapper.appendChild(dropdown);
+      inner.appendChild(wrapper);
     });
 
-    // Botón Sync rápido (solo si hay URL configurada)
+    // Spacer
+    const spacer = document.createElement('div');
+    spacer.style.cssText = 'flex:1;min-width:.25rem';
+    inner.appendChild(spacer);
+
+    // Sync (ícono pequeño, condicional)
     if (typeof Sync !== 'undefined' && Sync.getApiUrl()) {
-      const syncPill = document.createElement('button');
-      syncPill.className = 'nav-pill';
-      syncPill.id = 'btn-sync-nav';
-      syncPill.title = 'Sincronizar datos con la nube';
-      syncPill.innerHTML = `<span class="pill-emoji">☁️</span>Sync`;
-      syncPill.addEventListener('click', async () => {
-        syncPill.innerHTML = `<span class="pill-emoji">⏳</span>Sync`;
+      const syncBtn = document.createElement('button');
+      syncBtn.className = 'nav-util-btn';
+      syncBtn.id = 'btn-sync-nav';
+      syncBtn.title = 'Sincronizar';
+      syncBtn.innerHTML = '☁️';
+      syncBtn.addEventListener('click', async () => {
+        syncBtn.innerHTML = '⏳';
         await Sync.pushAll();
-        syncPill.innerHTML = `<span class="pill-emoji">☁️</span>Sync`;
+        syncBtn.innerHTML = '☁️';
       });
-      inner.appendChild(syncPill);
+      inner.appendChild(syncBtn);
     }
 
-    // Botón Admin
-    const adminPill = document.createElement('button');
-    adminPill.className = 'nav-pill admin-pill';
-    adminPill.id = 'btn-admin-nav';
-    adminPill.innerHTML = `<span class="pill-emoji">⚙️</span>Admin`;
-    adminPill.addEventListener('click', () => navigate('admin'));
-    inner.appendChild(adminPill);
+    // Admin
+    const adminBtn = document.createElement('button');
+    adminBtn.className = 'nav-util-btn' + (currentSection === 'admin' ? ' active' : '');
+    adminBtn.id = 'btn-admin-nav';
+    adminBtn.title = 'Administración';
+    adminBtn.innerHTML = '⚙️';
+    adminBtn.addEventListener('click', () => { _closeDropdowns(); navigate('admin'); });
+    inner.appendChild(adminBtn);
 
-    // Botón Cerrar sesión
-    const logoutPill = document.createElement('button');
-    logoutPill.className = 'nav-pill';
-    logoutPill.style.cssText = 'opacity:.6;font-size:.75rem';
-    logoutPill.innerHTML = `<span class="pill-emoji">🔒</span>Salir`;
-    logoutPill.title = 'Cerrar sesión';
-    logoutPill.addEventListener('click', () => {
+    // Salir
+    const logoutBtn = document.createElement('button');
+    logoutBtn.className = 'nav-util-btn';
+    logoutBtn.title = 'Cerrar sesión';
+    logoutBtn.innerHTML = '🔒';
+    logoutBtn.addEventListener('click', () => {
       if (confirm('¿Cerrar sesión?')) _logoutUser();
     });
-    inner.appendChild(logoutPill);
+    inner.appendChild(logoutBtn);
+
+    // Cerrar dropdowns al tocar fuera
+    document.addEventListener('click', _closeDropdowns, { once: false });
   }
 
   /* ── Navegación ── */
@@ -1473,17 +1648,21 @@ const App = (() => {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Actualizar pills activos
-    document.querySelectorAll('.nav-pill').forEach(pill => {
-      const sec = pill.dataset.sec;
-      pill.classList.toggle('active', sec === sectionId);
+    // Actualizar estado activo en nueva nav de grupos
+    document.querySelectorAll('.nav-pill[data-sec]').forEach(pill => {
+      pill.classList.toggle('active', pill.dataset.sec === sectionId);
     });
-
-    // Desplazar la pill activa a la vista
-    const activePill = document.querySelector(`.nav-pill[data-sec="${sectionId}"]`);
-    if (activePill) {
-      activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    }
+    document.querySelectorAll('.nav-drop-item').forEach(item => {
+      item.classList.toggle('active', item.dataset.sec === sectionId);
+    });
+    // Resaltar grupo padre si la sección pertenece a uno
+    NAV_GROUPS.forEach(group => {
+      const btn = document.getElementById('ngrp-' + group.id);
+      if (btn) btn.classList.toggle('active', group.secs.includes(sectionId));
+    });
+    // Admin util btn
+    const adminUtilBtn = document.getElementById('btn-admin-nav');
+    if (adminUtilBtn) adminUtilBtn.classList.toggle('active', sectionId === 'admin');
 
     // Inicializar la sección si tiene init()
     const moduleMap = {
