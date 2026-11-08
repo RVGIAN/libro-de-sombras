@@ -5392,7 +5392,7 @@ const Hechizos = (() => {
     const relacionados = hechizos.filter(h =>
       (h.intencion || '').toLowerCase().includes(intencion.toLowerCase()) ||
       intencion.toLowerCase().includes((h.intencion || '').toLowerCase().split(' ')[0]) ||
-      (h.tags || []).some(t => intencion.toLowerCase().includes(t.toLowerCase()))
+      (Array.isArray(h.tags) ? h.tags : []).some(t => intencion.toLowerCase().includes(t.toLowerCase()))
     ).slice(0, 2);
 
     const res = document.getElementById('gen-ritual-resultado');
