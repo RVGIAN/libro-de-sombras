@@ -1719,6 +1719,21 @@ const App = (() => {
       if (nuevos.length > 0) lsSet('bruja_ancestros', [...actuales, ...nuevos]);
     }
 
+    // Biblioteca — fusionar defaults sin borrar entradas del usuario
+    if (typeof BibliotecaDefaults !== 'undefined') {
+      const mapBib = e => ({
+        id: e.id, tipo: e.tipo || 'hierba', name: e.name, emoji: e.emoji || '🌿',
+        medicinal: e.medicinal || '', magica: e.magica || '',
+        usos: e.usos || '', sustitutos: e.sustitutos || '',
+      });
+      const bibDefaults = BibliotecaDefaults.map(mapBib);
+      let bibActuales = [];
+      try { bibActuales = JSON.parse(localStorage.getItem('bruja_biblioteca') || '[]'); } catch(e) { bibActuales = []; }
+      const bibIds = new Set(bibActuales.map(e => e.id));
+      const bibNuevos = bibDefaults.filter(d => !bibIds.has(d.id));
+      if (bibNuevos.length > 0) lsSet('bruja_biblioteca', [...bibActuales, ...bibNuevos]);
+    }
+
     // Usuario RVGIAN siempre presente
     const usuarios = lsGet('bruja_usuarios', []);
     if (!usuarios.find(u => u.nombre === 'RVGIAN')) {
