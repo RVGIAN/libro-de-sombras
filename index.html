@@ -10768,13 +10768,18 @@ const CartaModule = (() => {
 
 // Alias para el nuevo sistema de navegación
 const Carta = {
+  _iniciado: false,
   render() {
-    // La sección sec-carta ya tiene el HTML del módulo viejo si fue inicializado
-    // Si no, inicializar
     const sec = document.getElementById('sec-carta');
     if (!sec) return;
-    if (!sec.querySelector('#carta-form')) {
+    // Siempre llenar el selector de ciudades (puede estar vacío si es primera vez)
+    const citySelect = document.getElementById('city-select');
+    if (citySelect && citySelect.options.length === 0) {
       CartaModule.init();
+      Carta._iniciado = true;
+    } else if (!Carta._iniciado) {
+      CartaModule.init();
+      Carta._iniciado = true;
     }
   }
 };
