@@ -1696,47 +1696,7 @@ const App = (() => {
 
   /* ── Semilla de datos por defecto ── */
   function seedDefaults() {
-    // Panteones por defecto (sólo si aún no existen)
-    if (!localStorage.getItem('bruja_panteones')) {
-      const panteones = [
-        {
-          id: 'panteon-wicca',
-          name: 'Wicca / Ecléctica',
-          desc: 'Tradición que honra la dualidad del Dios y la Diosa, los ciclos lunares y el sabbat de las estaciones. Flexible y personal.',
-          elementos: '🌙|Cáliz lunar|Centro del altar — representa a la Diosa\n☀️|Varita solar|Derecha del altar — representa al Dios\n⭐|Pentáculo|Base del altar — protección y manifestación\n🕯️|Velas de los cuartos|Norte, Sur, Este, Oeste — representan tierra, fuego, aire, agua\n📖|Libro de sombras|Siempre presente en el altar de trabajo',
-          img: ''
-        },
-        {
-          id: 'panteon-egipcio',
-          name: 'Egipcio',
-          desc: 'Panteón de la antigua Kemet. Los dioses representan fuerzas cósmicas y principios universales: Isis, Osiris, Thoth, Anubis, Bastet, Ra.',
-          elementos: '👁️|Ojo de Ra u Ojo de Horus|Centro del altar — protección divina\n🪶|Pluma de Maat|Izquierda — justicia, verdad y equilibrio\n🐱|Estatuilla de Bastet|Derecha — protección del hogar\n🌊|Agua del Nilo (o agua bendecida)|Frente del altar — purificación\n🕯️|Velas doradas y negras|Oro para Ra/luz; negro para Anubis/transición',
-          img: ''
-        },
-        {
-          id: 'panteon-nordico',
-          name: 'Nórdico',
-          desc: 'Tradición germánica de los pueblos del norte. Honra a los Aesir y Vanir: Odín, Freya, Thor, Loki, Frigg, entre otros.',
-          elementos: '⚡|Mjölnir (amuleto de Thor)|Centro del altar — protección y poder\n🌿|Ramas de fresno o roble|Conexión con Yggdrasil, el árbol del mundo\n🍺|Cuerno o copa para las ofrendas|Blot — ofrenda de hidromiel o cerveza a los dioses\n📜|Set de runas|Adivinación y magia rúnica\n🐦|Plumas de cuervo|Conexión con Odín y los mensajeros',
-          img: ''
-        },
-        {
-          id: 'panteon-celta',
-          name: 'Celta',
-          desc: 'Tradición de los pueblos celtas de Irlanda, Escocia, Gales y Bretaña. Profunda conexión con la tierra, el agua y los ciclos naturales.',
-          elementos: '🌳|Rama de roble|Conexión con el Dios del bosque y los druidas\n💧|Cuenco de agua de manantial|Los celtas veneraban fuentes y ríos sagrados\n🔥|Vela triple (blanca, roja, negra)|Representa a la Triple Diosa: doncella, madre, anciana\n🌀|Triskel o espiral triple|Símbolo sagrado de los tres mundos\n🌾|Ofrendas de la cosecha|Granos, frutas o flores según la estación',
-          img: ''
-        },
-        {
-          id: 'panteon-greco',
-          name: 'Greco-Romano',
-          desc: 'Panteón de Grecia y Roma clásicas. Doce dioses del Olimpo más dioses ctónicos y misterios. Hécate, Deméter, Hermes, Afrodita.',
-          elementos: '🌙|Estatua o imagen de Hécate|Cruces de caminos, luna, magia; velas en tríada\n🌿|Corona de laurel|Consagración y victoria; conexión con Apolo\n🍷|Copa de vino o agua|Libación para los dioses — ofrenda líquida\n🕯️|Velas blancas|Pureza y comunicación con lo divino\n🌸|Flores frescas|Ofrenda a Afrodita/Venus y Deméter/Ceres',
-          img: ''
-        }
-      ];
-      lsSet('bruja_panteones', panteones);
-    }
+    // Panteones: los defaults ricos viven en AltarDefaults — no sembrar aquí
 
     // Ancestros & Espíritus — fusionar defaults sin borrar entradas del usuario
     if (typeof AncestrosDefaults !== 'undefined') {
@@ -6118,6 +6078,127 @@ const AltarDefaults = (() => {
       dias: 'Lunes (almas y ancestros), Martes (protección y guerra), Viernes (amor), Sábado (Santa Muerte, magia profunda)',
       compatibilidad: 'El sistema más accesible para quien viene de América Latina. No requiere iniciación formal — solo respeto, intención clara y coherencia.',
     },
+    // ── PANTEONES ASIÁTICOS ──────────────────────────────────────────
+    {
+      id: 'pan-hindu',
+      name: 'Panteón Hindú',
+      emoji: '🪷',
+      descripcion: 'El más grande de los panteones vivos del mundo: 330 millones de manifestaciones de lo Divino, que en esencia son Una. No es politeísmo — es la misma fuerza infinita vista desde infinitos ángulos. Cada deidad es una puerta a un aspecto del Brahman (lo Absoluto). La magia hindú (puja, mantra, yantra) trabaja con vibración, intención y devoción.',
+      origen: 'India, Nepal, Asia del Sur — más de 4.000 años de tradición viva',
+      elemento: 'Los cinco elementos: Tierra (Prithvi), Agua (Jala), Fuego (Agni), Aire (Vayu), Éter (Akasha)',
+      deidades: [
+        { nombre: 'Ganesha', rol: 'El Removedor de Obstáculos: cabeza de elefante, cuerpo humano. Se invoca antes de CUALQUIER inicio — un viaje, un ritual, un negocio, una decisión. También puede colocar obstáculos donde sea necesario. Es el guardián de los umbrales.', ofrendas: 'Dulces de leche (modak), flores rojas y amarillas, incienso de sándalo, monedas doradas, hierba kusha', tags: 'inicio, obstáculos, suerte, inteligencia, umbral' },
+        { nombre: 'Lakshmi', rol: 'Diosa de la prosperidad, la abundancia y la gracia. Surge del océano cósmico en flor de loto. Atrae la riqueza material y espiritual. Esposa de Vishnu — la fuerza que sostiene y nutre la creación.', ofrendas: 'Flores de loto, monedas, arroz, cúrcuma, incienso de jazmín, velas doradas', tags: 'prosperidad, abundancia, gracia, dinero, amor, suerte' },
+        { nombre: 'Kali', rol: 'La Madre Oscura: destructora del ego y del mal. Aterradora a primera vista — lengua afuera, collar de cabezas — pero sus devotos la conocen como la madre más tierna y protectora. Destruye lo que ya no sirve para que lo nuevo pueda nacer.', ofrendas: 'Flores rojas (hibisco), vino tinto o ron, chiles picantes, sangre propia (gota), velas negras y rojas', tags: 'transformación, destrucción necesaria, poder femenino, liberación, magia de sombra' },
+        { nombre: 'Shiva', rol: 'El Destructor-Transformador de la Trinidad Hindú. No destruye por maldad sino para hacer espacio a lo nuevo. Señor de la meditación, el yoga y el tiempo cósmico. Baila el Tandava — la danza de la creación y destrucción del universo.', ofrendas: 'Leche, bilva (hojas de bael), agua del Ganges, ceniza sagrada (vibhuti), velas azules o blancas', tags: 'transformación, meditación, yoga, tiempo, dualidad' },
+        { nombre: 'Saraswati', rol: 'Diosa del conocimiento, la música, el arte y la sabiduría. Aparece vestida de blanco, tocando la veena (laúd). Patrona de escritores, artistas, estudiantes y maestros espirituales.', ofrendas: 'Flores blancas, lapiceros y libros, instrumentos musicales pequeños, incienso de jazmín o violeta, agua limpia', tags: 'conocimiento, arte, música, escritura, estudio, claridad mental' },
+        { nombre: 'Durga', rol: 'La Guerrera Invencible: montada en un tigre, con ocho brazos portando armas. Nació de la energía combinada de todos los dioses para vencer al demonio que ellos solos no podían. Protectora feroz, especialmente de las mujeres.', ofrendas: 'Flores rojas, granada, miel, velas naranjas y rojas, incienso de almizcle', tags: 'protección, fuerza femenina, victoria, coraje, guerra espiritual' },
+      ],
+      herramientas: 'Mala (rosario de 108 cuentas), incienso de palo de sándalo, campana ritual (ghanta), lámparas de aceite (diya), yantra (diagramas sagrados)',
+      colores: 'Naranja y dorado (Ganesha), dorado y rosa (Lakshmi), rojo y negro (Kali), azul (Shiva/Vishnu), blanco (Saraswati)',
+      dias: 'Lunes (Shiva), Martes (Durga/Kali), Jueves (Lakshmi), Viernes (Lakshmi/amor), Sábado (Saturno/karma)',
+      compatibilidad: 'Sistema profundamente devocional. Los mantras son su herramienta principal — repetir un mantra con sinceridad es ya un acto mágico potente. Compatible con la meditación y el trabajo con chakras.',
+    },
+    {
+      id: 'pan-shinto',
+      name: 'Panteón Japonés / Shinto',
+      emoji: '⛩️',
+      descripcion: 'El Shinto ("camino de los kami") es la espiritualidad indígena de Japón. Los kami no son "dioses" en el sentido occidental — son la fuerza sagrada que habita en todo: montañas, ríos, árboles, el viento, los ancestros. La magia shinto trabaja con pureza (harae), presencia y agradecimiento profundo.',
+      origen: 'Japón — tradición que precede al budismo; viva hasta hoy',
+      elemento: 'Los cuatro elementos + Vacío (Ma — el espacio sagrado entre las cosas)',
+      deidades: [
+        { nombre: 'Amaterasu', rol: 'Gran Diosa del Sol y gobernante de los kami celestiales. Se escondió en una cueva y el mundo quedó en oscuridad hasta que la risa de los otros kami la hizo salir. Patrona de Japón y de quienes trabajan con la luz y la revelación.', ofrendas: 'Arroz, sake, espejo (emblema sagrado), flores amarillas y blancas, velas doradas', tags: 'sol, luz, revelación, pureza, divinidad femenina, Japón' },
+        { nombre: 'Inari Ōkami', rol: 'Kami del arroz, la prosperidad, la fertilidad, la industria y la magia. Representado como zorro (kitsune) o como figura andrógina. Sus mensajeros son los zorros blancos. Es uno de los kami más venerados en Japón — miles de santuarios.', ofrendas: 'Aceite frito de tofu (abura-age), arroz, sake, zanahorias, estatuillas de zorro', tags: 'prosperidad, magia, fertilidad, negocios, zorros, shapeshifting' },
+        { nombre: 'Izanami', rol: 'La Gran Madre Creadora y Señora del Mundo Subterráneo (Yomi). Junto a Izanagi creó las islas de Japón. Murió al dar a luz al dios fuego y descansa en el reino de los muertos. Poderosa en trabajo ancestral y honra a los que partieron.', ofrendas: 'Agua oscura, comida de duelo (arroz negro), velas negras o blancas, flores silvestres, noche de luna nueva', tags: 'muerte, ancestros, creación, inframundo, dualidad' },
+        { nombre: 'Susanoo', rol: 'Dios de las tormentas y el mar. Hermano de Amaterasu, fue desterrado del cielo por su caos. En la tierra, mató a la serpiente Yamata no Orochi y encontró la espada sagrada Kusanagi. Señor de la purificación a través de la tormenta.', ofrendas: 'Agua de mar, sal, sake, hierro, madera de pino, velas azules o plateadas', tags: 'tormenta, mar, purificación, fuerza, protección, caos creativo' },
+        { nombre: 'Raijin & Fujin', rol: 'Los gemelos del trueno (Raijin) y el viento (Fujin). Siempre juntos en los templos. Raijin toca tambores para crear el trueno; Fujin lleva una bolsa con todos los vientos del mundo. Se trabajan juntos para limpiar el ambiente energético y traer cambios rápidos.', ofrendas: 'Tambores pequeños, bolsas de tela, sal, agua de lluvia, velas grises y azules', tags: 'tormenta, cambio, limpieza, rapidez, elementos' },
+      ],
+      herramientas: 'Shimenawa (cuerda sagrada de arroz), gohei (varita con zigzag blanco), campanas de viento, sal purificadora, omamori (amuletos)',
+      colores: 'Blanco (pureza), rojo y blanco (santuario), dorado (sol/Amaterasu), azul oscuro (mar), negro (Yomi)',
+      dias: 'Domingo (Amaterasu/sol), Lunes (luna/Izanami), Martes (tormenta/Susanoo)',
+      compatibilidad: 'Especialmente poderoso para purificación, trabajo con el hogar como espacio sagrado, y conexión con la naturaleza. La práctica central es el agradecimiento sincero a los kami locales.',
+    },
+    {
+      id: 'pan-chino',
+      name: 'Panteón Chino / Taoísta',
+      emoji: '☯️',
+      descripcion: 'La tradición mágica china es un sistema vivo con miles de años: el Taoísmo (el fluir del Tao, la fuerza que mueve todo), el Budismo chino y la religión popular se entrelazan sin contradicción. La magia china trabaja con chi (energía vital), los cinco elementos (madera, fuego, tierra, metal, agua) y el equilibrio del yin y yang.',
+      origen: 'China, Taiwan, toda la diáspora china y del sudeste asiático',
+      elemento: 'Cinco Elementos Chinos: Madera, Fuego, Tierra, Metal, Agua',
+      deidades: [
+        { nombre: 'Guan Yin (Kuan Yin)', rol: 'Bodhisattva de la Compasión — la que escucha los lamentos del mundo. Figura femenina de pureza en blanco. La más amada de Asia: budista, taoísta y popular a la vez. Escucha todo pedido hecho con sinceridad y responde con gracia.', ofrendas: 'Agua limpia, flores blancas (especialmente loto), fruta fresca, incienso blanco, velas blancas o doradas', tags: 'compasión, curación, amor, misericordia, maternidad, escucha' },
+        { nombre: 'Caishen (Dios de la Riqueza)', rol: 'El Dios de la Prosperidad más venerado de China. Se invoca en Año Nuevo Chino y antes de cualquier empresa comercial. Aparece con traje de oro y una barra de oro. Gobierna tanto la riqueza material como la espiritual.', ofrendas: 'Monedas chinas (redondas con cuadrado en el centro), naranjas, incienso de sándalo, arroz, velas rojas y doradas', tags: 'prosperidad, dinero, negocios, riqueza, abundancia' },
+        { nombre: 'Tu Di Gong (Dios de la Tierra)', rol: 'El guardián más local de todos: habita en cada barrio, cada hogar, cada campo. Es el primer dios al que se le debe hablar cuando llegas a un lugar nuevo. Trae suerte práctica y cotidiana, protege la propiedad y el hogar.', ofrendas: 'Incienso, fruta, arroz cocido, dinero ritual (joss paper), velas rojas simples', tags: 'hogar, barrio, tierra, suerte práctica, protección local' },
+        { nombre: 'Mazu (Señora del Mar)', rol: 'Diosa del mar y protectora de los marineros y pescadores. Según la leyenda, era una muchacha que podía navegar en trance para rescatar a los que naufragaban. Patrona de quienes viajan, trabajan en el agua y están lejos de casa.', ofrendas: 'Agua de mar, conchas, arroz, incienso marino, velas azules y rojas', tags: 'mar, viajes, protección, marineros, familia a distancia' },
+        { nombre: 'Los Ocho Inmortales (Ba Xian)', rol: 'Ocho seres humanos que alcanzaron la inmortalidad a través de la virtud y la práctica. Cada uno representa un aspecto de la vida: vejez, juventud, masculino, femenino, pobreza, riqueza, nobleza, pueblo. Juntos representan la totalidad de la experiencia humana elevada.', ofrendas: 'Melocotones (símbolo de inmortalidad), vino de arroz, instrumentos representados, velas multicolores', tags: 'inmortalidad, sabiduría, todos los caminos de vida, longevidad' },
+      ],
+      herramientas: 'Monedas chinas atadas con hilo rojo, nudo chino, Fu (amuletos de papel rojo con caracteres), fénix y dragón, campana feng shui',
+      colores: 'Rojo (suerte, protección), dorado (prosperidad), amarillo (tierra/centro), negro (agua/misterio), verde (madera/crecimiento)',
+      dias: 'Domingo (Yang/sol), Lunes (Yin/luna), el 1° y 15 del mes lunar (días de Guan Yin)',
+      compatibilidad: 'Funciona muy bien combinado con Feng Shui para el espacio sagrado. La lógica de los cinco elementos complementa a los cuatro elementos occidentales. Poderoso para prosperidad y trabajo cotidiano.',
+    },
+
+    // ── ESPIRITISMO ──────────────────────────────────────────────────
+    {
+      id: 'pan-espiritismo',
+      name: 'Espiritismo / Mesa Blanca',
+      emoji: '🕊️',
+      descripcion: 'El Espiritismo llegó a Venezuela y el Caribe con Allan Kardec en el siglo XIX y se mezcló con las tradiciones indígenas, africanas y el catolicismo para crear algo completamente propio. La Mesa Blanca (o Mesa Espiritual) no trabaja con dioses — trabaja con los muertos que guían: espíritus de agua, comisiones africanas, comisiones indígenas, médicos espirituales, gitanas, guerreros. Cada persona tiene su Cuadro Espiritual: un grupo de espíritus que la acompaña toda la vida.',
+      origen: 'Venezuela, Cuba, Puerto Rico, República Dominicana — tradición viva y en evolución',
+      elemento: 'Los cuatro elementos + el espíritu de los muertos como mediadores',
+      deidades: [
+        { nombre: 'El Cuadro Espiritual', rol: 'El conjunto de espíritus que acompañan a una persona: pueden ser ancestros de sangre, espíritus de comisión (africanos, indios, gitanos, médicos, árabes) o espíritus de luz que se ganaron esa misión. No se eligen — se trabajan para conocerlos. Una médium o espiritista puede ayudar a identificarlos.', ofrendas: 'Agua en vasos de cristal (protección y comunicación), flores blancas, velas blancas, perfume (kolonia), tabaco, café negro', tags: 'guías personales, identidad espiritual, comunicación, misión de vida' },
+        { nombre: 'Las Comisiones Africanas', rol: 'Los espíritus de los africanos esclavizados que cruzaron el Atlántico — el Congo, el Lucumí, el Arará. Siguen trabajando desde el plano espiritual para sus descendientes y para quien los llama con respeto. Se presentan fuertes, directos y muy efectivos para protección y apertura de caminos.', ofrendas: 'Tabaco, ron, agua, granos, maíz, música de tambor, velas negras y rojas', tags: 'África, ancestros, esclavitud, fuerza, apertura de caminos, identidad afrodescendiente' },
+        { nombre: 'Las Comisiones Indígenas', rol: 'Los espíritus de los pueblos originarios de América — en Venezuela especialmente los Caribes, los Arawacos, los Piaroa. Trabajan con la tierra, las plantas medicinales y la naturaleza. Son grandes sanadores y guías en momentos de confusión.', ofrendas: 'Tabaco (en ofrenda directa o fumado), plantas silvestres, agua de río, maíz, tierra, velas verdes y marrones', tags: 'indígena, tierra, plantas, sanación, naturaleza, Venezuela' },
+        { nombre: 'Los Espíritus de Agua', rol: 'Los muertos que tuvieron una relación especial con el agua en vida o que eligen ese elemento como camino en el más allá. Especialmente venerados en Venezuela (el río Yaracuy donde mora María Lionza). Trabajan para limpieza, amor y visiones.', ofrendas: 'Agua limpia, agua de río, flores que flotan, perfume azul, velas azules y blancas, conchas', tags: 'agua, limpieza, amor, visiones, María Lionza, Yaracuy' },
+        { nombre: 'Los Médicos Espirituales', rol: 'Espíritus de médicos, enfermeras, herbolarios que fallecieron y siguen sanando desde el otro plano. Se les pide curación de enfermedades, operaciones próximas, salud familiar. En el Espiritismo venezolano son una comisión muy activa e importante.', ofrendas: 'Agua limpia, velas blancas, hierbas medicinales, frascos pequeños de medicina (vacíos), flores blancas o moradas', tags: 'curación, salud, medicina, operaciones, familia, hospital' },
+        { nombre: 'Las Gitanas (Comisión Gitana)', rol: 'Los espíritus de los pueblos Rom que se integran al Espiritismo latinoamericano. Las Gitanas trabajan con la adivinación, el amor, el dinero y la magia de la intención. Se presentan coloridas, alegres y muy directas en sus mensajes.', ofrendas: 'Flores rojas y anaranjadas, velas de colores, monedas, perfume, música alegre, barajas de cartas o tarot, vino', tags: 'amor, adivinación, dinero, alegría, magia de intención' },
+      ],
+      herramientas: 'Vasos de agua claros (boveda espiritual), velas blancas, perfume (kolonia 1800 o agua florida), tabaco, campana para llamar a los espíritus, fotos de ancestros, rosario, flores blancas',
+      colores: 'Blanco (pureza y comunicación), azul (agua y paz), morado (espiritualidad), rojo y negro (comisión africana), verde (comisión indígena)',
+      dias: 'Lunes (almas y ancestros — el día más fuerte para espiritismo), Viernes (en algunas tradiciones), noche de luna llena',
+      compatibilidad: 'Sistema profundamente venezolano y caribeño. Se puede practicar sin iniciación formal — una bóveda espiritual simple (vasos de agua, velas, flores) es suficiente para empezar. Se complementa perfectamente con el Yoruba/Lucumí y el Sincretismo Latinoamericano.',
+    },
+
+    // ── PANTEONES AMERICANOS ─────────────────────────────────────────
+    {
+      id: 'pan-maya',
+      name: 'Panteón Maya',
+      emoji: '🌽',
+      descripcion: 'Una de las civilizaciones más avanzadas de América: el calendario Maya (Tzolkin) es uno de los sistemas de tiempo sagrado más precisos del mundo. Los dioses mayas son fuerzas de la naturaleza, del tiempo y del maíz — porque los humanos fueron hechos de maíz. Su magia trabaja con ciclos cósmicos precisos y con la dualidad constante de la creación.',
+      origen: 'Mesoamérica: sur de México, Guatemala, Belice, Honduras, El Salvador — tradición viva hoy',
+      elemento: 'Los cuatro rumbos + Centro; Cielo (13 capas) + Inframundo (Xibalbá, 9 capas)',
+      deidades: [
+        { nombre: 'Ixchel', rol: 'La Diosa del Agua, la Luna, la Medicina y el Arte de Tejer. Anciana sabia que sostiene un cuenco de agua desde el que vierte la lluvia sobre la tierra. Patrona de las sanadoras, las parteras, las artistas y quienes trabajan con la luna.', ofrendas: 'Agua, hilos de colores, tejidos pequeños, flores de Luna, copal blanco, velas azules y blancas', tags: 'luna, curación, agua, tejido, medicina, parto, arte' },
+        { nombre: 'Kukulkán / Quetzalcóatl Maya', rol: 'La Serpiente Emplumada que conecta cielo y tierra. Dios de la sabiduría, el viento y la cultura. Se materializa como la sombra en las pirámides de Chichén Itzá en los equinoccios. Patrón de sacerdotes y maestros.', ofrendas: 'Copal, jade, cacao, plumas de quetzal, agua de lluvia, velas verdes y doradas', tags: 'sabiduría, viento, conocimiento, unión cielo-tierra, ciclos' },
+        { nombre: 'Chaac', rol: 'El Dios de la Lluvia y el Rayo. Cuatro aspectos según los puntos cardinales, cada uno de un color. Sin Chaac no hay lluvia, sin lluvia no hay maíz, sin maíz no hay vida. Poderoso para rituales de fertilidad, siembra y necesidades urgentes de agua.', ofrendas: 'Agua de lluvia, jade verde, barro, copal azul, comida de maíz, velas azules', tags: 'lluvia, fertilidad, tierra, abundancia, necesidad urgente' },
+        { nombre: 'Ixbalanqué & Hunahpú (Héroes Gemelos)', rol: 'Los dos héroes del Popol Vuh que viajaron al Xibalbá (inframundo) y vencieron a los señores de la muerte a través del ingenio. Simbolizan que la astucia supera a la fuerza bruta y que lo que muere puede renacer.', ofrendas: 'Caucho (látex), cacao, semillas de maíz, copal negro, dualidad en el altar (dos velas, dos objetos)', tags: 'astucia, muerte y renacimiento, ingenio, dualidad, viaje al inframundo' },
+        { nombre: 'Ah Puch / Kisin', rol: 'Señor de Xibalbá: el inframundo maya. Dios de la muerte, el olvido y la descomposición que nutre la tierra. No es maligno — es parte inevitable del ciclo. Se trabaja para comunicación con ancestros y para rituales de fin y cierre.', ofrendas: 'Copal negro, tabaco, cacao amargo, flores negras o moradas, velas negras, tierra de cementerio', tags: 'muerte, ancestros, cierre, inframundo, descomposición, ciclo' },
+      ],
+      herramientas: 'Copal (el incienso sagrado de Mesoamérica), jade (la piedra más sagrada), cacao ritual, caracol marino, obsidiana, Tzolkin (calendario sagrado)',
+      colores: 'Azul-verde (jade y agua), negro (inframundo), rojo (oriente/sangre), amarillo (sur/maíz), blanco (norte/huesos)',
+      dias: 'Se trabaja principalmente por el Tzolkin. En calendario occidental: Lunes (luna/Ixchel), Jueves (lluvia/Chaac), Miércoles (viento/Kukulkán)',
+      compatibilidad: 'Especialmente poderoso para quien tiene raíces en Guatemala, Yucatán o Mesoamérica. Compatible con el catolicismo popular de la región (sincretismo maya-cristiano). El cacao ritual es una puerta accesible y poderosa.',
+    },
+    {
+      id: 'pan-andino',
+      name: 'Panteón Andino / Inca',
+      emoji: '🌄',
+      descripcion: 'La espiritualidad de los Andes: el mundo quechua y aymara ve la realidad como tres mundos superpuestos — Hanan Pacha (mundo de arriba), Kay Pacha (este mundo) y Ukhu Pacha (mundo interior/subterráneo). Todo está vivo: las montañas (Apus), la tierra (Pachamama), el viento, las estrellas. Esta es la magia de América del Sur — práctica, terrenal y profundamente relacional.',
+      origen: 'Perú, Bolivia, Ecuador, norte de Chile y Argentina — tradición viva en comunidades quechua y aymara',
+      elemento: 'Agua (Yaku), Tierra (Allpa), Fuego (Nina), Aire (Wayra) + el quinto principio: Kausay (energía vital)',
+      deidades: [
+        { nombre: 'Pachamama', rol: 'La Madre Tierra andina — no una metáfora sino una presencia literal y viva. No solo el suelo: todo el sistema vivo del planeta. Dar a Pachamama antes de tomar es un código de vida. En agosto (mes de la tierra), la tierra "está abierta" y recibe con más fuerza las ofrendas.', ofrendas: 'Coca (sagrada en los Andes), chicha de jora, comida enterrada en la tierra, flores silvestres, vino, sangre de llama (en tradición), agradecimiento sincero hablado en voz alta', tags: 'tierra, abundancia, gratitud, madre, ciclos, agosto' },
+        { nombre: 'Inti', rol: 'El Dios Sol del Imperio Inca — el ancestro divino de los Incas. Fuente de vida, calor y orden. El Inti Raymi (Fiesta del Sol) se celebra en el solsticio de junio, momento de mayor poder solar en el hemisferio sur. Señor de la manifestación y la gloria.', ofrendas: 'Oro (el sudor de Inti), chicha de maíz amarillo, maíz, flores doradas y amarillas, velas doradas', tags: 'sol, manifestación, poder, gloria, liderazgo, voluntad' },
+        { nombre: 'Mama Quilla', rol: 'La Madre Luna — esposa de Inti y protectora de las mujeres y el tiempo. Los ciclos lunares son su cuerpo en movimiento. Gobierna los calendarios, los ciclos femeninos, el trabajo nocturno y los sueños.', ofrendas: 'Plata (las lágrimas de Mama Quilla), flores blancas, agua de luna, conchas de río, velas plateadas y blancas', tags: 'luna, ciclos, femenino, sueños, tiempo, protección' },
+        { nombre: 'Los Apus (Espíritus de las Montañas)', rol: 'Cada montaña sagrada de los Andes es un Apu — un ser vivo con personalidad, poderes y jurisdicción propia. Son los protectores más locales y más poderosos: cada comunidad tiene sus Apus. Se les pide antes de cualquier viaje o empresa importante.', ofrendas: 'Coca (para leer y ofrecer), chicha, grasa de llama, tabaco, figuritas de conchas y minerales (despacho)', tags: 'montaña, protección local, lugar, tierra, fuerza, camino' },
+        { nombre: 'Supay / Ukhu Pacha', rol: 'El señor del mundo interior (no exactamente "dios del mal" como lo reinterpretó el catolicismo). Supay gobierna el mundo subterráneo donde se guarda la semilla antes de germinar. Es la oscuridad fértil — lo que descansa bajo tierra para volver con más fuerza.', ofrendas: 'Tabaco negro, coca, chicha oscura, tierra de cueva, velas negras o moradas, semillas enterradas', tags: 'inframundo, semilla, oscuridad fértil, ancestros, umbral, transformación' },
+      ],
+      herramientas: 'Despacho o pago a la tierra (ofrenda envuelta en papel blanco con coca, granos, dulces, flores, grasa), hojas de coca para leer y ofrecer, mesa andina (altar portátil), k\'intu (tres hojas de coca en abanico)',
+      colores: 'Dorado (Inti/sol), plateado (Mama Quilla/luna), verde y tierra (Pachamama), blanco (pureza andina), multicolor (la wiphala, bandera de los pueblos andinos)',
+      dias: 'Domingo (Inti/sol), Lunes (Mama Quilla/luna), el primer viernes de agosto (ofrenda a Pachamama), solsticio de junio (Inti Raymi)',
+      compatibilidad: 'Sistema profundamente enraizado en América del Sur. Especialmente poderoso para quien tiene conexión con Ecuador, Perú, Bolivia, norte de Argentina o Chile. El despacho (pago a la tierra) es una práctica accesible y completa. Compatible con el catolicismo andino.',
+    },
   ];
 
   return panteones;
@@ -6133,8 +6214,11 @@ const Altar = (() => {
   let panteonActivo = null;
 
   function _getPanteones() {
-    const _ps = App.lsGet('bruja_panteones', []);
-    return (_ps && _ps.length > 0) ? _ps : (typeof AltarDefaults !== 'undefined' ? AltarDefaults : []);
+    // AltarDefaults = panteones del libro (ricos, solo lectura)
+    // bruja_panteones = panteones creados por el usuario (editables)
+    const defaults = typeof AltarDefaults !== 'undefined' ? AltarDefaults : [];
+    const custom = App.lsGet('bruja_panteones', []);
+    return [...defaults, ...custom];
   }
 
   function render() {
