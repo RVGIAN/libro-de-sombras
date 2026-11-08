@@ -213,14 +213,27 @@ strong { color: var(--gold-l); }
   margin-bottom: 1rem;
 }
 
+/* Acceso rápido en home */
+.home-quick {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 1.5rem;
+}
+.home-quick-title {
+  font-family: var(--font-heading);
+  font-size: .75rem;
+  color: var(--muted);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: .6rem;
+}
 /* Dashboard rápido en home */
 .home-dash {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: .6rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .5rem;
   width: 100%;
-  max-width: 400px;
-  margin-top: 1.25rem;
 }
 .dash-card {
   background: var(--bg2);
@@ -231,9 +244,12 @@ strong { color: var(--gold-l); }
   transition: border-color .2s;
 }
 .dash-card:hover { border-color: var(--gold); }
-.dash-card .dc-emoji { font-size: 1.5rem; display: block; margin-bottom: .3rem; }
-.dash-card .dc-label { font-family: var(--font-heading); font-size: .78rem; color: var(--gold-l); display: block; }
-.dash-card .dc-value { font-size: .82rem; color: var(--muted); }
+.dash-card .dc-emoji { font-size: 1.4rem; display: block; margin-bottom: .2rem; }
+.dash-card .dc-label { font-family: var(--font-heading); font-size: .7rem; color: var(--gold-l); display: block; }
+.dash-card .dc-value { font-size: .75rem; color: var(--muted); }
+@media (max-width: 360px) {
+  .home-dash { grid-template-columns: repeat(3, 1fr); }
+}
 
 /* ── Secciones ── */
 .section {
@@ -1641,6 +1657,17 @@ const App = (() => {
     const luna = lunarPhase();
     const portada = lsGet('bruja_portada_url', '') || (typeof PORTADA_DEFAULT !== 'undefined' ? PORTADA_DEFAULT : '');
 
+    const quickLinks = [
+      { id: 'diario',    emoji: '📖', label: 'Diario'     },
+      { id: 'hechizos',  emoji: '✨', label: 'Hechizos'   },
+      { id: 'rituales',  emoji: '🕯️', label: 'Rituales'  },
+      { id: 'biblioteca',emoji: '🌿', label: 'Biblioteca' },
+      { id: 'tarot',     emoji: '🃏', label: 'Tarot'      },
+      { id: 'rueda',     emoji: '☀️', label: 'Rueda'     },
+      { id: 'altar',     emoji: '🔥', label: 'Altar'      },
+      { id: 'taller',    emoji: '🧪', label: 'Taller'     },
+    ];
+
     sec.innerHTML = `
       <div class="home-portada">
         ${portada
@@ -1653,6 +1680,17 @@ const App = (() => {
       <div class="home-info">
         <div class="home-fase">${luna.emoji} ${luna.name}</div>
         <p class="text-muted" style="font-size:.88rem">${today()}</p>
+      </div>
+
+      <div class="home-quick">
+        <p class="home-quick-title">Tu práctica</p>
+        <div class="home-dash">
+          ${quickLinks.map(q => `
+            <button class="dash-card" onclick="App.navigate('${q.id}')">
+              <span class="dc-emoji">${q.emoji}</span>
+              <span class="dc-label">${q.label}</span>
+            </button>`).join('')}
+        </div>
       </div>`;
   }
 
@@ -2288,6 +2326,7 @@ const Admin = (() => {
           App.lsSet('bruja_taller_' + key, list);
           App.toast('Receta guardada ✓');
           renderTallerCat(key, list);
+          if (typeof Taller !== 'undefined') Taller.render();
         }
       }
     );
@@ -4687,7 +4726,7 @@ const Taller = (() => {
             <p>Aún no hay recetas de ${cat?.label || key}. Agrégalas desde Admin.</p>
             ${Admin.isUnlocked() ? `<button class="btn btn-ghost btn-sm" onclick="App.navigate('admin');Admin._showPanel('taller')">Ir a Admin</button>` : ''}
           </div>`
-        : items.map(it => recetaCard(it)).join('')}`;
+        : items.map(it => recetaCard(it, key)).join('')}`;
   }
 
   function renderPiromancia(content) {
@@ -4800,7 +4839,7 @@ const Taller = (() => {
     renderCat('piromancia');
   }
 
-  function recetaCard(it) {
+  function recetaCard(it, key) {
     return `
       <div class="card" style="cursor:pointer" onclick="Taller._toggle('${it.id}')">
         <div class="flex-between">
@@ -4825,6 +4864,10 @@ const Taller = (() => {
               <div class="bib-prop-label">📋 Preparación</div>
               <div class="bib-prop-value">${it.preparacion.replace(/\n/g,'<br>')}</div>
             </div>` : ''}
+          ${Admin.isUnlocked() && key ? `
+            <div style="margin-top:.75rem" onclick="event.stopPropagation()">
+              <button class="btn btn-ghost btn-sm" onclick="Admin._tallerNuevo('${key}','${it.id}')">✏️ Editar</button>
+            </div>` : ''}
         </div>
       </div>`;
   }
@@ -4835,6 +4878,200 @@ const Taller = (() => {
   }
 
   return { render, _tab, _toggle, _piroNuevo, _piroBorrar };
+})();
+
+</script>
+  <script>
+/* ============================================================
+   RITUALES-DATA.JS — Rituales del libro "El Año de la Bruja"
+   Contenido vivencial por los 12 Ciclos de práctica
+   ============================================================ */
+
+const RitualesData = (() => {
+
+  /* ══ PROTECCIÓN ══════════════════════════════════════════ */
+  const proteccion = [
+    {
+      id: 'rit-prot-01',
+      name: 'Ritual de Cierre Energético Mensual',
+      intencion: 'Limpiar todo lo acumulado en el mes, sellar el campo energético y renovar la protección del hogar y de uno mismo',
+      momento: 'Luna menguante, preferiblemente el último día antes de luna nueva. Noche.',
+      materiales: 'Vela negra\nVela blanca\nSal gruesa\nRuda fresca o seca\nIncienso de palo santo o copal\nUn cuenco con agua\nPapel y pluma',
+      preparacion: 'Comienza por limpiar físicamente el espacio. Abre las ventanas aunque sea cinco minutos para que el aire mueva lo estancado. Prepara el altar o el espacio donde trabajarás. Enciende el incienso y pasa el humo por todos los rincones de la habitación.',
+      pasos: '1. Siéntate frente a las dos velas sin encender. Respira profundo tres veces.\n\n2. En el papel escribe todo lo que quieres dejar ir del mes: situaciones, conversaciones que te pesaron, cosas que salieron mal, emociones que ya no quieres cargar. Sé honesto, nadie más leerá esto.\n\n3. Enciende la vela negra. Di: "Esta llama consume lo que ya no me pertenece. Suelto lo que fue, con gratitud por lo que enseñó."\n\n4. Quema el papel con la llama de la vela negra (con cuidado, sobre el cuenco con agua). Mientras arde, visualiza que ese peso sale de tu cuerpo junto con el humo.\n\n5. Traza un círculo de sal alrededor de tu espacio de trabajo.\n\n6. Enciende la vela blanca con la llama de la negra. Di: "Lo que el fuego negro limpió, la luz blanca lo sella. Mi campo energético está completo y protegido."\n\n7. Toma la ruda y frótatela por los brazos, el pecho y la parte de atrás del cuello mientras dices: "Lo que no es mío se va. Lo mío regresa a mí."\n\n8. Deja ambas velas arder mientras descansas en silencio.',
+      cierre: 'Cuando las velas terminen o decidas cerrar, di: "El ciclo está cerrado. Estoy limpio/a y protegido/a. Que así sea." Barre la sal hacia afuera y tírala fuera de casa (o por el inodoro). Tira también los restos del papel.',
+      notas: 'Este ritual es el más importante del ciclo mensual. No importa qué tan ocupado estés — 20 minutos una vez al mes marcan una diferencia real en cómo te sientes energéticamente. Hazlo con constancia y notarás que los meses "se acumulan" menos.',
+    },
+    {
+      id: 'rit-prot-02',
+      name: 'Ritual del Espejo — Devolver lo Enviado',
+      intencion: 'Crear un escudo reflectivo que devuelva envidias, mal deseos o energías dirigidas, sin agredir a nadie',
+      momento: 'Luna menguante o nueva. Martes (Marte) o sábado (Saturno).',
+      materiales: 'Un espejo pequeño (puede ser de bolsillo)\nVela negra\nSal\nUna hoja de ruda\nCinta negra o hilo negro',
+      preparacion: 'Encuentra un momento de tranquilidad. No necesitas saber exactamente de quién viene la energía — solo necesitas saber que algo ajeno está afectando tu campo.',
+      pasos: '1. Enciende la vela negra.\n\n2. Pasa el espejo por el humo de la vela (si usas incienso, por ese humo también). Di: "Consagro este espejo como mi escudo."\n\n3. Coloca una pizca de sal sobre la superficie reflectante. Deja que repose un minuto mientras visualizas el espejo llenándose de luz oscura y densa, como un muro.\n\n4. Retira la sal soplando suavemente.\n\n5. Pega la hoja de ruda en la parte trasera del espejo (con la cinta o el hilo). La cara reflectante siempre mirando hacia afuera.\n\n6. Sostén el espejo con la cara hacia afuera (alejada de ti). Di: "Lo que se envió, regresa a su origen. No soy el destino de energías que no invité. Mi campo está protegido y sellado."\n\n7. Coloca el espejo en la entrada de tu casa, en una ventana que dé a la calle, o llévalo en la cartera.',
+      cierre: 'Apaga la vela. El espejo ya está activo. Límpialo con sal cada luna nueva para renovar su carga.',
+      notas: 'Este ritual no es "regresar el mal" con intención de dañar — es simplemente no recibir lo que no pediste. La energía ajena no tiene tu dirección; el espejo solo le recuerda que no es bienvenida aquí.',
+    },
+  ];
+
+  /* ══ AMOR ════════════════════════════════════════════════ */
+  const amor = [
+    {
+      id: 'rit-amor-01',
+      name: 'Ritual de Amor Propio — El Baño de Venus',
+      intencion: 'Reconectar con tu propio valor, belleza y poder de atracción desde adentro hacia afuera',
+      momento: 'Viernes (día de Venus). Luna creciente o llena.',
+      materiales: 'Pétalos de rosa (frescos o secos)\nSal rosada o sal de mar\nAceite de rosa o de lavanda\nVela rosada\nMiel (una cucharada)\nEspejo',
+      preparacion: 'Desconéctate del teléfono. Este tiempo es tuyo. Prepara el baño con el agua bien caliente. Mientras lo llenas, agrega los pétalos, la sal y la miel.',
+      pasos: '1. Enciende la vela rosada junto al baño.\n\n2. Antes de entrar, mírate en el espejo. No para criticarte — solo para verte. Di tu nombre en voz alta tres veces.\n\n3. Entra al baño. Sumérgete o mójate de pies a cabeza con el agua de pétalos.\n\n4. Mientras el agua te rodea, visualiza luz rosada o dorada saliendo desde el centro de tu pecho y expandiéndose hasta rodear todo tu cuerpo.\n\n5. Con el aceite, masajea tus manos y antebrazos en movimientos circulares hacia el corazón. Di: "Me recibo. Me honro. Me pertenezco."\n\n6. Permanece en silencio con los ojos cerrados durante al menos 5 minutos. Solo sintiendo el agua. Solo estando.\n\n7. Cuando salgas, envuélvete en una toalla limpia que uses solo para esto si puedes.',
+      cierre: 'No te enjuagues con agua limpia — deja que los residuos del baño se queden en tu piel un rato. Vístete con ropa cómoda. Haz algo que te guste esta noche.',
+      notas: 'El amor propio no es una emoción que aparece y desaparece — es una práctica. Este ritual no te "cura" de no quererte, pero sí entrena la atención: por una hora, tú eres la prioridad. Hecho con constancia, cambia algo.',
+    },
+    {
+      id: 'rit-amor-02',
+      name: 'Ritual de Corte de Lazo — Liberar un Vínculo',
+      intencion: 'Cortar energéticamente un lazo con una persona, situación o patrón emocional que ya no nutre',
+      momento: 'Luna menguante. Sábado preferiblemente.',
+      materiales: 'Dos velas (blanca para ti, negra o gris para lo que sueltas)\nUn hilo o cordel que las una\nTijeras o cuchillo\nSal\nPapel y pluma',
+      preparacion: 'Haz un sahumerio del espacio antes. Siéntate con claridad sobre qué o quién estás cortando. No tiene que ser odio — puede ser amor que ya no te hace bien.',
+      pasos: '1. Escribe en el papel el nombre de la persona o la situación de la que te separas. Escribe también por qué: qué te dio, qué te costó, qué aprendiste.\n\n2. Coloca las dos velas juntas, unidas con el cordel entre sus bases.\n\n3. Enciende primero la vela que te representa a ti (la blanca). Di: "Esta llama soy yo — completo/a, libre y entero/a."\n\n4. Enciende la otra vela. Di: "Esta llama representa [nombre/situación]. Le agradezco su lugar en mi historia."\n\n5. Mientras las dos llamas arden, lee lo que escribiste en voz alta.\n\n6. Con las tijeras, corta el cordel que une las velas. Di: "Corto este lazo con amor. No con rencor, no con miedo — con libertad. Que cada quien siga su camino."\n\n7. Quema el papel con la llama de la vela que representa lo que sueltas.',
+      cierre: 'Deja que tu vela (la blanca) arda hasta el final. Apaga o deja consumirse la otra. Entierra los restos de la vela ajena o tíralos fuera de casa.',
+      notas: 'Un corte de lazo no borra el amor que hubo ni el dolor. Solo te devuelve tu energía. Puedes necesitar hacerlo más de una vez con la misma persona si el vínculo fue muy profundo — cada vez afloja un poco más.',
+    },
+  ];
+
+  /* ══ PROSPERIDAD ═════════════════════════════════════════ */
+  const prosperidad = [
+    {
+      id: 'rit-pros-01',
+      name: 'Ritual de la Vela Verde — Apertura de Abundancia',
+      intencion: 'Abrir canales de abundancia, atraer dinero, trabajo o nuevas oportunidades económicas',
+      momento: 'Jueves (Júpiter) o domingo (Sol). Luna creciente.',
+      materiales: 'Vela verde\nAceite de canela o albahaca\nMiel\nMonedas de tu país (3 o 7)\nPapel y pluma con tinta verde o dorada si tienes\nBasil (albahaca seca)',
+      preparacion: 'Limpia el espacio. Este ritual pide claridad mental sobre qué tipo de prosperidad buscas: ¿dinero inmediato? ¿trabajo nuevo? ¿abundancia general? Mientras más específico, más limpio el canal.',
+      pasos: '1. Unta la vela con aceite de canela, del centro hacia arriba (movimiento de atracción). Ruédala sobre la albahaca seca para que se adhiera.\n\n2. Coloca las monedas formando un círculo. Pon la vela en el centro.\n\n3. En el papel escribe: "Recibo [cantidad específica o tipo de abundancia] de fuentes conocidas y desconocidas, para mi mayor bien y el de quienes me rodean."\n\n4. Pon una gota de miel en la punta del dedo y toca la llama de la vela apenas la encendas (con cuidado). La miel endulza el camino.\n\n5. Lee tu intención tres veces en voz alta, con convicción, no como un ruego sino como una declaración de lo que ya está en camino.\n\n6. Dobla el papel hacia ti tres veces. Ponlo bajo la vela.\n\n7. Deja que la vela arda todo lo que pueda esa sesión. Cuando la apagues, hazlo con los dedos — nunca soplando.',
+      cierre: 'Cuando la vela se consuma completamente, lleva las monedas en la cartera. El papel guárdalo o quémalo con gratitud cuando recibas lo que pediste.',
+      notas: 'Este ritual no funciona sin acción. La vela abre puertas — tú tienes que cruzarlas. Aplica también: ¿pediste trabajo nuevo pero no actualizaste el CV? La magia trabaja con tu movimiento, no en lugar de él.',
+    },
+    {
+      id: 'rit-pros-02',
+      name: 'Ritual del Cajón de la Abundancia',
+      intencion: 'Crear un espacio sagrado permanente en el hogar que actúe como imán de prosperidad continua',
+      momento: 'Jueves en luna creciente para iniciar. Se mantiene activo indefinidamente.',
+      materiales: 'Una caja pequeña o cajón\nCanel en rama\nMonedas\nUna piedra de pirita o citrina\nPapel con tu intención escrita\nAlbahaca seca\nUn billete (el de mayor denominación que tengas disponible)',
+      preparacion: 'Limpia la caja por dentro con sal y luego sácala. Esta caja va a contener una energía viva de prosperidad, así que se trata con respeto.',
+      pasos: '1. Forra el interior de la caja con el papel que escribiste con tu intención de prosperidad.\n\n2. Coloca el billete en la base — este billete nunca sale ni se gasta, es el "semillero".\n\n3. Agrega la canela, la albahaca y las monedas.\n\n4. Coloca la pirita o citrina encima de todo. Estas piedras son la memoria de la caja — absorben tu intención.\n\n5. Cierra la caja y colócala en un lugar de tu casa relacionado con tus finanzas: donde guardas el dinero, donde pagas cuentas, o en la esquina sureste de tu hogar (Feng Shui).\n\n6. Cada jueves, abre la caja por un momento. Coloca tus manos sobre ella y agradece la abundancia que ya tienes y la que llega.',
+      cierre: 'La caja no se cierra "para siempre" — se activa una vez y luego se mantiene con gratitud semanal.',
+      notas: 'Si en algún momento la sientes "apagada" (lo notarás — algo cambia), sácala, límpiala con humo de incienso, cambia las hierbas y vuelve a activarla desde el paso 1. Esto ocurre cuando ha absorvido mucho o cuando tu energía entró en conflicto con tu intención.',
+    },
+  ];
+
+  /* ══ SANACIÓN ════════════════════════════════════════════ */
+  const sanacion = [
+    {
+      id: 'rit-san-01',
+      name: 'Ritual de Sanación del Cuerpo — Presencia Sagrada',
+      intencion: 'Reconectar con el cuerpo como templo, aliviar tensiones físicas y enviar amor consciente a las partes que duelen o se rechazan',
+      momento: 'Cualquier momento en que sientas desconexión del cuerpo, dolor, agotamiento o vergüenza física.',
+      materiales: 'Vela azul o blanca\nAceite de lavanda\nMúsica instrumental suave (opcional)\nUna manta cómoda\nTu cuerpo — eso es todo',
+      preparacion: 'Encuentra un espacio donde puedas tenderte con comodidad. Desconéctate. Este ritual no tiene prisa.',
+      pasos: '1. Tiéndete. Enciende la vela. Si tienes música, ponla suave.\n\n2. Pon una gota de aceite de lavanda en las palmas de tus manos. Frótalas lentamente para activar el aceite.\n\n3. Comienza a tocar tu cuerpo con las palmas: frente, sienes, mandíbula. No para masajear con fuerza — para sentir. Para notar dónde hay tensión, calor, dolor.\n\n4. Ve bajando: cuello, hombros, pecho, abdomen. En cada parte donde notes tensión, descansa la mano unos segundos. Respira. Di mentalmente: "Te veo. Te escucho. Gracias por todo lo que sostienes."\n\n5. No tienes que "solucionar" el dolor con este ritual — solo reconocerlo. La atención amorosa es en sí misma sanación.\n\n6. Al llegar a los pies, envuelve cada pie con tus manos un momento. Los pies te cargan todos los días.',
+      cierre: 'Quédate en silencio con la manta encima al menos 5 minutos después. Si sientes ganas de llorar, hazlo. No hay nada que arreglar aquí.',
+      notas: 'Este ritual es especialmente poderoso cuando hay una parte del cuerpo que rechazas o de la que te avergüenzas. Tocarla con intención de amor — no de cambiarla, sino de reconocerla — es una práctica radical en un mundo que enseña a odiar el cuerpo.',
+    },
+    {
+      id: 'rit-san-02',
+      name: 'Baño de Sanación — Agua que Cura',
+      intencion: 'Usar el agua como elemento sanador para aliviar el agotamiento emocional, el estrés acumulado o el duelo',
+      momento: 'Cuando el cuerpo o el alma se sientan agotados. Luna menguante para sanar-soltar; luna llena para sanar-recibir.',
+      materiales: 'Sal de Epsom o sal gruesa (3 puñados)\nLavanda (fresca, seca o aceite esencial)\nManzanilla (bolsa de té o hierba seca)\nVela azul o blanca\nAgua tibia',
+      preparacion: 'Infusiona la manzanilla en agua caliente durante 5 minutos, como si hicieras un té concentrado. Vierte esa infusión en el baño junto con la sal y la lavanda.',
+      pasos: '1. Entra al baño. Sumérgete despacio.\n\n2. Cierra los ojos. Siente el peso del agua. El agua sostiene — no tienes que esforzarte para flotar.\n\n3. Visualiza el color del agua cambiando lentamente a azul suave, luego a plateado. Cada color es sanación de un tipo distinto: azul para la mente, plateado para las emociones.\n\n4. Si hay algo que te pesa (una situación, una relación, un miedo), nómbralo mentalmente. No para analizarlo — solo para reconocer que está ahí.\n\n5. Di en voz alta o mentalmente: "El agua lleva lo que no puedo más. Suelto el peso. Recibo la calma."\n\n6. Permanece en el agua al menos 20 minutos. Puedes sumergir la cabeza si lo deseas.',
+      cierre: 'Al drenar el agua, visualiza que todo lo que soltaste se va con ella. Sal despacio. Envuélvete en una toalla cálida. Duerme pronto después de este ritual si puedes.',
+      notas: 'La sal de Epsom es sulfato de magnesio — a nivel físico alivia músculos y el sistema nervioso. A nivel energético, la sal limpia y la lavanda calma. No es solo magia: es también química y botánica. Las dos cosas son reales.',
+    },
+  ];
+
+  /* ══ CLARIDAD ════════════════════════════════════════════ */
+  const claridad = [
+    {
+      id: 'rit-clar-01',
+      name: 'Ritual de la Pregunta — Dos Velas para Decidir',
+      intencion: 'Obtener claridad ante una decisión concreta que genera confusión o miedo',
+      momento: 'Miércoles (Mercurio, planet de la mente y la comunicación). Luna creciente o llena.',
+      materiales: 'Dos velas del mismo color (blancas o doradas)\nDos papeles\nPluma\nUn cristal de cuarzo transparente o cuarzo ahumado',
+      preparacion: 'Escribe en un papel la opción A. En el otro papel, la opción B. Si hay más opciones, elige las dos más importantes — el ritual pierde claridad si hay demasiadas.',
+      pasos: '1. Pon cada papel debajo de una vela. Deja espacio entre ellas.\n\n2. Enciende ambas velas al mismo tiempo.\n\n3. Sostén el cristal entre tus dos manos. Cierra los ojos. Visualiza la opción A — no sus consecuencias lógicas, sino cómo se siente en el cuerpo. ¿Hay expansión? ¿Contracción? ¿Calor? ¿Frío?\n\n4. Ahora visualiza la opción B de la misma forma. Solo el feeling. No el análisis.\n\n5. Observa las dos llamas. ¿Alguna arde más clara? ¿Más alta? ¿Alguna chisporrotea o se inclina hacia un lado? No son señales absolutas, pero sí son información.\n\n6. Escribe en un tercer papel lo que sentiste — sin censura, aunque no tenga lógica.',
+      cierre: 'Apaga las velas. Deja el tercer papel sin leer durante 24 horas. Cuando lo releas, presta atención a tu primera reacción interna — antes de que empiece el análisis.',
+      notas: 'Este ritual no toma la decisión por ti. Te ayuda a distinguir qué dice el cuerpo de qué dice el miedo. Muchas veces ya sabes la respuesta — solo necesitas un espacio donde el ruido mental se calme lo suficiente para escucharla.',
+    },
+    {
+      id: 'rit-clar-02',
+      name: 'Ritual del Cuaderno en Oscuridad — Escritura Automática',
+      intencion: 'Acceder a la guía interior a través de la escritura sin filtros para resolver confusión, bloqueos o preguntas sin respuesta',
+      momento: 'Cuando sientes que "no sabes qué quieres" o que la mente está en loop. Luna menguante.',
+      materiales: 'Un cuaderno exclusivo para esta práctica\nPluma (que solo uses para esto)\nVela morada o índigo\nIncienso de lavanda o mirra\nSilencio — imprescindible',
+      preparacion: 'Apaga todas las luces menos la vela. Siéntate en posición cómoda con el cuaderno abierto en blanco frente a ti. Respira 10 veces profundo contando mentalmente.',
+      pasos: '1. Escribe en la parte superior de la página la pregunta que traes — lo más específica posible. No "¿qué quiero con mi vida?" sino "¿por qué me siento atascado/a en [situación concreta]?"\n\n2. Cierra los ojos 2 minutos.\n\n3. Cuando los abras, empieza a escribir sin parar durante al menos 10 minutos. No importa si lo que escribes no tiene sentido. No importa si repites lo mismo. No corrijas, no releas mientras escribes, no levantes la pluma.\n\n4. Si la mente dice "no sé qué escribir", escribe exactamente eso: "No sé qué escribir" — y continúa.\n\n5. Al terminar los 10 minutos, deja la pluma.',
+      cierre: 'No leas lo que escribiste esa misma noche. Espera hasta la mañana siguiente. Cuando lo leas, subraya las frases que te llamen la atención, que te sorprendan, que suenen a verdad.',
+      notas: 'La escritura automática no siempre entrega respuestas directas. A veces entrega metáforas, imágenes, contradicciones. Aprende a leer entre líneas de tu propio texto. Con el tiempo, reconocerás la diferencia entre la voz del miedo y la voz de tu guía interior.',
+    },
+  ];
+
+  /* ══ ANCESTROS ═══════════════════════════════════════════ */
+  const ancestros = [
+    {
+      id: 'rit-anc-01',
+      name: 'Ritual de Ofrendas — Encender la Llama Ancestral',
+      intencion: 'Establecer o renovar la conexión con los ancestros y guías, honrando a quienes vinieron antes y abriendo el canal de comunicación',
+      momento: 'Cualquier noche. Especialmente poderoso en noviembre (Día de Muertos y Samhain) o en luna llena.',
+      materiales: 'Foto o imagen de un ancestro querido (opcional — no es obligatorio tenerla)\nVela blanca\nUn vaso de agua limpia\nAlgo de comer que haya gustado a quien honras (o una fruta/pan si es general)\nFlores blancas o amarillas\nIncienso de copal o mirra',
+      preparacion: 'Limpia un espacio con humo de copal. Coloca los elementos formando un altar pequeño: foto al centro, vela, agua, comida y flores alrededor.',
+      pasos: '1. Enciende la vela y el incienso.\n\n2. Si tienes foto, tócala suavemente. Si no tienes foto, coloca las palmas sobre el altar y visualiza a quienes quieres invocar.\n\n3. Di en voz alta: "[Nombre/s] — los llamo con respeto y amor. No vengo a pedir; vengo a honrar. Gracias por los caminos que caminaron para que yo pudiera caminar el mío."\n\n4. Siéntate en silencio. Respira. Si viene alguna imagen, sensación, palabra o recuerdo — recíbelo sin analizarlo. Puede ser sutil: un olor, una emoción, una canción en la mente.\n\n5. Habla con ellos como hablarías con alguien presente. Cuéntales cómo estás. Puedes pedir orientación, pero no es necesario — a veces la conexión es suficiente.\n\n6. Deja que el incienso y la vela ardan mientras estás en silencio.',
+      cierre: 'Cuando sientas que el ritual terminó (lo sentirás — hay una especie de suavidad que llega), di: "Gracias por su presencia. Con amor, cierro esta conexión hasta la próxima vez. Que así sea." Deja la vela encendida un rato más si puedes.',
+      notas: 'El agua en el altar de ancestros se pone fresca cada semana — los espíritus la usan como portal. No la dejes estancarse. Las flores también se renuevan: flores marchitas en el altar de ancestros interrumpen el flujo.',
+    },
+    {
+      id: 'rit-anc-02',
+      name: 'Ritual de Sanación de Legado — Transformar lo Heredado',
+      intencion: 'Reconocer patrones, heridas o bendiciones que vienen del linaje ancestral, y tomar una postura consciente respecto a ellos',
+      momento: 'Luna llena o luna nueva. No tiene que ser en fecha especial.',
+      materiales: 'Papel y pluma\nVela blanca\nAgua en un cuenco\nIncienso\nTu disposición a ver con honestidad',
+      preparacion: 'Siéntate con tiempo. Este ritual requiere honestidad, no dramaturgia. Respira y pide claridad antes de comenzar.',
+      pasos: '1. En el papel, traza una línea vertical al centro. Del lado izquierdo escribe: "Lo que heredé que quiero conservar." Del lado derecho: "Lo que heredé que quiero transformar."\n\n2. Tómate todo el tiempo que necesites. No apures la lista. Puede incluir cosas concretas (una habilidad, una creencia, un miedo, una manera de relacionarse) o abstractas (una sensación de no merecer, una fortaleza ante la adversidad).\n\n3. Lee en voz alta la columna de lo que quieres conservar. Con cada item, di: "Esto lo recibo con gratitud. Que siga vivo en mí."\n\n4. Lee la columna de lo que quieres transformar. Con cada item, di: "Reconozco que esto llegó a mí a través del linaje. No lo juzgo — entiendo que vino de dolor y de historia. Y elijo transformarlo aquí, en mí."\n\n5. Dobla el papel y quémalo — ambas columnas juntas. El fuego no distingue — transforma todo.',
+      cierre: 'Lava tus manos en el cuenco de agua. Di: "Lo que fue, fue. Lo que soy, lo elijo." Tira el agua afuera o por el drenaje.',
+      notas: 'Los ancestros no son solo los que amamos — son todos los que vinieron antes. Este ritual trabaja con el linaje como sistema vivo, no como individuos. No tienes que conocer a tus ancestros para hacer este trabajo; el cuerpo los lleva en cada célula.',
+    },
+  ];
+
+  /* ══ TRABAJO DE SOMBRA ═══════════════════════════════════ */
+  const sombra = [
+    {
+      id: 'rit-somb-01',
+      name: 'Ritual de la Sombra — Conocer al Monstruo',
+      intencion: 'Explorar una parte de ti misma que rechazas, temes o niegas, con el propósito de integrarla en lugar de suprimirla',
+      momento: 'Luna menguante o nueva. Nunca cuando estás en crisis emocional aguda.',
+      materiales: 'Vela negra\nEspejo\nCuaderno y pluma\nIncienso de mirra o pachulí\nUna piedra de obsidiana o cuarzo ahumado (si tienes)',
+      preparacion: 'No hagas este ritual con prisa. Necesitas al menos una hora y la certeza de que nadie te interrumpirá. El trabajo de sombra es el más profundo de la práctica — se hace cuando estás estable, no cuando estás en el piso.',
+      pasos: '1. Enciende la vela y el incienso. Si tienes la piedra, tenla en la mano no dominante.\n\n2. Siéntate frente al espejo. Mírate directamente a los ojos. Respira.\n\n3. En el cuaderno, escribe la cabecera: "Lo que más odio que me digan que soy / Lo que más temo llegar a ser."\n\n4. Escribe sin editar. Puede salir ira, vergüenza, miedo — todo es bienvenido aquí.\n\n5. Cuando termines, lee la lista. Luego, para cada item, pregúntate: "¿Dónde en mi historia aprendí que esto era inaceptable?" y "¿Dónde en mi vida esta característica me ha servido o podría servirme en su forma sana?"\n\n6. No tienes que llegar a respuestas finales. El solo hecho de preguntar ya es el ritual.\n\n7. Al terminar, di frente al espejo: "Te veo. No te huyo. Te encuentro aquí conmigo."',
+      cierre: 'Cierra el cuaderno sin releerlo. Apaga la vela. Sal al exterior aunque sea un momento — el aire fresco después del trabajo de sombra es importante. Bebe agua.',
+      notas: 'La sombra no es el mal en ti — es lo que empujaste hacia adentro porque el mundo te dijo que era peligroso mostrar. La rabia, el deseo, la ambición, la tristeza. El trabajo de sombra no te hace "más oscuro/a" — te hace más completo/a.',
+    },
+    {
+      id: 'rit-somb-02',
+      name: 'Ritual de Integración — La Sombra Como Aliada',
+      intencion: 'Dar un paso hacia la integración de la sombra: convertir lo reprimido en un recurso disponible en lugar de en un enemigo interno',
+      momento: 'Luna llena. Después de haber hecho al menos una vez el Ritual de la Sombra (el anterior).',
+      materiales: 'Vela negra y vela blanca\nEspejo\nAgua en un cuenco\nSal\nEl cuaderno de tu trabajo de sombra previo',
+      preparacion: 'Relee las notas de rituales de sombra anteriores antes de empezar. Este ritual es el "después" — el momento de hacer las paces.',
+      pasos: '1. Coloca las dos velas juntas, la negra a la izquierda, la blanca a la derecha.\n\n2. Enciende las dos al mismo tiempo. Di: "Enciendo la sombra y la luz juntas, porque las dos son yo."\n\n3. Del cuaderno, elige una sola característica de tu lista de sombra — la que más te incomode o la que has trabajado más.\n\n4. Escribe en un papel nuevo su nombre: "Mi [nombre del aspecto]. Ej: Mi rabia. Mi envidia. Mi miedo a ser pequeño/a."\n\n5. Escribe debajo: en su forma no integrada, ¿qué hace? ¿Cómo aparece sin control? Y luego: en su forma integrada y sana, ¿qué recurso sería?\n\n6. Frente al espejo, habla con esta parte. No para pelear — para negociar. "Te necesito en mi vida, pero así: [describe la forma sana]. ¿Puedes ser eso para mí?"\n\n7. Termina el ritual echando sal en el cuenco de agua y lavando tus manos. La sal transforma — no limpia en el sentido de "borrar", sino de cambiar la forma.',
+      cierre: 'Deja que las dos velas ardan juntas hasta que se consuman o hasta que tú decidas cerrar. Guarda el papel — es tu pacto contigo mismo/a.',
+      notas: 'La integración de la sombra no ocurre en un ritual. Ocurre en la vida cotidiana, cuando te notas reaccionando distinto, cuando ves el recurso donde antes veías solo el monstruo. El ritual marca la intención; la vida hace el trabajo.',
+    },
+  ];
+
+  return { proteccion, amor, prosperidad, sanacion, claridad, ancestros, sombra };
 })();
 
 </script>
