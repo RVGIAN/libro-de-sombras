@@ -2191,7 +2191,10 @@ const Admin = (() => {
           }
           App.lsSet('bruja_biblioteca', list);
           App.toast(isEdit ? 'Elemento actualizado ✓' : 'Elemento agregado ✓');
-          renderAdmBiblioteca(document.getElementById('adm-biblioteca'));
+          // Refrescar la sección donde esté el usuario (Biblioteca o Admin)
+          const admPanel = document.getElementById('adm-biblioteca');
+          if (admPanel) renderAdmBiblioteca(admPanel);
+          if (typeof Biblioteca !== 'undefined') Biblioteca.render();
         }
       }
     );
@@ -2388,6 +2391,7 @@ const Admin = (() => {
     document.querySelector('.modal-overlay')?.remove();
     App.toast('Ritual guardado ✓');
     _ritualesCatRender(key, App.lsGet('bruja_rituales_' + key, []));
+    if (typeof Rituales !== 'undefined') Rituales.render();
   }
 
   /* ══════════════════════════════════════════════
@@ -2469,6 +2473,7 @@ const Admin = (() => {
           App.lsSet('bruja_hechizos', list);
           App.toast('Hechizo guardado ✓');
           renderAdmHechizos(document.getElementById('adm-hechizos'));
+          if (typeof Hechizos !== 'undefined') Hechizos.render();
         }
       }
     );
@@ -2582,6 +2587,7 @@ const Admin = (() => {
           App.lsSet('bruja_panteones', list);
           App.toast('Panteón guardado ✓');
           renderAdmAltar(document.getElementById('adm-altar'));
+          if (typeof Altar !== 'undefined') Altar.render();
         }
       }
     );
@@ -2704,6 +2710,7 @@ const Admin = (() => {
           App.lsSet('bruja_ancestros', list);
           App.toast('Guardado ✓');
           renderAdmAncestros(document.getElementById('adm-ancestros'));
+          if (typeof Ancestros !== 'undefined') Ancestros.render();
         }
       }
     );
@@ -2778,6 +2785,7 @@ const Admin = (() => {
           App.lsSet('bruja_lunas', list);
           App.toast('Luna guardada ✓');
           renderAdmLunas13(document.getElementById('adm-lunas'));
+          if (typeof Rueda !== 'undefined') Rueda.render();
         }
       }
     );
@@ -2890,6 +2898,7 @@ const Admin = (() => {
           App.lsSet('bruja_sabats', list);
           App.toast('Festividad guardada ✓');
           renderAdmSabats();
+          if (typeof Rueda !== 'undefined') Rueda.render();
         }
       }
     );
@@ -4271,7 +4280,7 @@ const Biblioteca = (() => {
       ${prop('🔄 Sustitutos', it.sustitutos)}
       ${Admin.isUnlocked() ? `
         <div style="margin-top:1rem;display:flex;gap:.5rem">
-          <button class="btn btn-ghost btn-sm" onclick="Admin._bibNuevo('${it.id}');App.navigate('admin');Admin._showPanel('biblioteca')">✏️ Editar</button>
+          <button class="btn btn-ghost btn-sm" onclick="Admin._bibNuevo('${it.id}')">✏️ Editar</button>
         </div>` : ''}`;
 
     detalle.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -4894,10 +4903,10 @@ const Rituales = (() => {
             <p>Aún no hay rituales de ${cat?.label || key}.<br>Agrégalos desde Admin → Rituales.</p>
             ${Admin.isUnlocked() ? `<button class="btn btn-ghost btn-sm" onclick="App.navigate('admin');Admin._showPanel('rituales')">Ir a Admin</button>` : ''}
           </div>`
-        : items.map(it => ritualCard(it)).join('')}`;
+        : items.map(it => ritualCard(it, key)).join('')}`;
   }
 
-  function ritualCard(it) {
+  function ritualCard(it, key) {
     return `
       <div class="card" style="cursor:pointer" onclick="Rituales._toggle('${it.id}')">
         <div class="flex-between">
@@ -4913,6 +4922,10 @@ const Rituales = (() => {
           ${it.pasos ? `<div class="bib-prop"><div class="bib-prop-label">🔮 El Ritual</div><div class="bib-prop-value">${it.pasos.replace(/\n/g,'<br>')}</div></div>` : ''}
           ${it.cierre ? `<div class="bib-prop"><div class="bib-prop-label">🌟 Cierre</div><div class="bib-prop-value">${it.cierre.replace(/\n/g,'<br>')}</div></div>` : ''}
           ${it.notas ? `<div class="bib-prop"><div class="bib-prop-label">📝 Notas</div><div class="bib-prop-value">${it.notas.replace(/\n/g,'<br>')}</div></div>` : ''}
+          ${Admin.isUnlocked() && key ? `
+            <div style="margin-top:.75rem" onclick="event.stopPropagation()">
+              <button class="btn btn-ghost btn-sm" onclick="Admin._ritualNuevo('${key}','${it.id}')">✏️ Editar</button>
+            </div>` : ''}
         </div>
       </div>`;
   }
@@ -5642,6 +5655,10 @@ const Hechizos = (() => {
         <div class="bib-prop mt-2">
           <div class="bib-prop-label">📝 Notas</div>
           <div class="bib-prop-value">${it.notas}</div>
+        </div>` : ''}
+      ${Admin.isUnlocked() ? `
+        <div style="margin-top:1rem;display:flex;gap:.5rem">
+          <button class="btn btn-ghost btn-sm" onclick="App.closeModal();Admin._hechizoNuevo('${it.id}')">✏️ Editar</button>
         </div>` : ''}`,
       { showCancel: false, confirmLabel: 'Cerrar', onConfirm: () => {} }
     );
@@ -6055,7 +6072,7 @@ const Altar = (() => {
         ${Admin.isUnlocked() && !esDefault
           ? `<div style="margin-top:1rem">
               <button class="btn btn-ghost btn-sm"
-                onclick="Admin._panteonNuevo('${p.id}');App.navigate('admin');Admin._showPanel('altar')">
+                onclick="Admin._panteonNuevo('${p.id}')">
                 ✏️ Editar panteón
               </button>
             </div>` : ''}
@@ -6867,6 +6884,10 @@ const Ancestros = (() => {
         <div class="bib-prop mt-2">
           <div class="bib-prop-label">📖 Historia / Descripción</div>
           <div class="bib-prop-value" style="color:var(--lavender);line-height:1.75">${a.historia.replace(/\n/g,'<br>')}</div>
+        </div>` : ''}
+      ${Admin.isUnlocked() ? `
+        <div style="margin-top:1rem;display:flex;gap:.5rem">
+          <button class="btn btn-ghost btn-sm" onclick="App.closeModal();Admin._ancestroNuevo('${a.id}')">✏️ Editar</button>
         </div>` : ''}`,
       { showCancel: false, confirmLabel: 'Cerrar', onConfirm: () => {} }
     );
@@ -7173,7 +7194,7 @@ const Rueda = (() => {
           </div>` : ''}
         <div style="margin-top:.75rem">
           <button class="btn btn-ghost btn-sm"
-            onclick="Admin._sabatNuevo('${s.id}');App.navigate('admin');Admin._showPanel('rueda')">
+            onclick="Admin._sabatNuevo('${s.id}')">
             ✏️ Editar
           </button>
         </div>
@@ -7277,7 +7298,7 @@ const Rueda = (() => {
           </div>` : ''}
         <div style="margin-top:.75rem">
           <button class="btn btn-ghost btn-sm"
-            onclick="Admin._lunaNueva('${l.id}');App.navigate('admin');Admin._showPanel('lunas')">
+            onclick="Admin._lunaNueva('${l.id}')">
             ✏️ Editar
           </button>
         </div>
