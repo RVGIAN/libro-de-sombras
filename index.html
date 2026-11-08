@@ -1672,7 +1672,7 @@ const App = (() => {
   const SECTIONS = [
     { id: 'home',       label: 'Inicio',       emoji: '🌙' },
     { id: 'biblioteca', label: 'Biblioteca',   emoji: '🌿' },
-    { id: 'taller',     label: 'Taller',       emoji: '🕯️' },
+    { id: 'taller',     label: 'Preparaciones', emoji: '🕯️' },
     { id: 'cocina',     label: 'Cocina Mágica',emoji: '🍵' },
     { id: 'hechizos',   label: 'Hechizos',     emoji: '✨' },
     { id: 'altar',      label: 'Altar',        emoji: '🔥' },
@@ -2893,7 +2893,7 @@ const Admin = (() => {
 
       <div class="admin-menu">
         ${menuBtn('biblioteca',  '🌿', 'Biblioteca')}
-        ${menuBtn('taller',      '🕯️', 'Taller de Brujas')}
+        ${menuBtn('taller',      '🕯️', 'Preparaciones')}
         ${menuBtn('rituales',    '🕯️', 'Rituales')}
         ${menuBtn('hechizos',    '✨', 'Hechizos')}
         ${menuBtn('altar',       '🔥', 'Altar & Panteones')}
@@ -3091,7 +3091,7 @@ const Admin = (() => {
     ).join('');
 
     panel.innerHTML = `
-      <h2 style="margin-bottom:1rem">🕯️ Taller de Brujas</h2>
+      <h2 style="margin-bottom:1rem">🕯️ Preparaciones</h2>
       <div class="tabs">${catTabs}</div>
       <div id="adm-taller-content"></div>`;
 
@@ -5523,7 +5523,7 @@ const Taller = (() => {
     if (!sec) return;
 
     sec.innerHTML = `
-      <h1 class="section-title">🕯️ Taller de Brujas</h1>
+      <h1 class="section-title">🕯️ Preparaciones</h1>
       <p class="section-sub">Recetas, preparaciones y creaciones mágicas de tu práctica.</p>
 
       <div class="tabs" id="taller-tabs">
