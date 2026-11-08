@@ -1219,7 +1219,8 @@ const Sync = (() => {
         // Sobrescribir localStorage con datos del Sheet
         // (el Sheet es la fuente de verdad)
         // Excluir claves con imágenes grandes — no caben bien en Sheets
-        const SKIP_KEYS = ['bruja_portada_url', 'bruja_tarot_imgs', 'bruja_altar_img'];
+        // bruja_usuarios nunca se sobreescribe desde el Sheet — es local por seguridad
+        const SKIP_KEYS = ['bruja_portada_url', 'bruja_tarot_imgs', 'bruja_altar_img', 'bruja_usuarios', 'bruja_admin_pin_hash'];
         Object.keys(data).forEach(key => {
           if (key.startsWith('bruja_') && !SKIP_KEYS.includes(key)) {
             try { localStorage.setItem(key, data[key]); } catch {}
@@ -1311,7 +1312,7 @@ const Sync = (() => {
   async function pushAll() {
     if (!API_URL && !getApiUrl()) return;
     const url = API_URL || getApiUrl();
-    const SKIP_KEYS = ['bruja_portada_url', 'bruja_tarot_imgs', 'bruja_altar_img', 'bruja_sync_url'];
+    const SKIP_KEYS = ['bruja_portada_url', 'bruja_tarot_imgs', 'bruja_altar_img', 'bruja_sync_url', 'bruja_usuarios', 'bruja_admin_pin_hash'];
     const data = {};
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i);
