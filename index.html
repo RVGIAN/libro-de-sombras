@@ -1226,6 +1226,10 @@ const Sync = (() => {
           }
         });
         _showIndicator('✅ Datos cargados', '#4ade80');
+        // Después de bajar del Sheet, fusionar defaults que falten
+        if (typeof App !== 'undefined' && typeof App.seedDefaults === 'function') {
+          App.seedDefaults();
+        }
         // Re-renderizar sección actual para mostrar datos frescos del Sheet
         if (typeof App !== 'undefined' && App.isLoggedIn()) {
           const cur = document.querySelector('#main > section[style*="display: block"], #main > section.active');
@@ -1695,8 +1699,8 @@ const App = (() => {
       lsSet('bruja_panteones', panteones);
     }
 
-    // Ancestros & Espíritus por defecto (semillar desde AncestrosDefaults si existe)
-    if (!localStorage.getItem('bruja_ancestros') && typeof AncestrosDefaults !== 'undefined') {
+    // Ancestros & Espíritus — fusionar defaults sin borrar entradas del usuario
+    if (typeof AncestrosDefaults !== 'undefined') {
       const mapEnt = e => ({
         id: e.id, tipo: e.tipo || 'guia', name: e.name, emoji: e.emoji || '👁️',
         descripcion: e.descripcion || '', formas: e.formas || '',
@@ -1704,10 +1708,15 @@ const App = (() => {
         precauciones: e.precauciones || '', ritual_base: e.ritual_base || '',
         tags: e.tags || '', panteon: e.panteon || '',
       });
-      const entidades = (AncestrosDefaults.entidades || []).map(mapEnt);
-      const deidades  = (AncestrosDefaults.deidades  || []).map(mapEnt);
-      const todos = [...entidades, ...deidades];
-      if (todos.length > 0) lsSet('bruja_ancestros', todos);
+      const defaults = [
+        ...(AncestrosDefaults.entidades || []),
+        ...(AncestrosDefaults.deidades  || []),
+      ].map(mapEnt);
+      let actuales = [];
+      try { actuales = JSON.parse(localStorage.getItem('bruja_ancestros') || '[]'); } catch(e) { actuales = []; }
+      const idsActuales = new Set(actuales.map(e => e.id));
+      const nuevos = defaults.filter(d => !idsActuales.has(d.id));
+      if (nuevos.length > 0) lsSet('bruja_ancestros', [...actuales, ...nuevos]);
     }
 
     // Usuario RVGIAN siempre presente
@@ -1863,6 +1872,7 @@ const App = (() => {
     lsGet,
     lsSet,
     uid,
+    seedDefaults,
     today,
     todayISO,
     lunarPhase,
